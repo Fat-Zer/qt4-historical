@@ -51,6 +51,7 @@
 #include <QtCore/QDebug>
 #include <QtCore/QVariant>
 #include <QtCore/QDateTime>
+#include <QtCore/QTextCodec>
 #include <QtSql/QSqlQuery>
 
 QT_BEGIN_NAMESPACE
@@ -487,6 +488,7 @@ bool QHelpGenerator::insertFiles(const QStringList &files, const QString &rootPa
     }
 
     QString title;
+    QString charSet;
     QMap<int, QSet<int> > tmpFileFilterMap;
     QList<FileNameTableData> fileNameDataList;
     QList<QByteArray> fileDataList;
@@ -507,15 +509,6 @@ bool QHelpGenerator::insertFiles(const QStringList &files, const QString &rootPa
             continue;
         }
 
-        title.clear();
-        if (fi.suffix() == QLatin1String("html") || fi.suffix() == QLatin1String("htm")) {
-            QTextStream stream;
-            QFile file(fi.absoluteFilePath());
-            if (file.open(QIODevice::ReadOnly))
-                stream.setDevice(&file);
-            title = documentTitle(stream.readAll());
-        }
-
         QFile f(fi.absoluteFilePath());
         if (!f.open(QIODevice::ReadOnly)) {
             emit warning(tr("Cannot open file %1! Skipping it.")
@@ -523,13 +516,24 @@ bool QHelpGenerator::insertFiles(const QStringList &files, const QString &rootPa
             continue;
         }
 
+        title.clear();
+        QByteArray data;
+        data = f.readAll();
+
+        if (fi.suffix() == QLatin1String("html") || fi.suffix() == QLatin1String("htm")) {            
+            charSet = QHelpGlobal::charsetFromData(data);                
+            QTextStream stream(&data);
+            stream.setCodec(QTextCodec::codecForName(charSet.toLatin1().constData()));
+            title = QHelpGlobal::documentTitle(stream.readAll());
+        }        
+
         QString fName = QDir::cleanPath(file);
         if (fName.startsWith(QLatin1String("./")))
             fName = fName.mid(2);
 
         int fileId = -1;
         if (!d->fileMap.contains(fName)) {
-            fileDataList.append(qCompress(f.readAll()));
+            fileDataList.append(qCompress(data));
 
             fileNameData.name = fName;
             fileNameData.fileId = tableFileId;

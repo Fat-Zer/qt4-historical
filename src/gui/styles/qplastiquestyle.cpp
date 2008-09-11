@@ -658,25 +658,25 @@ static void qt_plastique_draw_frame(QPainter *painter, const QRect &rect, const 
 
     if (shadow != QFrame::Plain && (option->state & QStyle::State_HasFocus)) {
         border = option->palette.highlight();
-        qBrushSetAlphaF(&border, 0.8);
+        qBrushSetAlphaF(&border, qreal(0.8));
         corner = option->palette.highlight();
         qBrushSetAlphaF(&corner, 0.5);
         innerTopLeft = qBrushDark(option->palette.highlight(), 125);
         innerBottomRight = option->palette.highlight();
-        qBrushSetAlphaF(&innerBottomRight, 0.65);
+        qBrushSetAlphaF(&innerBottomRight, qreal(0.65));
     } else {
         border = option->palette.shadow();
-        qBrushSetAlphaF(&border, 0.4);
+        qBrushSetAlphaF(&border, qreal(0.4));
         corner = option->palette.shadow();
         qBrushSetAlphaF(&corner, 0.25);
         innerTopLeft = option->palette.shadow();
         innerBottomRight = option->palette.shadow();
         if (shadow == QFrame::Sunken) {
-            qBrushSetAlphaF(&innerTopLeft, 0.23);
-            qBrushSetAlphaF(&innerBottomRight, 0.075);
+            qBrushSetAlphaF(&innerTopLeft, qreal(0.23));
+            qBrushSetAlphaF(&innerBottomRight, qreal(0.075));
         } else {
-            qBrushSetAlphaF(&innerTopLeft, 0.075);
-            qBrushSetAlphaF(&innerBottomRight, 0.23);
+            qBrushSetAlphaF(&innerTopLeft, qreal(0.075));
+            qBrushSetAlphaF(&innerBottomRight, qreal(0.23));
         }
     }
 
@@ -1084,7 +1084,7 @@ void QPlastiqueStylePrivate::drawPartialFrame(QPainter *painter, const QStyleOpt
     if (option->state & QStyle::State_HasFocus) {
         painter->setPen(QPen(option->palette.highlight(), 0));
         QBrush focusBorder = option->palette.highlight();
-        qBrushSetAlphaF(&focusBorder, 0.65);
+        qBrushSetAlphaF(&focusBorder, qreal(0.65));
         if (!reverse) {
             painter->drawLine(rect.topRight()    + QPoint(1, -1),
                               rect.bottomRight() + QPoint(1, 1));
@@ -1231,7 +1231,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             QLine topLine = QLine(twf->rect.topLeft() + QPoint(2, 0), twf->rect.topRight() - QPoint(2, 0));
 
             QBrush border = option->palette.shadow();
-            qBrushSetAlphaF(&border, 0.4);
+            qBrushSetAlphaF(&border, qreal(0.4));
             painter->setPen(QPen(border, 0));
 
             QVarLengthArray<QLine, 4> lines;
@@ -1275,7 +1275,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             points.clear();
 
             QBrush innerTopLeft = option->palette.shadow();
-            qBrushSetAlphaF(&innerTopLeft, 0.075);
+            qBrushSetAlphaF(&innerTopLeft, qreal(0.075));
             painter->setPen(QPen(innerTopLeft, 0));
 
             lines.append(innerLeftLine);
@@ -1284,7 +1284,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             lines.clear();
 
             QBrush innerBottomRight = option->palette.shadow();
-            qBrushSetAlphaF(&innerBottomRight, 0.23);
+            qBrushSetAlphaF(&innerBottomRight, qreal(0.23));
             painter->setPen(QPen(innerBottomRight, 0));
             lines.append(innerRightLine);
             lines.append(innerBottomLine);
@@ -1328,11 +1328,11 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             QLine bottomLine = QLine(tbb->rect.bottomLeft(), tbb->rect.bottomRight());
 
             QBrush border = option->palette.shadow();
-            qBrushSetAlphaF(&border, 0.4);
+            qBrushSetAlphaF(&border, qreal(0.4));
             QBrush innerTopLeft = option->palette.shadow();
-            qBrushSetAlphaF(&innerTopLeft, 0.075);
+            qBrushSetAlphaF(&innerTopLeft, qreal(0.075));
             QBrush innerBottomRight = option->palette.shadow();
-            qBrushSetAlphaF(&innerBottomRight, 0.23);
+            qBrushSetAlphaF(&innerBottomRight, qreal(0.23));
             QBrush corner = option->palette.shadow();
             qBrushSetAlphaF(&corner, 0.25);
 
@@ -1691,7 +1691,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             if (hover && !sunken) {
                 QBrush hover = qMapBrushToRect(option->palette.highlight(), rect);
                 QBrush hoverOuter = hover;
-                qBrushSetAlphaF(&hoverOuter, 0.7);
+                qBrushSetAlphaF(&hoverOuter, qreal(0.7));
 
                 QLine lines[2];
 
@@ -1701,14 +1701,14 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
                 p->drawLines(lines, 2);
 
                 QBrush hoverInner = hover;
-                qBrushSetAlphaF(&hoverInner, 0.45);
+                qBrushSetAlphaF(&hoverInner, qreal(0.45));
                 p->setPen(QPen(hoverInner, 0));
                 lines[0] = QLine(rect.left() + 1, rect.top() + 2, rect.right() - 1, rect.top() + 2);
                 lines[1] = QLine(rect.left() + 1, rect.bottom() - 2, rect.right() - 1, rect.bottom() - 2);
                 p->drawLines(lines, 2);
 
                 QBrush hoverSide = hover;
-                qBrushSetAlphaF(&hoverSide, 0.075);
+                qBrushSetAlphaF(&hoverSide, qreal(0.075));
                 p->setPen(QPen(hoverSide, 0));
                 lines[0] = QLine(rect.left() + 1, rect.top() + 2, rect.left() + 1, rect.bottom() - 2);
                 lines[1] = QLine(rect.right() - 1, rect.top() + 2, rect.right() - 1, rect.bottom() - 2);
@@ -1728,7 +1728,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
 
             // Outline
             QBrush border = option->palette.shadow();
-            qBrushSetAlphaF(&border, 0.4);
+            qBrushSetAlphaF(&border, qreal(0.4));
             p->setPen(QPen(border, 0));
             const QLine lines[4] = {
                 QLine(rect.left() + 1, rect.top(), rect.right() - 1, rect.top()),
@@ -1738,7 +1738,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             p->drawLines(lines, 4);
 
             QBrush corner = option->palette.shadow();
-            qBrushSetAlphaF(&corner, 0.2);
+            qBrushSetAlphaF(&corner, qreal(0.2));
             p->setPen(QPen(corner, 0));
             const QPoint points[4] = {
                 rect.topLeft(), rect.topRight(),
@@ -1758,14 +1758,14 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             // Hover
             if ((button->state & State_Enabled) && (button->state & State_MouseOver)) {
                 QBrush pen = qMapBrushToRect(button->palette.highlight(), rect);
-                qBrushSetAlphaF(&pen, 0.8);
+                qBrushSetAlphaF(&pen, qreal(0.8));
                 p->setPen(QPen(pen, 0));
                 p->drawRect(rect.adjusted(1, 1, -2, -2));
                 qBrushSetAlphaF(&pen, 0.5);
                 p->setPen(QPen(pen, 0));
                 p->drawRect(rect.adjusted(2, 2, -3, -3));
 
-                qBrushSetAlphaF(&pen, 0.2);
+                qBrushSetAlphaF(&pen, qreal(0.2));
                 p->setBrush(pen);
                 p->drawRect(rect.adjusted(2, 2, -3, -3));
             }
@@ -1779,9 +1779,9 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
                 p->setRenderHint(QPainter::Antialiasing);
                 QBrush pointBrush = qMapBrushToRect(button->palette.text(), rect);
                 if (sunken)
-                    qBrushSetAlphaF(&pointBrush, 0.5);
+                    qBrushSetAlphaF(&pointBrush, qreal(0.5));
                 else if (unchanged)
-                    qBrushSetAlphaF(&pointBrush, 0.3);
+                    qBrushSetAlphaF(&pointBrush, qreal(0.3));
                 p->setPen(QPen(pointBrush, 3));
                 const QLine lines[2] = {
                     QLine(rect.left() + 4, rect.top() + 4, rect.right() - 3, rect.bottom() - 3),
@@ -1802,7 +1802,7 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
 
             // The the filled ellipse
             QBrush border = qMapBrushToRect(option->palette.shadow(), rect);
-            qBrushSetAlphaF(&border, 0.51);
+            qBrushSetAlphaF(&border, qreal(0.51));
             p->setPen(QPen(border, 0));
 
             QBrush baseBrush = qMapBrushToRect(button->palette.base(), rect);
@@ -1818,9 +1818,9 @@ void QPlastiqueStyle::drawPrimitive(PrimitiveElement element, const QStyleOption
             // Hover
             if ((button->state & State_Enabled) && (button->state & State_MouseOver)) {
                 QBrush pen = qMapBrushToRect(button->palette.highlight(), rect);
-                qBrushSetAlphaF(&pen, 0.8);
+                qBrushSetAlphaF(&pen, qreal(0.8));
                 p->setPen(QPen(pen, 0));
-                qBrushSetAlphaF(&pen, 0.2);
+                qBrushSetAlphaF(&pen, qreal(0.2));
                 p->setBrush(pen);
                 p->drawEllipse(QRectF(rect).adjusted(2, 2, -2, -2));
             }
@@ -2102,13 +2102,13 @@ void QPlastiqueStyle::drawControl(ControlElement element, const QStyleOption *op
                 QPoint vectorRight;
 
                 QBrush border = option->palette.shadow();
-                qBrushSetAlphaF(&border, 0.4);
+                qBrushSetAlphaF(&border, qreal(0.4));
                 QBrush innerTopLeft = option->palette.shadow();
-                qBrushSetAlphaF(&innerTopLeft, 0.075);
+                qBrushSetAlphaF(&innerTopLeft, qreal(0.075));
                 QBrush innerBottomRight = option->palette.shadow();
-                qBrushSetAlphaF(&innerBottomRight, 0.23);
+                qBrushSetAlphaF(&innerBottomRight, qreal(0.23));
                 QBrush corner = option->palette.shadow();
-                qBrushSetAlphaF(&corner, 0.25);
+                qBrushSetAlphaF(&corner, qreal(0.25));
 
                 QBrush baseColor1;
                 QBrush baseColor2;
@@ -4065,25 +4065,37 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
 
             // Brushes
             QBrush corner = qMapBrushToRect(option->palette.shadow(), buttonRect);
-            qBrushSetAlphaF(&corner, 0.25);
+            qBrushSetAlphaF(&corner, qreal(0.25));
             QBrush border = qMapBrushToRect(option->palette.shadow(), buttonRect);
-            qBrushSetAlphaF(&border, 0.4);
+            qBrushSetAlphaF(&border, qreal(0.4));
 
             QVarLengthArray<QPoint, 4> points;
 
             Q_D(const QPlastiqueStyle);
-            d->drawPartialFrame(painter,
-                                option,
-                                subControlRect(CC_SpinBox, spinBox, SC_SpinBoxEditField, widget),
-                                widget);
-
+            if (spinBox->buttonSymbols == QAbstractSpinBox::NoButtons) {
+                QRect filledRect = option->rect.adjusted(1, 1, -1, -1);
+                QBrush baseBrush = qMapBrushToRect(option->palette.base(), filledRect);
+                painter->setBrushOrigin(filledRect.topLeft());
+                painter->fillRect(filledRect.adjusted(1, 1, -1, -1), baseBrush);
+                qt_plastique_draw_frame(painter, option->rect, option, QFrame::Sunken);        
+            } else {
+                d->drawPartialFrame(painter,
+                                    option,
+                                    subControlRect(CC_SpinBox, spinBox, SC_SpinBoxEditField, widget),
+                                    widget);
+            }
+            // Paint buttons
+            if (spinBox->buttonSymbols == QAbstractSpinBox::NoButtons) {
+                painter->restore();
+                break;
+            }
+            // Button outlines
             painter->setPen(QPen(border, 0));
             if (!reverse)
                 painter->drawLine(buttonRect.topLeft() + QPoint(0, 1), buttonRect.bottomLeft() + QPoint(0, -1));
             else
                 painter->drawLine(buttonRect.topRight() + QPoint(0, -1), buttonRect.bottomRight() + QPoint(0, 1));
 
-            // Button outlines
             if (!reverse) {
                 const QLine lines[4] = {
                     QLine(upRect.left(), upRect.top(), upRect.right() - 2, upRect.top()),
@@ -4413,7 +4425,7 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
                                 widget);
 
                 QBrush border = qMapBrushToRect(option->palette.shadow(), buttonRect);
-                qBrushSetAlphaF(&border, 0.4);
+                qBrushSetAlphaF(&border, qreal(0.4));
                 painter->setPen(QPen(border, 0));
                 if (!reverse)
                     painter->drawLine(buttonRect.topLeft() + QPoint(0, 1), buttonRect.bottomLeft() + QPoint(0, -1));
@@ -4438,7 +4450,7 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
                     }
 
                     QBrush corner = qMapBrushToRect(option->palette.shadow(), buttonRect);
-                    qBrushSetAlphaF(&corner, 0.16);
+                    qBrushSetAlphaF(&corner, qreal(0.16));
                     painter->setPen(QPen(corner, 0));
                     {
                         const QPoint points[4] = {
@@ -4465,7 +4477,7 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
                     }
 
                     QBrush corner = qMapBrushToRect(option->palette.shadow(), buttonRect);
-                    qBrushSetAlphaF(&corner, 0.16);
+                    qBrushSetAlphaF(&corner, qreal(0.16));
                     painter->setPen(QPen(corner, 0));
                     {
                         const QPoint points[4] = {
@@ -4537,7 +4549,7 @@ void QPlastiqueStyle::drawComplexControl(ComplexControl control, const QStyleOpt
 
                 // Draw the menu button separator line
                 QBrush border = qMapBrushToRect(option->palette.shadow(), rect);
-                qBrushSetAlphaF(&border, 0.35);
+                qBrushSetAlphaF(&border, qreal(0.35));
                 painter->setPen(QPen(border, 0));
                 if (!reverse) {
                     painter->drawLine(rect.right() - menuButtonWidth + xoffset, rect.top() + 1,

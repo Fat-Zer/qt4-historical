@@ -1417,7 +1417,6 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
         qWarning() << "QOpenGLPaintEngine: paint device doesn't have a valid GL context.";
         return false;
     }
-    d->max_texture_size = ctx->d_func()->maxTextureSize();
 
     if (has_frag_program)
         has_frag_program = qt_resolve_frag_program_extensions(ctx) && qt_resolve_version_1_3_functions(ctx);
@@ -1513,10 +1512,16 @@ bool QOpenGLPaintEngine::begin(QPaintDevice *pdev)
     glEnable(GL_BLEND);
     d->composition_mode = QPainter::CompositionMode_SourceOver;
 
-#ifndef QT_OPENGL_ES
+#ifdef QT_OPENGL_ES
+    d->max_texture_size = ctx->d_func()->maxTextureSize();
+#else
     bool shared_ctx = qgl_share_reg()->checkSharing(d->drawable.context(), d->shader_ctx);
 
-    if (!shared_ctx) {
+    if (shared_ctx) {
+        d->max_texture_size = d->shader_ctx->d_func()->maxTextureSize();
+    } else {
+        d->max_texture_size = ctx->d_func()->maxTextureSize();
+
         if (d->shader_ctx) {
             d->shader_ctx->makeCurrent();
             glBindTexture(GL_TEXTURE_1D, 0);
@@ -4552,8 +4557,13 @@ void QGLGlyphCache::cacheGlyphs(QGLContext *context, const QTextItemInt &ti,
             qgl_glyph->height = qreal(glyph_height) / font_tex->height;
             qgl_glyph->log_width = qreal(glyph_width);
             qgl_glyph->log_height = qgl_glyph->height * font_tex->height;
+#ifdef Q_WS_MAC            
+            qgl_glyph->x_offset = -metrics.x + 1;
+            qgl_glyph->y_offset = metrics.y - 2;
+#else
             qgl_glyph->x_offset = -metrics.x;
             qgl_glyph->y_offset = metrics.y;
+#endif
 
             if (!glyph_im.isNull()) {
 

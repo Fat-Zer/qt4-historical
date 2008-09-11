@@ -523,6 +523,8 @@ QDesignerFormEditorInterface *WidgetFactory::core() const
 
 void WidgetFactory::initialize(QObject *object) const
 {
+    // Indicate that this is a form object (for QDesignerFormWindowInterface::findFormWindow)
+    object->setProperty("_q_formEditorObject", QVariant(true));
     QDesignerPropertySheetExtension *sheet = qt_extension<QDesignerPropertySheetExtension*>(m_core->extensionManager(), object);
     if (!sheet)
         return;

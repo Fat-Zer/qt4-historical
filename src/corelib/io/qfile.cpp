@@ -264,7 +264,7 @@ QFilePrivate::setError(QFile::FileError err, int errNum)
     \section1 Platform Specific Issues
 
     File permissions are handled differently on Linux/Mac OS X and
-    Windows.  In a non \l{QIODevice::isWriteable()}{writeable}
+    Windows.  In a non \l{QIODevice::isWritable()}{writable}
     directory on Linux, files cannot be created. This is not always
     the case on Windows, where, for instance, the 'My Documents'
     directory usually is not writable, but it is still possible to
@@ -423,7 +423,7 @@ QString QFile::fileName() const
     \e{at the time of the open()} call.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qfile.cpp 0
 
     Note that the directory separator "/" works for all operating
     systems supported by Qt.
@@ -476,7 +476,7 @@ QFile::encodeName(const QString &fileName)
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qfile.cpp 1
 
     \sa setEncodingFunction(), encodeName()
 */
@@ -518,7 +518,7 @@ QFile::setEncodingFunction(EncoderFn f)
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qfile.cpp 2
 
     \sa setDecodingFunction()
 */
@@ -979,31 +979,37 @@ bool QFile::open(OpenMode mode)
     Returns true if successful; otherwise returns false.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qfile.cpp 3
 
     When a QFile is opened using this function, close() does not actually
     close the file, but only flushes it.
 
-    \warning If \a fh is \c stdin, \c stdout, or \c stderr, you may not be
-    able to seek(). See QIODevice::isSequentialAccess() for more
-    information.
+    \bold{Warning:}
+    \list 1
+        \o If \a fh is \c stdin, \c stdout, or \c stderr, you may not be able
+           to seek(). See QIODevice::isSequentialAccess() for more information.
+        \o Since this function opens the file without specifying the file name,
+           you cannot use this QFile with a QFileInfo.
+    \endlist
 
-    \bold{Note:} On Windows, you need to enable support for console applications
-    in order to use the stdin, stdout and stderr streams at the console. To do
-    this, add the following declaration to your application's project file:
-
-    \snippet doc/src/snippets/code/src.corelib.io.qfile.cpp 4
-
-    \note On Windows, \a fh must be opened in binary mode (i.e., the mode
-    string must contain 'b', as in "rb" or "wb") when accessing files and
-    other random-access devices. Qt will translate the end-of-line characters
-    if you pass QIODevice::Text to \a mode. Sequential devices, such as stdin
-    and stdout, are unaffected by this limitation.
-
-    \warning For Windows CE you may not be able to call seek(), setSize(), 
-    fileTime(). Also, size() is set to \c 0.
+    \note For Windows CE you may not be able to call seek() and resize().
+    Also, size() is set to \c 0.
 
     \sa close(), {qmake Variable Reference#CONFIG}{qmake Variable Reference}
+
+    \bold{Note for the Windows Platform}
+
+    \a fh must be opened in binary mode (i.e., the mode string must contain
+    'b', as in "rb" or "wb") when accessing files and other random-access
+    devices. Qt will translate the end-of-line characters if you pass
+    QIODevice::Text to \a mode. Sequential devices, such as stdin and stdout,
+    are unaffected by this limitation.
+
+    You need to enable support for console applications in order to use the
+    stdin, stdout and stderr streams at the console. To do this, add the
+    following declaration to your application's project file:
+
+    \snippet doc/src/snippets/code/src_corelib_io_qfile.cpp 4
 */
 bool QFile::open(FILE *fh, OpenMode mode)
 {
@@ -1058,6 +1064,9 @@ bool QFile::open(FILE *fh, OpenMode mode)
 
     \warning For Windows CE you may not be able to call seek(), setSize(), 
     fileTime(). size() is set to \c 0.
+
+    \warning Since this function opens the file without specifying the file name,
+             you cannot use this QFile with a QFileInfo.
 
     \sa close()
 */

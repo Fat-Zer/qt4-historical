@@ -145,6 +145,8 @@ QT_BEGIN_NAMESPACE
     \sa QToolTip
 */
 
+extern void qDeleteInEventHandler(QObject *o);
+
 class QWhatsThat : public QWidget
 {
     Q_OBJECT
@@ -338,7 +340,7 @@ void QWhatsThat::paintEvent(QPaintEvent*)
             p.drawLine(6, h + 6 - i, i + 5, h + 5);
     }
     r.adjust(0, 0, 1, 1);
-    p.setPen(palette().foreground().color());
+    p.setPen(palette().toolTipText().color());
     r.adjust(hMargin, vMargin, -hMargin, -vMargin);
 
     if (doc) {
@@ -746,7 +748,7 @@ void QWhatsThis::showText(const QPoint &pos, const QString &text, QWidget *w)
 */
 void QWhatsThis::hideText()
 {
-    delete QWhatsThat::instance;
+    qDeleteInEventHandler(QWhatsThat::instance);
 }
 
 /*!

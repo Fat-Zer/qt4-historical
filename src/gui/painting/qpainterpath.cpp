@@ -221,7 +221,7 @@ static void qt_debug_path(const QPainterPath &path)
     \row
     \o \inlineimage qpainterpath-construction.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 0
     \endtable
 
     The painter path is initially empty when constructed. We first add
@@ -715,7 +715,7 @@ void QPainterPath::lineTo(const QPointF &p)
     \row
     \o \inlineimage qpainterpath-cubicto.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 1
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 1
     \endtable
 
     \sa quadTo(), {QPainterPath#Composing a QPainterPath}{Composing
@@ -834,7 +834,7 @@ void QPainterPath::quadTo(const QPointF &c, const QPointF &e)
     \row
     \o \inlineimage qpainterpath-arcto.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 2
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 2
     \endtable
 
     \sa arcMoveTo(), addEllipse(), QPainter::drawArc(), QPainter::drawPie(),
@@ -942,7 +942,7 @@ QPointF QPainterPath::currentPosition() const
     \row
     \o \inlineimage qpainterpath-addrectangle.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 3
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 3
     \endtable
 
     \sa addRegion(), lineTo(), {QPainterPath#Composing a
@@ -983,7 +983,7 @@ void QPainterPath::addRect(const QRectF &r)
     \row
     \o \inlineimage qpainterpath-addpolygon.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 4
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 4
     \endtable
 
     \sa lineTo(), {QPainterPath#Composing a QPainterPath}{Composing
@@ -1019,7 +1019,7 @@ void QPainterPath::addPolygon(const QPolygonF &polygon)
     \row
     \o \inlineimage qpainterpath-addellipse.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 5
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 5
     \endtable
 
     \sa arcTo(), QPainter::drawEllipse(), {QPainterPath#Composing a
@@ -1065,7 +1065,7 @@ void QPainterPath::addEllipse(const QRectF &boundingRect)
     \row
     \o \inlineimage qpainterpath-addtext.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainterpath.cpp 6
+    \snippet doc/src/snippets/code/src_gui_painting_qpainterpath.cpp 6
     \endtable
 
     \sa QPainter::drawText(), {QPainterPath#Composing a
@@ -2105,7 +2105,7 @@ bool QPainterPath::operator==(const QPainterPath &path) const
     else if (d->elements.size() != path.d_func()->elements.size())
         return false;
 
-    const qreal qt_epsilon = sizeof(qreal) == sizeof(double) ? 1e-12 : 1e-5;
+    const qreal qt_epsilon = sizeof(qreal) == sizeof(double) ? 1e-12 : qreal(1e-5);
 
     QSizeF epsilon = boundingRect().size();
     epsilon.rwidth() *= qt_epsilon;

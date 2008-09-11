@@ -318,7 +318,7 @@ QT_END_INCLUDE_NAMESPACE
     create a local QTimer object.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qtimer.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_kernel_qtimer.cpp 0
 
     This sample program automatically terminates after 10 minutes
     (600,000 milliseconds).

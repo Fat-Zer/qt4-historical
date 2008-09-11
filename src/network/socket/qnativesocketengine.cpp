@@ -489,7 +489,7 @@ int QNativeSocketEngine::socketDescriptor() const
     waitForWrite().
 
     Example:
-    \snippet doc/src/snippets/code/src.network.socket.qnativesocketengine.cpp 0
+    \snippet doc/src/snippets/code/src_network_socket_qnativesocketengine.cpp 0
 
     Otherwise, error() should be called to determine the cause of the
     error.
@@ -563,7 +563,7 @@ bool QNativeSocketEngine::bind(const QHostAddress &address, quint16 port)
     the blocking function waitForRead().
 
     Example:
-    \snippet doc/src/snippets/code/src.network.socket.qnativesocketengine.cpp 1
+    \snippet doc/src/snippets/code/src_network_socket_qnativesocketengine.cpp 1
 
     \sa bind(), accept()
 */

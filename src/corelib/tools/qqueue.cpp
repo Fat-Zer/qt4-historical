@@ -59,7 +59,7 @@
     the head item without removing it.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qqueue.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qqueue.cpp 0
 
     The example will output 1, 2, 3 in that order.
 

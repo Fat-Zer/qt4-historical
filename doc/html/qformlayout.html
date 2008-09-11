@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qformlayout.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qformlayout.cpp -->
 <head>
   <title>Qt 4.4: QFormLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFormLayout Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QFormLayout class manages forms of input widgets and their associated labels. <a href="#details">More...</a></p>
@@ -114,29 +114,29 @@
 <li><b>Support for wrapping long rows.</b><p>For devices with small displays, QFormLayout can be set to <a href="qformlayout.html#RowWrapPolicy-enum">wrap long rows</a>, or even to <a href="qformlayout.html#RowWrapPolicy-enum">wrap all rows</a>.</p>
 </li>
 <li><b>Convenient API for creating label--field pairs.</b><p>The <a href="qformlayout.html#addRow">addRow</a>() overload that takes a <a href="qstring.html">QString</a> and a <a href="qwidget.html">QWidget</a> * creates a <a href="qlabel.html">QLabel</a> behind the scenes and automatically set up its buddy. We can then write code like this:</p>
-<pre>         QFormLayout *formLayout = new QFormLayout;
-         formLayout-&gt;addRow(tr(&quot;&amp;Name:&quot;), nameLineEdit);
-         formLayout-&gt;addRow(tr(&quot;&amp;Email:&quot;), emailLineEdit);
-         formLayout-&gt;addRow(tr(&quot;&amp;Age:&quot;), ageSpinBox);
-         setLayout(formLayout);</pre>
+<pre> QFormLayout *formLayout = new QFormLayout;
+ formLayout-&gt;addRow(tr(&quot;&amp;Name:&quot;), nameLineEdit);
+ formLayout-&gt;addRow(tr(&quot;&amp;Email:&quot;), emailLineEdit);
+ formLayout-&gt;addRow(tr(&quot;&amp;Age:&quot;), ageSpinBox);
+ setLayout(formLayout);</pre>
 <p>Compare this with the following code, written using <a href="qgridlayout.html">QGridLayout</a>:</p>
-<pre>         nameLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
-         nameLabel-&gt;setBuddy(nameLineEdit);
+<pre> nameLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+ nameLabel-&gt;setBuddy(nameLineEdit);
 
-         emailLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
-         emailLabel-&gt;setBuddy(emailLineEdit);
+ emailLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+ emailLabel-&gt;setBuddy(emailLineEdit);
 
-         ageLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
-         ageLabel-&gt;setBuddy(ageSpinBox);
+ ageLabel = new QLabel(tr(&quot;&amp;Name:&quot;));
+ ageLabel-&gt;setBuddy(ageSpinBox);
 
-         QGridLayout *gridLayout = new QGridLayout;
-         gridLayout-&gt;addWidget(nameLabel, 0, 0);
-         gridLayout-&gt;addWidget(nameLineEdit, 0, 1);
-         gridLayout-&gt;addWidget(emailLabel, 1, 0);
-         gridLayout-&gt;addWidget(emailLineEdit, 1, 1);
-         gridLayout-&gt;addWidget(ageLabel, 2, 0);
-         gridLayout-&gt;addWidget(ageSpinBox, 2, 1);
-         setLayout(gridLayout);</pre>
+ QGridLayout *gridLayout = new QGridLayout;
+ gridLayout-&gt;addWidget(nameLabel, 0, 0);
+ gridLayout-&gt;addWidget(nameLineEdit, 0, 1);
+ gridLayout-&gt;addWidget(emailLabel, 1, 0);
+ gridLayout-&gt;addWidget(emailLineEdit, 1, 1);
+ gridLayout-&gt;addWidget(ageLabel, 2, 0);
+ gridLayout-&gt;addWidget(ageSpinBox, 2, 1);
+ setLayout(gridLayout);</pre>
 </li>
 </ul>
 <p>The table below shows the default appearance in different styles.</p>
@@ -146,10 +146,10 @@
 <tr valign="top" class="even"><td>Traditional style used for Windows, GNOME, and earlier versions of KDE. Labels are left aligned, and expanding fields grow to fill the available space. (This normally corresponds to what we would get using a two-column <a href="qgridlayout.html">QGridLayout</a>.)</td><td>Style based on the <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/">Mac OS X Aqua guidelines</a>. Labels are right-aligned, the fields don't grow beyond their size hint, and the form is horizontally centered.</td><td>Recommended style for <a href="http://www.kdedevelopers.org/node/2345">KDE applications</a>. Similar to MacStyle, except that the form is left-aligned and all fields grow to fill the available space.</td><td>Default style for Qtopia styles. Labels are right-aligned, expanding fields grow to fill the available space, and row wrapping is enabled for long lines.</td></tr>
 </table></p>
 <p>The form styles can be also be overridden individually by calling <a href="qformlayout.html#labelAlignment-prop">setLabelAlignment</a>(), <a href="qformlayout.html#formAlignment-prop">setFormAlignment</a>(), <a href="qformlayout.html#fieldGrowthPolicy-prop">setFieldGrowthPolicy</a>(), and <a href="qformlayout.html#rowWrapPolicy-prop">setRowWrapPolicy</a>(). For example, to simulate the form layout appearance of <a href="qmacstyle.html">QMacStyle</a> on all platforms, but with left-aligned labels, you could write:</p>
-<pre>         formLayout-&gt;setRowWrapPolicy(QFormLayout::DontWrapRows);
-         formLayout-&gt;setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
-         formLayout-&gt;setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
-         formLayout-&gt;setLabelAlignment(Qt::AlignLeft);</pre>
+<pre> formLayout-&gt;setRowWrapPolicy(QFormLayout::DontWrapRows);
+ formLayout-&gt;setFieldGrowthPolicy(QFormLayout::FieldsStayAtSizeHint);
+ formLayout-&gt;setFormAlignment(Qt::AlignHCenter | Qt::AlignTop);
+ formLayout-&gt;setLabelAlignment(Qt::AlignLeft);</pre>
 <p>See also <a href="qgridlayout.html">QGridLayout</a>, <a href="qboxlayout.html">QBoxLayout</a>, and <a href="qstackedlayout.html">QStackedLayout</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -219,7 +219,7 @@
 <a name="//apple_ref/cpp/instm/QFormLayout/setHorizontalSpacing" />
 <h3 class="fn"><a name="horizontalSpacing-prop"></a>horizontalSpacing : int</h3>
 <p>This property holds the spacing between widgets that are laid out side by side.</p>
-<p>If no value is explicitly set, the layout's horizontal spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
+<p>By default, if no value is explicitly set, the layout's horizontal spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int horizontalSpacing () const</b></li>
@@ -252,8 +252,8 @@
 <a name="//apple_ref/cpp/instm/QFormLayout/verticalSpacing" />
 <a name="//apple_ref/cpp/instm/QFormLayout/setVerticalSpacing" />
 <h3 class="fn"><a name="verticalSpacing-prop"></a>verticalSpacing : int</h3>
-<p>This property holds the spacing between widgets that are laid out on top of each other.</p>
-<p>If no value is explicitly set, the layout's vertical spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
+<p>This property holds the spacing between widgets that are laid out vertically.</p>
+<p>By default, if no value is explicitly set, the layout's vertical spacing is inherited from the parent layout, or from the style settings for the parent widget.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int verticalSpacing () const</b></li>
@@ -358,8 +358,8 @@
 <p>See also <a href="qformlayout.html#setSpacing">setSpacing</a>(), <a href="qformlayout.html#verticalSpacing-prop">verticalSpacing</a>(), and <a href="qformlayout.html#horizontalSpacing-prop">horizontalSpacing</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

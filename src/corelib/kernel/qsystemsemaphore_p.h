@@ -60,6 +60,11 @@
 #ifndef QT_NO_SYSTEMSEMAPHORE
 
 #include "qsharedmemory_p.h"
+#if !defined(Q_OS_WINCE)
+#  include <sys/types.h>
+#else
+#  include <types.h>
+#endif
 
 QT_BEGIN_NAMESPACE
 

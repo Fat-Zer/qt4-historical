@@ -927,7 +927,7 @@ void QSqlResult::virtual_hook(int, void *)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 0
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlresult.cpp 0
 
     Here, we insert two rows into a SQL table, with each row containing three values.
 
@@ -999,11 +999,11 @@ bool QSqlResult::nextResult()
 
     This example retrieves the handle for a sqlite result:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 1
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlresult.cpp 1
 
     This snippet returns the handle for PostgreSQL or MySQL:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlresult.cpp 2
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlresult.cpp 2
 
     \sa QSqlDriver::handle()
 */

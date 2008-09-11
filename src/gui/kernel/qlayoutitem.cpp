@@ -389,7 +389,7 @@ int QLayoutItem::minimumHeightForWidth(int w) const
 
     Reimplement this function in layout managers that support height
     for width. A typical implementation will look like this:
-    \snippet doc/src/snippets/code/src.gui.kernel.qlayoutitem.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qlayoutitem.cpp 0
 
     Caching is strongly recommended; without it layout will take
     exponential time.
@@ -460,6 +460,11 @@ void QWidgetItem::setGeometry(const QRect &rect)
     int y = r.y();
     if (align & (Qt::AlignHorizontal_Mask | Qt::AlignVertical_Mask)) {
         QSize pref(sizeHint());
+        QSizePolicy sp = wid->sizePolicy();
+        if (sp.horizontalPolicy() == QSizePolicy::Ignored)
+            pref.setWidth(wid->sizeHint().expandedTo(wid->minimumSize()).width());
+        if (sp.verticalPolicy() == QSizePolicy::Ignored)
+            pref.setHeight(wid->sizeHint().expandedTo(wid->minimumSize()).height());
         pref += widgetRectSurplus;
         if (align & Qt::AlignHorizontal_Mask)
             s.setWidth(qMin(s.width(), pref.width()));

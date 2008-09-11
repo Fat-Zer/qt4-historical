@@ -65,7 +65,7 @@ static const int QGRAPHICSVIEW_REGION_RECT_THRESHOLD = 50;
     center of the scene and display any items that are visible at this
     point. For example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 0
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 0
 
     You can explicitly scroll to any position on the scene by using the
     scroll bars, or by calling centerOn(). By passing a point to centerOn(),
@@ -807,7 +807,7 @@ QSize QGraphicsView::sizeHint() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 1
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 1
 */
 QPainter::RenderHints QGraphicsView::renderHints() const
 {
@@ -1073,7 +1073,7 @@ void QGraphicsView::setRubberBandSelectionMode(Qt::ItemSelectionMode mode)
     especially with a transformed view. The CacheBackground flag enables
     caching of the view's background. For example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 2
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 2
 
     The cache is invalidated every time the view is transformed. However, when
     scrolling, only partial invalidation is required.
@@ -1166,6 +1166,8 @@ void QGraphicsView::invalidateScene(const QRectF &rect, QGraphicsScene::SceneLay
     If enabled, this view is set to allow scene interaction. Otherwise, this
     view will not allow interaction, and any mouse or key events are ignored
     (i.e., it will act as a read-only view).
+
+    By default, this property is true.
 */
 bool QGraphicsView::isInteractive() const
 {
@@ -1235,7 +1237,7 @@ void QGraphicsView::setScene(QGraphicsScene *scene)
     \property QGraphicsView::sceneRect
     \brief the area of the scene visualized by this view.
 
-    The scene rect defines the extent of the scene, and in the view's case,
+    The scene rectangle defines the extent of the scene, and in the view's case,
     this means the area of the scene that you can navigate using the scroll
     bars.
 
@@ -1244,10 +1246,13 @@ void QGraphicsView::setScene(QGraphicsScene *scene)
     QGraphicsScene::sceneRect. Otherwise, the view's scene rect is unaffected
     by the scene.
 
-    Note that although the scene supports a virtually unlimited size, the
+    Note that, although the scene supports a virtually unlimited size, the
     range of the scroll bars will never exceed the range of an integer
     (INT_MIN, INT_MAX). When the scene is larger than the scroll bars' values,
     you can choose to use translate() to navigate the scene instead.
+
+    By default, this property contains a rectangle at the origin with zero
+    width and height.
 
     \sa QGraphicsScene::sceneRect
 */
@@ -1296,7 +1301,7 @@ QMatrix QGraphicsView::matrix() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 3
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 3
 
     To simplify interation with items using a transformed view, QGraphicsView
     provides mapTo... and mapFrom... functions that can translate between
@@ -1584,7 +1589,7 @@ void QGraphicsView::fitInView(const QGraphicsItem *item, Qt::AspectRatioMode asp
     onto a paint device, such as a QImage (e.g., to take a screenshot), or for
     printing to QPrinter. For example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 4
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 4
 
     If \a source is a null rect, this function will use viewport()->rect() to
     determine what to draw. If \a target is a null rect, the full dimensions
@@ -1805,7 +1810,7 @@ QList<QGraphicsItem *> QGraphicsViewPrivate::itemsInArea(const QPainterPath &pat
     a subclass in QGraphicsView. \a pos is in untransformed viewport
     coordinates, just like QMouseEvent::pos().
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 5
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 5
 
     \sa QGraphicsScene::items(), QGraphicsItem::zValue()
 */
@@ -1917,7 +1922,7 @@ QList<QGraphicsItem *> QGraphicsView::items(const QPainterPath &path, Qt::ItemSe
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 6
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 6
 
     \sa items()
 */
@@ -2116,6 +2121,8 @@ QVariant QGraphicsView::inputMethodQuery(Qt::InputMethodQuery query) const
     drawBackground(). To provide custom background drawing for this view, you
     can reimplement drawBackground() instead.
 
+    By default, this property contains a brush with the Qt::NoBrush pattern.
+
     \sa QGraphicsScene::backgroundBrush, foregroundBrush
 */
 QBrush QGraphicsView::backgroundBrush() const
@@ -2143,6 +2150,8 @@ void QGraphicsView::setBackgroundBrush(const QBrush &brush)
     used to override the scene's own foreground, and defines the behavior of
     drawForeground(). To provide custom foreground drawing for this view, you
     can reimplement drawForeground() instead.
+
+    By default, this property contains a brush with the Qt::NoBrush pattern.
 
     \sa QGraphicsScene::foregroundBrush, backgroundBrush
 */
@@ -2334,6 +2343,7 @@ bool QGraphicsView::viewportEvent(QEvent *event)
     return QAbstractScrollArea::viewportEvent(event);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -2359,6 +2369,7 @@ void QGraphicsView::contextMenuEvent(QContextMenuEvent *event)
     QApplication::sendEvent(d->scene, &contextEvent);
     event->setAccepted(contextEvent.isAccepted());
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \reimp
@@ -2855,6 +2866,9 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
         return;
     }
 
+    // Set up painter state protection.
+    d->scene->d_func()->painterStateProtection = !(d->optimizationFlags & DontSavePainterState);
+
     // Determine the exposed region
     QRegion exposedRegion = event->region();
     if (!d->accelerateScrolling)
@@ -2996,27 +3010,38 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
             painter.drawPixmap(rect, d->backgroundPixmap, rect);
         painter.setTransform(oldMatrix);
     } else {
-        if (clipRects.size() > 1)
+        // Because the draw functions only take a QRectF expose rect, the
+        // background and foreground must be drawn one expose rect at a time,
+        // but the viewport has a clip region set that's common to these
+        // calls. If/when each piece of the background is drawn in sequence,
+        // any overlapping shapes will be drawn with an overlap, and
+        // semitransparency with overdrawing causes rendering bugs in the
+        // overlap area. So instead, we clip with one expose rect at a time.
+        // ### The _proper_ fix would be to change draw{Back,Fore}ground to
+        // take a QPainterPath expose argument instead, and call it only once.
+        bool singleClip = (!(d->optimizationFlags & DontClipPainter) && clipRects.size() > 1);
+        if (singleClip)
             painter.save();
 
         // Draw the background directly
         for (int i = 0; i < exposedRects.size(); ++i) {
-            if (!(d->optimizationFlags & DontSavePainterState))
-                painter.save();
-
-            if (!(d->optimizationFlags & DontClipPainter) && clipRects.size() > 1) {
+            if (singleClip) {
+                // Clip to a simple rect in device coordinates, then restore
+                // the painter.
                 QTransform oldTransform = painter.worldTransform();
                 painter.setWorldTransform(QTransform());
                 painter.setClipRect(clipRects.at(i));
                 painter.setWorldTransform(oldTransform);
             }
-            drawBackground(&painter, exposedRects.at(i));
 
+            if (!(d->optimizationFlags & DontSavePainterState))
+                painter.save();
+            drawBackground(&painter, exposedRects.at(i));
             if (!(d->optimizationFlags & DontSavePainterState))
                 painter.restore();
         }
 
-        if (clipRects.size() > 1)
+        if (singleClip)
             painter.restore();
     }
 
@@ -3082,17 +3107,17 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
 
     // Foreground
     for (int i = 0; i < exposedRects.size(); ++i) {
-        if (!(d->optimizationFlags & DontSavePainterState))
-            painter.save();
-
+        // See the comment in the background drawing implementation above.
         if (!(d->optimizationFlags & DontClipPainter) && clipRects.size() > 1) {
             QTransform oldTransform = painter.worldTransform();
             painter.setWorldTransform(QTransform());
             painter.setClipRect(clipRects.at(i));
             painter.setWorldTransform(oldTransform);
         }
-        drawForeground(&painter, exposedRects.at(i));
 
+        if (!(d->optimizationFlags & DontSavePainterState))
+            painter.save();
+        drawForeground(&painter, exposedRects.at(i));
         if (!(d->optimizationFlags & DontSavePainterState))
             painter.restore();
     }
@@ -3136,6 +3161,9 @@ void QGraphicsView::paintEvent(QPaintEvent *event)
     qDebug() << "\tTotal rendering time: " << stopWatch.elapsed() << "msecs ("
              << (stopWatch.elapsed() > 0 ? (1000.0 / stopWatch.elapsed()) : -1.0) << "fps )";
 #endif
+
+    // Restore painter state protection.
+    d->scene->d_func()->painterStateProtection = true;
 }
 
 /*!
@@ -3370,7 +3398,7 @@ QTransform QGraphicsView::viewportTransform() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsview.cpp 7
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsview.cpp 7
 
     To simplify interation with items using a transformed view, QGraphicsView
     provides mapTo... and mapFrom... functions that can translate between

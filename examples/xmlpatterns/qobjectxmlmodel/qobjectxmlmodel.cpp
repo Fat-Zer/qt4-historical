@@ -205,7 +205,7 @@ QXmlNodeModelIndex QObjectXmlModel::nextFromSimpleAxis(SimpleAxis axis, const QX
                     return createIndex(asQObject(ni)->parent());
                 case FirstChild:
                 {
-                    if(asQObject(ni)->children().isEmpty())
+                    if(!asQObject(ni) || asQObject(ni)->children().isEmpty())
                         return QXmlNodeModelIndex();
                     else
                         return createIndex(asQObject(ni)->children().first());
@@ -258,7 +258,19 @@ QVector<QXmlNodeModelIndex> QObjectXmlModel::attributes(const QXmlNodeModelIndex
             result.append(createIndex(object, QObjectClassName));
 
             for(int i = 0; i < count; ++i)
-                result.append(createIndex(object, QObjectProperty | i));
+            {
+                const QMetaProperty qmp(metaObject->property(i));
+                const int ii = metaObject->indexOfProperty(qmp.name());
+
+                /* This avoids duplicates in some cases, apparently, because
+                 * QDialog has the property "modal" defined twice. However, it
+                 * seems this check can have an arbirary result, depending on
+                 * the order of the properties. See task 220292. */
+                if(i == ii)
+                    result.append(createIndex(object, QObjectProperty | i));
+            }
+
+
             return result;
         }
         case MetaObject:

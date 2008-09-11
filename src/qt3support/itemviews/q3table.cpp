@@ -447,7 +447,7 @@ int Q3TableSelection::numCols() const
     the original item will be deleted.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 0
 
     You can move a table item from one cell to another, in the same or
     a different table, using Q3Table::takeItem() and Q3Table::setItem()
@@ -473,7 +473,7 @@ int Q3TableSelection::numCols() const
     QHBox with two child QLineEdit widgets may use one of them to
     accept the keyboard focus:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 1
 
     By default, table items may be replaced by new Q3TableItems
     during the lifetime of a Q3Table. Therefore, if you create your
@@ -729,7 +729,7 @@ void Q3TableItem::setText(const QString &str)
     Note that the painter is not clipped by default in order to get
     maximum efficiency. If you want clipping, use
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 2
 
 */
 
@@ -1668,7 +1668,7 @@ QSize Q3CheckTableItem::sizeHint() const
     are perfectly possible. Q3Table is economical with memory, using
     none for unused cells.
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 3
 
     The first line constructs the table specifying its size in rows
     and columns. We then insert a pixmap and some text into the \e
@@ -2898,7 +2898,7 @@ void Q3Table::paintCell(QPainter* p, int row, int col,
     Note that the painter is not clipped by default in order to get
     maximum efficiency. If you want clipping, use code like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 4
 */
 
 void Q3Table::paintCell(QPainter *p, int row, int col,
@@ -4989,7 +4989,7 @@ void Q3Table::setColumnLabels(const QStringList &labels)
     If you are not using \l{Q3TableItem}s and you don't want to use a
     QLineEdit as the default editor, subclass Q3Table and reimplement
     this function with code like this:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3table.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3table.cpp 5
     Ownership of the editor widget is transferred to the caller.
 
     If you reimplement this function return 0 for read-only cells. You

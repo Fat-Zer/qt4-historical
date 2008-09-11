@@ -181,7 +181,7 @@
         <keyword ref="qpainterpath-element.html#operator-QPointF">operator QPointF</keyword>
         <keyword ref="qpainterpath-element.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qpainterpath-element.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qpainterpath-element.html#type-var">type</keyword>
+        <keyword ref="qpainterpath-element.html#type-varx">type</keyword>
         <keyword ref="qpainterpath-element.html#x-var">x</keyword>
         <keyword ref="qpainterpath-element.html#y-var">y</keyword>
         <section ref="qpainterpath-element-members.html" title="List of all members"/>
@@ -6383,6 +6383,7 @@
         <keyword ref="qhash.html#operator-eq">operator=</keyword>
         <keyword ref="qhash.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qhash.html#operator-5b-5d">operator[]</keyword>
+        <keyword ref="qhash.html#qHashx">qHash</keyword>
         <section ref="qhash-members.html" title="List of all members"/>
     </section>
     <section ref="qhashiterator.html" title="QHashIterator Class Reference">
@@ -6815,8 +6816,6 @@
         <keyword ref="qicon.html#pixmap">pixmap</keyword>
         <keyword ref="qicon.html#operator-QVariant">operator QVariant</keyword>
         <keyword ref="qicon.html#operator-eq">operator=</keyword>
-        <keyword ref="qicon.html#operator-lt-lt">operator&lt;&lt;</keyword>
-        <keyword ref="qicon.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qicon-members.html" title="List of all members"/>
         <section ref="qicon-obsolete.html" title="Obsolete members"/>
         <section ref="qicon-qt3.html" title="Qt 3 support members"/>
@@ -8932,7 +8931,6 @@
         <keyword ref="qmessagebox.html#setWindowTitle">setWindowTitle</keyword>
         <keyword ref="qmessagebox.html#standardButton">standardButton</keyword>
         <keyword ref="qmessagebox.html#warning">warning</keyword>
-        <keyword ref="qmessagebox.html#QT_REQUIRE_VERSION">QT_REQUIRE_VERSION</keyword>
         <section ref="qmessagebox-members.html" title="List of all members"/>
         <section ref="qmessagebox-obsolete.html" title="Obsolete members"/>
         <section ref="qmessagebox-qt3.html" title="Qt 3 support members"/>
@@ -9172,7 +9170,6 @@
         <keyword ref="qmouseevent.html#globalPos">globalPos</keyword>
         <keyword ref="qmouseevent.html#globalX">globalX</keyword>
         <keyword ref="qmouseevent.html#globalY">globalY</keyword>
-        <keyword ref="qmouseevent.html#hasExtendedInfo">hasExtendedInfo</keyword>
         <keyword ref="qmouseevent.html#pos">pos</keyword>
         <keyword ref="qmouseevent.html#posF">posF</keyword>
         <keyword ref="qmouseevent.html#x">x</keyword>
@@ -9648,6 +9645,7 @@
         <keyword ref="qobject.html#qFindChildren">qFindChildren</keyword>
         <keyword ref="qobject.html#qobject_cast">qobject_cast</keyword>
         <keyword ref="qobject.html#Q_CLASSINFO">Q_CLASSINFO</keyword>
+        <keyword ref="qobject.html#Q_DISABLE_COPY">Q_DISABLE_COPY</keyword>
         <keyword ref="qobject.html#Q_EMIT">Q_EMIT</keyword>
         <keyword ref="qobject.html#Q_ENUMS">Q_ENUMS</keyword>
         <keyword ref="qobject.html#Q_FLAGS">Q_FLAGS</keyword>
@@ -11273,6 +11271,8 @@
         <keyword ref="qscriptcontextinfo.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qscriptcontextinfo.html#operator-eq">operator=</keyword>
         <keyword ref="qscriptcontextinfo.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qscriptcontextinfo.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qscriptcontextinfo.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qscriptcontextinfo-members.html" title="List of all members"/>
     </section>
     <section ref="qscriptengine.html" title="QScriptEngine Class Reference">
@@ -11330,6 +11330,7 @@
         <keyword ref="qscriptengine.html#uncaughtExceptionLineNumber">uncaughtExceptionLineNumber</keyword>
         <keyword ref="qscriptengine.html#undefinedValue">undefinedValue</keyword>
         <keyword ref="qscriptengine.html#FunctionSignature-typedef">FunctionSignature</keyword>
+        <keyword ref="qscriptengine.html#FunctionWithArgSignature-typedef">FunctionWithArgSignature</keyword>
         <keyword ref="qscriptengine.html#qScriptConnect">qScriptConnect</keyword>
         <keyword ref="qscriptengine.html#qScriptDisconnect">qScriptDisconnect</keyword>
         <keyword ref="qscriptengine.html#qScriptRegisterMetaType">qScriptRegisterMetaType</keyword>
@@ -11921,7 +11922,6 @@
         <keyword ref="qsourcelocation.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq">operator=</keyword>
         <keyword ref="qsourcelocation.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qsourcelocation.html#qHash">qHash</keyword>
         <section ref="qsourcelocation-members.html" title="List of all members"/>
     </section>
     <section ref="qspaceritem.html" title="QSpacerItem Class Reference">
@@ -12933,6 +12933,7 @@
         <keyword ref="qstring.html#operator-gt">operator&gt;</keyword>
         <keyword ref="qstring.html#operator-gt-eq">operator&gt;=</keyword>
         <keyword ref="qstring.html#operator-5b-5d">operator[]</keyword>
+        <keyword ref="qstring.html#operator-2b">operator+</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_FROM_ASCII">QT_NO_CAST_FROM_ASCII</keyword>
         <keyword ref="qstring.html#QT_NO_CAST_TO_ASCII">QT_NO_CAST_TO_ASCII</keyword>
         <section ref="qstring-members.html" title="List of all members"/>
@@ -12993,6 +12994,11 @@
         <keyword ref="qstringref.html#toString">toString</keyword>
         <keyword ref="qstringref.html#unicode">unicode</keyword>
         <keyword ref="qstringref.html#operator-eq">operator=</keyword>
+        <keyword ref="qstringref.html#operator-lt">operator&lt;</keyword>
+        <keyword ref="qstringref.html#operator-lt-eq">operator&lt;=</keyword>
+        <keyword ref="qstringref.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qstringref.html#operator-gt">operator&gt;</keyword>
+        <keyword ref="qstringref.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="qstringref-members.html" title="List of all members"/>
     </section>
     <section ref="qstyle.html" title="QStyle Class Reference">
@@ -13586,7 +13592,7 @@
         <keyword ref="qstylehintreturn.html#StyleOptionType-enum">QStyleHintReturn::Type</keyword>
         <keyword ref="qstylehintreturn.html#StyleOptionVersion-enum">StyleOptionVersion</keyword>
         <keyword ref="qstylehintreturn.html#StyleOptionVersion-enum">QStyleHintReturn::Version</keyword>
-        <keyword ref="qstylehintreturn.html#type-var">type</keyword>
+        <keyword ref="qstylehintreturn.html#type-varx">type</keyword>
         <keyword ref="qstylehintreturn.html#version-var">version</keyword>
         <section ref="qstylehintreturn-members.html" title="List of all members"/>
     </section>
@@ -13651,7 +13657,7 @@
         <keyword ref="qstyleoption.html#palette-var">palette</keyword>
         <keyword ref="qstyleoption.html#rect-var">rect</keyword>
         <keyword ref="qstyleoption.html#state-var">state</keyword>
-        <keyword ref="qstyleoption.html#type-var">type</keyword>
+        <keyword ref="qstyleoption.html#type-varx">type</keyword>
         <keyword ref="qstyleoption.html#version-var">version</keyword>
         <keyword ref="qstyleoption.html#qstyleoption_cast">qstyleoption_cast</keyword>
         <section ref="qstyleoption-members.html" title="List of all members"/>
@@ -19712,13 +19718,6 @@
         <keyword ref="q3cstring.html#toUShort">toUShort</keyword>
         <keyword ref="q3cstring.html#upper">upper</keyword>
         <keyword ref="q3cstring.html#operator-eq">operator=</keyword>
-        <keyword ref="q3cstring.html#operator-not-eq">operator!=</keyword>
-        <keyword ref="q3cstring.html#operator-2b">operator+</keyword>
-        <keyword ref="q3cstring.html#operator-lt">operator&lt;</keyword>
-        <keyword ref="q3cstring.html#operator-lt-eq">operator&lt;=</keyword>
-        <keyword ref="q3cstring.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="q3cstring.html#operator-gt">operator&gt;</keyword>
-        <keyword ref="q3cstring.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="q3cstring-members.html" title="List of all members"/>
     </section>
     <section ref="q3databrowser.html" title="Q3DataBrowser Class Reference">
@@ -22859,7 +22858,7 @@
         <keyword ref="qtextoption-tab.html#operator-eq-eq">operator==</keyword>
         <keyword ref="qtextoption-tab.html#delimiter-var">delimiter</keyword>
         <keyword ref="qtextoption-tab.html#position-var">position</keyword>
-        <keyword ref="qtextoption-tab.html#type-var">type</keyword>
+        <keyword ref="qtextoption-tab.html#type-varx">type</keyword>
         <section ref="qtextoption-tab-members.html" title="List of all members"/>
     </section>
     <section ref="qtconcurrent-unhandledexception.html" title="UnhandledException Class Reference">
@@ -23020,7 +23019,7 @@
         <keyword ref="qtglobal.html#uint-typedef">uint</keyword>
         <keyword ref="qtglobal.html#ulong-typedef">ulong</keyword>
         <keyword ref="qtglobal.html#ushort-typedef">ushort</keyword>
-        <keyword ref="qtglobal.html#qAbs">qAbs</keyword>
+        <keyword ref="qtglobal.html#qAbsx">qAbs</keyword>
         <keyword ref="qtglobal.html#qBound">qBound</keyword>
         <keyword ref="qtglobal.html#qCritical">qCritical</keyword>
         <keyword ref="qtglobal.html#qDebug">qDebug</keyword>
@@ -23033,8 +23032,8 @@
         <keyword ref="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</keyword>
         <keyword ref="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</keyword>
         <keyword ref="qtglobal.html#qMacVersion">qMacVersion</keyword>
-        <keyword ref="qtglobal.html#qMax">qMax</keyword>
-        <keyword ref="qtglobal.html#qMin">qMin</keyword>
+        <keyword ref="qtglobal.html#qMaxx">qMax</keyword>
+        <keyword ref="qtglobal.html#qMinx">qMin</keyword>
         <keyword ref="qtglobal.html#qRound64">qRound64</keyword>
         <keyword ref="qtglobal.html#qRound">qRound</keyword>
         <keyword ref="qtglobal.html#qToBigEndian">qToBigEndian</keyword>
@@ -23047,6 +23046,7 @@
         <keyword ref="qtglobal.html#qsrand">qsrand</keyword>
         <keyword ref="qtglobal.html#qt_set_sequence_auto_mnemonic">qt_set_sequence_auto_mnemonic</keyword>
         <keyword ref="qtglobal.html#QT_POINTER_SIZE">QT_POINTER_SIZE</keyword>
+        <keyword ref="qtglobal.html#QT_REQUIRE_VERSION">QT_REQUIRE_VERSION</keyword>
         <keyword ref="qtglobal.html#QT_TRANSLATE_NOOP3">QT_TRANSLATE_NOOP3</keyword>
         <keyword ref="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</keyword>
         <keyword ref="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</keyword>
@@ -23266,14 +23266,14 @@
     <section ref="model-view-delegate.html" title="Delegate Classes">
         <keyword ref="model-view-delegate.html">Delegate Classes</keyword>
     </section>
-    <section ref="deployment-mac.html" title="Deploying an Application on Qt/Mac">
-        <keyword ref="deployment-mac.html">Deploying an Application on Qt/Mac</keyword>
+    <section ref="deployment-mac.html" title="Deploying an Application on Mac OS X">
+        <keyword ref="deployment-mac.html">Deploying an Application on Mac OS X</keyword>
     </section>
-    <section ref="deployment-windows.html" title="Deploying an Application on Qt/Windows">
-        <keyword ref="deployment-windows.html">Deploying an Application on Qt/Windows</keyword>
+    <section ref="deployment-windows.html" title="Deploying an Application on Windows">
+        <keyword ref="deployment-windows.html">Deploying an Application on Windows</keyword>
     </section>
-    <section ref="deployment-x11.html" title="Deploying an Application on Qt/X11">
-        <keyword ref="deployment-x11.html">Deploying an Application on Qt/X11</keyword>
+    <section ref="deployment-x11.html" title="Deploying an Application on X11 Platforms">
+        <keyword ref="deployment-x11.html">Deploying an Application on X11 Platforms</keyword>
     </section>
     <section ref="deployment.html" title="Deploying Qt Applications">
         <keyword ref="deployment.html">Deploying Qt Applications</keyword>
@@ -23383,17 +23383,17 @@
     <section ref="qt-embedded-install.html" title="Installing Qt for Embedded Linux">
         <keyword ref="qt-embedded-install.html">Installing Qt for Embedded Linux</keyword>
     </section>
-    <section ref="install-mac.html" title="Installing Qt/Mac">
-        <keyword ref="install-mac.html">Installing Qt/Mac</keyword>
+    <section ref="install-mac.html" title="Installing Qt on Mac OS X">
+        <keyword ref="install-mac.html">Installing Qt on Mac OS X</keyword>
     </section>
-    <section ref="install-win.html" title="Installing Qt/Windows">
-        <keyword ref="install-win.html">Installing Qt/Windows</keyword>
+    <section ref="install-win.html" title="Installing Qt on Windows">
+        <keyword ref="install-win.html">Installing Qt on Windows</keyword>
     </section>
-    <section ref="install-wince.html" title="Installing Qt/Windows CE">
-        <keyword ref="install-wince.html">Installing Qt/Windows CE</keyword>
+    <section ref="install-wince.html" title="Installing Qt on Windows CE">
+        <keyword ref="install-wince.html">Installing Qt on Windows CE</keyword>
     </section>
-    <section ref="install-x11.html" title="Installing Qt/X11">
-        <keyword ref="install-x11.html">Installing Qt/X11</keyword>
+    <section ref="install-x11.html" title="Installing Qt on X11 Platforms">
+        <keyword ref="install-x11.html">Installing Qt on X11 Platforms</keyword>
     </section>
     <section ref="ipc.html" title="Inter-Process Communication in Qt">
         <keyword ref="ipc.html">Inter-Process Communication in Qt</keyword>
@@ -23413,8 +23413,8 @@
     <section ref="focus.html" title="Keyboard Focus">
         <keyword ref="focus.html">Keyboard Focus</keyword>
     </section>
-    <section ref="known-issues.html" title="Known Issues in 4.4&#x2e;1">
-        <keyword ref="known-issues.html">Known Issues in 4.4&#x2e;1</keyword>
+    <section ref="known-issues.html" title="Known Issues in 4.4&#x2e;2">
+        <keyword ref="known-issues.html">Known Issues in 4.4&#x2e;2</keyword>
     </section>
     <section ref="layout.html" title="Layout Classes">
         <keyword ref="layout.html">Layout Classes</keyword>
@@ -23632,11 +23632,26 @@
     <section ref="requirements-embedded-linux.html" title="Qt for Embedded Linux Requirements">
         <keyword ref="requirements-embedded-linux.html">Qt for Embedded Linux Requirements</keyword>
     </section>
+    <section ref="mac-differences.html" title="Qt for Mac OS X - Specific Issues">
+        <keyword ref="mac-differences.html">Qt for Mac OS X - Specific Issues</keyword>
+    </section>
+    <section ref="requirements-mac.html" title="Qt for Mac OS X Requirements">
+        <keyword ref="requirements-mac.html">Qt for Mac OS X Requirements</keyword>
+    </section>
     <section ref="requirements-wince.html" title="Qt for Windows CE Requirements">
         <keyword ref="requirements-wince.html">Qt for Windows CE Requirements</keyword>
     </section>
+    <section ref="requirements-win.html" title="Qt for Windows Requirements">
+        <keyword ref="requirements-win.html">Qt for Windows Requirements</keyword>
+    </section>
+    <section ref="requirements-x11.html" title="Qt for X11 Requirements">
+        <keyword ref="requirements-x11.html">Qt for X11 Requirements</keyword>
+    </section>
     <section ref="qthelpproject.html" title="Qt Help Project">
         <keyword ref="qthelpproject.html">Qt Help Project</keyword>
+    </section>
+    <section ref="qtmac-as-native.html" title="Qt is Mac OS X Native">
+        <keyword ref="qtmac-as-native.html">Qt is Mac OS X Native</keyword>
     </section>
     <section ref="linguist-manual.html" title="Qt Linguist Manual">
         <keyword ref="linguist-manual.html">Qt Linguist Manual</keyword>
@@ -23685,21 +23700,6 @@
     </section>
     <section ref="qttools.html" title="Qt's Tools">
         <keyword ref="qttools.html">Qt's Tools</keyword>
-    </section>
-    <section ref="qtmac-as-native.html" title="Qt/Mac is Mac OS X Native">
-        <keyword ref="qtmac-as-native.html">Qt/Mac is Mac OS X Native</keyword>
-    </section>
-    <section ref="requirements-mac.html" title="Qt/Mac Requirements">
-        <keyword ref="requirements-mac.html">Qt/Mac Requirements</keyword>
-    </section>
-    <section ref="mac-differences.html" title="Qt/Mac-Specific Issues">
-        <keyword ref="mac-differences.html">Qt/Mac-Specific Issues</keyword>
-    </section>
-    <section ref="requirements-win.html" title="Qt/Windows Requirements">
-        <keyword ref="requirements-win.html">Qt/Windows Requirements</keyword>
-    </section>
-    <section ref="requirements-x11.html" title="Qt/X11 Requirements">
-        <keyword ref="requirements-x11.html">Qt/X11 Requirements</keyword>
     </section>
     <section ref="qt3support.html" title="Qt3Support Module">
         <keyword ref="qt3support.html">Qt3Support Module</keyword>
@@ -23890,8 +23890,8 @@
     <section ref="qt-embedded-vnc.html" title="The VNC Protocol and Qt for Embedded Linux">
         <keyword ref="qt-embedded-vnc.html">The VNC Protocol and Qt for Embedded Linux</keyword>
     </section>
-    <section ref="3rdparty.html" title="Third-Party Licenses Used in Qt">
-        <keyword ref="3rdparty.html">Third-Party Licenses Used in Qt</keyword>
+    <section ref="Ardparty.html" title="Third-Party Licenses Used in Qt">
+        <keyword ref="Ardparty.html">Third-Party Licenses Used in Qt</keyword>
     </section>
     <section ref="threads.html" title="Thread Support in Qt">
         <keyword ref="threads.html">Thread Support in Qt</keyword>
@@ -24117,9 +24117,6 @@
     <section ref="itemviews-chart.html" title="Chart Example">
         <keyword ref="itemviews-chart.html">Chart Example</keyword>
     </section>
-    <section ref="network-chat.html" title="Chat Example">
-        <keyword ref="network-chat.html">Chat Example</keyword>
-    </section>
     <section ref="dialogs-classwizard.html" title="Class Wizard Example">
         <keyword ref="dialogs-classwizard.html">Class Wizard Example</keyword>
     </section>
@@ -24134,6 +24131,9 @@
     </section>
     <section ref="tools-completer.html" title="Completer Example">
         <keyword ref="tools-completer.html">Completer Example</keyword>
+    </section>
+    <section ref="dbus-complexpingpong.html" title="Complex Ping Pong Example">
+        <keyword ref="dbus-complexpingpong.html">Complex Ping Pong Example</keyword>
     </section>
     <section ref="demos-composition.html" title="Composition Modes">
         <keyword ref="demos-composition.html">Composition Modes</keyword>
@@ -24161,6 +24161,15 @@
     </section>
     <section ref="designer-customwidgetplugin.html" title="Custom Widget Plugin Example">
         <keyword ref="designer-customwidgetplugin.html">Custom Widget Plugin Example</keyword>
+    </section>
+    <section ref="dbus-dbus-chat.html" title="D-Bus Chat Example">
+        <keyword ref="dbus-dbus-chat.html">D-Bus Chat Example</keyword>
+    </section>
+    <section ref="dbus-listnames.html" title="D-Bus List Names Example">
+        <keyword ref="dbus-listnames.html">D-Bus List Names Example</keyword>
+    </section>
+    <section ref="dbus-remotecontrolledcar.html" title="D-Bus Remote Controlled Car Example">
+        <keyword ref="dbus-remotecontrolledcar.html">D-Bus Remote Controlled Car Example</keyword>
     </section>
     <section ref="script-defaultprototypes.html" title="Default Prototypes Example">
         <keyword ref="script-defaultprototypes.html">Default Prototypes Example</keyword>
@@ -24230,6 +24239,9 @@
     </section>
     <section ref="painting-fontsampler.html" title="Font Sampler Example">
         <keyword ref="painting-fontsampler.html">Font Sampler Example</keyword>
+    </section>
+    <section ref="webkit-formextractor.html" title="Form Extractor Example">
+        <keyword ref="webkit-formextractor.html">Form Extractor Example</keyword>
     </section>
     <section ref="network-fortuneclient.html" title="Fortune Client Example">
         <keyword ref="network-fortuneclient.html">Fortune Client Example</keyword>
@@ -24338,6 +24350,9 @@
     </section>
     <section ref="phonon-musicplayer.html" title="Music Player Example">
         <keyword ref="phonon-musicplayer.html">Music Player Example</keyword>
+    </section>
+    <section ref="network-network-chat.html" title="Network Chat Example">
+        <keyword ref="network-network-chat.html">Network Chat Example</keyword>
     </section>
     <section ref="qws-ahigl.html" title="OpenGL for Embedded Systems Example">
         <keyword ref="qws-ahigl.html">OpenGL for Embedded Systems Example</keyword>

@@ -554,7 +554,7 @@ void Q3NetworkProtocol::addOperation( Q3NetworkOperation *op )
     Static method to register a network protocol for Qt. For example,
     if you have an implementation of NNTP (called Nntp) which is
     derived from Q3NetworkProtocol, call:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3networkprotocol.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3networkprotocol.cpp 0
     after which your implementation is registered for future nntp
     operations.
 
@@ -577,7 +577,7 @@ void Q3NetworkProtocol::registerNetworkProtocol( const QString &protocol,
     Static method to get a new instance of the network protocol \a
     protocol. For example, if you need to do some FTP operations, do
     the following:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3networkprotocol.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3networkprotocol.cpp 1
     This returns a pointer to a new instance of an ftp implementation
     or null if no protocol for ftp was registered. The ownership of
     the pointer is transferred to you, so you must delete it if you

@@ -73,7 +73,7 @@ SeeAlso: ???
 Feature: CLIPBOARD
 Description: Supports cut and paste operations.
 Section: Kernel
-Requires: QWS_PROPERTIES DRAGANDDROP
+Requires: QWS_PROPERTIES
 Name: QClipboard
 SeeAlso: ???
 
@@ -926,6 +926,13 @@ Description: Debug painting with the environment variables QT_FLUSH_UPDATE and Q
 Section: Painting
 Requires:
 Name: Painting Debug Utilities
+SeeAlso: ???
+
+Feature: RASTERCALLBACKS
+Description: Supports subclassing the QPaintEngineRaster with callback functions.
+Section: Painting
+Requires:
+Name: Raster Paint Engine callback functions
 SeeAlso: ???
 
 # Fonts

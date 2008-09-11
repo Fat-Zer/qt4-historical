@@ -101,8 +101,10 @@ class RunFunctionTask : public RunFunctionTaskBase<T>
 public:
     void run()
     {
-        if (this->isCanceled())
+        if (this->isCanceled()) {
+            this->reportFinished();
             return;
+        }
         this->runFunctor();
         this->reportResult(result);
         this->reportFinished();
@@ -116,8 +118,10 @@ class RunFunctionTask<void> : public RunFunctionTaskBase<void>
 public:
     void run()
     {
-        if (this->isCanceled())
+        if (this->isCanceled()) {
+            this->reportFinished();
             return;
+        }
         this->runFunctor();
         this->reportFinished();
     }

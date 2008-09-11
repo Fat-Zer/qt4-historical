@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qrect.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/tools/qrect.cpp -->
 <head>
   <title>Qt 4.4: QRectF Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QRectF Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QRectF class defines a rectangle in the plane using floating point precision. <a href="#details">More...</a></p>
@@ -96,10 +96,10 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>Q_CORE_EXPORT_INLINE <b><a href="qrectf.html#operator-not-eq-13">operator!=</a></b> ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qrectf.html#operator-lt-lt-97">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QRectF &amp; <i>rectangle</i> )</li>
-<li><div class="fn"/>Q_CORE_EXPORT_INLINE <b><a href="qrectf.html#operator-eq-eq-28">operator==</a></b> ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qrectf.html#operator-gt-gt-50">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QRectF &amp; <i>rectangle</i> )</li>
+<li><div class="fn"/>Q_CORE_EXPORT_INLINE <b><a href="qrectf.html#operator-not-eq-25">operator!=</a></b> ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qrectf.html#operator-lt-lt-101">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QRectF &amp; <i>rectangle</i> )</li>
+<li><div class="fn"/>Q_CORE_EXPORT_INLINE <b><a href="qrectf.html#operator-eq-eq-36">operator==</a></b> ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qrectf.html#operator-gt-gt-61">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QRectF &amp; <i>rectangle</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -107,8 +107,8 @@
 <p>The QRectF class defines a rectangle in the plane using floating point precision.</p>
 <p>A rectangle is normally expressed as an upper-left corner and a size. The size (width and height) of a QRectF is always equivalent to the mathematical rectangle that forms the basis for its rendering.</p>
 <p>A QRectF can be constructed with a set of left, top, width and height integers, or from a <a href="qpoint.html">QPoint</a> and a <a href="qsize.html">QSize</a>. The following code creates two identical rectangles.</p>
-<pre>         QRectF r1(100, 200, 11, 16);
-         QRectF r2(QPoint(100, 200), QSize(11, 16));</pre>
+<pre> QRectF r1(100, 200, 11, 16);
+ QRectF r2(QPoint(100, 200), QSize(11, 16));</pre>
 <p>There is also a third constructor creating a QRectF from a <a href="qrect.html">QRect</a>, and a corresponding <a href="qrectf.html#toRect">toRect</a>() function that returns a <a href="qrect.html">QRect</a> object based on the values of this rectangle (note that the coordinates in the returned rectangle are rounded to the nearest integer).</p>
 <p>The QRectF class provides a collection of functions that return the various rectangle coordinates, and enable manipulation of these. QRectF also provide functions to move the rectangle relative to the various coordinates. In addition there is a <a href="qrectf.html#moveTo">moveTo</a>() function that moves the rectangle, leaving its top left corner at the given coordinates. Alternatively, the <a href="qrectf.html#translate">translate</a>() function moves the rectangle the given offset relative to the current position, and the <a href="qrectf.html#translated">translated</a>() function returns a translated copy of this rectangle.</p>
 <p>The <a href="qrectf.html#size">size</a>() function returns the rectange's dimensions as a <a href="qsize.html">QSize</a>. The dimensions can also be retrieved separately using the <a href="qrectf.html#width">width</a>() and <a href="qrectf.html#height">height</a>() functions. To manipulate the dimensions use the <a href="qrectf.html#setSize">setSize</a>(), <a href="qrectf.html#setWidth">setWidth</a>() or <a href="qrectf.html#setHeight">setHeight</a>() functions. Alternatively, the size can be changed by applying either of the functions setting the rectangle coordinates, for example, <a href="qrectf.html#setBottom">setBottom</a>() or <a href="qrectf.html#setRight">setRight</a>().</p>
@@ -426,24 +426,24 @@
 <p>See also <a href="qrectf.html#united">united</a>() and <a href="qrectf.html#operator-7c">operator|</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-not-eq-13"></a>Q_CORE_EXPORT_INLINE operator!= ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</h3>
+<h3 class="fn"><a name="operator-not-eq-25"></a>Q_CORE_EXPORT_INLINE operator!= ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the rectangles <i>r1</i> and <i>r2</i> are different, otherwise returns false.</p>
-<h3 class="fn"><a name="operator-lt-lt-97"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QRectF &amp; <i>rectangle</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-101"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QRectF &amp; <i>rectangle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the <i>rectangle</i> to the <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-eq-eq-28"></a>Q_CORE_EXPORT_INLINE operator== ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-36"></a>Q_CORE_EXPORT_INLINE operator== ( const QRectF &amp; <i>r1</i>, const QRectF &amp; <i>r2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the rectangles <i>r1</i> and <i>r2</i> are equal, otherwise returns false.</p>
-<h3 class="fn"><a name="operator-gt-gt-50"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QRectF &amp; <i>rectangle</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-61"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QRectF &amp; <i>rectangle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a <i>rectangle</i> from the <i>stream</i>, and returns a reference to the stream.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

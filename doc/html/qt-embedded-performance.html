@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/emb-performance.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/emb-performance.qdoc -->
 <head>
   <title>Qt 4.4: Qt for Embedded Linux Performance Tuning</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Qt for Embedded Linux Performance Tuning<br /><span class="subtitle"></span>
 </h1>
 <p>When building embedded applications on low-powered devices, <a href="qt-embedded.html">Qt for Embedded Linux</a> provides a number of options that reduce the memory and/or CPU requirements by making various trade-offs. These options range from variations in programming style, to linking and memory allocation.</p>
@@ -23,7 +23,7 @@
 </ul>
 <a name="programming-style"></a>
 <h2>Programming Style</h2>
-<p>Rather than creating dialogs and widgets every time they are needed, and delete them when they are no longer required, create them once and use the <a href="qwidget.html#hide">QWidget::hide</a>() and <a href="qwidget.html#show">QWidget::show</a>() functions whenever appropiate. To avoid a slow startup of the application, delay the creation of dialogs and widgets until they are requested. All this will improve the CPU performance, it requires a little more memory, but will be much faster.</p>
+<p>Rather than creating dialogs and widgets every time they are needed, and delete them when they are no longer required, create them once and use the <a href="qwidget.html#hide">QWidget::hide</a>() and <a href="qwidget.html#show">QWidget::show</a>() functions whenever appropriate. To avoid a slow startup of the application, delay the creation of dialogs and widgets until they are requested. All this will improve the CPU performance, it requires a little more memory, but will be much faster.</p>
 <a name="static-vs-dynamic-linking"></a>
 <h2>Static vs. Dynamic Linking</h2>
 <p>A lot of CPU and memory is used by the ELF (Executable and Linking Format) linking process. Significant savings can be achieved by using a static build of the application suite; rather than having a collection of executables which link dynamically to Qt's libraries, all the applications is built into into a single executable which is statically linked to Qt's libraries.</p>
@@ -75,8 +75,8 @@
 <p>The default behavior is for each client to render its widgets into memory while the server is responsible for putting the contents of the memory onto the screen. But when the hardware is known and well defined, as is often the case with software for embedded devices, it might be useful to bypass the backing store, allowing the clients to manipulate the underlying hardware directly. There are two approaches to direct painting: The first approach is to set the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> window attribute for each widget, the other is to use the QDirectPainter class to reserve a region of the framebuffer. For more information, see the <a href="qt-embedded-architecture.html#direct-painting">direct painting</a> section of the <a href="qt-embedded-architecture.html">architecture</a> documentation.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -224,9 +224,10 @@ int main(int argc, char **argv)
     const int parameterType = qVariantFromValue(Parameter()).userType();
     const int outputType = qVariantFromValue(static_cast<QIODevice *>(0)).userType();
 
-    const QApplicationArgument param(QLatin1String("param"),
-                                     QXmlPatternistCLI::tr("Binds an external variable. The value is directly available using the variable reference: $name."),
-                                     parameterType);
+    QApplicationArgument param(QLatin1String("param"),
+                               QXmlPatternistCLI::tr("Binds an external variable. The value is directly available using the variable reference: $name."),
+                               parameterType);
+    param.setMaximumOccurrence(-1);
     parser.addArgument(param);
 
     const QApplicationArgument noformat(QLatin1String("no-format"),
@@ -251,7 +252,7 @@ int main(int argc, char **argv)
                                 QXmlPatternistCLI::tr("A local file to which the output should be written. The file is overwritten, or if not exist, created. If absent, stdout is used."),
                                 outputType);
     parser.addArgument(output);
-                                
+
     if(!parser.parse())
         return parser.exitCode();
 

@@ -62,6 +62,8 @@
 #include "QtCore/qqueue.h"
 #include "private/qobject_p.h"
 
+#ifndef QT_NO_THREAD
+
 QT_BEGIN_NAMESPACE
 
 class QThreadPoolThread;
@@ -102,4 +104,5 @@ public:
 
 QT_END_NAMESPACE
 
+#endif // QT_NO_THREAD
 #endif

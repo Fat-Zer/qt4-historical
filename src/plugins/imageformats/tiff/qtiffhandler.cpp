@@ -149,11 +149,9 @@ bool QTiffHandler::read(QImage *image)
         uint32 height = 0;
         TIFFGetField(tiff, TIFFTAG_IMAGEWIDTH, &width);
         TIFFGetField(tiff, TIFFTAG_IMAGELENGTH, &height);
-        size_t npixels = width * height;
-        uint32 *raster = reinterpret_cast<uint32*>(_TIFFmalloc(tsize_t(npixels * sizeof(uint32))));
-        if (raster != 0) {
-            if (TIFFReadRGBAImage(tiff, width, height, raster, 0)) {
-                tiffImage = QImage(width, height, QImage::Format_ARGB32);
+        tiffImage = QImage(width, height, QImage::Format_ARGB32);
+        if (!tiffImage.isNull()) {
+            if (TIFFReadRGBAImageOriented(tiff, width, height, reinterpret_cast<uint32 *>(tiffImage.bits()), ORIENTATION_TOPLEFT, 0)) {
                 uint32 resUnit = RESUNIT_NONE;
                 float resX = 0;
                 float resY = 0;
@@ -175,9 +173,10 @@ bool QTiffHandler::read(QImage *image)
                         break;
                 }
                 for (uint32 y=0; y<height; ++y)
-                    convert32BitOrder(&raster[(height-y-1)*width], tiffImage.scanLine(y), width);
+                    convert32BitOrder(tiffImage.scanLine(y), width);
+            } else {
+                tiffImage = QImage();
             }
-            _TIFFfree(raster);
         }
         TIFFClose(tiff);
     }
@@ -194,8 +193,6 @@ bool QTiffHandler::write(const QImage &image)
     if (!device()->isWritable())
         return false;
 
-    QImage convertedImage = image.convertToFormat(QImage::Format_ARGB32);
-
     TIFF *tiff = TIFFClientOpen("foo",
                                 "w",
                                 this,
@@ -208,10 +205,9 @@ bool QTiffHandler::write(const QImage &image)
                                 qtiffUnmapProc);
 
     if (tiff) {
-        int width = convertedImage.width();
-        int height = convertedImage.height();
-        int depth = convertedImage.depth();
-        int bytesPerLine = convertedImage.bytesPerLine();
+        int width = image.width();
+        int height = image.height();
+        int depth = 32;
 
         if (!TIFFSetField(tiff, TIFFTAG_IMAGEWIDTH, width)
                 || !TIFFSetField(tiff, TIFFTAG_IMAGELENGTH, height)
@@ -224,20 +220,29 @@ bool QTiffHandler::write(const QImage &image)
             return false;
         }
 
-        uint32 *bytes = reinterpret_cast<uint32*>(_TIFFmalloc(bytesPerLine));
-        for (int y=0; y < height; ++y) {
-            if (QSysInfo::ByteOrder == QSysInfo::LittleEndian)
-                convert32BitOrder(convertedImage.scanLine(y), bytes, width);
-            else
-                convert32BitOrderBigEndian(convertedImage.scanLine(y), bytes, width);
+        // try to do the ARGB32 conversion in chunks no greater than 16 MB
+        int chunks = (width * height * 4 / (1024 * 1024 * 16)) + 1;
+        int chunkHeight = qMax(height / chunks, 1);
 
-            if (TIFFWriteScanline(tiff, bytes, y) != 1) {
-                _TIFFfree(bytes);
-                TIFFClose(tiff);
-                return false;
+        int y = 0;
+        while (y < height) {
+            QImage chunk = image.copy(0, y, width, qMin(chunkHeight, height - y)).convertToFormat(QImage::Format_ARGB32);
+
+            int chunkStart = y;
+            int chunkEnd = y + chunk.height();
+            while (y < chunkEnd) {
+                if (QSysInfo::ByteOrder == QSysInfo::LittleEndian)
+                    convert32BitOrder(chunk.scanLine(y - chunkStart), width);
+                else
+                    convert32BitOrderBigEndian(chunk.scanLine(y - chunkStart), width);
+
+                if (TIFFWriteScanline(tiff, reinterpret_cast<uint32 *>(chunk.scanLine(y - chunkStart)), y) != 1) {
+                    TIFFClose(tiff);
+                    return false;
+                }
+                ++y;
             }
         }
-        _TIFFfree(bytes);
         TIFFClose(tiff);
     } else {
         return false;
@@ -293,12 +298,11 @@ bool QTiffHandler::supportsOption(ImageOption option) const
     return (option == Size) || (option == CompressionRatio);
 }
 
-void QTiffHandler::convert32BitOrder(const void *source, void *destination, int width)
+void QTiffHandler::convert32BitOrder(void *buffer, int width)
 {
-    const uint32 *src = reinterpret_cast<const uint32 *>(source);
-    uint32 *target = reinterpret_cast<uint32 *>(destination);
+    uint32 *target = reinterpret_cast<uint32 *>(buffer);
     for (int32 x=0; x<width; ++x) {
-        uint32 p = src[x];
+        uint32 p = target[x];
         // convert between ARGB and ABGR
         target[x] = (p & 0xff000000)
                     | ((p & 0x00ff0000) >> 16)
@@ -307,12 +311,11 @@ void QTiffHandler::convert32BitOrder(const void *source, void *destination, int 
     }
 }
 
-void QTiffHandler::convert32BitOrderBigEndian(const void *source, void *destination, int width)
+void QTiffHandler::convert32BitOrderBigEndian(void *buffer, int width)
 {
-    const uint32 *src = reinterpret_cast<const uint32 *>(source);
-    uint32 *target = reinterpret_cast<uint32 *>(destination);
+    uint32 *target = reinterpret_cast<uint32 *>(buffer);
     for (int32 x=0; x<width; ++x) {
-        uint32 p = src[x];
+        uint32 p = target[x];
         target[x] = (p & 0xff000000) >> 24
                     | (p & 0x00ff0000) << 8
                     | (p & 0x0000ff00) << 8

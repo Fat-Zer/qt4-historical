@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/q3ptrlist.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/q3ptrlist.qdoc -->
 <head>
   <title>Qt 4.4: Q3PtrListIterator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3PtrListIterator Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3PtrListIterator class provides an iterator for <a href="q3ptrlist.html">Q3PtrList</a> collections. <a href="#details">More...</a></p>
@@ -48,24 +48,24 @@
 <p>The Q3PtrListIterator class provides an iterator for <a href="q3ptrlist.html">Q3PtrList</a> collections.</p>
 <p>Define a template instance Q3PtrListIterator&lt;X&gt; to create a list iterator that operates on <a href="q3ptrlist.html">Q3PtrList</a>&lt;X&gt; (list of X*).</p>
 <p>The following example is similar to the example in the <a href="q3ptrlist.html">Q3PtrList</a> class documentation, but it uses Q3PtrListIterator. The class Employee is defined there.</p>
-<pre>     Q3PtrList&lt;Employee&gt; list;
+<pre> Q3PtrList&lt;Employee&gt; list;
 
-     list.append( new Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
-     list.append( new Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
-     list.append( new Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
+ list.append( new Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
+ list.append( new Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
+ list.append( new Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
 
-     Q3PtrListIterator&lt;Employee&gt; it( list );
-     Employee *employee;
-     while ( (employee = it.current()) != 0 ) {
-         ++it;
-         cout &lt;&lt; employee-&gt;surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
-                 employee-&gt;forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
-                 employee-&gt;salary() &lt;&lt; endl;
-     }</pre>
+ Q3PtrListIterator&lt;Employee&gt; it( list );
+ Employee *employee;
+ while ( (employee = it.current()) != 0 ) {
+     ++it;
+     cout &lt;&lt; employee-&gt;surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
+             employee-&gt;forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
+             employee-&gt;salary() &lt;&lt; endl;
+ }</pre>
 <p>The output is</p>
-<pre>     Doe, John earns 50000
-     Williams, Jane earns 80000
-     Jones, Tom earns 60000</pre>
+<pre> Doe, John earns 50000
+ Williams, Jane earns 80000
+ Jones, Tom earns 60000</pre>
 <p>Using a list iterator is a more robust way of traversing the list than using the <a href="q3ptrlist.html">Q3PtrList</a> member functions <a href="q3ptrlist.html#first">first</a>(), <a href="q3ptrlist.html#next">next</a>(), <a href="q3ptrlist.html#current">current</a>(), etc., as many iterators can traverse the same list independently.</p>
 <p>An iterator has its own current list item and can get the next and previous list items. It doesn't modify the list in any way.</p>
 <p>When an item is removed from the list, all iterators that point to that item are updated to point to <a href="q3ptrlist.html#current">Q3PtrList::current</a>() instead to avoid dangling references.</p>
@@ -135,8 +135,8 @@
 <p>Assignment. Makes a copy of the iterator <i>it</i> and returns a reference to this iterator.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

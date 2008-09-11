@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/sql/kernel/qsqldriver.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/sql/kernel/qsqldriver.cpp -->
 <head>
   <title>Qt 4.4: QSqlDriver Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSqlDriver Class Reference<br /><span class="small-subtitle">[<a href="qtsql.html">QtSql</a> module]</span>
 </h1>
 <p>The QSqlDriver class is an abstract base class for accessing specific SQL databases. <a href="#details">More...</a></p>
@@ -124,7 +124,7 @@
 <tr><td valign="top"><tt>QSqlDriver::NamedPlaceholders</tt></td><td align="center" valign="top"><tt>5</tt></td><td valign="top">Whether the driver supports the use of named placeholders.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::PositionalPlaceholders</tt></td><td align="center" valign="top"><tt>6</tt></td><td valign="top">Whether the driver supports the use of positional placeholders.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::LastInsertId</tt></td><td align="center" valign="top"><tt>7</tt></td><td valign="top">Whether the driver supports returning the Id of the last touched row.</td></tr>
-<tr><td valign="top"><tt>QSqlDriver::BatchOperations</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Whether the driver supports batched operations, see QSqlResult::execBatch()</td></tr>
+<tr><td valign="top"><tt>QSqlDriver::BatchOperations</tt></td><td align="center" valign="top"><tt>8</tt></td><td valign="top">Whether the driver supports batched operations, see <a href="qsqlquery.html#execBatch">QSqlQuery::execBatch</a>()</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::SimpleLocking</tt></td><td align="center" valign="top"><tt>9</tt></td><td valign="top">Whether the driver disallows a write lock on a table while other queries have a read lock on it.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::LowPrecisionNumbers</tt></td><td align="center" valign="top"><tt>10</tt></td><td valign="top">Whether the driver allows fetching numerical values with low precision.</td></tr>
 <tr><td valign="top"><tt>QSqlDriver::EventNotifications</tt></td><td align="center" valign="top"><tt>11</tt></td><td valign="top">Whether the driver supports database event notifications.</td></tr>
@@ -206,25 +206,25 @@
 <p><b>Warning:</b> The handle can be NULL if the connection is not open yet.</p>
 <p>The handle returned here is database-dependent, you should query the type name of the variant before accessing it.</p>
 <p>This example retrieves the handle for a connection to sqlite:</p>
-<pre>     QSqlDatabase db = ...;
-     QVariant v = db.driver()-&gt;handle();
-     if (v.isValid() &amp;&amp; qstrcmp(v.typeName(), &quot;sqlite3*&quot;)==0) {
-         <span class="comment">// v.data() returns a pointer to the handle</span>
-         sqlite3 *handle = *static_cast&lt;sqlite3 **&gt;(v.data());
-         if (handle != 0) { <span class="comment">// check that it is not NULL</span>
-             ...
-         }
-     }</pre>
-<p>This snippet returns the handle for PostgreSQL or MySQL:</p>
-<pre>     if (v.typeName() == &quot;PGconn*&quot;) {
-         PGconn *handle = *static_cast&lt;PGconn **&gt;(v.data());
-         if (handle != 0) ...
+<pre> QSqlDatabase db = ...;
+ QVariant v = db.driver()-&gt;handle();
+ if (v.isValid() &amp;&amp; qstrcmp(v.typeName(), &quot;sqlite3*&quot;)==0) {
+     <span class="comment">// v.data() returns a pointer to the handle</span>
+     sqlite3 *handle = *static_cast&lt;sqlite3 **&gt;(v.data());
+     if (handle != 0) { <span class="comment">// check that it is not NULL</span>
+         ...
      }
+ }</pre>
+<p>This snippet returns the handle for PostgreSQL or MySQL:</p>
+<pre> if (v.typeName() == &quot;PGconn*&quot;) {
+     PGconn *handle = *static_cast&lt;PGconn **&gt;(v.data());
+     if (handle != 0) ...
+ }
 
-     if (v.typeName() == &quot;MYSQL*&quot;) {
-         MYSQL *handle = *static_cast&lt;MYSQL **&gt;(v.data());
-         if (handle != 0) ...
-     }</pre>
+ if (v.typeName() == &quot;MYSQL*&quot;) {
+     MYSQL *handle = *static_cast&lt;MYSQL **&gt;(v.data());
+     if (handle != 0) ...
+ }</pre>
 <p>See also <a href="qsqlresult.html#handle">QSqlResult::handle</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlDriver/hasFeature" />
 <h3 class="fn"><a name="hasFeature"></a>bool QSqlDriver::hasFeature ( <a href="qsqldriver.html#DriverFeature-enum">DriverFeature</a> <i>feature</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
@@ -331,8 +331,8 @@
 <p>See also <a href="qsqldriver.html#unsubscribeFromNotification">unsubscribeFromNotification</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qvariant.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/kernel/qvariant.cpp -->
 <head>
   <title>Qt 4.4: QVariant Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QVariant Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QVariant class acts like a union for the most common Qt data types. <a href="#details">More...</a></p>
@@ -124,8 +124,8 @@
 <li><div class="fn"/>void <b><a href="qvariant.html#qVariantSetValue">qVariantSetValue</a></b> ( QVariant &amp; <i>variant</i>, const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>T <b><a href="qvariant.html#qVariantValue">qVariantValue</a></b> ( const QVariant &amp; <i>value</i> )</li>
 <li><div class="fn"/>T <b><a href="qvariant.html#qvariant_cast">qvariant_cast</a></b> ( const QVariant &amp; <i>value</i> )</li>
-<li><div class="fn"/>bool <b><a href="qvariant.html#operator-not-eq-32">operator!=</a></b> ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</li>
-<li><div class="fn"/>bool <b><a href="qvariant.html#operator-eq-eq-49">operator==</a></b> ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qvariant.html#operator-not-eq-34">operator!=</a></b> ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qvariant.html#operator-eq-eq-53">operator==</a></b> ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -135,40 +135,40 @@
 <p>A QVariant object holds a single value of a single <a href="qvariant.html#type">type</a>() at a time. (Some <a href="qvariant.html#type">type</a>()s are multi-valued, for example a string list.) You can find out what type, T, the variant holds, convert it to a different type using <a href="qvariant.html#convert">convert</a>(), get its value using one of the toT() functions (e.g&#x2e;, <a href="qvariant.html#toSize">toSize</a>()) and check whether the type can be converted to a particular type using <a href="qvariant.html#canConvert">canConvert</a>().</p>
 <p>The methods named toT() (e.g&#x2e;, <a href="qvariant.html#toInt">toInt</a>(), <a href="qvariant.html#toString">toString</a>()) are const. If you ask for the stored type, they return a copy of the stored object. If you ask for a type that can be generated from the stored type, toT() copies and converts and leaves the object itself unchanged. If you ask for a type that cannot be generated from the stored type, the result depends on the type; see the function documentation for details.</p>
 <p>Here is some example code to demonstrate the use of QVariant:</p>
-<pre>         QDataStream out(...);
-         QVariant v(123);                <span class="comment">// The variant now contains an int</span>
-         int x = v.toInt();              <span class="comment">// x = 123</span>
-         out &lt;&lt; v;                       <span class="comment">// Writes a type tag and an int to out</span>
-         v = QVariant(&quot;hello&quot;);          <span class="comment">// The variant now contains a QByteArray</span>
-         v = QVariant(tr(&quot;hello&quot;));      <span class="comment">// The variant now contains a QString</span>
-         int y = v.toInt();              <span class="comment">// y = 0 since v cannot be converted to an int</span>
-         QString s = v.toString();       <span class="comment">// s = tr(&quot;hello&quot;)  (see QObject::tr())</span>
-         out &lt;&lt; v;                       <span class="comment">// Writes a type tag and a QString to out</span>
-         ...
-         QDataStream in(...);            <span class="comment">// (opening the previously written stream)</span>
-         in &gt;&gt; v;                        <span class="comment">// Reads an Int variant</span>
-         int z = v.toInt();              <span class="comment">// z = 123</span>
-         qDebug(&quot;Type is %s&quot;,            <span class="comment">// prints &quot;Type is int&quot;</span>
-                 v.typeName());
-         v = v.toInt() + 100;            <span class="comment">// The variant now hold the value 223</span>
-         v = QVariant(QStringList());</pre>
+<pre> QDataStream out(...);
+ QVariant v(123);                <span class="comment">// The variant now contains an int</span>
+ int x = v.toInt();              <span class="comment">// x = 123</span>
+ out &lt;&lt; v;                       <span class="comment">// Writes a type tag and an int to out</span>
+ v = QVariant(&quot;hello&quot;);          <span class="comment">// The variant now contains a QByteArray</span>
+ v = QVariant(tr(&quot;hello&quot;));      <span class="comment">// The variant now contains a QString</span>
+ int y = v.toInt();              <span class="comment">// y = 0 since v cannot be converted to an int</span>
+ QString s = v.toString();       <span class="comment">// s = tr(&quot;hello&quot;)  (see QObject::tr())</span>
+ out &lt;&lt; v;                       <span class="comment">// Writes a type tag and a QString to out</span>
+ ...
+ QDataStream in(...);            <span class="comment">// (opening the previously written stream)</span>
+ in &gt;&gt; v;                        <span class="comment">// Reads an Int variant</span>
+ int z = v.toInt();              <span class="comment">// z = 123</span>
+ qDebug(&quot;Type is %s&quot;,            <span class="comment">// prints &quot;Type is int&quot;</span>
+         v.typeName());
+ v = v.toInt() + 100;            <span class="comment">// The variant now hold the value 223</span>
+ v = QVariant(QStringList());</pre>
 <p>You can even store <a href="qlist.html">QList</a>&lt;QVariant&gt; and <a href="qmap.html">QMap</a>&lt;<a href="qstring.html">QString</a>, QVariant&gt; values in a variant, so you can easily construct arbitrarily complex data structures of arbitrary types. This is very powerful and versatile, but may prove less memory and speed efficient than storing specific types in standard data structures.</p>
 <p>QVariant also supports the notion of null values, where you have a defined type with no value set.</p>
-<pre>         QVariant x, y(QString()), z(QString(&quot;&quot;));
-         x.convert(QVariant::Int);
-         <span class="comment">// x.isNull() == true</span>
-         <span class="comment">// y.isNull() == true, z.isNull() == false</span>
-         <span class="comment">// y.isEmpty() == true, z.isEmpty() == true</span></pre>
+<pre> QVariant x, y(QString()), z(QString(&quot;&quot;));
+ x.convert(QVariant::Int);
+<span class="comment"> // x.isNull() == true</span>
+<span class="comment"> // y.isNull() == true, z.isNull() == false</span>
+<span class="comment"> // y.isEmpty() == true, z.isEmpty() == true</span></pre>
 <p>QVariant can be extended to support other types than those mentioned in the <a href="qvariant.html#Type-enum">Type</a> enum. See the <a href="qmetatype.html">QMetaType</a> documentation for details.</p>
 <a name="a-note-on-gui-types"></a>
 <h3>A Note on GUI Types</h3>
 <p>Because QVariant is part of the <a href="qtcore.html">QtCore</a> library, it cannot provide conversion functions to data types defined in <a href="qtgui.html">QtGui</a>, such as <a href="qcolor.html">QColor</a>, <a href="qimage.html">QImage</a>, and <a href="qpixmap.html">QPixmap</a>. In other words, there is no <tt>toColor()</tt> function. Instead, you can use the <a href="qvariant.html#value">QVariant::value</a>() or the <a href="qvariant.html#qVariantValue">qVariantValue</a>() template function. For example:</p>
-<pre>         QVariant variant;
-         ...
-         QColor color = variant.value&lt;QColor&gt;();</pre>
+<pre> QVariant variant;
+ ...
+ QColor color = variant.value&lt;QColor&gt;();</pre>
 <p>The inverse conversion (e.g&#x2e;, from <a href="qcolor.html">QColor</a> to QVariant) is automatic for all data types supported by QVariant, including GUI-related types:</p>
-<pre>         QColor color = palette().background().color();
-         QVariant variant = color;</pre>
+<pre> QColor color = palette().background().color();
+ QVariant variant = color;</pre>
 <a name="using-canconvert-and-convert-consecutively"></a>
 <h3>Using canConvert() and convert() Consecutively</h3>
 <p>When using <a href="qvariant.html#canConvert">canConvert</a>() and <a href="qvariant.html#convert">convert</a>() consecutively, it is possible for <a href="qvariant.html#canConvert">canConvert</a>() to return true, but <a href="qvariant.html#convert">convert</a>() to return false. This is typically because <a href="qvariant.html#canConvert">canConvert</a>() only reports the general ability of QVariant to convert between types given suitable data; it is still possible to supply data which cannot actually be converted.</p>
@@ -392,7 +392,7 @@
 <tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">Rect</a></td><td><a href="qvariant.html#Type-enum">RectF</a></td></tr>
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">String</a></td><td><a href="qvariant.html#Type-enum">Bool</a>, <a href="qvariant.html#Type-enum">ByteArray</a>, <a href="qvariant.html#Type-enum">Char</a>, <a href="qvariant.html#Type-enum">Color</a>, <a href="qvariant.html#Type-enum">Date</a>, <a href="qvariant.html#Type-enum">DateTime</a>, <a href="qvariant.html#Type-enum">Double</a>, <a href="qvariant.html#Type-enum">Font</a>, <a href="qvariant.html#Type-enum">Int</a>, <a href="qvariant.html#Type-enum">KeySequence</a>, <a href="qvariant.html#Type-enum">LongLong</a>, <a href="qvariant.html#Type-enum">StringList</a>, <a href="qvariant.html#Type-enum">Time</a>, <a href="qvariant.html#Type-enum">UInt</a>, <a href="qvariant.html#Type-enum">ULongLong</a></td></tr>
 <tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">StringList</a></td><td><a href="qvariant.html#Type-enum">List</a>, <a href="qvariant.html#Type-enum">String</a> (if the list contains exactly one item)</td></tr>
-<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">Time</a></td><td><a href="qvariant.html#Type-enum">DateTime</a>, <a href="qvariant.html#Type-enum">String</a></td></tr>
+<tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">Time</a></td><td><a href="qvariant.html#Type-enum">String</a></td></tr>
 <tr valign="top" class="even"><td><a href="qvariant.html#Type-enum">UInt</a></td><td><a href="qvariant.html#Type-enum">Bool</a>, <a href="qvariant.html#Type-enum">Char</a>, <a href="qvariant.html#Type-enum">Double</a>, <a href="qvariant.html#Type-enum">Int</a>, <a href="qvariant.html#Type-enum">LongLong</a>, <a href="qvariant.html#Type-enum">String</a>, <a href="qvariant.html#Type-enum">ULongLong</a></td></tr>
 <tr valign="top" class="odd"><td><a href="qvariant.html#Type-enum">ULongLong</a></td><td><a href="qvariant.html#Type-enum">Bool</a>, <a href="qvariant.html#Type-enum">Char</a>, <a href="qvariant.html#Type-enum">Double</a>, <a href="qvariant.html#Type-enum">Int</a>, <a href="qvariant.html#Type-enum">LongLong</a>, <a href="qvariant.html#Type-enum">String</a>, <a href="qvariant.html#Type-enum">UInt</a></td></tr>
 </table></p>
@@ -401,16 +401,16 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the variant can be converted to the template type <tt>T</tt>, otherwise false.</p>
 <p>Example:</p>
-<pre>         QVariant v = 42;
+<pre> QVariant v = 42;
 
-         v.canConvert&lt;int&gt;();              <span class="comment">// returns true</span>
-         v.canConvert&lt;QString&gt;();          <span class="comment">// returns true</span>
+ v.canConvert&lt;int&gt;();              <span class="comment">// returns true</span>
+ v.canConvert&lt;QString&gt;();          <span class="comment">// returns true</span>
 
-         MyCustomStruct s;
-         v.setValue(s);
+ MyCustomStruct s;
+ v.setValue(s);
 
-         v.canConvert&lt;int&gt;();              <span class="comment">// returns false</span>
-         v.canConvert&lt;MyCustomStruct&gt;();   <span class="comment">// returns true</span></pre>
+ v.canConvert&lt;int&gt;();              <span class="comment">// returns false</span>
+ v.canConvert&lt;MyCustomStruct&gt;();   <span class="comment">// returns true</span></pre>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qvariant.html#qVariantCanConvert">qVariantCanConvert</a>() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qvariant.html#convert">convert</a>().</p>
 <a name="//apple_ref/cpp/instm/QVariant/clear" />
@@ -425,8 +425,8 @@
 <h3 class="fn"><a name="fromValue"></a>QVariant QVariant::fromValue ( const T &amp; <i>value</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qvariant.html">QVariant</a> containing a copy of <i>value</i>. Behaves exactly like <a href="qvariant.html#setValue">setValue</a>() otherwise.</p>
 <p>Example:</p>
-<pre>         MyCustomStruct s;
-         return QVariant::fromValue(s);</pre>
+<pre> MyCustomStruct s;
+ return QVariant::fromValue(s);</pre>
 <p><b>Note:</b> If you are working with custom types, you should use the <a href="qmetatype.html#Q_DECLARE_METATYPE">Q_DECLARE_METATYPE</a>() macro to register your custom type.</p>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qvariant.html#qVariantFromValue">qVariantFromValue</a>() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qvariant.html#setValue">setValue</a>() and <a href="qvariant.html#value">value</a>().</p>
@@ -444,18 +444,18 @@
 <h3 class="fn"><a name="setValue"></a>void QVariant::setValue ( const T &amp; <i>value</i> )</h3>
 <p>Stores a copy of <i>value</i>. If <tt>T</tt> is a type that <a href="qvariant.html">QVariant</a> doesn't support, <a href="qmetatype.html">QMetaType</a> is used to store the value. A compile error will occur if <a href="qmetatype.html">QMetaType</a> doesn't handle the type.</p>
 <p>Example:</p>
-<pre>         QVariant v;
+<pre> QVariant v;
 
-         v.setValue(5);
-         int i = v.toInt();         <span class="comment">// i is now 5</span>
-         QString s = v.toString()   <span class="comment">// s is now &quot;5&quot;</span>
+ v.setValue(5);
+ int i = v.toInt();         <span class="comment">// i is now 5</span>
+ QString s = v.toString()   <span class="comment">// s is now &quot;5&quot;</span>
 
-         MyCustomStruct c;
-         v.setValue(c);
+ MyCustomStruct c;
+ v.setValue(c);
 
-         ...
+ ...
 
-         MyCustomStruct c2 = v.value&lt;MyCustomStruct&gt;();</pre>
+ MyCustomStruct c2 = v.value&lt;MyCustomStruct&gt;();</pre>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qvariant.html#qVariantSetValue">qVariantSetValue</a>() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qvariant.html#value">value</a>(), <a href="qvariant.html#fromValue">fromValue</a>(), and <a href="qvariant.html#canConvert">canConvert</a>().</p>
 <a name="//apple_ref/cpp/instm/QVariant/toBitArray" />
@@ -599,16 +599,16 @@
 <p>Returns the stored value converted to the template type <tt>T</tt>. Call <a href="qvariant.html#canConvert">canConvert</a>() to find out whether a type can be converted. If the value cannot be converted, <a href="containers.html#default-constructed-values">default-constructed value</a> will be returned.</p>
 <p>If the type <tt>T</tt> is supported by <a href="qvariant.html">QVariant</a>, this function behaves exactly as <a href="qvariant.html#toString">toString</a>(), <a href="qvariant.html#toInt">toInt</a>() etc.</p>
 <p>Example:</p>
-<pre>         QVariant v;
+<pre> QVariant v;
 
-         MyCustomStruct c;
-         if (v.canConvert&lt;MyCustomStruct&gt;())
-             c = v.value&lt;MyCustomStruct&gt;(v);
+ MyCustomStruct c;
+ if (v.canConvert&lt;MyCustomStruct&gt;())
+     c = v.value&lt;MyCustomStruct&gt;(v);
 
-         v = 7;
-         int i = v.value&lt;int&gt;();                        <span class="comment">// same as v.toInt()</span>
-         QString s = v.value&lt;QString&gt;();                <span class="comment">// same as v.toString(), s is now &quot;7&quot;</span>
-         MyCustomStruct c2 = v.value&lt;MyCustomStruct&gt;(); <span class="comment">// conversion failed, c2 is empty</span></pre>
+ v = 7;
+ int i = v.value&lt;int&gt;();                        <span class="comment">// same as v.toInt()</span>
+ QString s = v.value&lt;QString&gt;();                <span class="comment">// same as v.toString(), s is now &quot;7&quot;</span>
+ MyCustomStruct c2 = v.value&lt;MyCustomStruct&gt;(); <span class="comment">// conversion failed, c2 is empty</span></pre>
 <p><b>Warning:</b> This function is not available with MSVC 6. Use <a href="qvariant.html#qVariantValue">qVariantValue</a>() or <a href="qvariant.html#qvariant_cast">qvariant_cast</a>() instead if you need to support that version of the compiler.</p>
 <p>See also <a href="qvariant.html#setValue">setValue</a>(), <a href="qvariant.html#fromValue">fromValue</a>(), and <a href="qvariant.html#canConvert">canConvert</a>().</p>
 <a name="//apple_ref/cpp/instm/QVariant/operator!=" />
@@ -640,8 +640,8 @@
 <p>Returns a variant containing a copy of the given <i>value</i> with template type <tt>T</tt>.</p>
 <p>This function is equivalent to QVariant::fromValue(<i>value</i>). It is provided as a work-around for MSVC 6, which doesn't support member template functions.</p>
 <p>For example, a <a href="qobject.html">QObject</a> pointer can be stored in a variant with the following code:</p>
-<pre>     QObject *object = getObjectFromSomewhere();
-     QVariant data = qVariantFromValue(object);</pre>
+<pre> QObject *object = getObjectFromSomewhere();
+ QVariant data = qVariantFromValue(object);</pre>
 <p>See also <a href="qvariant.html#fromValue">QVariant::fromValue</a>().</p>
 <a name="//apple_ref/cpp/func//qVariantSetValue" />
 <h3 class="fn"><a name="qVariantSetValue"></a>void qVariantSetValue ( QVariant &amp; <i>variant</i>, const T &amp; <i>value</i> )</h3>
@@ -658,18 +658,18 @@
 <p>Returns the given <i>value</i> converted to the template type <tt>T</tt>.</p>
 <p>This function is equivalent to <a href="qvariant.html#qVariantValue">qVariantValue</a>().</p>
 <p>See also <a href="qvariant.html#qVariantValue">qVariantValue</a>() and <a href="qvariant.html#value">QVariant::value</a>().</p>
-<h3 class="fn"><a name="operator-not-eq-32"></a>bool operator!= ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
+<h3 class="fn"><a name="operator-not-eq-34"></a>bool operator!= ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns false if <i>v1</i> and <i>v2</i> are equal; otherwise returns true.</p>
 <p><b>Warning:</b> This function doesn't support custom types registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>().</p>
-<h3 class="fn"><a name="operator-eq-eq-49"></a>bool operator== ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-53"></a>bool operator== ( const QVariant &amp; <i>v1</i>, const QVariant &amp; <i>v2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>v1</i> and <i>v2</i> are equal; otherwise returns false.</p>
 <p><b>Warning:</b> This function doesn't support custom types registered with <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/other/q3process.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/other/q3process.cpp -->
 <head>
   <title>Qt 4.4: Q3Process Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Process Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3Process class is used to start external programs and to communicate with them. <a href="#details">More...</a></p>
@@ -155,12 +155,12 @@
 <h3 class="fn"><a name="arguments"></a><a href="qstringlist.html">QStringList</a> Q3Process::arguments () const</h3>
 <p>Returns the list of arguments that are set for the process. Arguments can be specified with the constructor or with the functions <a href="q3process.html#setArguments">setArguments</a>() and <a href="q3process.html#addArgument">addArgument</a>().</p>
 <p>Note that if you want to iterate over the list, you should iterate over a copy, e.g&#x2e;</p>
-<pre>     QStringList list = myProcess.arguments();
-     QStringList::Iterator it = list.begin();
-     while( it != list.end() ) {
-         myProcessing( *it );
-         ++it;
-     }</pre>
+<pre> QStringList list = myProcess.arguments();
+ QStringList::Iterator it = list.begin();
+ while( it != list.end() ) {
+     myProcessing( *it );
+     ++it;
+ }</pre>
 <p>See also <a href="q3process.html#setArguments">setArguments</a>() and <a href="q3process.html#addArgument">addArgument</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Process/canReadLineStderr" />
 <h3 class="fn"><a name="canReadLineStderr"></a>bool Q3Process::canReadLineStderr () const</h3>
@@ -196,8 +196,8 @@
 <h3 class="fn"><a name="kill"></a>void Q3Process::kill () const&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Terminates the process. This is not a safe way to end a process since the process will not be able to do any cleanup. <a href="q3process.html#tryTerminate">tryTerminate</a>() is safer, but processes can ignore a <a href="q3process.html#tryTerminate">tryTerminate</a>().</p>
 <p>The nice way to end a process and to be sure that it is finished, is to do something like this:</p>
-<pre>         process-&gt;tryTerminate();
-         QTimer::singleShot( 5000, process, SLOT(kill()) );</pre>
+<pre> process-&gt;tryTerminate();
+ QTimer::singleShot( 5000, process, SLOT(kill()) );</pre>
 <p>This tries to terminate the process the nice way. If the process is still running after 5 seconds, it terminates the process the hard way. The timeout should be chosen depending on the time the process needs to do all its cleanup: use a higher value if the process is likely to do a lot of computation or I/O on cleanup.</p>
 <p>The slot returns immediately: it does not wait until the process has finished. When the process terminates, the <a href="q3process.html#processExited">processExited</a>() signal is emitted.</p>
 <p>See also <a href="q3process.html#tryTerminate">tryTerminate</a>() and <a href="q3process.html#processExited">processExited</a>().</p>
@@ -311,8 +311,8 @@
 <p>See also <a href="q3process.html#writeToStdin">writeToStdin</a>() and <a href="q3process.html#closeStdin">closeStdin</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

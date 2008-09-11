@@ -312,10 +312,10 @@ const char _slnSolutionConf[]   = "\n\tGlobalSection(SolutionConfiguration) = pr
 const char _slnProjDepBeg[]     = "\n\tGlobalSection(ProjectDependencies) = postSolution";
 const char _slnProjDepEnd[]     = "\n\tEndGlobalSection";
 const char _slnProjConfBeg[]    = "\n\tGlobalSection(ProjectConfiguration) = postSolution";
-const char _slnProjRelConfTag1[]= ".Release|Win32.ActiveCfg = Release|";
-const char _slnProjRelConfTag2[]= ".Release|Win32.Build.0 = Release|";
-const char _slnProjDbgConfTag1[]= ".Debug|Win32.ActiveCfg = Debug|";
-const char _slnProjDbgConfTag2[]= ".Debug|Win32.Build.0 = Debug|";
+const char _slnProjRelConfTag1[]= ".Release|%1.ActiveCfg = Release|";
+const char _slnProjRelConfTag2[]= ".Release|%1.Build.0 = Release|";
+const char _slnProjDbgConfTag1[]= ".Debug|%1.ActiveCfg = Debug|";
+const char _slnProjDbgConfTag2[]= ".Debug|%1.Build.0 = Debug|";
 const char _slnProjConfEnd[]    = "\n\tEndGlobalSection";
 const char _slnExtSections[]    = "\n\tGlobalSection(ExtensibilityGlobals) = postSolution"
                                   "\n\tEndGlobalSection"
@@ -699,11 +699,11 @@ nextfile:
         }
     }
     t << _slnGlobalBeg;
-    if (which_dotnet_version() == NET2005 && !project->isEmpty("CE_SDK") && !project->isEmpty("CE_ARCH")) {
-        QString slnConf80 = _slnSolutionConf;
+    if (!project->isEmpty("CE_SDK") && !project->isEmpty("CE_ARCH")) {
+        QString slnConfCE = _slnSolutionConf;
         QString platform = QString("|") + project->values("CE_SDK").join(" ") + " (" + project->first("CE_ARCH") + ")";
-        slnConf80.replace(QString("|Win32"), platform);
-        t << slnConf80;
+        slnConfCE.replace(QString("|Win32"), platform);
+        t << slnConfCE;
     } else {
         t << _slnSolutionConf;
     }
@@ -725,11 +725,11 @@ nextfile:
     for(QList<VcsolutionDepend*>::Iterator it = solution_cleanup.begin(); it != solution_cleanup.end(); ++it) {
         QString platform = "Win32";
         if (!project->isEmpty("CE_SDK") && !project->isEmpty("CE_ARCH"))
-            platform = QString("|") + project->values("CE_SDK").join(" ") + " (" + project->first("CE_ARCH") + ")";
-        t << "\n\t\t" << (*it)->uuid << _slnProjDbgConfTag1 << platform;
-        t << "\n\t\t" << (*it)->uuid << _slnProjDbgConfTag2 << platform;
-        t << "\n\t\t" << (*it)->uuid << _slnProjRelConfTag1 << platform;
-        t << "\n\t\t" << (*it)->uuid << _slnProjRelConfTag2 << platform;
+            platform = project->values("CE_SDK").join(" ") + " (" + project->first("CE_ARCH") + ")";
+        t << "\n\t\t" << (*it)->uuid << QString(_slnProjDbgConfTag1).arg(platform) << platform;
+        t << "\n\t\t" << (*it)->uuid << QString(_slnProjDbgConfTag2).arg(platform) << platform;
+        t << "\n\t\t" << (*it)->uuid << QString(_slnProjRelConfTag1).arg(platform) << platform;
+        t << "\n\t\t" << (*it)->uuid << QString(_slnProjRelConfTag2).arg(platform) << platform;
     }
     t << _slnProjConfEnd;
     t << _slnExtSections;
@@ -1181,7 +1181,7 @@ void VcprojGenerator::initPostBuildEventTools()
     bool useSignature = !signature.isEmpty() && !project->isActiveConfig("staticlib") && 
                         !project->isEmpty("CE_SDK") && !project->isEmpty("CE_ARCH");
     if(useSignature)
-        conf.postBuild.CommandLine.prepend(QLatin1String("signtool sign /F ") + signature + " $(TargetPath)\n" +
+        conf.postBuild.CommandLine.prepend(QLatin1String("signtool sign /F ") + signature + " \"$(TargetPath)\"\n" +
             (!conf.postBuild.CommandLine.isEmpty() ? " && " : ""));
 
     if(!project->values("MSVCPROJ_COPY_DLL").isEmpty()) {

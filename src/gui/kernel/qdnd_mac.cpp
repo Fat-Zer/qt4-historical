@@ -565,13 +565,16 @@ Qt::DropAction QDragManager::drag(QDrag *o)
                 QFont f(qApp->font());
                 f.setPointSize(12);
                 QFontMetrics fm(f);
-                QPixmap tmp(fm.width(s), fm.height());
-                if(!tmp.isNull()) {
+                const int width = fm.width(s);
+                const int height = fm.height();
+                if(width > 0 && height > 0) {
+                    QPixmap tmp(width, height);
                     QPainter p(&tmp);
                     p.fillRect(0, 0, tmp.width(), tmp.height(), Qt::color0);
                     p.setPen(Qt::color1);
                     p.setFont(f);
                     p.drawText(0, fm.ascent(), s);
+                    p.end();
                     //save it
                     pix = tmp;
                     hotspot = QPoint(tmp.width() / 2, tmp.height() / 2);

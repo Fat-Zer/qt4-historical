@@ -1419,7 +1419,7 @@ private slots:
     void slotClearShortcut();
 private:
     void handleKeyEvent(QKeyEvent *e);
-    int translateModifiers(Qt::KeyboardModifiers state) const;
+    int translateModifiers(Qt::KeyboardModifiers state, const QString &text) const;
 
     int m_num;
     QKeySequence m_keySequence;
@@ -1488,7 +1488,7 @@ void QtKeySequenceEdit::handleKeyEvent(QKeyEvent *e)
             nextKey == Qt::Key_Super_L || nextKey == Qt::Key_AltGr)
         return;
 
-    nextKey |= translateModifiers(e->modifiers());
+    nextKey |= translateModifiers(e->modifiers(), e->text());
     int k0 = m_keySequence[0];
     int k1 = m_keySequence[1];
     int k2 = m_keySequence[2];
@@ -1523,10 +1523,10 @@ QKeySequence QtKeySequenceEdit::keySequence() const
     return m_keySequence;
 }
 
-int QtKeySequenceEdit::translateModifiers(Qt::KeyboardModifiers state) const
+int QtKeySequenceEdit::translateModifiers(Qt::KeyboardModifiers state, const QString &text) const
 {
     int result = 0;
-    if (state & Qt::ShiftModifier)
+    if ((state & Qt::ShiftModifier) && (text.size() == 0 || !text.at(0).isPrint() || text.at(0).isLetter() || text.at(0).isSpace()))
         result |= Qt::SHIFT;
     if (state & Qt::ControlModifier)
         result |= Qt::CTRL;
@@ -2200,7 +2200,9 @@ void QtCursorEditorFactoryPrivate::slotEnumChanged(QtProperty *property, int val
     QtCursorPropertyManager *cursorManager = q_ptr->propertyManager(prop);
     if (!cursorManager)
         return;
+#ifndef QT_NO_CURSOR
     cursorManager->setValue(prop, QCursor(cursorDatabase()->valueToCursor(value)));
+#endif
 }
 
 void QtCursorEditorFactoryPrivate::slotEditorDestroyed(QObject *object)
@@ -2288,7 +2290,9 @@ QWidget *QtCursorEditorFactory::createEditor(QtCursorPropertyManager *manager, Q
         enumProp = d_ptr->m_enumPropertyManager->addProperty(property->propertyName());
         d_ptr->m_enumPropertyManager->setEnumNames(enumProp, cursorDatabase()->cursorShapeNames());
         d_ptr->m_enumPropertyManager->setEnumIcons(enumProp, cursorDatabase()->cursorShapeIcons());
+#ifndef QT_NO_CURSOR
         d_ptr->m_enumPropertyManager->setValue(enumProp, cursorDatabase()->cursorToValue(manager->value(property)));
+#endif
         d_ptr->m_propertyToEnum[property] = enumProp;
         d_ptr->m_enumToProperty[enumProp] = property;
     }

@@ -112,3 +112,7 @@ QProgressBar {
 QScrollBar {
     -qt-background-role: window;
 }
+
+QDockWidget {
+    border: native;
+}

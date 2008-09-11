@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qchar.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/tools/qchar.cpp -->
 <head>
   <title>Qt 4.4: QChar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QChar Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QChar class provides a 16-bit Unicode character. <a href="#details">More...</a></p>
@@ -117,14 +117,14 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>bool <b><a href="qchar.html#operator-not-eq-34">operator!=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qchar.html#operator-not-eq-41">operator!=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-lt-14">operator&lt;</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-lt-lt-133">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-lt-lt-152">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-lt-eq-11">operator&lt;=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
-<li><div class="fn"/>bool <b><a href="qchar.html#operator-eq-eq-53">operator==</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
+<li><div class="fn"/>bool <b><a href="qchar.html#operator-eq-eq-63">operator==</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-gt-11">operator&gt;</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
 <li><div class="fn"/>bool <b><a href="qchar.html#operator-gt-eq-11">operator&gt;=</a></b> ( QChar <i>c1</i>, QChar <i>c2</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-gt-gt-76">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QChar &amp; <i>chr</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qchar.html#operator-gt-gt-86">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QChar &amp; <i>chr</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -475,7 +475,7 @@
 <p>Returns true if the character is a decimal digit (<a href="qchar.html#Category-enum">Number_DecimalDigit</a>); otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QChar/isHighSurrogate" />
 <h3 class="fn"><a name="isHighSurrogate"></a>bool QChar::isHighSurrogate () const</h3>
-<p>Returns true if the <a href="qchar.html">QChar</a> is the high part of a utf16 surrogate (ie. if it's code point is between 0xd800 and 0xdbff).</p>
+<p>Returns true if the <a href="qchar.html">QChar</a> is the high part of a utf16 surrogate (ie. if its code point is between 0xd800 and 0xdbff).</p>
 <a name="//apple_ref/cpp/instm/QChar/isLetter" />
 <h3 class="fn"><a name="isLetter"></a>bool QChar::isLetter () const</h3>
 <p>Returns true if the character is a letter (Letter_* categories); otherwise returns false.</p>
@@ -484,7 +484,7 @@
 <p>Returns true if the character is a letter or number (Letter_* or <a href="stylesheet-reference.html#number">Number_</a>* categories); otherwise returns false.</p>
 <a name="//apple_ref/cpp/instm/QChar/isLowSurrogate" />
 <h3 class="fn"><a name="isLowSurrogate"></a>bool QChar::isLowSurrogate () const</h3>
-<p>Returns true if the <a href="qchar.html">QChar</a> is the low part of a utf16 surrogate (ie. if it's code point is between 0xdc00 and 0xdfff).</p>
+<p>Returns true if the <a href="qchar.html">QChar</a> is the low part of a utf16 surrogate (ie. if its code point is between 0xdc00 and 0xdfff).</p>
 <a name="//apple_ref/cpp/instm/QChar/isLower" />
 <h3 class="fn"><a name="isLower"></a>bool QChar::isLower () const</h3>
 <p>Returns true if the character is a lowercase letter, i.e&#x2e; <a href="qchar.html#category">category</a>() is <a href="qchar.html#Category-enum">Letter_Lowercase</a>.</p>
@@ -555,7 +555,7 @@
 <p>Converts a UTF16 surrogate pair with the given <i>high</i> and <i>low</i> values to its UCS-4 code point.</p>
 <h3 class="fn"><a name="surrogateToUcs4-2"></a><a href="qtglobal.html#uint-typedef">uint</a> QChar::surrogateToUcs4 ( QChar <i>high</i>, QChar <i>low</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
-<p>Converts a utf16 surrogate pair (<i>high</i>, <i>low</i>) to it's ucs4 code point.</p>
+<p>Converts a utf16 surrogate pair (<i>high</i>, <i>low</i>) to its ucs4 code point.</p>
 <a name="//apple_ref/cpp/instm/QChar/toAscii" />
 <h3 class="fn"><a name="toAscii"></a>char QChar::toAscii () const</h3>
 <p>Returns the character value of the <a href="qchar.html">QChar</a> obtained using the current codec used to read C strings, or 0 if the character is not representable using this codec. The default codec handles Latin-1 encoded text, but this can be changed to assist developers writing source code using other encodings.</p>
@@ -617,20 +617,20 @@
 <p>Returns the Unicode version that introduced the character specified in its UCS-2-encoded form as <i>ucs2</i>.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-not-eq-34"></a>bool operator!= ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
+<h3 class="fn"><a name="operator-not-eq-41"></a>bool operator!= ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>c1</i> and <i>c2</i> are not the same Unicode character; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-lt-14"></a>bool operator&lt; ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is less than that of <i>c2</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-lt-lt-133"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-152"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QChar &amp; <i>chr</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the char <i>chr</i> to the stream <i>out</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <h3 class="fn"><a name="operator-lt-eq-11"></a>bool operator&lt;= ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is less than or equal to that of <i>c2</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-eq-eq-53"></a>bool operator== ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
+<h3 class="fn"><a name="operator-eq-eq-63"></a>bool operator== ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if <i>c1</i> and <i>c2</i> are the same Unicode character; otherwise returns false.</p>
 <h3 class="fn"><a name="operator-gt-11"></a>bool operator&gt; ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
@@ -639,14 +639,14 @@
 <h3 class="fn"><a name="operator-gt-eq-11"></a>bool operator&gt;= ( QChar <i>c1</i>, QChar <i>c2</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if the numeric Unicode value of <i>c1</i> is greater than or equal to that of <i>c2</i>; otherwise returns false.</p>
-<h3 class="fn"><a name="operator-gt-gt-76"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QChar &amp; <i>chr</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-86"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QChar &amp; <i>chr</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a char from the stream <i>in</i> into char <i>chr</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

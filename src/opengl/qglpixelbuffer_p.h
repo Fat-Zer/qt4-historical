@@ -130,7 +130,7 @@ QT_BEGIN_INCLUDE_NAMESPACE
 DECLARE_HANDLE(HPBUFFERARB);
 #elif defined(Q_WS_MACX)
 #include <AGL/agl.h>
-#elif defined(Q_WS_QWS)
+#elif defined(QT_OPENGL_ES)
 #include <GLES/egl.h>
 #endif
 QT_END_INCLUDE_NAMESPACE
@@ -139,6 +139,9 @@ class QGLPixelBufferPrivate {
     Q_DECLARE_PUBLIC(QGLPixelBuffer)
 public:
     QGLPixelBufferPrivate(QGLPixelBuffer *q) : q_ptr(q), invalid(true), qctx(0), pbuf(0), ctx(0)
+#if defined(QT_OPENGL_ES)
+        , dpy(0), config(0)
+#endif
     {
         QGLExtensions::init();
 #ifdef Q_WS_WIN
@@ -165,9 +168,11 @@ public:
     GLXContext ctx;
 #elif defined(Q_WS_WIN)
     HDC dc;
+    bool has_render_texture :1;
+#if !defined(QT_OPENGL_ES)
     HPBUFFERARB pbuf;
     HGLRC ctx;
-    bool has_render_texture :1;
+#endif
 #elif defined(Q_WS_MACX)
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_3)
     AGLPbuffer pbuf;
@@ -176,9 +181,12 @@ public:
 #endif
     AGLContext ctx;
     AGLContext share_ctx;
-#elif defined(Q_WS_QWS)
-    void *pbuf;
+#endif
+#if defined(QT_OPENGL_ES)
+    EGLSurface pbuf;
     EGLContext ctx;
+    EGLDisplay dpy;
+    EGLConfig config;
 #endif
 };
 

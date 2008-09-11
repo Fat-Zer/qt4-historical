@@ -267,7 +267,7 @@ Q3Process::Q3Process( const QStringList& args, QObject *parent, const char *name
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.other.q3process.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_other_q3process.cpp 0
 
     \sa setArguments() addArgument()
 */
@@ -598,7 +598,7 @@ QString Q3Process::readLineStderr()
 
     The nice way to end a process and to be sure that it is finished,
     is to do something like this:
-    \snippet doc/src/snippets/code/src.qt3support.other.q3process_unix.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_other_q3process_unix.cpp 0
 
     This tries to terminate the process the nice way. If the process
     is still running after 5 seconds, it terminates the process the

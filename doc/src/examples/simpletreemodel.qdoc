@@ -328,9 +328,9 @@
 
     We begin with a text file in the following format:
 
-    \snippet doc/src/snippets/code/doc.src.examples.simpletreemodel.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_simpletreemodel.qdoc 0
     \dots
-    \snippet doc/src/snippets/code/doc.src.examples.simpletreemodel.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_examples_simpletreemodel.qdoc 1
 
     We process the text file with the following two rules:
 

@@ -401,6 +401,8 @@ bool QDial::wrapping() const
     possible it is a multiple of singleStep() that results in an
     on-screen notch size near notchTarget().
 
+    By default, this property has a value of 1.
+
     \sa notchTarget(), singleStep()
 */
 

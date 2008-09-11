@@ -78,11 +78,13 @@ public:
 
     bool runIterations(Iterator sequenceBeginIterator, int beginIndex, int endIndex, void *)
     {
-        int currentIndex = beginIndex;
-        while (currentIndex != endIndex) {
-            runIteration((sequenceBeginIterator + currentIndex), currentIndex, 0);
-            ++currentIndex;
+        Iterator it = sequenceBeginIterator;
+        advance(it, beginIndex);
+        for (int i = beginIndex; i < endIndex; ++i) {
+            runIteration(it, i, 0);
+            advance(it, 1);
         }
+       
         return false;
     }
 };
@@ -130,10 +132,11 @@ public:
         results.end = end;
         results.vector.reserve(end - begin);
 
-        int currentIndex = begin;
-        while (currentIndex != end) {
-            results.vector.append(map(*(sequenceBeginIterator + currentIndex)));
-            ++currentIndex;
+        Iterator it = sequenceBeginIterator;
+        advance(it, begin);
+        for (int i = begin; i < end; ++i) {
+            results.vector.append(map(*(it)));
+            advance(it, 1);
         }
 
         reducer.runReduce(reduce, reducedResult, results);
@@ -182,11 +185,14 @@ public:
 
     bool runIterations(Iterator sequenceBeginIterator, int begin, int end, T *results)
     {
-        int currentIndex = begin;
-        while (currentIndex != end) {
-            runIteration(sequenceBeginIterator + currentIndex, currentIndex,  results + (currentIndex - begin));
-            ++currentIndex;
+
+        Iterator it = sequenceBeginIterator;
+        advance(it, begin);
+        for (int i = begin; i < end; ++i) {
+            runIteration(it, i, results + (i - begin));
+            advance(it, 1);
         }
+
         return true;
     }
 };
@@ -211,7 +217,7 @@ template <typename Sequence, typename Base, typename Functor>
 struct SequenceHolder1 : public Base
 {
     SequenceHolder1(const Sequence &_sequence, Functor functor)
-        : Base(_sequence.constBegin(), _sequence.constEnd(), functor), sequence(_sequence)
+        : Base(_sequence.begin(), _sequence.end(), functor), sequence(_sequence)
     { }
 
     Sequence sequence;

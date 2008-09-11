@@ -3733,11 +3733,11 @@ QString QUrlPrivate::createErrorString()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 0
 
     To construct a URL from an encoded string, call fromEncoded():
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 1
 
     \sa setUrl(), setEncodedUrl(), fromEncoded(), TolerantMode
 */
@@ -3793,7 +3793,7 @@ QUrl::~QUrl()
     must conform to the standard encoding rules of the URI standard
     for the URL to be reported as valid.
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 2
 */
 bool QUrl::isValid() const
 {
@@ -4334,7 +4334,7 @@ int QUrl::port() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 3
 */
 int QUrl::port(int defaultPort) const
 {
@@ -4459,7 +4459,7 @@ bool QUrl::hasQuery() const
     If \a valueDelimiter is set to '-' and \a pairDelimiter is '/',
     the above query string would instead be represented like this:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 4
 
     Calling this function does not change the delimiters of the
     current query string. It only affects queryItems(),
@@ -5067,7 +5067,7 @@ bool QUrl::hasFragment() const
     the base URL, but with the merged path, as in the following
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 5
 
     Calling resolved() with ".." returns a QUrl whose directory is
     one level higher than the original. Similarly, calling resolved()
@@ -5256,7 +5256,7 @@ QString QUrl::fromPercentEncoding(const QByteArray &input)
     Unreserved is defined as:
        ALPHA / DIGIT / "-" / "." / "_" / "~"
 
-    \snippet doc/src/snippets/code/src.corelib.io.qurl.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_io_qurl.cpp 6
 */
 QByteArray QUrl::toPercentEncoding(const QString &input, const QByteArray &exclude, const QByteArray &include)
 {

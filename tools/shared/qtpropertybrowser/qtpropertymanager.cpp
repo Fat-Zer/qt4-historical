@@ -6243,10 +6243,12 @@ QtCursorPropertyManager::~QtCursorPropertyManager()
 
     \sa setValue()
 */
+#ifndef QT_NO_CURSOR
 QCursor QtCursorPropertyManager::value(const QtProperty *property) const
 {
     return d_ptr->m_values.value(property, QCursor());
 }
+#endif
 
 /*!
     \reimp
@@ -6281,6 +6283,7 @@ QIcon QtCursorPropertyManager::valueIcon(const QtProperty *property) const
 */
 void QtCursorPropertyManager::setValue(QtProperty *property, const QCursor &value)
 {
+#ifndef QT_NO_CURSOR
     const QtCursorPropertyManagerPrivate::PropertyValueMap::iterator it = d_ptr->m_values.find(property);
     if (it == d_ptr->m_values.end())
         return;
@@ -6292,6 +6295,7 @@ void QtCursorPropertyManager::setValue(QtProperty *property, const QCursor &valu
 
     emit propertyChanged(property);
     emit valueChanged(property, value);
+#endif
 }
 
 /*!
@@ -6299,7 +6303,9 @@ void QtCursorPropertyManager::setValue(QtProperty *property, const QCursor &valu
 */
 void QtCursorPropertyManager::initializeProperty(QtProperty *property)
 {
+#ifndef QT_NO_CURSOR
     d_ptr->m_values[property] = QCursor();
+#endif
 }
 
 /*!

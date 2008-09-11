@@ -70,20 +70,20 @@ QT_BEGIN_NAMESPACE
     For example, say there is a method that prints a message to the
     user on two lines:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 0
 
     If these two methods are called in succession, the following happens:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 1
 
     If these two methods are called simultaneously from two threads then the
     following sequence could result:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 2
 
     If we add a mutex, we should get the result we want:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 3
 
     Then only one thread can modify \c number at any given time and
     the result is correct. This is a trivial example, of course, but
@@ -397,7 +397,7 @@ void QMutex::unlock()
     For example, this complex function locks a QMutex upon entering
     the function and unlocks the mutex at all the exit points:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 4
 
     This example function will get more complicated as it is
     developed, which increases the likelihood that errors will occur.
@@ -405,7 +405,7 @@ void QMutex::unlock()
     Using QMutexLocker greatly simplifies the code, and makes it more
     readable:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 5
 
     Now, the mutex will always be unlocked when the QMutexLocker
     object is destroyed (when the function returns since \c locker is
@@ -421,7 +421,7 @@ void QMutex::unlock()
     for code that needs access to the mutex, such as
     QWaitCondition::wait(). For example:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutex.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutex.cpp 6
 
     \sa QReadLocker, QWriteLocker, QMutex
 */

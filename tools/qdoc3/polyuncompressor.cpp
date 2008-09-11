@@ -41,25 +41,49 @@
 **
 ****************************************************************************/
 
-/*
-  polyarchiveextractor.cpp
-*/
-
 #include "command.h"
 #include "polyuncompressor.h"
 
 QT_BEGIN_NAMESPACE
 
+/*!
+  \class PolyUncompressor
+  
+  \brief The PolyUncompressor class is a class for uncompressing
+  compressed files.
+
+  This subclass of Uncompressor contains a parameterized
+  command for doing the uncompression
+
+  It has an uncompressFile() function you call to do the
+  actual uncompression.
+ */
+
+/*!
+  The constructor takes the list of filename \a extensions,
+  which it passes to the base class, and the \a commandFormat,
+  which it stores locally. The \a commandFormat is a command
+  template string.
+ */
 PolyUncompressor::PolyUncompressor( const QStringList& extensions,
 				    const QString& commandFormat )
     : Uncompressor( extensions ), cmd( commandFormat )
 {
 }
 
+/*!
+  The destructor doesn't have to do anything.
+ */
 PolyUncompressor::~PolyUncompressor()
 {
 }
 
+/*!
+  From \a filePath, derive a file path for the uncompressed
+  file and return it. If it can't figure out what the file
+  path should be, it just concatenates ".out" to the
+  \a filePath and returns that.
+ */
 QString PolyUncompressor::uncompressedFilePath( const QString& filePath )
 {
     QStringList::ConstIterator e = fileExtensions().begin();
@@ -72,6 +96,10 @@ QString PolyUncompressor::uncompressedFilePath( const QString& filePath )
     return filePath + ".out"; // doesn't really matter
 }
 
+/*!
+  Call this function to do the actual uncompressing. It calls
+  the executeCommand() function to do the work. That's all it does.
+ */
 void PolyUncompressor::uncompressFile( const Location& location,
 				       const QString& filePath,
 				       const QString& outputFilePath )

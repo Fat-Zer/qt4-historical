@@ -360,7 +360,7 @@ values for the record being sought.  This function is typically used
 to relocate a cursor to the correct position after an insert or
 update.  For example:
 
-\snippet doc/src/snippets/code/src.qt3support.sql.q3sqlmanager_p.cpp 0
+\snippet doc/src/snippets/code/src_qt3support_sql_q3sqlmanager_p.cpp 0
 
 */
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3scrollview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3scrollview.cpp -->
 <head>
   <title>Qt 4.4: Q3ScrollView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3ScrollView Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3ScrollView widget provides a scrolling area with on-demand scroll bars. <a href="#details">More...</a></p>
@@ -185,41 +185,41 @@
 <a name="using-one-big-widget"></a>
 <h3>Using One Big Widget</h3>
 <p align="center"><img src="images/qscrollview-vp2.png" /></p><p>The first, simplest usage of Q3ScrollView (depicted above), is appropriate for scrolling areas that are never more than about 4000 pixels in either dimension (this is about the maximum reliable size on X11 servers). In this usage, you just make one large child in the Q3ScrollView. The child should be a child of the <a href="q3scrollview.html#viewport">viewport</a>() of the scrollview and be added with <a href="q3scrollview.html#addChild">addChild</a>():</p>
-<pre>         Q3ScrollView* sv = new Q3ScrollView(...);
-         QWidget *widget = new QWidget(sv-&gt;viewport());
-         QVBoxLayout *layout = new QVBoxLayout(widget);
-         addChild(widget);</pre>
+<pre> Q3ScrollView* sv = new Q3ScrollView(...);
+ QWidget *widget = new QWidget(sv-&gt;viewport());
+ QVBoxLayout *layout = new QVBoxLayout(widget);
+ addChild(widget);</pre>
 <p>You can go on to add arbitrary child widgets to the single child in the scrollview as you would with any widget:</p>
-<pre>         QLabel* child1 = new QLabel(&quot;CHILD&quot;, widget);
-         QLabel* child2 = new QLabel(&quot;CHILD&quot;, widget);
-         QLabel* child3 = new QLabel(&quot;CHILD&quot;, widget);
-         layout-&gt;addWidget(child1);
-         layout-&gt;addWidget(child2);
-         layout-&gt;addWidget(child3);
-         ...</pre>
+<pre> QLabel* child1 = new QLabel(&quot;CHILD&quot;, widget);
+ QLabel* child2 = new QLabel(&quot;CHILD&quot;, widget);
+ QLabel* child3 = new QLabel(&quot;CHILD&quot;, widget);
+ layout-&gt;addWidget(child1);
+ layout-&gt;addWidget(child2);
+ layout-&gt;addWidget(child3);
+ ...</pre>
 <p>Here the Q3ScrollView has four children: the <a href="q3scrollview.html#viewport">viewport</a>(), the <a href="q3scrollview.html#verticalScrollBar">verticalScrollBar</a>(), the <a href="q3scrollview.html#horizontalScrollBar">horizontalScrollBar</a>() and a small <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(). The <a href="q3scrollview.html#viewport">viewport</a>() has one child: the <a href="qwidget.html">QWidget</a>. The <a href="qwidget.html">QWidget</a> has the three <a href="qlabel.html">QLabel</a> objects as child widgets. When the view is scrolled, the <a href="qwidget.html">QWidget</a> is moved; its children move with it as child widgets normally do.</p>
 <a name="using-a-very-big-view-with-some-widgets"></a>
 <h3>Using a Very Big View with Some Widgets</h3>
 <p align="center"><img src="images/qscrollview-vp.png" /></p><p>The second usage of Q3ScrollView (depicted above) is appropriate when few, if any, widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You may also add some widgets by making them children of the <a href="q3scrollview.html#viewport">viewport</a>() and adding them with <a href="q3scrollview.html#addChild">addChild</a>() (this is the same as the process for the single large widget in the previous example):</p>
-<pre>         Q3ScrollView* sv = new Q3ScrollView(...);
-         QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child1);
-         QLabel* child2 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child2);
-         QLabel* child3 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child3);</pre>
+<pre> Q3ScrollView* sv = new Q3ScrollView(...);
+ QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child1);
+ QLabel* child2 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child2);
+ QLabel* child3 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child3);</pre>
 <p>Here, the Q3ScrollView has the same four children: the <a href="q3scrollview.html#viewport">viewport</a>(), the <a href="q3scrollview.html#verticalScrollBar">verticalScrollBar</a>(), the <a href="q3scrollview.html#horizontalScrollBar">horizontalScrollBar</a>() and a small <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(). The <a href="q3scrollview.html#viewport">viewport</a>() has the three <a href="qlabel.html">QLabel</a> objects as child widgets. When the view is scrolled, the scrollview moves the child widgets individually.</p>
 <a name="using-a-very-big-view-with-many-widgets"></a>
 <h3>Using a Very Big View with Many Widgets</h3>
 <p align="center"><img src="images/qscrollview-cl.png" /></p><p>The final usage of Q3ScrollView (depicted above) is appropriate when many widgets are on a very large scrolling area that is potentially larger than 4000 pixels in either dimension. In this usage you call <a href="q3scrollview.html#resizeContents">resizeContents</a>() to set the size of the area and reimplement <a href="q3scrollview.html#drawContents">drawContents</a>() to paint the contents. You then call enableClipper(true) and add widgets, again by making them children of the <a href="q3scrollview.html#viewport">viewport</a>(), and adding them with <a href="q3scrollview.html#addChild">addChild</a>():</p>
-<pre>         Q3ScrollView* sv = new Q3ScrollView(...);
-         sv-&gt;enableClipper(true);
-         QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child1);
-         QLabel* child2 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child2);
-         QLabel* child3 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
-         sv-&gt;addChild(child3);</pre>
+<pre> Q3ScrollView* sv = new Q3ScrollView(...);
+ sv-&gt;enableClipper(true);
+ QLabel* child1 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child1);
+ QLabel* child2 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child2);
+ QLabel* child3 = new QLabel(&quot;CHILD&quot;, sv-&gt;viewport());
+ sv-&gt;addChild(child3);</pre>
 <p>Here, the Q3ScrollView has four children: the <a href="q3scrollview.html#clipper">clipper</a>() (not the <a href="q3scrollview.html#viewport">viewport</a>() this time), the <a href="q3scrollview.html#verticalScrollBar">verticalScrollBar</a>(), the <a href="q3scrollview.html#horizontalScrollBar">horizontalScrollBar</a>() and a small <a href="q3scrollview.html#cornerWidget">cornerWidget</a>(). The <a href="q3scrollview.html#clipper">clipper</a>() has one child: the <a href="q3scrollview.html#viewport">viewport</a>(). The <a href="q3scrollview.html#viewport">viewport</a>() has the same three labels as child widgets. When the view is scrolled the <a href="q3scrollview.html#viewport">viewport</a>() is moved; its children move with it as child widgets normally do.</p>
 <a name="allviews"></a><a name="details-relevant-for-all-views"></a>
 <h3>Details Relevant for All Views</h3>
@@ -452,23 +452,23 @@
 <p>Reimplement this function if you are viewing a drawing area rather than a widget.</p>
 <p>The function should draw the rectangle (<i>clipx</i>, <i>clipy</i>, <i>clipw</i>, <i>cliph</i>) of the contents using painter <i>p</i>. The clip rectangle is in the scrollview's coordinates.</p>
 <p>For example:</p>
-<pre>     {
-         <span class="comment">// Fill a 40000 by 50000 rectangle at (100000,150000)</span>
+<pre> {
+     <span class="comment">// Fill a 40000 by 50000 rectangle at (100000,150000)</span>
 
-         <span class="comment">// Calculate the coordinates...</span>
-         int x1 = 100000, y1 = 150000;
-         int x2 = x1+40000-1, y2 = y1+50000-1;
+     <span class="comment">// Calculate the coordinates...</span>
+     int x1 = 100000, y1 = 150000;
+     int x2 = x1+40000-1, y2 = y1+50000-1;
 
-         <span class="comment">// Clip the coordinates so X/Windows will not have problems...</span>
-         if (x1 &lt; clipx) x1=clipx;
-         if (y1 &lt; clipy) y1=clipy;
-         if (x2 &gt; clipx+clipw-1) x2=clipx+clipw-1;
-         if (y2 &gt; clipy+cliph-1) y2=clipy+cliph-1;
+     <span class="comment">// Clip the coordinates so X/Windows will not have problems...</span>
+     if (x1 &lt; clipx) x1=clipx;
+     if (y1 &lt; clipy) y1=clipy;
+     if (x2 &gt; clipx+clipw-1) x2=clipx+clipw-1;
+     if (y2 &gt; clipy+cliph-1) y2=clipy+cliph-1;
 
-         <span class="comment">// Paint using the small coordinates...</span>
-         if (x2 &gt;= x1 &amp;&amp; y2 &gt;= y1)
-             p-&gt;fillRect(x1, y1, x2-x1+1, y2-y1+1, red);
-     }</pre>
+     <span class="comment">// Paint using the small coordinates...</span>
+     if (x2 &gt;= x1 &amp;&amp; y2 &gt;= y1)
+         p-&gt;fillRect(x1, y1, x2-x1+1, y2-y1+1, red);
+ }</pre>
 <p>The clip rectangle and translation of the painter <i>p</i> is already set appropriately.</p>
 <a name="//apple_ref/cpp/instm/Q3ScrollView/drawContentsOffset" />
 <h3 class="fn"><a name="drawContentsOffset"></a>void Q3ScrollView::drawContentsOffset ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>offsetx</i>, int <i>offsety</i>, int <i>clipx</i>, int <i>clipy</i>, int <i>clipw</i>, int <i>cliph</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -624,8 +624,8 @@
 <p>Returns the point on the viewport <i>vp</i> translated to a point in the contents.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

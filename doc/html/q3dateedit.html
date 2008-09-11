@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3datetimeedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3datetimeedit.cpp -->
 <head>
   <title>Qt 4.4: Q3DateEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3DateEdit Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3DateEdit class provides a date editor. <a href="#details">More...</a></p>
@@ -118,11 +118,11 @@
 <h2>Detailed Description</h2>
 <p>The Q3DateEdit class provides a date editor.</p>
 <p>Q3DateEdit allows the user to edit dates by using the keyboard or the arrow keys to increase/decrease date values. The arrow keys can be used to move from section to section within the Q3DateEdit box. Dates appear in accordance with the local date/time settings or in year, month, day order if the system doesn't provide this information. It is recommended that the Q3DateEdit be initialised with a date, e.g&#x2e;</p>
-<pre>     Q3DateEdit *dateEdit = new Q3DateEdit(QDate::currentDate(), this);
-     dateEdit-&gt;setRange(QDate::currentDate().addDays(-365),
-                         QDate::currentDate().addDays( 365));
-     dateEdit-&gt;setOrder(Q3DateEdit::MDY);
-     dateEdit-&gt;setAutoAdvance(true);</pre>
+<pre> Q3DateEdit *dateEdit = new Q3DateEdit(QDate::currentDate(), this);
+ dateEdit-&gt;setRange(QDate::currentDate().addDays(-365),
+                     QDate::currentDate().addDays( 365));
+ dateEdit-&gt;setOrder(Q3DateEdit::MDY);
+ dateEdit-&gt;setAutoAdvance(true);</pre>
 <p>Here we've created a new Q3DateEdit object initialised with today's date and restricted the valid date range to today plus or minus 365 days. We've set the order to month, day, year. If the auto advance property is true (as we've set it here) when the user completes a section of the date, e.g&#x2e; enters two digits for the month, they are automatically taken to the next section.</p>
 <p>The maximum and minimum values for a date value in the date editor default to the maximum and minimum values for a <a href="qdate.html">QDate</a>. You can change this by calling <a href="q3dateedit.html#minValue-prop">setMinValue</a>(), <a href="q3dateedit.html#maxValue-prop">setMaxValue</a>() or <a href="q3dateedit.html#setRange">setRange</a>().</p>
 <p>Terminology: A Q3DateEdit widget comprises three 'sections', one each for the year, month and day. You can change the separator character using Q3DateTimeEditor::setSeparator(), by default the separator will be taken from the systems settings. If that is not possible, it defaults to &quot;-&quot;.</p>
@@ -252,8 +252,8 @@
 <p>This signal is emitted whenever the editor's value changes. The <i>date</i> parameter is the new value.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

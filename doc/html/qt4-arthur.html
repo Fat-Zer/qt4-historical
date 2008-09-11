@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qt4-arthur.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qt4-arthur.qdoc -->
 <head>
   <title>Qt 4.4: The Arthur Paint System</title>
   <link rel="prev" href="qt4-interview.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qt4-interview.html">The Interview Framework</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -67,40 +67,40 @@
 <h3>Gradient Brushes</h3>
 <p>With Qt 4 it is possible to fill shapes using gradient brushes. A gradient in this case is used to describe the transition from one color at a given point to different color at another point. A gradient can span from one color to another or over a number of colors by specifying multiple colors at positions in the gradient area. Qt 4 supports linear, radial, and conical gradients.</p>
 <p>Linear gradients are specified using two control points. Setting a linear gradient brush is done by creating a <a href="qlineargradient.html">QLinearGradient</a> object and setting it as a brush.</p>
-<pre>     QLinearGradient gradient(0, 0, 100, 100);
-     gradient.setColorAt(0, Qt::red);
-     gradient.setColorAt(0.5, Qt::green);
-     gradient.setColorAt(1, Qt::blue);
-     painter.setBrush(gradient);
-     painter.drawRect(0, 0, 100, 100);</pre>
+<pre> QLinearGradient gradient(0, 0, 100, 100);
+ gradient.setColorAt(0, Qt::red);
+ gradient.setColorAt(0.5, Qt::green);
+ gradient.setColorAt(1, Qt::blue);
+ painter.setBrush(gradient);
+ painter.drawRect(0, 0, 100, 100);</pre>
 <p>The code shown above produces a pattern as show in the following pixmap:</p>
 <p align="center"><img src="images/diagonalGradient.png" /></p><p>Radial gradients are specified using a center, a radius, and a focal point. Setting a radial brush is done by creating a <a href="qradialgradient.html">QRadialGradient</a> object and setting it as a brush.</p>
-<pre>     QRadialGradient gradient(50, 50, 50, 30, 30);
-     gradient.setColorAt(0.2, Qt::white);
-     gradient.setColorAt(0.8, Qt::green);
-     gradient.setColorAt(1, Qt::black);
-     painter.setBrush(gradient);
-     painter.drawEllipse(0, 0, 100, 100);</pre>
+<pre> QRadialGradient gradient(50, 50, 50, 30, 30);
+ gradient.setColorAt(0.2, Qt::white);
+ gradient.setColorAt(0.8, Qt::green);
+ gradient.setColorAt(1, Qt::black);
+ painter.setBrush(gradient);
+ painter.drawEllipse(0, 0, 100, 100);</pre>
 <p>The code shown above produces a pattern as shown in the following pixmap:</p>
 <p align="center"><img src="images/radialGradient.png" /></p><p>Conical gradients are specified using a center and a start angle. Setting a conical brush is done by creating a <a href="qconicalgradient.html">QConicalGradient</a> object and setting it as a brush.</p>
-<pre>     QConicalGradient gradient(60, 40, 0);
-     gradient.setColorAt(0, Qt::black);
-     gradient.setColorAt(0.4, Qt::green);
-     gradient.setColorAt(0.6, Qt::white);
-     gradient.setColorAt(1, Qt::black);
-     painter.setBrush(gradient);
-     painter.drawEllipse(0, 0, 100, 100);</pre>
+<pre> QConicalGradient gradient(60, 40, 0);
+ gradient.setColorAt(0, Qt::black);
+ gradient.setColorAt(0.4, Qt::green);
+ gradient.setColorAt(0.6, Qt::white);
+ gradient.setColorAt(1, Qt::black);
+ painter.setBrush(gradient);
+ painter.drawEllipse(0, 0, 100, 100);</pre>
 <p>The code shown above produces a pattern as shown in the following pixmap:</p>
 <p align="center"><img src="images/conicalGradient.png" /></p><a name="alpha-blended-drawing"></a>
 <h3>Alpha-Blended Drawing</h3>
 <p>With Qt 4 we support alpha-blended outlining and filling. The alpha channel of a color is defined through <a href="qcolor.html">QColor</a>. The alpha channel specifies the transparency effect, 0 represents a fully transparent color, while 255 represents a fully opaque color. For example:</p>
-<pre>     // Specfiy semi-transparent red
-     painter.setBrush(QColor(255, 0, 0, 127));
-     painter.drawRect(0, 0, width()/2, height());
+<pre> // Specfiy semi-transparent red
+ painter.setBrush(QColor(255, 0, 0, 127));
+ painter.drawRect(0, 0, width()/2, height());
 
-     // Specify semi-transparend blue
-     painter.setBrush(QColor(0, 0, 255, 127));
-     painter.drawRect(0, 0, width(), height()/2);</pre>
+ // Specify semi-transparend blue
+ painter.setBrush(QColor(0, 0, 255, 127));
+ painter.drawRect(0, 0, width(), height()/2);</pre>
 <p>The code shown above produces the following output:</p>
 <p align="center"><img src="images/alphafill.png" /></p><p>Alpha-blended drawing is supported on Windows, Mac OS X, and on X11 systems that have the X Render extension installed.</p>
 <a name="qpainter-and-qglwidget"></a>
@@ -109,12 +109,12 @@
 <a name="anti-aliased-edges"></a>
 <h3>Anti-Aliased Edges</h3>
 <p>On platforms where this is supported by the native drawing API, we provide the option of turning on anti-aliased edges when drawing graphics primitives.</p>
-<pre>     // One line without anti-aliasing
-     painter.drawLine(0, 0, width()/2, height());
+<pre> // One line without anti-aliasing
+ painter.drawLine(0, 0, width()/2, height());
 
-     // One line with anti-aliasing
-     painter.setRenderHint(QPainter::Antialiasing);
-     painter.drawLine(width()/2, 0, width()/2, height());</pre>
+ // One line with anti-aliasing
+ painter.setRenderHint(QPainter::Antialiasing);
+ painter.drawLine(width()/2, 0, width()/2, height());</pre>
 <p>This produces the following output:</p>
 <p align="center"><img src="images/antialiased.png" /></p><p>Anti-aliasing is supported when drawing to a <a href="qimage.html">QImage</a> and on all systems, except on X11 when XRender is not present.</p>
 <a name="extensive-use-of-native-graphics-operations"></a>
@@ -126,31 +126,31 @@
 <p>A painter path is an object composed of a number of graphical building blocks, such as rectangles, ellipses, lines, and curves. A painter path can be used for filling, outlining, and for clipping. The main advantage of painter paths over normal drawing operations is that it is possible to build up non-linear shapes which can be drawn later in one go.</p>
 <p>Building blocks can be joined in closed subpaths, such as a rectangle or an ellipse, or they can exist independently as unclosed subpaths, although an unclosed path will not be filled.</p>
 <p>Below is a code example on how a path can be used. The painter in this case has a pen width of 3 and a light blue brush. We first add a rectangle, which becomes a closed subpath. We then add two bezier curves, and finally draw the entire path.</p>
-<pre>     QPainterPath path;
-     path.addRect(20, 20, 60, 60);
-     path.addBezier(0, 0,  99, 0,  50, 50,  99, 99);
-     path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
-     painter.drawPath(path);</pre>
+<pre> QPainterPath path;
+ path.addRect(20, 20, 60, 60);
+ path.addBezier(0, 0,  99, 0,  50, 50,  99, 99);
+ path.addBezier(99, 99,  0, 99,  50, 50,  0, 0);
+ painter.drawPath(path);</pre>
 <p>The code above produces the following output:</p>
 <p align="center"><img src="images/pathexample.png" /></p><a name="widget-double-buffering"></a>
 <h3>Widget Double-Buffering</h3>
 <p>In Qt 4, all widgets are double-buffered by default.</p>
 <p>In previous versions of Qt double-buffering was achieved by painting to an off-screen pixmap then copying the pixmap to the screen. For example:</p>
-<pre>     QPixmap buffer(size());
-     QPainter painter(&amp;buffer);
+<pre> QPixmap buffer(size());
+ QPainter painter(&amp;buffer);
 
-     // Paint code here
+ // Paint code here
 
-     painter.end();
-     bitBlt(this, 0, 0, &amp;buffer);</pre>
+ painter.end();
+ bitBlt(this, 0, 0, &amp;buffer);</pre>
 <p>Since the double-buffering is handled by <a href="qwidget.html">QWidget</a> internally this now becomes:</p>
-<pre>     QPainter painter(this);
+<pre> QPainter painter(this);
 
-     // Paint code here
+ // Paint code here
 
-     painter.end();</pre>
+ painter.end();</pre>
 <p>Double-buffering is turned on by default, but can be turned off for individual widgets by setting the widget attribute <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a>.</p>
-<pre>     unbufferedWidget-&gt;setAttribute(Qt::WA_PaintOnScreen);</pre>
+<pre> unbufferedWidget-&gt;setAttribute(Qt::WA_PaintOnScreen);</pre>
 <a name="pen-and-brush-transformation"></a>
 <h3>Pen and Brush Transformation</h3>
 <p>In Qt 3, pens and brushes weren't affected by the painter's transformation matrix. For example, if you drew a rectangle with a pen width of 1 using a scaled painter, the resulting line width would still be 1. This made it difficult to implement features such as zooming and high-resolution printing.</p>
@@ -159,24 +159,24 @@
 <a name="custom-filled-pens"></a>
 <h3>Custom Filled Pens</h3>
 <p>In Qt 4, it is possible to specify how an outline should be filled. It can be a solid color or a <a href="qbrush.html">QBrush</a>, which makes it possible to specify both texture and gradient fills for both text and outlines.</p>
-<pre>     QLinearGradient gradient(0, 0, 100, 100);
-     gradient.setColorAt(0, Qt::blue);
-     gradient.setColorAt(1, Qt::red);
-     painter.setPen(QPen(gradient, 0));
-     for (int y=fontSize; y&lt;100; y+=fontSize)
-         drawText(0, y, text);</pre>
+<pre> QLinearGradient gradient(0, 0, 100, 100);
+ gradient.setColorAt(0, Qt::blue);
+ gradient.setColorAt(1, Qt::red);
+ painter.setPen(QPen(gradient, 0));
+ for (int y=fontSize; y&lt;100; y+=fontSize)
+     drawText(0, y, text);</pre>
 <p>The code above produces the following output:</p>
 <p align="center"><img src="images/gradientText.png" /></p><a name="qimage-as-a-paint-device"></a>
 <h3>QImage as a Paint Device</h3>
 <p>A great improvement of Qt 4 over previous versions it that it now provides a pixel-based raster paint engine which allows users to open a painter on a <a href="qimage.html">QImage</a>. The <a href="qimage.html">QImage</a> paint engine supports the full feature set of <a href="qpainter.html">QPainter</a> (paths, antialiasing, alphablending, etc.) and can be used on all platforms.</p>
 <p>One advantage of this is that it is possible to guarantee the pixel exactness of any drawing operation in a platform-independent way.</p>
 <p>Painting on an image is as simple as drawing on any other paint device.</p>
-<pre>     QImage image(100, 100, 32);
-     QPainter painter(&amp;image);
+<pre> QImage image(100, 100, 32);
+ QPainter painter(&amp;image);
 
-     // painter commands.
+ // painter commands.
 
-     painter.end();</pre>
+ painter.end();</pre>
 <a name="svg-rendering-support"></a>
 <h3>SVG Rendering Support</h3>
 <p><a href="http://www.w3.org/Graphics/SVG/About.html#scalable-vector-graphics">Scalable Vector Graphics</a> (SVG) is an language for describing both static and animated two-dimensional vector graphics. Qt includes support for the <a href="http://www.w3.org/Graphics/SVG/feature/1.2/#SVG-static">static features</a> of <a href="http://www.w3.org/TR/SVGMobile12/">SVG 1.2 Tiny</a>, taking advantage of the improved paint system in Qt 4. SVG drawings can be rendered onto any <a href="qpaintdevice.html">QPaintDevice</a> subclass, such as <a href="qwidget.html">QWidget</a>, <a href="qimage.html">QImage</a>, and <a href="qglwidget.html">QGLWidget</a>, to take advantage of specific advantages of each device. This approach gives developers the flexibility to experiment, in order to find the best solution for each application.</p>
@@ -192,8 +192,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

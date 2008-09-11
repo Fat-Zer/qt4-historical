@@ -407,10 +407,10 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
     navigation, and text may only be selected with the mouse:
     \table
     \header \i Keypresses \i Action
-    \row \i Qt::UpArrow        \i Moves one line up.
-    \row \i Qt::DownArrow        \i Moves one line down.
-    \row \i Qt::LeftArrow        \i Moves one character to the left.
-    \row \i Qt::RightArrow        \i Moves one character to the right.
+    \row \i Up        \i Moves one line up.
+    \row \i Down        \i Moves one line down.
+    \row \i Left        \i Moves one character to the left.
+    \row \i Right        \i Moves one character to the right.
     \row \i PageUp        \i Moves one (viewport) page up.
     \row \i PageDown        \i Moves one (viewport) page down.
     \row \i Home        \i Moves to the beginning of the text.
@@ -492,12 +492,12 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
     \row \i Shift+Delete \i Deletes the selected text and copies it to the clipboard.
     \row \i Ctrl+Z \i Undoes the last operation.
     \row \i Ctrl+Y \i Redoes the last operation.
-    \row \i LeftArrow \i Moves the cursor one character to the left.
-    \row \i Ctrl+LeftArrow \i Moves the cursor one word to the left.
-    \row \i RightArrow \i Moves the cursor one character to the right.
-    \row \i Ctrl+RightArrow \i Moves the cursor one word to the right.
-    \row \i UpArrow \i Moves the cursor one line up.
-    \row \i DownArrow \i Moves the cursor one line down.
+    \row \i Left \i Moves the cursor one character to the left.
+    \row \i Ctrl+Left \i Moves the cursor one word to the left.
+    \row \i Right \i Moves the cursor one character to the right.
+    \row \i Ctrl+Right \i Moves the cursor one word to the right.
+    \row \i Up \i Moves the cursor one line up.
+    \row \i Down \i Moves the cursor one line down.
     \row \i PageUp \i Moves the cursor one page up.
     \row \i PageDown \i Moves the cursor one page down.
     \row \i Home \i Moves the cursor to the beginning of the line.
@@ -508,9 +508,8 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
     \endtable
 
     To select (mark) text hold down the Shift key whilst pressing one
-    of the movement keystrokes, for example, \e{Shift+Right Arrow}
-    will select the character to the right, and \e{Shift+Ctrl+Right
-    Arrow} will select the word to the right, etc.
+    of the movement keystrokes, for example, \e{Shift+Right}
+    will select the character to the right, and \e{Shift+Ctrl+Right} will select the word to the right, etc.
 
     \sa QTextDocument, QTextCursor, {Application Example},
 	{Syntax Highlighter Example}, {Rich Text Processing}
@@ -520,13 +519,17 @@ void QTextEditPrivate::_q_ensureVisible(const QRectF &_rect)
     \property QTextEdit::plainText
     \since 4.3
 
-    This property gets and sets the text edit's contents as plain
+    This property gets and sets the text editor's contents as plain
     text. Previous contents are removed and undo/redo history is reset
-    when the property is set. If the text edit has another content
-    type, it will not be replaced by plain text when you call
-    toPlainText().
+    when the property is set.
 
-		\sa html
+    If the text edit has another content type, it will not be replaced
+    by plain text if you call toPlainText().
+
+    By default, for an editor with no contents, this property contains
+    an empty string.
+
+    \sa html
 */
 
 /*!
@@ -1032,6 +1035,7 @@ void QTextEdit::selectAll()
 bool QTextEdit::event(QEvent *e)
 {
     Q_D(QTextEdit);
+#ifndef QT_NO_CONTEXTMENU
     if (e->type() == QEvent::ContextMenu
         && static_cast<QContextMenuEvent *>(e)->reason() == QContextMenuEvent::Keyboard) {
         Q_D(QTextEdit);
@@ -1046,8 +1050,9 @@ bool QTextEdit::event(QEvent *e)
                || e->type() == QEvent::ToolTip) {
         d->sendControlEvent(e);
     }
+#endif // QT_NO_CONTEXTMENU
 #ifdef QT_KEYPAD_NAVIGATION
-    else if (e->type() == QEvent::EnterEditFocus || e->type() == QEvent::LeaveEditFocus) {
+    if (e->type() == QEvent::EnterEditFocus || e->type() == QEvent::LeaveEditFocus) {
         if (QApplication::keypadNavigationEnabled())
             d->sendControlEvent(e);
     }
@@ -1142,6 +1147,9 @@ void QTextEdit::setPlainText(const QString &text)
     \note It is the responsibility of the caller to make sure that the
     text is correctly decoded when a QString containing HTML is created
     and passed to setHtml().
+
+    By default, for a newly-created, empty document, this property contains
+    text to describe an HTML 4.0 document with no body text.
 
     \sa {Supported HTML Subset}, plainText
 */
@@ -1555,6 +1563,7 @@ bool QTextEdit::focusNextPrevChild(bool next)
     return QAbstractScrollArea::focusNextPrevChild(next);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
   \fn void QTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
@@ -1568,13 +1577,14 @@ bool QTextEdit::focusNextPrevChild(bool next)
 
   Information about the event is passed in the \a event object.
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qtextedit.cpp 0
+  \snippet doc/src/snippets/code/src_gui_widgets_qtextedit.cpp 0
 */
 void QTextEdit::contextMenuEvent(QContextMenuEvent *e)
 {
     Q_D(QTextEdit);
     d->sendControlEvent(e);
 }
+#endif // QT_NO_CONTEXTMENU
 
 #ifndef QT_NO_DRAGANDDROP
 /*! \reimp
@@ -1821,6 +1831,16 @@ QString QTextEdit::anchorAt(const QPoint& pos) const
 /*!
    \property QTextEdit::overwriteMode
    \since 4.1
+   \brief whether text entered by the user will overwrite existing text
+
+   As with many text editors, the text editor widget can be configured
+   to insert or overwrite existing text with new text entered by the user.
+
+   If this property is true, existing text is overwritten, character-for-character
+   by new text; otherwise, text is inserted at the cursor position, displacing
+   existing text.
+
+   By default, this property is false (new text does not overwrite existing text).
 */
 
 bool QTextEdit::overwriteMode() const
@@ -1839,6 +1859,8 @@ void QTextEdit::setOverwriteMode(bool overwrite)
     \property QTextEdit::tabStopWidth
     \brief the tab stop width in pixels
     \since 4.1
+
+    By default, this property contains a value of 80.
 */
 
 int QTextEdit::tabStopWidth() const
@@ -2108,7 +2130,7 @@ void QTextEdit::setAutoFormatting(AutoFormatting features)
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qtextedit.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qtextedit.cpp 1
  */
 void QTextEdit::insertPlainText(const QString &text)
 {
@@ -2122,7 +2144,7 @@ void QTextEdit::insertPlainText(const QString &text)
 
     It is equivalent to:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qtextedit.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qtextedit.cpp 2
 
     \note When using this function with a style sheet, the style sheet will
     only apply to the current block in the document. In order to apply a style
@@ -2261,6 +2283,9 @@ void QTextEdit::setTabChangesFocus(bool b)
 /*!
     \property QTextEdit::documentTitle
     \brief the title of the document parsed from the text.
+
+    By default, for a newly-created, empty document, this property contains
+    an empty string.
 */
 
 /*!
@@ -2303,6 +2328,8 @@ void QTextEdit::setLineWrapMode(LineWrapMode wrap)
     column number (in character columns) from the left edge of the
     text edit at which text should be wrapped.
 
+    By default, this property contains a value of 0.
+
     \sa lineWrapMode
 */
 
@@ -2322,6 +2349,8 @@ void QTextEdit::setLineWrapColumnOrWidth(int w)
 /*!
     \property QTextEdit::wordWrapMode
     \brief the mode QTextEdit will use when wrapping text by words
+
+    By default, this property is set to QTextOption::WrapAtWordBoundaryOrAnywhere.
 
     \sa QTextOption::WrapMode
 */

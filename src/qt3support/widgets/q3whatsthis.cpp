@@ -210,7 +210,7 @@ bool Q3WhatsThis::clicked(const QString & /* href */)
     when clicked. You will often use this with a tool bar as \a
     parent:
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3whatsthis.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3whatsthis.cpp 0
 */
 QToolButton *Q3WhatsThis::whatsThisButton(QWidget * parent)
 {

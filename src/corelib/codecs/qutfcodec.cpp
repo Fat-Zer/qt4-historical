@@ -474,11 +474,11 @@ QByteArray QUtf32Codec::convertFromUnicode(const QChar *uc, int len, ConverterSt
         if (endian == BE) {
             data[0] = 0;
             data[1] = 0;
-            data[2] = 0xfe;
-            data[3] = 0xff;
+            data[2] = (char)0xfe;
+            data[3] = (char)0xff;
         } else {
-            data[0] = 0xff;
-            data[1] = 0xfe;
+            data[0] = (char)0xff;
+            data[1] = (char)0xfe;
             data[2] = 0;
             data[3] = 0;
         }

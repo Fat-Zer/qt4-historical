@@ -94,7 +94,7 @@ QT_BEGIN_NAMESPACE
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodecplugin.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_codecs_qtextcodecplugin.cpp 0
 
     \sa names()
 */

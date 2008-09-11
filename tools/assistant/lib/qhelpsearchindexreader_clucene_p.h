@@ -80,7 +80,8 @@ public:
     ~QHelpSearchIndexReader();
 
     void cancelSearching();
-    void search(const QString &collectionFile, 
+    void search(const QString &collectionFile,
+        const QString &indexFilesFolder,
         const QList<QHelpSearchQuery> &queryList);
 
     int hitsCount() const;
@@ -105,6 +106,7 @@ private:
     bool m_cancel;
     QString m_collectionFile;
     QList<QHelpSearchQuery> m_query;
+    QString m_indexFilesFolder;
 };
 
         }   // namespace clucene

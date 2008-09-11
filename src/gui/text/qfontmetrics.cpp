@@ -132,7 +132,7 @@ extern int qt_defaultDpi();
     and size(), to return the size of that rectangle.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.text.qfontmetrics.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qfontmetrics.cpp 0
 
     \sa QFont, QFontInfo, QFontDatabase, QFontComboBox, {Character Map Example}
 */
@@ -960,7 +960,7 @@ int QFontMetrics::lineWidth() const
     and size(), to return the size of that rectangle.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.text.qfontmetrics.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qfontmetrics.cpp 1
 
     \sa QFont QFontInfo QFontDatabase
 */

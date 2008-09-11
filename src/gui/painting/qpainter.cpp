@@ -937,7 +937,7 @@ void QPainterPrivate::updateState(QPainterState *newState)
     painter. Then draw. Remember to destroy the QPainter object after
     drawing. For example:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 0
 
     The core functionality of QPainter is drawing, but the class also
     provide several functions that allows you to customize QPainter's
@@ -1352,10 +1352,10 @@ QPainter::QPainter()
     automatically calls end().
 
     Here's an example using begin() and end():
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 1
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 1
 
     The same example using this constructor:
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 2
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 2
 
     Since the constructor cannot provide feedback when the initialization
     of the painter failed you should rather use begin() and end() to paint
@@ -1560,7 +1560,7 @@ void QPainter::restore()
 
     The errors that can occur are serious problems, such as these:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 3
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 3
 
     Note that most of the time, you can use one of the constructors
     instead of begin(), and that end() is automatically done at
@@ -2414,7 +2414,7 @@ void QPainter::setClipRegion(const QRegion &r, Qt::ClipOperation op)
 
     They operate on the painter's worldMatrix() and are implemented like this:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 4
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 4
 
     Note that when using setWorldMatrix() function you should always have
     \a combine be true when you are drawing into a QPicture. Otherwise
@@ -2805,7 +2805,7 @@ void QPainter::fillPath(const QPainterPath &path, const QBrush &brush)
     \row
     \o \inlineimage qpainter-path.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 5
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 5
     \endtable
 
     \sa {painting/painterpaths}{the Painter Paths
@@ -2843,7 +2843,7 @@ void QPainter::drawPath(const QPainterPath &path)
     \row
     \o \inlineimage qpainter-line.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 6
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 6
     \endtable
 
     \sa drawLines(), drawPolyline(), {The Coordinate System}
@@ -2890,7 +2890,7 @@ void QPainter::drawPath(const QPainterPath &path)
     \row
     \o \inlineimage qpainter-rectangle.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 7
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 7
     \endtable
 
     \sa drawRects(), drawPolygon(), {The Coordinate System}
@@ -3471,7 +3471,7 @@ const QFont &QPainter::font() const
     \row
     \o \inlineimage qpainter-roundrect.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 8
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 8
     \endtable
 
     \sa drawRect(), QPen
@@ -3580,7 +3580,7 @@ void QPainter::drawRoundRect(const QRectF &r, int xRnd, int yRnd)
     \row
     \o \inlineimage qpainter-ellipse.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 9
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 9
     \endtable
 
     \sa drawPie(), {The Coordinate System}
@@ -3701,7 +3701,7 @@ void QPainter::drawEllipse(const QRect &r)
     \row
     \o \inlineimage qpainter-arc.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 10
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 10
     \endtable
 
     \sa drawPie(), drawChord(), {The Coordinate System}
@@ -3766,7 +3766,7 @@ void QPainter::drawArc(const QRectF &r, int a, int alen)
     \row
     \o \inlineimage qpainter-pie.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 11
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 11
     \endtable
 
     \sa drawEllipse(), drawChord(), {The Coordinate System}
@@ -3836,7 +3836,7 @@ void QPainter::drawPie(const QRectF &r, int a, int alen)
     \row
     \o \inlineimage qpainter-chord.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 12
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 12
     \endtable
 
     \sa drawArc(), drawPie(), {The Coordinate System}
@@ -4113,7 +4113,7 @@ void QPainter::drawLines(const QPoint *pointPairs, int lineCount)
     \table 100%
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 13
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 13
     \endtable
 
     \sa drawLines(), drawPolygon(), {The Coordinate System}
@@ -4233,7 +4233,7 @@ void QPainter::drawPolyline(const QPoint *points, int pointCount)
     \row
     \o \inlineimage qpainter-polygon.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 14
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 14
     \endtable
 
     The first point is implicitly connected to the last point, and the
@@ -4373,7 +4373,7 @@ void QPainter::drawPolygon(const QPoint *points, int pointCount, Qt::FillRule fi
     \row
     \o \inlineimage qpainter-polygon.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 15
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 15
     \endtable
 
     The first point is implicitly connected to the last point, and the
@@ -4521,7 +4521,7 @@ void QPainter::drawConvexPolygon(const QPointF *points, int pointCount)
     \table 100%
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 16
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 16
     \endtable
 
     If \a pixmap is a QBitmap it is drawn with the bits that are "set"
@@ -4985,7 +4985,7 @@ void QPainter::drawText(const QRect &r, int flags, const QString &str, QRect *br
     \row
     \o \inlineimage qpainter-text.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 17
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 17
     \endtable
 
     The \a boundingRect (if not null) is set to the what the bounding rectangle
@@ -5188,7 +5188,7 @@ static QPainterPath generateWavyPath(qreal minWidth, QPaintDevice *device)
 
         // cut-off at the last arc segment
         if (remaining < 2 * radius)
-            angle = 180 * acos(1 - remaining / radius) / Q_PI;
+            angle = 180 * remaining / (2 * radius);
 
         path.arcTo(xs, ys, 2*radius, 2*radius, 180, up ? angle : -angle);
 
@@ -5672,7 +5672,7 @@ void QPainter::drawTiledPixmap(const QRectF &r, const QPixmap &pixmap, const QPo
     \table 100%
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 18
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 18
     \endtable
 
     \sa QPicture::play()
@@ -5711,7 +5711,7 @@ void QPainter::drawPicture(const QPointF &p, const QPicture &picture)
 
     Erases the area inside the given \a rectangle. Equivalent to
     calling
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 19
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 19
 
     \sa fillRect()
 */
@@ -5788,7 +5788,8 @@ void QPainter::fillRect(const QRect &r, const QBrush &brush)
 
     Q_D(QPainter);
     if (d->fillrect_func && !(d->state->renderHints & QPainter::Antialiasing)
-        && d->state->txop <= QTransform::TxTranslate)
+        && d->state->txop <= QTransform::TxTranslate
+        && !(brush.gradient() && brush.gradient()->coordinateMode() == QGradient::StretchToDeviceMode))
     {
         if (d->state->dirtyFlags)
             d->updateState(d->state);
@@ -6954,7 +6955,7 @@ void bitBlt(QPaintDevice *dst, int dx, int dy,
     \table 100%
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpainter.cpp 20
+    \snippet doc/src/snippets/code/src_gui_painting_qpainter.cpp 20
     \endtable
 
     \sa drawPixmap()

@@ -70,7 +70,7 @@
     functions allow you to implement your own implicitly shared
     classes.
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 0
 
     \section2 Memory ordering
 
@@ -106,7 +106,7 @@
     nothing and return false. This operation equates to the following
     code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 1
 
     There are 4 test-and-set functions: testAndSetRelaxed(),
     testAndSetAcquire(), testAndSetRelease(), and
@@ -119,7 +119,7 @@
     QAtomicInt and then assign a new value, returning the original
     value. This operation equates to the following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 2
 
     There are 4 fetch-and-store functions: fetchAndStoreRelaxed(),
     fetchAndStoreAcquire(), fetchAndStoreRelease(), and
@@ -133,7 +133,7 @@
     returning the original value. This operation equates to the
     following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 3
 
     There are 4 fetch-and-add functions: fetchAndAddRelaxed(),
     fetchAndAddAcquire(), fetchAndAddRelease(), and
@@ -674,7 +674,7 @@
     these functions do nothing and return false. This operation
     equates to the following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 4
 
     There are 4 test-and-set functions: testAndSetRelaxed(),
     testAndSetAcquire(), testAndSetRelease(), and
@@ -687,7 +687,7 @@
     QAtomicPointer and then assign a new value, returning the original
     value. This operation equates to the following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 5
 
     There are 4 fetch-and-store functions: fetchAndStoreRelaxed(),
     fetchAndStoreAcquire(), fetchAndStoreRelease(), and
@@ -701,7 +701,7 @@
     returning the original value. This operation equates to the
     following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qatomic.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_thread_qatomic.cpp 6
 
     There are 4 fetch-and-add functions: fetchAndAddRelaxed(),
     fetchAndAddAcquire(), fetchAndAddRelease(), and

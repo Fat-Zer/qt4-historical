@@ -102,9 +102,11 @@ LocationDialog::LocationDialog(QWidget *parent)
             this, SLOT(updateLocationsTable()));
     connect(scopeComboBox, SIGNAL(activated(int)),
             this, SLOT(updateLocationsTable()));
-    connect(organizationComboBox, SIGNAL(editTextChanged(const QString &)),
+    connect(organizationComboBox->lineEdit(),
+            SIGNAL(editingFinished()),
             this, SLOT(updateLocationsTable()));
-    connect(applicationComboBox, SIGNAL(editTextChanged(const QString &)),
+    connect(applicationComboBox->lineEdit(),
+            SIGNAL(editingFinished()),
             this, SLOT(updateLocationsTable()));
     connect(buttonBox, SIGNAL(accepted()), this, SLOT(accept()));
     connect(buttonBox, SIGNAL(rejected()), this, SLOT(reject()));

@@ -431,6 +431,7 @@ void QScrollBarPrivate::init()
     q->setAttribute(Qt::WA_OpaquePaintEvent);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*! \reimp */
 void QScrollBar::contextMenuEvent(QContextMenuEvent *event)
 {
@@ -479,7 +480,7 @@ void QScrollBar::contextMenuEvent(QContextMenuEvent *event)
         triggerAction(QAbstractSlider::SliderSingleStepAdd);
 #endif // QT_NO_MENU
 }
-
+#endif // QT_NO_CONTEXTMENU
 
 
 /*! \reimp */

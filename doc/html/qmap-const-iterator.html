@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qmap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/tools/qmap.cpp -->
 <head>
   <title>Qt 4.4: const_iterator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">const_iterator Class Reference<br /><span class="small-subtitle">(QMap::const_iterator)<br />[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QMap::const_iterator class provides an STL-style const iterator for <a href="qmap.html">QMap</a> and <a href="qmultimap.html">QMultiMap</a>. <a href="#details">More...</a></p>
@@ -47,15 +47,15 @@
 <p><a href="qmap.html">QMap</a> features both <a href="containers.html#stl-style-iterators">STL-style iterators</a> and <a href="containers.html#java-style-iterators">Java-style iterators</a>. The STL-style iterators are more low-level and more cumbersome to use; on the other hand, they are slightly faster and, for developers who already know STL, have the advantage of familiarity.</p>
 <p><a href="qmap.html">QMap</a>&lt;Key, T&gt;::const_iterator allows you to iterate over a <a href="qmap.html">QMap</a> (or a <a href="qmultimap.html">QMultiMap</a>). If you want to modify the <a href="qmap.html">QMap</a> as you iterate over it, you must use <a href="qmap-iterator.html">QMap::iterator</a> instead. It is generally good practice to use QMap::const_iterator on a non-const <a href="qmap.html">QMap</a> as well, unless you need to change the <a href="qmap.html">QMap</a> through the iterator. Const iterators are slightly faster, and can improve code readability.</p>
 <p>The default QMap::const_iterator constructor creates an uninitialized iterator. You must initialize it using a <a href="qmap.html">QMap</a> function like <a href="qmap.html#constBegin">QMap::constBegin</a>(), <a href="qmap.html#constEnd">QMap::constEnd</a>(), or <a href="qmap.html#find">QMap::find</a>() before you can start iterating. Here's a typical loop that prints all the (key, value) pairs stored in a map:</p>
-<pre>         QMap&lt;QString, int&gt; map;
-         map.insert(&quot;January&quot;, 1);
-         map.insert(&quot;February&quot;, 2);
-         ...
-         map.insert(&quot;December&quot;, 12);
+<pre> QMap&lt;QString, int&gt; map;
+ map.insert(&quot;January&quot;, 1);
+ map.insert(&quot;February&quot;, 2);
+ ...
+ map.insert(&quot;December&quot;, 12);
 
-         QMap&lt;QString, int&gt;::const_iterator i;
-         for (i = map.constBegin(); i != map.constEnd(); ++i)
-             cout &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value() &lt;&lt; endl;</pre>
+ QMap&lt;QString, int&gt;::const_iterator i;
+ for (i = map.constBegin(); i != map.constEnd(); ++i)
+     cout &lt;&lt; i.key() &lt;&lt; &quot;: &quot; &lt;&lt; i.value() &lt;&lt; endl;</pre>
 <p>Unlike <a href="qhash.html">QHash</a>, which stores its items in an arbitrary order, <a href="qmap.html">QMap</a> stores its items ordered by key. Items that share the same key (because they were inserted using <a href="qmap.html#insertMulti">QMap::insertMulti</a>()) will appear consecutively, from the most recently to the least recently inserted value.</p>
 <p>Multiple iterators can be used on the same map. If you add items to the map, existing iterators will remain valid. If you remove items from the map, iterators that point to the removed items will become dangling iterators.</p>
 <p>See also <a href="qmap-iterator.html">QMap::iterator</a> and <a href="qmapiterator.html">QMapIterator</a>.</p>
@@ -131,8 +131,8 @@
 <p>See also <a href="qmap-const-iterator.html#operator-not-eq">operator!=</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

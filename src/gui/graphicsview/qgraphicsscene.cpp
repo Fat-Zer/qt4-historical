@@ -65,7 +65,7 @@ static const int QGRAPHICSSCENE_INDEXTIMER_TIMEOUT = 2000;
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 0
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 0
 
     Note that QGraphicsScene has no visual appearance of its own; it only
     manages the items. You need to create a QGraphicsView widget to visualize
@@ -301,6 +301,7 @@ QGraphicsScenePrivate::QGraphicsScenePrivate()
       dragDropItem(0),
       enterWidget(0),
       lastDropAction(Qt::IgnoreAction),
+      painterStateProtection(true),
       style(0)
 {
 }
@@ -985,24 +986,6 @@ void QGraphicsScenePrivate::installSceneEventFilter(QGraphicsItem *watched, QGra
 /*!
     \internal
 */
-bool QGraphicsScenePrivate::painterStateProtection(const QPainter *painter) const
-{
-    if (!(painter && painter->isActive()))
-        return false;
-
-    // Detect if painter state protection is disabled.
-    QPaintDevice *device = painter->paintEngine()->paintDevice();
-    for (int i = 0; i < views.size(); ++i) {
-        QWidget *viewport = views.at(i)->viewport();
-        if ((QPaintDevice *)viewport == device)
-            return !(views.at(i)->optimizationFlags() & QGraphicsView::DontSavePainterState);
-    }
-    return true;
-}
-
-/*!
-    \internal
-*/
 void QGraphicsScenePrivate::removeSceneEventFilter(QGraphicsItem *watched, QGraphicsItem *filter)
 {
     if (!sceneEventFilters.contains(watched))
@@ -1448,7 +1431,7 @@ void QGraphicsScene::setSceneRect(const QRectF &rect)
     device, such as a QImage (e.g., to take a screenshot), or for printing
     with QPrinter. For example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 1
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 1
 
     If \a source is a null rect, this function will use sceneRect() to
     determine what to render. If \a target is a null rect, the dimensions of \a
@@ -1621,7 +1604,7 @@ void QGraphicsScene::setItemIndexMethod(ItemIndexMethod method)
     granularity of the scene's partitioning. The size of each scene segment is
     determined by the following algorithm:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 2
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 2
 
     The BSP tree has an optimal size when each segment contains between 0 and
     10 items.
@@ -2233,7 +2216,7 @@ void QGraphicsScene::addItem(QGraphicsItem *item)
 
 /*!
     Creates and adds an ellipse item to the scene, and returns the item
-    pointer. The geometry of the ellipse is defined by \a rect, and it's pen
+    pointer. The geometry of the ellipse is defined by \a rect, and its pen
     and brush are initialized to \a pen and \a brush.
 
     Note that the item's geometry is provided in item coordinates, and its
@@ -2265,7 +2248,7 @@ QGraphicsEllipseItem *QGraphicsScene::addEllipse(const QRectF &rect, const QPen 
 
 /*!
     Creates and adds a line item to the scene, and returns the item
-    pointer. The geometry of the line is defined by \a line, and it's pen
+    pointer. The geometry of the line is defined by \a line, and its pen
     is initialized to \a pen.
 
     Note that the item's geometry is provided in item coordinates, and its
@@ -2296,7 +2279,7 @@ QGraphicsLineItem *QGraphicsScene::addLine(const QLineF &line, const QPen &pen)
 
 /*!
     Creates and adds a path item to the scene, and returns the item
-    pointer. The geometry of the path is defined by \a path, and it's pen and
+    pointer. The geometry of the path is defined by \a path, and its pen and
     brush are initialized to \a pen and \a brush.
 
     Note that the item's geometry is provided in item coordinates, and its
@@ -2341,7 +2324,7 @@ QGraphicsPixmapItem *QGraphicsScene::addPixmap(const QPixmap &pixmap)
 
 /*!
     Creates and adds a polygon item to the scene, and returns the item
-    pointer. The polygon is defined by \a polygon, and it's pen and
+    pointer. The polygon is defined by \a polygon, and its pen and
     brush are initialized to \a pen and \a brush.
 
     Note that the item's geometry is provided in item coordinates, and its
@@ -2366,7 +2349,7 @@ QGraphicsPolygonItem *QGraphicsScene::addPolygon(const QPolygonF &polygon,
 
 /*!
     Creates and adds a rectangle item to the scene, and returns the item
-    pointer. The geometry of the rectangle is defined by \a rect, and it's pen
+    pointer. The geometry of the rectangle is defined by \a rect, and its pen
     and brush are initialized to \a pen and \a brush.
 
     Note that the item's geometry is provided in item coordinates, and its
@@ -2400,7 +2383,7 @@ QGraphicsRectItem *QGraphicsScene::addRect(const QRectF &rect, const QPen &pen, 
 
 /*!
     Creates and adds a text item to the scene, and returns the item
-    pointer. The text string is initialized to \a text, and it's font
+    pointer. The text string is initialized to \a text, and its font
     is initialized to \a font.
 
     The item's position is initialized to (0, 0).
@@ -2422,7 +2405,7 @@ QGraphicsTextItem *QGraphicsScene::addText(const QString &text, const QFont &fon
 
 /*!
     Creates and adds a QGraphicsSimpleTextItem to the scene, and returns the
-    item pointer. The text string is initialized to \a text, and it's font is
+    item pointer. The text string is initialized to \a text, and its font is
     initialized to \a font.
 
     The item's position is initialized to (0, 0).
@@ -2735,7 +2718,7 @@ QGraphicsItem *QGraphicsScene::mouseGrabberItem() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 3
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 3
 
     QGraphicsScene::render() calls drawBackground() to draw the scene
     background. For more detailed control over how the background is drawn,
@@ -2770,7 +2753,7 @@ void QGraphicsScene::setBackgroundBrush(const QBrush &brush)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 4
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 4
 
     QGraphicsScene::render() calls drawForeground() to draw the scene
     foreground. For more detailed control over how the foreground is
@@ -2868,7 +2851,7 @@ void QGraphicsScene::update(const QRectF &rect)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsscene.cpp 5
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsscene.cpp 5
 
     Note that QGraphicsView currently supports background caching only (see
     QGraphicsView::CacheBackground). This function is equivalent to calling
@@ -3733,12 +3716,11 @@ void QGraphicsScene::drawBackground(QPainter *painter, const QRectF &rect)
     Q_D(QGraphicsScene);
 
     if (d->backgroundBrush.style() != Qt::NoBrush) {
-        bool painterStateProtection = d->painterStateProtection(painter);
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->save();
         painter->setBrushOrigin(0, 0);
         painter->fillRect(rect, backgroundBrush());
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->restore();
     }
 }
@@ -3761,19 +3743,18 @@ void QGraphicsScene::drawForeground(QPainter *painter, const QRectF &rect)
     Q_D(QGraphicsScene);
 
     if (d->foregroundBrush.style() != Qt::NoBrush) {
-        bool painterStateProtection = d->painterStateProtection(painter);
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->save();
         painter->setBrushOrigin(0, 0);
         painter->fillRect(rect, foregroundBrush());
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->restore();
     }
 }
 
 static void _q_paintItem(QGraphicsItem *item, QPainter *painter,
                          const QStyleOptionGraphicsItem *option, QWidget *widget,
-                         bool useWindowOpacity = false)
+                         bool useWindowOpacity, bool painterStateProtection)
 {
     if (!item->isWidget()) {
         item->paint(painter, option, widget);
@@ -3792,16 +3773,23 @@ static void _q_paintItem(QGraphicsItem *item, QPainter *painter,
     if (windowOpacity < 1.0)
         painter->setOpacity(oldPainterOpacity * windowOpacity);
 
+    // set layoutdirection on the painter
+    Qt::LayoutDirection oldLayoutDirection = painter->layoutDirection();
+    painter->setLayoutDirection(widgetItem->layoutDirection());
+
     if (widgetItem->isWindow() && widgetItem->windowType() != Qt::Popup && widgetItem->windowType() != Qt::ToolTip
         && !(widgetItem->windowFlags() & Qt::FramelessWindowHint)) {
-        // ### Does not respect QGraphicsView::DontSavePainterState.
-        painter->save();
+        if (painterStateProtection)
+            painter->save();
         widgetItem->paintWindowFrame(painter, option, widget);
-        painter->restore();
+        if (painterStateProtection)
+            painter->restore();
     }
 
     widgetItem->paint(painter, option, widget);
 
+    // Restore layoutdirection on the painter.
+    painter->setLayoutDirection(oldLayoutDirection);
     // Restore painter opacity.
     if (windowOpacity < 1.0)
         painter->setOpacity(oldPainterOpacity);
@@ -3813,7 +3801,8 @@ static void _q_paintItem(QGraphicsItem *item, QPainter *painter,
     Draws items directly, or using cache.
 */
 void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painter,
-                                           const QStyleOptionGraphicsItem *option, QWidget *widget)
+                                           const QStyleOptionGraphicsItem *option, QWidget *widget,
+                                           bool painterStateProtection)
 {
     QGraphicsItemPrivate *itemd = item->d_ptr;
     QGraphicsItem::CacheMode cacheMode = QGraphicsItem::CacheMode(itemd->cacheMode);
@@ -3824,7 +3813,7 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
         || !X11->use_xrender
 #endif
         ) {
-        _q_paintItem(static_cast<QGraphicsWidget *>(item), painter, option, widget, true);
+        _q_paintItem(static_cast<QGraphicsWidget *>(item), painter, option, widget, true, painterStateProtection);
         return;
     }
 
@@ -3879,7 +3868,8 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
             // Re-render the invalidated areas of the pixmap. Important: don't
             // fool the item into using the widget - pass 0 instead of \a
             // widget.
-            _q_paintItem(static_cast<QGraphicsWidget *>(item), &pixmapPainter, &cacheOption, 0);
+            _q_paintItem(static_cast<QGraphicsWidget *>(item), &pixmapPainter, &cacheOption, 0,
+                         false, painterStateProtection);
             pixmapPainter.end();
 
             // Reinsert this pixmap into the cache
@@ -3913,7 +3903,7 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
             && (deviceRect.width() > maximumCacheSize.width()
                 || deviceRect.height() > maximumCacheSize.height())) {
             _q_paintItem(static_cast<QGraphicsWidget *>(item), painter, option, widget,
-                         oldPainterOpacity != newPainterOpacity);
+                         oldPainterOpacity != newPainterOpacity, painterStateProtection);
             return;
         }
 
@@ -3960,7 +3950,8 @@ void QGraphicsScenePrivate::drawItemHelper(QGraphicsItem *item, QPainter *painte
             subPixmapPainter.setWorldTransform(xform, true);
 
             // Render.
-            _q_paintItem(static_cast<QGraphicsWidget *>(item), &subPixmapPainter, &cacheOption, 0);
+            _q_paintItem(static_cast<QGraphicsWidget *>(item), &subPixmapPainter, &cacheOption, 0,
+                         false, painterStateProtection);
             subPixmapPainter.end();
 
             // Blit the subpixmap into the main pixmap.
@@ -4020,12 +4011,11 @@ void QGraphicsScene::drawItems(QPainter *painter,
     Q_D(QGraphicsScene);
 
     // Detect if painter state protection is disabled.
-    bool painterStateProtection = d->painterStateProtection(painter);
     QTransform oldTransform = painter->worldTransform();
 
     for (int i = 0; i < numItems; ++i) {
         // Save painter
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->save();
 
         QGraphicsItem *item = items[i];
@@ -4049,10 +4039,10 @@ void QGraphicsScene::drawItems(QPainter *painter,
                      && (target = target->parentItem()));
         }
 
-        d->drawItemHelper(item, painter, &options[i], widget);
+        d->drawItemHelper(item, painter, &options[i], widget, d->painterStateProtection);
 
         // Restore painter
-        if (painterStateProtection)
+        if (d->painterStateProtection)
             painter->restore();
         else
             painter->setWorldTransform(oldTransform);
@@ -4463,7 +4453,7 @@ void QGraphicsScene::setActiveWindow(QGraphicsWidget *widget)
             z = qMax(z, siblingWindows.at(i)->zValue());
 
         // This will probably never overflow.
-        const qreal litt = 0.001;
+        const qreal litt = qreal(0.001);
         window->setZValue(z + litt);
 
         if (QGraphicsWidget *focusChild = window->focusWidget())

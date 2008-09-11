@@ -87,7 +87,7 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     The following code shows how to start Qt Assistant and request a
     certain page to be shown:}
 
-    \snippet doc/src/snippets/code/tools.assistant.compat.lib.qassistantclient.cpp 0
+    \snippet doc/src/snippets/code/tools_assistant_compat_lib_qassistantclient.cpp 0
     
     \e{For a complete example using the Qt Assistant remotely, see the \l
     {help/remotecontrol}{Remote Control} example.}
@@ -95,14 +95,14 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     In order to make Qt Assistant act as a customized help tool for
     your application, you must provide your application with a
     QAssistantClient object in addition to a \l
-    {assistant-manual.html#profiles}{Qt Assistant Document Profile}
-    (\c .adp file) and the associated documentation.
+    {assistant-manual.html} {Qt Assistant Document Profile} (\c .adp
+    file) and the associated documentation.
 
     Note that the QAssistantClient class is not included in the Qt
     library. To use it you must add the following line to your pro
     file:
 
-    \snippet doc/src/snippets/code/tools.assistant.compat.lib.qassistantclient.cpp 1
+    \snippet doc/src/snippets/code/tools_assistant_compat_lib_qassistantclient.cpp 1
 
     A QAssistantClient instance can open or close Qt Assistant
     whenever it is required.
@@ -158,10 +158,10 @@ static QAssistantClientPrivate *data( const QAssistantClient *client, bool creat
     {assistant-manual.html}{Qt Assistant Manual}.
 
     For a complete example using the QAssistantClient class, see the
-    \l {assistant/simpletextviewer}{Simple Text Viewer} example.  The
-    example shows how you can make Qt Assistant act as a customized
-    help tool for your application using the QAssistantClient class
-    combined with a Qt Assistant Document Profile.
+    \e{Simple Text Viewer} example. The example shows how you can make
+    Qt Assistant act as a customized help tool for your application
+    using the QAssistantClient class combined with a Qt Assistant
+    Document Profile.
 
     \sa {Qt Assistant Manual}, {Simple Text Viewer Example}
 */
@@ -266,9 +266,9 @@ QAssistantClient::~QAssistantClient()
 /*!
     Opens Qt Assistant, i.e. sets up the client-server communication
     between the application and Qt Assistant, and shows the start page
-    specified by the current \l {assistant-manual.html#profiles}{Qt
-    Assistant Document Profile}. If there is no specfied profile, and
-    Qt is installed, the default start page is the Qt Reference
+    specified by the current \l {assistant-manual.html}
+    {Qt Assistant Document Profile}. If there is no specfied profile,
+    and Qt is installed, the default start page is the Qt Reference
     Documentation's index page.
 
     If the connection is already established, this function does
@@ -434,9 +434,6 @@ void QAssistantClient::readStdError()
     default documentation set in Qt Assistant contains the Qt
     reference documentation as well as the tools that come with Qt,
     such as Qt Designer and qmake.
-
-    \sa {assistant-manual.html#customizing-qt-assistant}{Customizing
-    Qt Assistant}
 */
 void QAssistantClient::setArguments( const QStringList &args )
 {

@@ -85,7 +85,7 @@ QT_BEGIN_NAMESPACE
   QDateTimeEdit box. Dates and times appear in accordance with the
   format set; see setDisplayFormat().
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 0
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 0
 
   Here we've created a new QDateTimeEdit object initialized with
   today's date, and restricted the valid date range to today plus or
@@ -222,6 +222,9 @@ QDateTimeEdit::QDateTimeEdit(const QVariant &var, QVariant::Type parserType, QWi
   \property QDateTimeEdit::dateTime
   \brief the QDateTime that is set in the QDateTimeEdit
 
+  By default, this property contains a date that refers to January 1,
+  2000 and a time of 00:00:00 and 0 milliseconds.
+
   \sa date, time
 */
 
@@ -245,6 +248,8 @@ void QDateTimeEdit::setDateTime(const QDateTime &datetime)
 /*!
   \property QDateTimeEdit::date
   \brief the QDate that is set in the QDateTimeEdit
+
+  By default, this property contains a date that refers to January 1, 2000.
 
   \sa time, dateTime
 */
@@ -274,6 +279,8 @@ void QDateTimeEdit::setDate(const QDate &date)
 /*!
   \property QDateTimeEdit::time
   \brief the QTime that is set in the QDateTimeEdit
+
+  By default, this property contains a time of 00:00:00 and 0 milliseconds.
 
   \sa date, dateTime
 */
@@ -309,6 +316,9 @@ void QDateTimeEdit::setTime(const QTime &time)
 
   The default minimumDateTime can be restored with
   clearMinimumDateTime()
+
+  By default, this property contains a date that refers to September 14,
+  1752 and a time of 00:00:00 and 0 milliseconds.
 
   \sa maximumDateTime(), minimumTime(), maximumTime(), minimumDate(),
   maximumDate(), setDateTimeRange(), setDateRange(), setTimeRange(),
@@ -350,6 +360,9 @@ void QDateTimeEdit::setMinimumDateTime(const QDateTime &dt)
   The default maximumDateTime can be restored with
   clearMaximumDateTime().
 
+  By default, this property contains a date that refers to 31 December,
+  7999 and a time of 23:59:59 and 999 milliseconds.
+
   \sa minimumDateTime(), minimumTime(), maximumTime(), minimumDate(),
   maximumDate(), setDateTimeRange(), setDateRange(), setTimeRange(),
   clearMinimumDateTime(), clearMinimumDate(),
@@ -383,11 +396,11 @@ void QDateTimeEdit::setMaximumDateTime(const QDateTime &dt)
   function call.
   \since 4.4
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 1
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 1
 
   is analogous to:
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 2
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 2
 
   If either \a min or \a max are not valid, this function does
   nothing.
@@ -415,6 +428,8 @@ void QDateTimeEdit::setDateTimeRange(const QDateTime &min, const QDateTime &max)
   When setting this property the \l maximumDate is adjusted if
   necessary, to ensure that the range remains valid. If the date is
   not a valid QDate object, this function does nothing.
+
+  By default, this property contains a date that refers to September 14, 1752.
 
   \sa minimumTime(), maximumTime(), setDateRange()
 */
@@ -447,6 +462,8 @@ void QDateTimeEdit::clearMinimumDate()
   necessary to ensure that the range remains valid. If the date is
   not a valid QDate object, this function does nothing.
 
+  By default, this property contains a date that refers to December 31, 7999.
+
   \sa minimumDate, minimumTime, maximumTime, setDateRange()
 */
 
@@ -477,6 +494,8 @@ void QDateTimeEdit::clearMaximumDate()
   When setting this property the \l maximumTime is adjusted if
   necessary, to ensure that the range remains valid. If the time is
   not a valid QTime object, this function does nothing.
+
+  By default, this property contains a time of 00:00:00 and 0 milliseconds.
 
   \sa maximumTime, minimumDate, maximumDate, setTimeRange()
 */
@@ -510,6 +529,8 @@ void QDateTimeEdit::clearMinimumTime()
   necessary to ensure that the range remains valid. If the time is
   not a valid QTime object, this function does nothing.
 
+  By default, this property contains a time of 23:59:59 and 999 milliseconds.
+
   \sa minimumTime, minimumDate, maximumDate, setTimeRange()
 */
 QTime QDateTimeEdit::maximumTime() const
@@ -536,11 +557,11 @@ void QDateTimeEdit::clearMaximumTime()
   Convenience function to set minimum and maximum date with one
   function call.
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 3
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 3
 
   is analogous to:
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 4
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 4
 
   If either \a min or \a max are not valid, this function does
   nothing.
@@ -563,11 +584,11 @@ void QDateTimeEdit::setDateRange(const QDate &min, const QDate &max)
   Convenience function to set minimum and maximum time with one
   function call.
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 5
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 5
 
   is analogous to:
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qdatetimeedit.cpp 6
+  \snippet doc/src/snippets/code/src_gui_widgets_qdatetimeedit.cpp 6
 
   If either \a min or \a max are not valid, this function does
   nothing.
@@ -727,8 +748,8 @@ QCalendarWidget *QDateTimeEdit::calendarWidget() const
 /*!
   \since 4.4
 
-  Sets the calendar widget to be used for the calendar pop-up. The editor does
-  not automatically take ownership of the calendar widget.
+  Sets the given \a calendarWidget as the widget to be used for the calendar
+  pop-up. The editor does not automatically take ownership of the calendar widget.
 
   \sa calendarPopup
 */
@@ -1324,8 +1345,7 @@ void QDateTimeEdit::stepBy(int steps)
   This virtual function is used by the date time edit whenever it
   needs to display \a dateTime.
 
-  If you reimplement this, you may also need to reimplement
-  valueFromText() and validate().
+  If you reimplement this, you may also need to reimplement validate().
 
   \sa dateTimeFromText(), validate()
 */
@@ -1529,6 +1549,14 @@ QTimeEdit::QTimeEdit(const QTime &time, QWidget *parent)
 }
 
 /*!
+    \property QTimeEdit::time
+    \brief the QTime that is shown in the widget
+
+    By default, this property contains a time of 00:00:00 and 0 milliseconds.
+*/
+
+
+/*!
   \class QDateEdit
   \brief The QDateEdit class provides a widget for editing dates based on
   the QDateTimeEdit widget.
@@ -1580,6 +1608,13 @@ QDateEdit::QDateEdit(const QDate &date, QWidget *parent)
     : QDateTimeEdit(date, QVariant::Date, parent)
 {
 }
+
+/*!
+    \property QDateEdit::date
+    \brief the QDate that is shown in the widget
+
+    By default, this property contains a date referring to January 1, 2000.
+*/
 
 
 // --- QDateTimeEditPrivate ---
@@ -1901,6 +1936,9 @@ QString QDateTimeEditPrivate::textFromValue(const QVariant &f) const
 /*!
   \internal
   \reimp
+
+  This function's name is slightly confusing; it is not to be confused
+  with QAbstractSpinBox::valueFromText().
 */
 
 QVariant QDateTimeEditPrivate::valueFromText(const QString &f) const

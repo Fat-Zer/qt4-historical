@@ -69,9 +69,9 @@
     drivers:
 
     \if defined(QTOPIA_DOCS)
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 0
     \else
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 1
     \endif
 
     \if defined(QTOPIA_DOCS)
@@ -80,14 +80,14 @@
     can be enabled and disabled using the \c configure script. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 2
     \else
     In the default Qt configuration, only an unaccelerated Linux
     framebuffer driver (\c /dev/fb0) is enabled. The various drivers
     can be enabled and disabled using the \c configure script. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 3
     \endif
 
     Custom screen drivers can be implemented by subclassing the
@@ -102,7 +102,7 @@
     variable. For example (if the current shell is bash, ksh, zsh or
     sh):
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 4
 
     The valid values for the \c <driver> argument are \c LinuxFb, \c
     QVFb, \c VNC, \c Transformed, \c Multi and \l
@@ -162,7 +162,7 @@
     The QWS_DISPLAY environment variable can also be set using the \c
     -display option when running an application. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 5
 
     \section1 Subdrivers and Multiple Drivers
 
@@ -170,14 +170,14 @@
     subdrivers. The general syntax for specifying a driver is as
     follows:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 6
 
     In the case of subdrivers, it is important to add a space between
     each subdriver and before the display number to separate the
     various drivers and displays. Note that \c Multi screen drivers
     can have several subdrivers. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 7
 
     Note also that the VNC screen driver defaults to a virtual screen
     driver if no subdriver is specified. In this case the VNC driver accepts a
@@ -194,12 +194,12 @@
     Example running the VNC screen driver with a virtual screen of size 
     720x480 with 32 bits per pixel:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 8
 
     Example running the VNC screen driver on top of the Linux framebuffer
     driver:
 
-    \snippet doc/src/snippets/code/doc.src.qt-embedded-displaymanagement.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_qt-embedded-displaymanagement.qdoc 9
 
     In this last example, Qt is using two screen drivers simultaneously,
     displaying output on both the device's screen and across a network on

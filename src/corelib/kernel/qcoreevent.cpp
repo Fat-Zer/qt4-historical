@@ -357,7 +357,7 @@ Q_GLOBAL_STATIC(QEventUserEventRegistration, userEventRegistrationHelper)
     Registers and returns a custom event type. The \a hint provided
     will be used if it is available, otherwise it will return a value
     between QEvent::User and QEvent::MaxUser that has not yet been
-    registered. The \a hint is ignored if its value it not between
+    registered. The \a hint is ignored if its value is not between
     QEvent::User and QEvent::MaxUser.
 */
 int QEvent::registerEventType(int hint)

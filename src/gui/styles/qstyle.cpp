@@ -111,7 +111,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     QApplication::setStyle() function. It can also be specified by the
     user of the application, using the \c -style command-line option:
 
-    \snippet doc/src/snippets/code/src.gui.styles.qstyle.cpp 0
+    \snippet doc/src/snippets/code/src_gui_styles_qstyle.cpp 0
 
     If no style is specified, Qt will choose the most appropriate
     style for the user's platform or desktop environment.
@@ -247,7 +247,7 @@ static int unpackControlTypes(QSizePolicy::ControlTypes controls, QSizePolicy::C
     automatically. To use your new style with existing applications,
     simply start the application with the following argument:
 
-    \snippet doc/src/snippets/code/src.gui.styles.qstyle.cpp 1
+    \snippet doc/src/snippets/code/src_gui_styles_qstyle.cpp 1
 
     The application will use the look and feel from the custom style you
     implemented.
@@ -625,7 +625,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
     \value PE_IndicatorToolBarSeparator  The separator in a toolbar.
     \value PE_PanelToolBar  The panel for a toolbar.
     \value PE_PanelTipLabel The panel for a tip label.
-    \value PE_FrameTabBarBase The frame that is drawn for a tab bar, ususally drawn for a tab bar that isn't part of a tab widget.
+    \value PE_FrameTabBarBase The frame that is drawn for a tab bar, usually drawn for a tab bar that isn't part of a tab widget.
     \value PE_IndicatorTabTear An indicator that a tab is partially scrolled out of the visible tab bar when there are many tabs.
     \value PE_IndicatorColumnViewArrow An arrow in a QColumnView.
 
@@ -742,7 +742,7 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
          \o \l State_UpArrow \o Indicates that the arrow should be drawn up;
          otherwise it should be down.
     \row \o \l PE_FrameGroupBox, \l PE_Frame, \l PE_FrameLineEdit,
-            \l PE_FrameMenu, \l PE_FrameDockWidget
+            \l PE_FrameMenu, \l PE_FrameDockWidget, \l PE_FrameWindow
          \o \l QStyleOptionFrame \o \l State_Sunken
          \o Indicates that the Frame should be sunken.
     \row \o \l PE_IndicatorToolBarHandle \o \l QStyleOption
@@ -755,6 +755,15 @@ void QStyle::drawItemPixmap(QPainter *painter, const QRect &rect, int alignment,
             \l PE_IndicatorSpinDown,
          \o \l QStyleOptionSpinBox
          \o \l State_Sunken \o Indicates that the button is pressed.
+    \row \o{1,5} \l PE_PanelButtonCommand
+         \o{1,5} \l QStyleOptionButton
+         \o \l State_Enabled \o Set if the button is enabled.
+    \row \o \l State_HasFocus \o Set if the button has input focus.
+    \row \o \l State_Raised \o Set if the button is not down, not on and not flat.
+    \row \o \l State_On \o Set if the button is a toggle button and is toggled on.
+    \row \o \l State_Sunken
+         \o Set if the button is down (i.e., the mouse button or the
+         space bar is pressed on the button).
     \endtable
 
     \sa drawComplexControl(), drawControl()
@@ -2172,8 +2181,12 @@ int QStyle::sliderValueFromPosition(int min, int max, int pos, int span, bool up
 /*!
      Returns the style's standard palette.
 
-     Note that on systems that support system colors, the style's
-     standard palette is not used.
+    Note that on systems that support system colors, the style's
+    standard palette is not used. In particular, the Windows XP,
+    Vista, and Mac styles do not use the standard palette, but make
+    use of native theme engines. With these styles, you should not set
+    the palette with QApplication::setStandardPalette().
+
  */
 QPalette QStyle::standardPalette() const
 {

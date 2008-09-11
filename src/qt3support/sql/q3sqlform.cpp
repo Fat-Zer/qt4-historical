@@ -95,7 +95,7 @@ public:
 
     Some sample code to initialize a form successfully:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlform.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlform.cpp 0
 
     If you want to use custom editors for displaying and editing data
     fields, you must install a custom Q3SqlPropertyMap. The form

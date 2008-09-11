@@ -87,7 +87,7 @@ extern bool qt_tab_all_widgets;
     ampersand ('&'), QAbstractButton automatically creates a shortcut
     key. For example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qabstractbutton.cpp 0
 
     The \key Alt+C shortcut is assigned to the button, i.e., when the
     user presses \key Alt+C the button will call animateClick(). See
@@ -98,7 +98,7 @@ extern bool qt_tab_all_widgets;
     function. This is useful mostly for buttons that do not have any
     text, because they have no automatic shortcut.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qabstractbutton.cpp 1
 
     All of the buttons provided by Qt (QPushButton, QToolButton,
     QCheckBox, and QRadioButton) can display both \l text and \l{icon}{icons}.
@@ -1340,7 +1340,7 @@ For example, a slot that reacts to signals emitted by newly checked
 buttons but which ignores signals from buttons that have been unchecked
 can be implemented using the following pattern:
 
-\snippet doc/src/snippets/code/src.gui.widgets.qabstractbutton.cpp 2
+\snippet doc/src/snippets/code/src_gui_widgets_qabstractbutton.cpp 2
 
 Button groups can be created using the QButtonGroup class, and
 updates to the button states monitored with the

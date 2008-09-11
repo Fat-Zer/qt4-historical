@@ -87,7 +87,7 @@
     prefer to use the STL-compatible functions.
 
     Example:
-    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_q3valuelist.qdoc 0
 
 
     Notice that the latest changes to Mary's salary did not affect the
@@ -115,7 +115,7 @@
     (your application will crash or do unpredictable things). Use
     last() and first() with caution, for example:
 
-    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_q3valuelist.qdoc 1
 
     Because Q3ValueList is value-based there is no need to be careful
     about deleting items in the list. The list holds its own copies
@@ -368,7 +368,7 @@
 
     Use the end() function instead. For example:
 
-    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_q3valuelist.qdoc 2
 
 */
 
@@ -380,7 +380,7 @@
 
     Use the end() function instead. For example:
 
-    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_q3valuelist.qdoc 3
 
 */
 
@@ -459,7 +459,7 @@
     iterator.
 
     Example (see Q3ValueList for the complete code):
-    \snippet doc/src/snippets/code/doc.src.q3valuelist.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_q3valuelist.qdoc 4
 
     Q3ValueList is highly optimized for performance and memory usage.
     This means that you must be careful: Q3ValueList does not know

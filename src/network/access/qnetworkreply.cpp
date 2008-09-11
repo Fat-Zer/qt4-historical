@@ -98,7 +98,10 @@ QNetworkReplyPrivate::QNetworkReplyPrivate()
     Indicates all possible error conditions found during the
     processing of the request.
 
-    \value NoError              no error condition
+    \value NoError              no error condition.
+    \note When the HTTP protocol returns a redirect no error will be
+    reported.  You can check if there is a redirect with the
+    QNetworkRequest::RedirectionTargetAttribute attribute.
 
     \value ConnectionRefusedError  the remote server refused the
     connection (the server is not accepting requests)

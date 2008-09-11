@@ -78,7 +78,7 @@ using namespace Qt;
     widgets automatically generate accelerators, such as QAbstractButton,
     QGroupBox, QLabel (with QLabel::setBuddy()), QMenuBar, and QTabBar.
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 0
 
     A Q3Accel contains a list of accelerator items that can be
     manipulated using insertItem(), removeItem(), clear(), key() and
@@ -121,14 +121,14 @@ using namespace Qt;
     and will consume relevant key events until then.
 
     Please note that the accelerator
-    \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 1
     can be triggered with both the 'M' key, and with Shift+M,
     unless a second accelerator is defined for the Shift+M
     combination.
 
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 2
 
     \sa QKeyEvent QWidget::keyPressEvent()
     QAbstractButton::setAccel() QLabel::setBuddy() QKeySequence
@@ -696,7 +696,7 @@ static int get_seq_id()
     If \a id is negative, then the item will be assigned a unique
     negative identifier less than -1.
 
-    \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 3
 */
 
 int Q3Accel::insertItem(const QKeySequence& key, int id)
@@ -787,7 +787,7 @@ void Q3Accel::setItemEnabled(int id, bool enable)
     Connects the accelerator item \a id to the slot \a member of \a
     receiver. Returns true if the connection is successful.
 
-    \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 4
 
     Of course, you can also send a signal as \a member.
 
@@ -916,7 +916,7 @@ QString Q3Accel::keyToString(QKeySequence k)
   \endlink(), so that accelerator keys can be replaced in
   translations:
 
-  \snippet doc/src/snippets/code/src.qt3support.other.q3accel.cpp 5
+  \snippet doc/src/snippets/code/src_qt3support_other_q3accel.cpp 5
 
   Notice the "File|Open" translator comment. It is by no means
   necessary, but it provides some context for the human translator.

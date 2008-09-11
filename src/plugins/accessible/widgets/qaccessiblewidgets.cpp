@@ -83,7 +83,10 @@ QList<QWidget*> childWidgets(const QWidget *widget, bool includeTopLevel)
     QList<QWidget*> widgets;
     for (int i = 0; i < list.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(list.at(i));
-        if (w && (includeTopLevel || !w->isWindow() ) && !qobject_cast<QFocusFrame*>(w))
+        if (w && (includeTopLevel || !w->isWindow() ) 
+              && !qobject_cast<QFocusFrame*>(w)
+              && !qobject_cast<QMenu*>(w)
+              && w->objectName() != QLatin1String("qt_rubberband"))
             widgets.append(w);
     }
     return widgets;

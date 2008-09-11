@@ -929,11 +929,12 @@ void QTextControl::processEvent(QEvent *e, const QMatrix &matrix, QWidget *conte
         case QEvent::InputMethod:
             d->inputMethodEvent(static_cast<QInputMethodEvent *>(e));
             break;
-        case QEvent::ContextMenu: {
+#ifndef QT_NO_CONTEXTMENU
+    case QEvent::ContextMenu: {
             QContextMenuEvent *ev = static_cast<QContextMenuEvent *>(e);
             d->contextMenuEvent(ev->globalPos(), matrix.map(ev->pos()), contextWidget);
             break; }
-
+#endif // QT_NO_CONTEXTMENU
         case QEvent::FocusIn:
         case QEvent::FocusOut:
             d->focusEvent(static_cast<QFocusEvent *>(e));
@@ -1065,6 +1066,14 @@ void QTextControl::processEvent(QEvent *e, const QMatrix &matrix, QWidget *conte
                            || ke == QKeySequence::MoveToPreviousWord
                            || ke == QKeySequence::MoveToStartOfDocument
                            || ke == QKeySequence::MoveToEndOfDocument
+                           || ke == QKeySequence::SelectNextWord
+                           || ke == QKeySequence::SelectPreviousWord
+                           || ke == QKeySequence::SelectStartOfLine
+                           || ke == QKeySequence::SelectEndOfLine
+                           || ke == QKeySequence::SelectStartOfBlock
+                           || ke == QKeySequence::SelectEndOfBlock
+                           || ke == QKeySequence::SelectStartOfDocument
+                           || ke == QKeySequence::SelectEndOfDocument
                           ) {
                     ke->accept();
 #endif

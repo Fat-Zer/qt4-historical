@@ -65,7 +65,6 @@ public:
 				 const QString& outputDir ) = 0;
 
     static ArchiveExtractor *extractorForFileName( const QString& fileName );
-    static ArchiveExtractor *uncompressorForFileName( const QString& fileName );
 
 protected:
     const QStringList& fileExtensions() { return fileExts; }

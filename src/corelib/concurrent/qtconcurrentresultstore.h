@@ -210,8 +210,8 @@ public:
 
     void clear()
     {
-        QMap<int, ResultItem>::const_iterator mapIterator = m_results.begin();
-        while (mapIterator != m_results.end()) {
+        QMap<int, ResultItem>::const_iterator mapIterator = m_results.constBegin();
+        while (mapIterator != m_results.constEnd()) {
             if (mapIterator.value().isVector())
                 delete reinterpret_cast<const QVector<T> *>(mapIterator.value().result);
             else

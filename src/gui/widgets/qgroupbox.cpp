@@ -262,7 +262,7 @@ void QGroupBox::setTitle(const QString &title)
     The group box title text will have a keyboard shortcut if the title
     contains an ampersand ('&') followed by a letter.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qgroupbox.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qgroupbox.cpp 0
 
     In the example above, \key Alt+U moves the keyboard focus to the
     group box. See the \l {QShortcut#mnemonic}{QShortcut}

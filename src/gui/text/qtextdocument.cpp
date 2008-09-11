@@ -147,7 +147,7 @@ bool Qt::mightBeRichText(const QString& text)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextdocument.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qtextdocument.cpp 0
 
     This function is defined in the \c <QTextDocument> header file.
 
@@ -563,6 +563,13 @@ void QTextDocument::markContentsDirty(int from, int length)
 /*!
     \property QTextDocument::useDesignMetrics
     \since 4.1
+    \brief whether the document uses design metrics of fonts to improve the accuracy of text layout
+
+    If this property is set to true, the layout will use design metrics.
+    Otherwise, the metrics of the paint device as set on
+    QAbstractTextDocumentLayout::setPaintDevice() will be used.
+
+    By default, this property is false.
 */
 
 void QTextDocument::setUseDesignMetrics(bool b)
@@ -724,6 +731,9 @@ void QTextDocument::adjustSize()
 
     Note that the width is always >= pageSize().width().
 
+    By default, for a newly-created, empty document, this property contains
+    a configuration-dependent size.
+
     \sa setTextWidth(), setPageSize(), idealWidth()
 */
 QSizeF QTextDocument::size() const
@@ -738,6 +748,8 @@ QSizeF QTextDocument::size() const
     Returns the number of text blocks in the document.
 
     The value of this property is undefined in documents with tables or frames.
+
+    By default, if defined, this property contains a value of 1.
 */
 int QTextDocument::blockCount() const
 {
@@ -1356,6 +1368,9 @@ QTextBlock QTextDocument::lastBlock() const
     \property QTextDocument::pageSize
     \brief the page size that should be used for laying out the document
 
+    By default, for a newly-created, empty document, this property contains
+    an undefined size.
+
     \sa modificationChanged()
 */
 
@@ -1418,6 +1433,8 @@ QFont QTextDocument::defaultFont() const
 /*!
     \property QTextDocument::modified
     \brief whether the document has been modified by the user
+
+    By default, this property is false.
 
     \sa modificationChanged()
 */
@@ -2486,8 +2503,8 @@ QString QTextHtmlExporter::findUrlForImage(const QTextDocument *doc, qint64 cach
 
     if (doc && doc->docHandle()) {
         QTextDocumentPrivate *priv = doc->docHandle();
-        QMap<QUrl, QVariant>::const_iterator it = priv->cachedResources.begin();
-        for (; it != priv->cachedResources.end(); ++it) {
+        QMap<QUrl, QVariant>::const_iterator it = priv->cachedResources.constBegin();
+        for (; it != priv->cachedResources.constEnd(); ++it) {
 
             const QVariant &v = it.value();
             if (v.type() == QVariant::Image && !isPixmap) {
@@ -2501,7 +2518,7 @@ QString QTextHtmlExporter::findUrlForImage(const QTextDocument *doc, qint64 cach
             }
         }
 
-        if (it != priv->cachedResources.end())
+        if (it != priv->cachedResources.constEnd())
             url = it.key().toString();
     }
 
@@ -2761,7 +2778,7 @@ void QTextHtmlExporter::emitFrameStyle(const QTextFrameFormat &format, FrameType
     The \a encoding parameter specifies the value for the charset attribute
     in the html header. For example if 'utf-8' is specified then the
     beginning of the generated html will look like this:
-    \snippet doc/src/snippets/code/src.gui.text.qtextdocument.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qtextdocument.cpp 1
 
     If no encoding is specified then no such meta information is generated.
 

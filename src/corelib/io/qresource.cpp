@@ -571,6 +571,11 @@ inline QString QResourceRoot::name(int node) const
 int QResourceRoot::findNode(const QString &_path, const QLocale &locale) const
 {
     QString path = QDir::cleanPath(_path);
+    // QDir::cleanPath does not remove two trailing slashes under _Windows_
+    // due to support for UNC paths. Remove those manually.
+    if (path.startsWith(QLatin1String("//")))
+        path.remove(0, 1);
+
     {
         QString root = mappingRoot();
         if(!root.isEmpty()) {

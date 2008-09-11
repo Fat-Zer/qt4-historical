@@ -336,7 +336,7 @@ QTabWidget::~QTabWidget()
     move the focus to this tab.
 
     \note If you call addTab() after show(), the layout system will try
-    to adjust to the changes in it's widgets hierarchy and may cause
+    to adjust to the changes in its widgets hierarchy and may cause
     flicker. To prevent this, you can set the QWidget::updatesEnabled
     property to false prior to changes; remember to set the property
     to true when the changes are done, making the widget receive paint
@@ -390,7 +390,7 @@ int QTabWidget::addTab(QWidget *child, const QIcon& icon, const QString &label)
     index, but keep the current page.
 
     \note If you call insertTab() after show(), the layout system will try
-    to adjust to the changes in it's widgets hierarchy and may cause
+    to adjust to the changes in its widgets hierarchy and may cause
     flicker. To prevent this, you can set the QWidget::updatesEnabled
     property to false prior to changes; remember to set the property
     to true when the changes are done, making the widget receive paint
@@ -607,6 +607,9 @@ void QTabWidget::setCurrentWidget(QWidget *widget)
     \brief the index position of the current tab page
 
     The current index is -1 if there is no current widget.
+
+    By default, this property contains a value of -1 because there are initially
+    no tabs in the widget.
 */
 
 int QTabWidget::currentIndex() const
@@ -859,6 +862,8 @@ void QTabWidgetPrivate::updateTabBarPosition()
     Possible values for this property are described by the TabPosition
     enum.
 
+    By default, this property is set to \l North.
+
     \sa TabPosition
 */
 QTabWidget::TabPosition QTabWidget::tabPosition() const
@@ -985,6 +990,8 @@ QWidget *QTabWidget::widget(int index) const
 /*!
     \property QTabWidget::count
     \brief the number of tabs in the tab bar
+
+    By default, this property contains a value of 0.
 */
 int QTabWidget::count() const
 {
@@ -1130,7 +1137,7 @@ void QTabWidget::setElideMode(Qt::TextElideMode mode)
     \since 4.2
 
     When there are too many tabs in a tab bar for its size, the tab bar can either choose
-    to expand it's size or to add buttons that allow you to scroll through the tabs.
+    to expand its size or to add buttons that allow you to scroll through the tabs.
 
     By default the value is style dependant.
 
@@ -1192,7 +1199,7 @@ void QTabWidget::clear()
 /*!
     \fn void QTabWidget::setTabEnabled(QWidget *widget, bool b)
 
-    Use isTabEnabled(tabWidget->indexOf(widget), b) instead.
+    Use setTabEnabled(tabWidget->indexOf(widget), b) instead.
 */
 
 /*!

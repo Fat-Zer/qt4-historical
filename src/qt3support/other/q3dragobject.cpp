@@ -379,7 +379,7 @@ bool Q3DragObject::drag(DragMode mode)
     drag->setHotSpot(d->hot);
 
     Qt::DropActions allowedOps;
-    Qt::DropAction defaultOp;
+    Qt::DropAction defaultOp = Qt::IgnoreAction;
     switch(mode) {
     default:
     case DragDefault:

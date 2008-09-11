@@ -2126,7 +2126,7 @@ static QStringList makeFiltersList(const QString &filter)
   Windows file dialog and on Mac OS X, these static function will call
   the native Mac OS X file dialog.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 0
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 0
 
   In the above example, a modal Q3FileDialog is created using a static
   function. The startup directory is set to "/home". The file filter
@@ -2135,13 +2135,13 @@ static QStringList makeFiltersList(const QString &filter)
   dialog". The caption at the top of file dialog is set to "Choose a
   file". If you want to use multiple filters, separate each one with
   \e two semicolons, e.g.
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 1
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 1
 
   You can create your own Q3FileDialog without using the static
   functions. By calling setMode(), you can set what can be returned by
   the Q3FileDialog.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 2
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 2
 
   In the above example, the mode of the file dialog is set to \l
   AnyFile, meaning that the user can select any file, or even specify a
@@ -2153,7 +2153,7 @@ static QStringList makeFiltersList(const QString &filter)
   You can retrieve the dialog's mode with mode(). Use setFilter() to set
   the dialog's file filter, e.g.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 3
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 3
 
   In the above example, the filter is set to "Images (*.png *.xpm
   *.jpg)", this means that only files with the extension \c png, \c xpm
@@ -2168,12 +2168,12 @@ static QStringList makeFiltersList(const QString &filter)
   displays additional information alongside each name, e.g. file size,
   modification date, etc. Set the mode with setViewMode().
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 4
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 4
 
   The last important function you will need to use when creating your
   own file dialog is selectedFile().
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 5
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 5
 
   In the above example, a modal file dialog is created and shown. If
   the user clicked OK, then the file they selected is put in \c
@@ -2199,7 +2199,7 @@ static QStringList makeFiltersList(const QString &filter)
   that the user can see either the contents of the file, or information
   about the file.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 6
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 6
 
   In the above snippet, we create a preview widget which inherits from
   QLabel and Q3FilePreview. File preview widgets \e must inherit from
@@ -2210,7 +2210,7 @@ static QStringList makeFiltersList(const QString &filter)
   above example we only show a preview of the file if it is a valid
   pixmap. Here's how to make a file dialog use a preview widget:
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 7
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 7
 
   The first line creates an instance of our preview widget. We then
   create our file dialog and call setContentsPreviewEnabled(true),
@@ -2915,7 +2915,7 @@ void Q3FileDialog::setSelectedFilter(const QString& mask)
 
   Note that if you want to iterate over the list, you should
   iterate over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 8
+    \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 8
 
   \sa selectedFile, selectedFilter, QList::isEmpty()
 */
@@ -3026,7 +3026,7 @@ QString Q3FileDialog::dirPath() const
   semicolons then only the text contained in the parentheses is used as
   the filter. This means that these calls are all equivalent:
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 9
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 9
 
   \sa setFilters()
 */
@@ -3285,7 +3285,7 @@ extern Q_GUI_EXPORT bool qt_use_native_dialogs; //qtgui
   selected by the user. If the user pressed Cancel, it returns a null
   string.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 10
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 10
 
   The function creates a modal file dialog called \a name, with
   parent, \a parent. If a parent is not 0, the dialog will be shown
@@ -3406,7 +3406,7 @@ QString Q3FileDialog::getOpenFileName(const QString & startWith,
   If a parent is not 0, the dialog will be shown centered over the
   parent.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 11
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 11
 
   The file dialog's working directory will be set to \a startWith. If \a
   startWith includes a file name, the file will be selected. The filter
@@ -4309,7 +4309,7 @@ void Q3FileDialog::createdDirectory(const QUrlInfo &info, Q3NetworkOperation *)
   This is a convenience static function that will return an existing directory
   selected by the user.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 12
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 12
 
   This function creates a modal file dialog called \a name, with
   parent, \a parent. If parent is not 0, the dialog will be shown
@@ -4618,7 +4618,7 @@ Q3FileDialog::PreviewMode Q3FileDialog::previewMode() const
   labels. The widget \a w is placed underneath the file types combobox.
   The button \a b is placed underneath the Cancel push button.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 13
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 13
 
   If you don't want to have one of the widgets added, pass 0 in that
   widget's position.
@@ -5287,7 +5287,7 @@ bool Q3FileDialog::eventFilter(QObject * o, QEvent * e)
   Sets the filters used in the file dialog to \a filters. Each group
   of filters must be separated by \c{;;} (\e two semicolons).
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 14
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 14
 
 */
 
@@ -5341,7 +5341,7 @@ void Q3FileDialog::setFilters(const QStringList & types)
   Adds the filter \a filter to the list of filters and makes it the
   current filter.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 15
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 15
 
   In the above example, a file dialog is created, and the file filter "Images
   (*.png *.jpg *.xpm)" is added and is set as the current filter. The original
@@ -5393,7 +5393,7 @@ void Q3FileDialog::modeButtonsDestroyed()
   This is a convenience static function that will return one or more
   existing files selected by the user.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 16
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 16
 
   This function creates a modal file dialog called \a name, with
   parent \a parent. If \a parent is not 0, the dialog will be shown
@@ -5423,7 +5423,7 @@ void Q3FileDialog::modeButtonsDestroyed()
 
   Note that if you want to iterate over the list of files, you should
   iterate over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 17
+    \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 17
 
   \sa getOpenFileName(), getSaveFileName(), getExistingDirectory()
 */
@@ -5919,7 +5919,7 @@ void Q3FileDialog::setContentsPreviewEnabled(bool contents)
   Normally you would create a preview widget that derives from both QWidget and
   Q3FilePreview, so you should pass the same widget twice.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 18
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 18
 
   \sa setContentsPreview(), setInfoPreviewEnabled(), setPreviewMode()
 
@@ -5951,7 +5951,7 @@ void Q3FileDialog::setInfoPreview(QWidget *w, Q3FilePreview *preview)
   Normally you would create a preview widget that derives from both QWidget and
   Q3FilePreview, so you should pass the same widget twice.
 
-  \snippet doc/src/snippets/code/src.qt3support.dialogs.q3filedialog.cpp 19
+  \snippet doc/src/snippets/code/src_qt3support_dialogs_q3filedialog.cpp 19
 
   \sa setContentsPreviewEnabled(), setInfoPreview(), setPreviewMode()
 */

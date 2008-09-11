@@ -74,12 +74,12 @@
     First uncompress the archive in the preferred location, then
     unpack it:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 0
 
     This document assumes that the archive is unpacked in the
     following directory:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 1
 
     \section1 Step 3: Building the Library
 
@@ -89,7 +89,7 @@
     options by typing \c {./configure -help}.
 
     Note that by default, \l{Qt for Embedded Linux} is configured for
-    installation in the \c{/usr/local/Trolltech/QtEmbedded-4.4.1}
+    installation in the \c{/usr/local/Trolltech/QtEmbedded-4.4.2}
     directory, but this can be changed by using the \c{-prefix}
     option. Alternatively, the \c{-prefix-install} option can be used
     to specify a "local" installation within the source directory.
@@ -97,7 +97,7 @@
     The configuration system is also designed to allow you to specify
     your platform architecture:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 2
 
     In general, all Linux systems which have framebuffer support can
     use the \c generic architecture. Other typical architectures are
@@ -110,7 +110,7 @@
     To create the library and compile all the demos, examples, tools,
     and tutorials, type:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 3
 
     On some systems the \c make utility is named differently, e.g. \c
     gmake. The \c configure script tells you which \c make utility to
@@ -120,7 +120,7 @@
     option, you need to install the library, demos, examples, tools,
     and tutorials in the appropriate place. To do this, type:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 4
 
     and enter the root password.
 
@@ -137,19 +137,19 @@
     To set the \c PATH variable, add the following lines to your \c
     .profile file if your shell is bash, ksh, zsh or sh:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 5
 
     In case your shell is csh or tcsh, add the following line to the
     \c .login file instead:
 
-    \snippet doc/src/snippets/code/doc.src.emb-install.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_emb-install.qdoc 6
 
     If you use a different shell, please modify your environment
     variables accordingly.
 
     For compilers that do not support \c rpath you must also extend
     the \c LD_LIBRARY_PATH environment variable to include
-    \c /usr/local/Trolltech/QtEmbedded-4.4.1/lib. Note that on Linux
+    \c /usr/local/Trolltech/QtEmbedded-4.4.2/lib. Note that on Linux
     with GCC, this step is not needed.
 
     \section1 Step 5: Building the Virtual Framebuffer
@@ -165,8 +165,8 @@
        \o \l {The VNC Protocol and Qt for Embedded Linux}
     \endlist
 
-    Note that the virtual framebuffer requires a Qt/X11
-    installation. See \l {Installing Qt/X11} for details.
+    Note that the virtual framebuffer requires a Qt for X11
+    installation. See \l {Installing Qt on X11 Platforms} for details.
 
     The Linux framebuffer, on the other hand, is enabled by default on
     all modern Linux distributions. For information on older versions,

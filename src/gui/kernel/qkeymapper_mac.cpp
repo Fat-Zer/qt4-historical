@@ -338,7 +338,7 @@ static int qt_mac_get_key(int modif, const QChar &key, int virtualKey)
 
     for(int i = 0; qt_mac_keyboard_symbols[i].qt_code; i++) {
         if(qt_mac_keyboard_symbols[i].mac_code == key) {
-            /* To work like Qt/X11 we issue Backtab when Shift + Tab are pressed */
+            /* To work like Qt for X11 we issue Backtab when Shift + Tab are pressed */
             if(qt_mac_keyboard_symbols[i].qt_code == Qt::Key_Tab && (modif & Qt::ShiftModifier)) {
 #ifdef DEBUG_KEY_BINDINGS
                 qDebug("%d: got key: Qt::Key_Backtab", __LINE__);
@@ -733,8 +733,9 @@ QKeyMapperPrivate::translateKeyEvent(QWidget *widget, EventHandlerCallRef er, Ev
                 //is it of use to text services? If so we won't bother
                 //with a QKeyEvent.
                 qt_mac_eat_unicode_key = false;
-                CallNextEventHandler(er, event);
-                if (qt_mac_eat_unicode_key) {
+                CallNextEventHandler(er, event);	
+                extern bool qt_mac_menubar_is_open();   
+                if (qt_mac_eat_unicode_key || qt_mac_menubar_is_open()) {
                     handled_event = true;
                     break;
                 }

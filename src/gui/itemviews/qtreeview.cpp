@@ -103,11 +103,13 @@ QT_BEGIN_NAMESPACE
     The amount of indentation used to indicate levels of hierarchy is
     controlled by the \l indentation property.
 
-    Headers in tree views are constructed using the QHeaderView class
-    and can be hidden using header()->hide(). Note that each header
-    is configured with its \l{QHeaderView::}{stretchLastSection}
-    property set to true, ensuring that the view does not waste any
-    of the space assigned to it for its header.
+    Headers in tree views are constructed using the QHeaderView class and can
+    be hidden using \c{header()->hide()}. Note that each header is configured
+    with its \l{QHeaderView::}{stretchLastSection} property set to true,
+    ensuring that the view does not waste any of the space assigned to it for
+    its header. If this value is set to true, this property will override the
+    resize mode set on the last section in the header.
+
 
     \section1 Key Bindings
 
@@ -116,18 +118,18 @@ QT_BEGIN_NAMESPACE
 
     \table
     \header \o Key \o Action
-    \row \o UpArrow   \o Moves the cursor to the item in the same column on
+    \row \o Up   \o Moves the cursor to the item in the same column on
          the previous row. If the parent of the current item has no more rows to
          navigate to, the cursor moves to the relevant item in the last row
          of the sibling that precedes the parent.
-    \row \o DownArrow \o Moves the cursor to the item in the same column on
+    \row \o Down \o Moves the cursor to the item in the same column on
          the next row. If the parent of the current item has no more rows to
          navigate to, the cursor moves to the relevant item in the first row
          of the sibling that follows the parent.
-    \row \o LeftArrow  \o Hides the children of the current item (if present)
+    \row \o Left  \o Hides the children of the current item (if present)
          by collapsing a branch.
     \row \o Minus  \o Same as LeftArrow.
-    \row \o RightArrow \o Reveals the children of the current item (if present)
+    \row \o Right \o Reveals the children of the current item (if present)
          by expanding a branch.
     \row \o Plus  \o Same as RightArrow.
     \row \o Asterisk  \o Expands all children of the current item (if present).
@@ -348,6 +350,8 @@ void QTreeView::setHeader(QHeaderView *header)
   This property holds the amount of time in milliseconds that the user must wait over
   a node before that node will automatically open or close.  If the time is
   set to less then 0 then it will not be activated.
+
+  By default, this property has a value of -1, meaning that auto-expansion is disabled.
 */
 int QTreeView::autoExpandDelay() const
 {
@@ -369,6 +373,8 @@ void QTreeView::setAutoExpandDelay(int delay)
   level in the tree view. For top-level items, the indentation specifies the
   horizontal distance from the viewport edge to the items in the first column;
   for child items, it specifies their indentation from their parent items.
+
+  By default, this property has a value of 20.
 */
 int QTreeView::indentation() const
 {
@@ -421,6 +427,8 @@ void QTreeView::setRootIsDecorated(bool show)
 
   The height is obtained from the first item in the view.  It is updated
   when the data changes on that item.
+
+  By default, this property is false.
 */
 bool QTreeView::uniformRowHeights() const
 {
@@ -440,6 +448,8 @@ void QTreeView::setUniformRowHeights(bool uniform)
 
   This property holds whether the user can expand and collapse items
   interactively.
+
+  By default, this property is true.
 
 */
 bool QTreeView::itemsExpandable() const
@@ -599,8 +609,8 @@ void QTreeView::setRowHidden(int row, const QModelIndex &parent, bool hide)
         if (it == d->hiddenIndexes.end() || *it != index)
             d->hiddenIndexes.insert(it, index);
     } else {
-        QVector<QPersistentModelIndex>::const_iterator it;
-        it = qLowerBound(d->hiddenIndexes.constBegin(), d->hiddenIndexes.constEnd(), index);
+        QVector<QPersistentModelIndex>::iterator it;
+        it = qLowerBound(d->hiddenIndexes.begin(), d->hiddenIndexes.end(), index);
         if (it != d->hiddenIndexes.end() && *it == index)
             d->hiddenIndexes.remove(it - d->hiddenIndexes.begin());
     }
@@ -863,6 +873,8 @@ bool QTreeView::isSortingEnabled() const
     and collasping of branches. If this property is false, the treeview
     will expand or collapse branches immediately without showing
     the animation.
+
+    By default, this property is false.
 */
 
 void QTreeView::setAnimated(bool animate)
@@ -1928,6 +1940,8 @@ void QTreeView::doItemsLayout()
 {
     Q_D(QTreeView);
     d->viewItems.clear(); // prepare for new layout
+    qSort(d->expandedIndexes.begin(), d->expandedIndexes.end());
+    qSort(d->hiddenIndexes.begin(), d->hiddenIndexes.end());
     QModelIndex parent = d->root;
     if (d->model->hasChildren(parent)) {
         d->layout(-1);
@@ -1935,8 +1949,6 @@ void QTreeView::doItemsLayout()
     }
     QAbstractItemView::doItemsLayout();
     d->header->doItemsLayout();
-    qSort(d->expandedIndexes.begin(), d->expandedIndexes.end());
-    qSort(d->hiddenIndexes.begin(), d->hiddenIndexes.end());
 }
 
 /*!
@@ -2437,8 +2449,14 @@ void QTreeView::rowsRemoved(const QModelIndex &parent, int start, int end)
   Informs the tree view that the number of columns in the tree view has
   changed from \a oldCount to \a newCount.
 */
-void QTreeView::columnCountChanged(int, int)
+void QTreeView::columnCountChanged(int oldCount, int newCount)
 {
+    Q_D(QTreeView);
+    if (oldCount == 0 && newCount > 0) {
+        //if the first column has just been added we need to relayout.
+        d->doDelayedItemsLayout();
+    }
+
     if (isVisible())
         updateGeometries();
 	viewport()->update();
@@ -3176,10 +3194,10 @@ int QTreeViewPrivate::itemAtCoordinate(int coordinate) const
     return -1;
 }
 
-int QTreeViewPrivate::viewIndex(const QModelIndex &index) const
+int QTreeViewPrivate::viewIndex(const QModelIndex &_index) const
 {
     Q_Q(const QTreeView);
-    if (!index.isValid() || viewItems.isEmpty())
+    if (!_index.isValid() || viewItems.isEmpty())
         return -1;
 
     const int totalCount = viewItems.count();
@@ -3187,7 +3205,7 @@ int QTreeViewPrivate::viewIndex(const QModelIndex &index) const
     int firstColumn = 0;
     while (q->isColumnHidden(firstColumn) && firstColumn < header->count())
         ++firstColumn;
-    const QModelIndex idx = index.sibling(index.row(), firstColumn);
+    const QModelIndex index = _index.sibling(_index.row(), firstColumn);
 
     // A quick check near the last item to see if we are just incrementing
     const int start = lastViewedItem > 2 ? lastViewedItem - 2 : 0;
@@ -3306,12 +3324,12 @@ void QTreeViewPrivate::reexpandChildren(const QModelIndex &parent)
 
     int rowCount = model->rowCount(parent);
     QList<QPersistentModelIndex>::iterator it = expandedIndexes.begin();
-    QList<QPersistentModelIndex>::const_iterator end = expandedIndexes.constEnd();
+    QList<QPersistentModelIndex>::iterator end = expandedIndexes.end();
     while (it != end) {
         QModelIndex index = *it;
         if (!index.isValid()) {
             it = expandedIndexes.erase(it);
-            end = expandedIndexes.constEnd();
+            end = expandedIndexes.end();
             continue;
         }
         if (index.row() >= rowCount) {

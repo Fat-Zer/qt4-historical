@@ -2,31 +2,35 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/installation.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/installation.qdoc -->
 <head>
-  <title>Qt 4.4: Installing Qt/Windows CE</title>
+  <title>Qt 4.4: Installing Qt on Windows CE</title>
+  <link rel="prev" href="installation.html" />
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Installing Qt/Windows CE<br /><span class="subtitle"></span>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
+[Previous: <a href="installation.html">Installation</a>]
+</p>
+<h1 class="title">Installing Qt on Windows CE<br /><span class="subtitle"></span>
 </h1>
 <p><b>Note:</b> Qt for Windows CE has some requirements that are given in more detail in the <a href="requirements-wince.html">Qt for Windows CE Requirements</a> document.</p>
 <ol type="1">
-<li>Uncompress the files into the directory you want to install Qt into; e.g&#x2e;, <tt>C:\Qt\4.4.1</tt>.<p><b>Note:</b> The install path must not contain any spaces.</p>
+<li>Uncompress the files into the directory you want to install Qt into; e.g&#x2e;, <tt>C:\Qt\4.4.2</tt>.<p><b>Note:</b> The install path must not contain any spaces.</p>
 </li>
 <li>Environment variables<p>In order to build and use Qt, the <tt>PATH</tt> environment variable needs to be extended:</p>
 <pre> PATH               - to locate qmake, moc and other Qt tools</pre>
-<p>This is done by adding <tt>c:\Qt\4.4.1\bin</tt> to the <tt>PATH</tt> variable.</p>
+<p>This is done by adding <tt>c:\Qt\4.4.2\bin</tt> to the <tt>PATH</tt> variable.</p>
 <p>For newer versions of Windows, <tt>PATH</tt> can be extended through &quot;Control Panel-&gt;System-&gt;Advanced-&gt;Environment variables&quot; and for older versions by editing <tt>c:\autoexec.bat</tt>.</p>
 <p>Make sure the enviroment variables for your compiler are set. Visual Studio includes <tt>vcvars32.bat</tt> for that purpose - or simply use the &quot;Visual Studio Command Prompt&quot; from the Start menu.</p>
 </li>
 <li>Configuring Qt<p>To configure Qt for Windows Mobile 5.0 for Pocket PC, type the following:</p>
 <pre> C:
- cd \Qt\4.4.1
+ cd \Qt\4.4.2
  configure -platform win32-msvc2005 -xplatform wincewm50pocket-msvc2005</pre>
 <p>If you want to configure Qt for another platform or with other options, type <tt>configure -help</tt> to get a list of all available options. See the <tt>README</tt> file for the list of supported platforms.</p>
 </li>
@@ -57,10 +61,13 @@
 </li>
 </ol>
 <p>We hope you will enjoy using Qt. Good luck!</p>
+<p>
+[Previous: <a href="installation.html">Installation</a>]
+</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

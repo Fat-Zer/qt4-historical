@@ -83,7 +83,7 @@ public:
 };
 
 
-#ifndef Q_CC_SUN // ambiguity between const T * and T *
+#if (!defined(Q_CC_SUN) || (__SUNPRO_CC >= 0x580)) // ambiguity between const T * and T *
 
 template <class T>
 inline bool operator==(const T *o, const QPointer<T> &p)
@@ -118,7 +118,7 @@ inline bool operator==(const QPointer<T> &p1, const QPointer<T> &p2)
 { return p1.operator->() == p2.operator->(); }
 
 
-#ifndef Q_CC_SUN // ambiguity between const T * and T *
+#if (!defined(Q_CC_SUN) || (__SUNPRO_CC >= 0x580)) // ambiguity between const T * and T *
 
 template <class T>
 inline bool operator!=(const T *o, const QPointer<T> &p)

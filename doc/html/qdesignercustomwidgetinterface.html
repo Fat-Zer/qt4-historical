@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtdesigner.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qtdesigner.qdoc -->
 <head>
   <title>Qt 4.4: QDesignerCustomWidgetInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDesignerCustomWidgetInterface Class Reference<br /><span class="small-subtitle">[<a href="qtdesigner.html">QtDesigner</a> module]</span>
 </h1>
 <p>The QDesignerCustomWidgetInterface class enables Qt Designer to access and construct custom widgets. <a href="#details">More...</a></p>
@@ -74,7 +74,7 @@
 <p>After <i>Qt Designer</i> loads a custom widget plugin, it calls the interface's <a href="qdesignercustomwidgetinterface.html#initialize">initialize</a>() function to enable it to set up any resources that it may need. This function is called with a <a href="qdesignerformeditorinterface.html">QDesignerFormEditorInterface</a> parameter that provides the plugin with a gateway to all of <i>Qt Designer</i>'s API.</p>
 <p><i>Qt Designer</i> constructs instances of the custom widget by calling the plugin's <a href="qdesignercustomwidgetinterface.html#createWidget">createWidget</a>() function with a suitable parent widget. Plugins must construct and return an instance of a custom widget with the specified parent widget.</p>
 <p>In the implementation of the class you must remember to export your custom widget plugin to <i>Qt Designer</i> using the <a href="qtplugin.html#Q_EXPORT_PLUGIN2">Q_EXPORT_PLUGIN2</a>() macro. For example, if a library called <tt>libcustomwidgetplugin.so</tt> (on Unix) or <tt>libcustomwidget.dll</tt> (on Windows) contains a widget class called <tt>MyCustomWidget</tt>, we can export it by adding the following line to the file containing the plugin implementation:</p>
-<pre>         Q_EXPORT_PLUGIN2(customwidgetplugin, MyCustomWidget)</pre>
+<pre> Q_EXPORT_PLUGIN2(customwidgetplugin, MyCustomWidget)</pre>
 <p>This macro ensures that <i>Qt Designer</i> can access and construct the custom widget. Without this macro, there is no way for <i>Qt Designer</i> to use it.</p>
 <p>When implementing a custom widget plugin, you build it as a separate library. If you want to include several custom widget plugins in the same library, you must in addition subclass <a href="qdesignercustomwidgetcollectioninterface.html">QDesignerCustomWidgetCollectionInterface</a>.</p>
 <p><b>Warning:</b> If your custom widget plugin contains <a href="qvariant.html">QVariant</a> properties, be aware that only the following <a href="qvariant.html#Type-enum">types</a> are supported:</p>
@@ -158,8 +158,8 @@
 <p>See also <a href="designer-creating-custom-widgets.html">Creating Custom Widgets for Qt Designer</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

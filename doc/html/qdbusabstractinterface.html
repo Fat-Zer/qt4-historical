@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/dbus/qdbusabstractinterface.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/dbus/qdbusabstractinterface.cpp -->
 <head>
   <title>Qt 4.4: QDBusAbstractInterface Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDBusAbstractInterface Class Reference<br /><span class="small-subtitle">[<a href="qtdbus.html">QtDBus</a> module]</span>
 </h1>
 <p>The QDBusAbstractInterface class is the base class for all D-Bus interfaces in the <a href="qtdbus.html">QtDBus</a> binding, allowing access to remote interfaces <a href="#details">More...</a></p>
@@ -66,14 +66,14 @@
 <p>The parameters to <tt>call</tt> are passed on to the remote function via D-Bus as input arguments. Output arguments are returned in the <a href="qdbusmessage.html">QDBusMessage</a> reply. If the reply is an error reply, <a href="qdbusabstractinterface.html#lastError">lastError</a>() will also be set to the contents of the error message.</p>
 <p>This function can be used with up to 8 parameters, passed in arguments <i>arg1</i>, <i>arg2</i>, <i>arg3</i>, <i>arg4</i>, <i>arg5</i>, <i>arg6</i>, <i>arg7</i> and <i>arg8</i>. If you need more than 8 parameters or if you have a variable number of parameters to be passed, use <a href="qdbusabstractinterface.html#callWithArgumentList">callWithArgumentList</a>().</p>
 <p>It can be used the following way:</p>
-<pre>       QString value = retrieveValue();
-       QDBusMessage reply;
+<pre> QString value = retrieveValue();
+ QDBusMessage reply;
 
-       QDBusReply&lt;int&gt; api = interface-&gt;call(QLatin1String(&quot;GetAPIVersion&quot;));
-       if (api &gt;= 14)
-         reply = interface-&gt;call(QLatin1String(&quot;ProcessWorkUnicode&quot;), value);
-       else
-         reply = interface-&gt;call(QLatin1String(&quot;ProcessWork&quot;), QLatin1String(&quot;UTF-8&quot;), value.toUtf8());</pre>
+ QDBusReply&lt;int&gt; api = interface-&gt;call(QLatin1String(&quot;GetAPIVersion&quot;));
+ if (api &gt;= 14)
+   reply = interface-&gt;call(QLatin1String(&quot;ProcessWorkUnicode&quot;), value);
+ else
+   reply = interface-&gt;call(QLatin1String(&quot;ProcessWork&quot;), QLatin1String(&quot;UTF-8&quot;), value.toUtf8());</pre>
 <p>This example illustrates function calling with 0, 1 and 2 parameters and illustrates different parameter types passed in each (the first call to <tt>&quot;ProcessWorkUnicode&quot;</tt> will contain one Unicode string, the second call to <tt>&quot;ProcessWork&quot;</tt> will contain one string and one byte array).</p>
 <h3 class="fn"><a name="call-2"></a><a href="qdbusmessage.html">QDBusMessage</a> QDBusAbstractInterface::call ( <a href="qdbus.html#CallMode-enum">QDBus::CallMode</a> <i>mode</i>, const <a href="qstring.html">QString</a> &amp; <i>method</i>, const <a href="qvariant.html">QVariant</a> &amp; <i>arg1</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg2</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg3</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg4</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg5</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg6</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg7</i> = QVariant(), const <a href="qvariant.html">QVariant</a> &amp; <i>arg8</i> = QVariant() )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -121,8 +121,8 @@
 <p>Returns the name of the service this interface is associated with.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/global/qglobal.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/global/qglobal.cpp -->
 <head>
   <title>Qt 4.4: &lt;QtGlobal&gt; - Global Qt Declarations</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">&lt;QtGlobal&gt; - Global Qt Declarations<br /><span class="subtitle"></span>
 </h1>
 <p>The &lt;QtGlobal&gt; header provides basic declarations and is included by all other Qt headers. <a href="#details">More...</a></p>
@@ -45,7 +45,7 @@
 <a name="Functionsx"></a>
 <h3>Functions</h3>
 <ul>
-<li><div class="fn"/>T <b><a href="qtglobal.html#qAbs">qAbs</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>T <b><a href="qtglobal.html#qAbsx">qAbs</a></b> ( const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qBound">qBound</a></b> ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qCritical">qCritical</a></b> ( const char * <i>msg</i>, ... )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qDebug">qDebug</a></b> ( const char * <i>msg</i>, ... )</li>
@@ -58,8 +58,8 @@
 <li><div class="fn"/>bool <b><a href="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</a></b> ( float <i>p1</i>, float <i>p2</i> )</li>
 <li><div class="fn"/>QtMsgHandler <b><a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a></b> ( QtMsgHandler <i>handler</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qMacVersion">qMacVersion</a></b> ()</li>
-<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMax">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
-<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMin">qMin</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
+<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMaxx">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
+<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMinx">qMin</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
 <li><div class="fn"/>qint64 <b><a href="qtglobal.html#qRound64">qRound64</a></b> ( qreal <i>value</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qRound">qRound</a></b> ( qreal <i>value</i> )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qToBigEndian">qToBigEndian</a></b> ( T <i>src</i>, uchar * <i>dest</i> )</li>
@@ -76,6 +76,7 @@
 <h3>Macros</h3>
 <ul>
 <li><div class="fn"/><b><a href="qtglobal.html#QT_POINTER_SIZE">QT_POINTER_SIZE</a></b></li>
+<li><div class="fn"/><b><a href="qtglobal.html#QT_REQUIRE_VERSION">QT_REQUIRE_VERSION</a></b> ( int <i>argc</i>, char ** <i>argv</i>, const char * <i>version</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#QT_TRANSLATE_NOOP3">QT_TRANSLATE_NOOP3</a></b> (  <i>context</i>,  <i>sourceText</i>,  <i>comment</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a></b> (  <i>context</i>,  <i>sourceText</i> )</li>
 <li><div class="fn"/><b><a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a></b> (  <i>sourceText</i> )</li>
@@ -160,18 +161,18 @@
 <p>Finally, the <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> definition identifies the various messages that can be generated and sent to a Qt message handler; <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> is a type definition for a pointer to a function with the signature <tt>void myMsgHandler(QtMsgType, const char *)</tt>.</p>
 <a name="functions"></a>
 <h3>Functions</h3>
-<p>The &lt;QtGlobal&gt; header file contains several functions comparing and adjusting an object's value. These functions take a template type as argument: You can retrieve the absolute value of an object using the <a href="qtglobal.html#qAbs">qAbs</a>() function, and you can bound a given object's value by given minimum and maximum values using the <a href="qtglobal.html#qBound">qBound</a>() function. You can retrieve the minimum and maximum of two given objects using <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>() respectively. All these functions return a corresponding template type; the template types can be replaced by any other type. For example:</p>
-<pre>         int myValue = 10;
-         int minValue = 2;
-         int maxValue = 6;
+<p>The &lt;QtGlobal&gt; header file contains several functions comparing and adjusting an object's value. These functions take a template type as argument: You can retrieve the absolute value of an object using the <a href="qtglobal.html#qAbsx">qAbs</a>() function, and you can bound a given object's value by given minimum and maximum values using the <a href="qtglobal.html#qBound">qBound</a>() function. You can retrieve the minimum and maximum of two given objects using <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qMaxx">qMax</a>() respectively. All these functions return a corresponding template type; the template types can be replaced by any other type. For example:</p>
+<pre> int myValue = 10;
+ int minValue = 2;
+ int maxValue = 6;
 
-         int boundedValue = qBound(minValue, myValue, maxValue);
-         <span class="comment">// boundedValue == 6</span></pre>
+ int boundedValue = qBound(minValue, myValue, maxValue);
+<span class="comment"> // boundedValue == 6</span></pre>
 <p>&lt;QtGlobal&gt; also contains functions that generate messages from the given string argument: <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qFatal">qFatal</a>() and <a href="qtglobal.html#qWarning">qWarning</a>(). These functions call the message handler with the given message. For example:</p>
-<pre>         if (!driver()-&gt;isOpen() || driver()-&gt;isOpenError()) {
-             qWarning(&quot;QSqlQuery::exec: database not open&quot;);
-             return false;
-         }</pre>
+<pre> if (!driver()-&gt;isOpen() || driver()-&gt;isOpenError()) {
+     qWarning(&quot;QSqlQuery::exec: database not open&quot;);
+     return false;
+ }</pre>
 <p>The remaining functions are <a href="qtglobal.html#qRound">qRound</a>() and <a href="qtglobal.html#qRound64">qRound64</a>(), which both accept a <a href="qtglobal.html#qreal-typedef">qreal</a> value as their argument returning the value rounded up to the nearest integer and 64-bit integer respectively, the <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>() function which installs the given <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a>, and the <a href="qtglobal.html#qVersion">qVersion</a>() function which returns the version number of Qt at run-time as a string.</p>
 <a name="macros"></a>
 <h3>Macros</h3>
@@ -186,7 +187,7 @@
 <a name="//apple_ref/cpp/tdef//QtMsgHandler" />
 <h3 class="fn"><a name="QtMsgHandler-typedef"></a>typedef QtMsgHandler</h3>
 <p>This is a typedef for a pointer to a function with the following signature:</p>
-<pre>         void myMsgHandler(QtMsgType, const char *);</pre>
+<pre> void myMsgHandler(QtMsgType, const char *);</pre>
 <p>See also <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> and <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>().</p>
 <a name="//apple_ref/cpp/tag//QtMsgType" />
 <a name="//apple_ref/cpp/econst//QtDebugMsg" />
@@ -218,7 +219,7 @@
 <h3 class="fn"><a name="qint64-typedef"></a>typedef qint64</h3>
 <p>Typedef for <tt>long long int</tt> (<tt>__int64</tt> on Windows). This type is guaranteed to be 64-bit on all platforms supported by Qt.</p>
 <p>Literals of this type can be created using the <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>() macro:</p>
-<pre>         qint64 value = Q_INT64_C(932838457459459);</pre>
+<pre> qint64 value = Q_INT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>(), <a href="qtglobal.html#quint64-typedef">quint64</a>, and <a href="qtglobal.html#qlonglong-typedef">qlonglong</a>.</p>
 <a name="//apple_ref/cpp/tdef//qlonglong" />
 <h3 class="fn"><a name="qlonglong-typedef"></a>typedef qlonglong</h3>
@@ -246,7 +247,7 @@
 <h3 class="fn"><a name="quint64-typedef"></a>typedef quint64</h3>
 <p>Typedef for <tt>unsigned long long int</tt> (<tt>unsigned __int64</tt> on Windows). This type is guaranteed to be 64-bit on all platforms supported by Qt.</p>
 <p>Literals of this type can be created using the <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>() macro:</p>
-<pre>         quint64 value = Q_UINT64_C(932838457459459);</pre>
+<pre> quint64 value = Q_UINT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>(), <a href="qtglobal.html#qint64-typedef">qint64</a>, and <a href="qtglobal.html#qulonglong-typedef">qulonglong</a>.</p>
 <a name="//apple_ref/cpp/tdef//quintptr" />
 <h3 class="fn"><a name="quintptr-typedef"></a>typedef quintptr</h3>
@@ -273,37 +274,37 @@
 <hr />
 <h2>Function Documentation</h2>
 <a name="//apple_ref/cpp/func//qAbs" />
-<h3 class="fn"><a name="qAbs"></a>T qAbs ( const T &amp; <i>value</i> )</h3>
+<h3 class="fn"><a name="qAbsx"></a>T qAbs ( const T &amp; <i>value</i> )</h3>
 <p>Returns the absolute value of <i>value</i>. For example:</p>
-<pre>         int absoluteValue;
-         int myValue = -4;
+<pre> int absoluteValue;
+ int myValue = -4;
 
-         absoluteValue = qAbs(myValue);
-         <span class="comment">// absoluteValue == 4</span></pre>
+ absoluteValue = qAbs(myValue);
+<span class="comment"> // absoluteValue == 4</span></pre>
 <a name="//apple_ref/cpp/func//qBound" />
 <h3 class="fn"><a name="qBound"></a>const T &amp; qBound ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</h3>
 <p>Returns <i>value</i> bounded by <i>min</i> and <i>max</i>. This is equivalent to qMax(<i>min</i>, qMin(<i>value</i>, <i>max</i>)). For example:</p>
-<pre>         int myValue = 10;
-         int minValue = 2;
-         int maxValue = 6;
+<pre> int myValue = 10;
+ int minValue = 2;
+ int maxValue = 6;
 
-         int boundedValue = qBound(minValue, myValue, maxValue);
-         <span class="comment">// boundedValue == 6</span></pre>
-<p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>().</p>
+ int boundedValue = qBound(minValue, myValue, maxValue);
+<span class="comment"> // boundedValue == 6</span></pre>
+<p>See also <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qMaxx">qMax</a>().</p>
 <a name="//apple_ref/cpp/func//qCritical" />
 <h3 class="fn"><a name="qCritical"></a>void qCritical ( const char * <i>msg</i>, ... )</h3>
 <p>Calls the message handler with the critical message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger.</p>
 <p>This function takes a format string and a list of arguments, similar to the C printf() function.</p>
 <p>Example:</p>
-<pre>         void load(const QString &amp;fileName)
-         {
-             QFile file(fileName);
-             if (!file.exists())
-                 qCritical(&quot;File '%s' does not exist!&quot;, qPrintable(fileName));
-         }</pre>
+<pre> void load(const QString &amp;fileName)
+ {
+     QFile file(fileName);
+     if (!file.exists())
+         qCritical(&quot;File '%s' does not exist!&quot;, qPrintable(fileName));
+ }</pre>
 <p>If you include &lt;QtDebug&gt;, a more convenient syntax is also available:</p>
-<pre>        qCritical() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other
-        value:&quot; &lt;&lt; i;</pre>
+<pre> qCritical() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other
+ value:&quot; &lt;&lt; i;</pre>
 <p>A space is inserted between the items, and a newline is appended at the end.</p>
 <p><b>Warning:</b> The internal buffer is limited to 8192 bytes, including the '\0'-terminator.</p>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
@@ -312,24 +313,24 @@
 <p>Calls the message handler with the debug message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the console, if it is a console application; otherwise, it is sent to the debugger. This function does nothing if <tt>QT_NO_DEBUG_OUTPUT</tt> was defined during compilation.</p>
 <p>If you pass the function a format string and a list of arguments, it works in similar way to the C printf() function.</p>
 <p>Example:</p>
-<pre>         qDebug(&quot;Items in list: %d&quot;, myList.size());</pre>
+<pre> qDebug(&quot;Items in list: %d&quot;, myList.size());</pre>
 <p>If you include <tt>&lt;QtDebug&gt;</tt>, a more convenient syntax is also available:</p>
-<pre>         qDebug() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other value:&quot; &lt;&lt; i;</pre>
+<pre> qDebug() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other value:&quot; &lt;&lt; i;</pre>
 <p>This syntax automatically puts a single space between each item, and outputs a newline at the end. It supports many C++ and Qt types.</p>
 <p><b>Warning:</b> The internal buffer is limited to 8192 bytes, including the '\0'-terminator.</p>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/func//qFatal" />
 <h3 class="fn"><a name="qFatal"></a>void qFatal ( const char * <i>msg</i>, ... )</h3>
 <p>Calls the message handler with the fatal message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger.</p>
-<p>For a release library this function will exit the application with return value 1. For the debug version this function will abort on Unix systems to create a core dump, and report a _CRT_ERROR on Windows allowing to connect a debugger to the application.</p>
+<p>If you are using the <b>default message handler</b> this function will abort on Unix systems to create a core dump. On Windows, for debug builds, this function will report a _CRT_ERROR enabling you to connect a debugger to the application.</p>
 <p>This function takes a format string and a list of arguments, similar to the C printf() function.</p>
 <p>Example:</p>
-<pre>         int divide(int a, int b)
-         {
-             if (b == 0)                                <span class="comment">// program error</span>
-                 qFatal(&quot;divide: cannot divide by zero&quot;);
-             return a / b;
-         }</pre>
+<pre> int divide(int a, int b)
+ {
+     if (b == 0)                                <span class="comment">// program error</span>
+         qFatal(&quot;divide: cannot divide by zero&quot;);
+     return a / b;
+ }</pre>
 <p><b>Warning:</b> The internal buffer is limited to 8192 bytes, including the '\0'-terminator.</p>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/func//qFromBigEndian" />
@@ -372,78 +373,78 @@
 <p>Only one message handler can be defined, since this is usually done on an application-wide basis to control debug output.</p>
 <p>To restore the message handler, call <tt>qInstallMsgHandler(0)</tt>.</p>
 <p>Example:</p>
-<pre>         #include &lt;qapplication.h&gt;
-         #include &lt;stdio.h&gt;
-         #include &lt;stdlib.h&gt;
+<pre> #include &lt;qapplication.h&gt;
+ #include &lt;stdio.h&gt;
+ #include &lt;stdlib.h&gt;
 
-         void myMessageOutput(QtMsgType type, const char *msg)
-         {
-             switch (type) {
-             case QtDebugMsg:
-                 fprintf(stderr, &quot;Debug: %s\n&quot;, msg);
-                 break;
-             case QtWarningMsg:
-                 fprintf(stderr, &quot;Warning: %s\n&quot;, msg);
-                 break;
-             case QtCriticalMsg:
-                 fprintf(stderr, &quot;Critical: %s\n&quot;, msg);
-                 break;
-             case QtFatalMsg:
-                 fprintf(stderr, &quot;Fatal: %s\n&quot;, msg);
-                 abort();
-             }
-         }
+ void myMessageOutput(QtMsgType type, const char *msg)
+ {
+     switch (type) {
+     case QtDebugMsg:
+         fprintf(stderr, &quot;Debug: %s\n&quot;, msg);
+         break;
+     case QtWarningMsg:
+         fprintf(stderr, &quot;Warning: %s\n&quot;, msg);
+         break;
+     case QtCriticalMsg:
+         fprintf(stderr, &quot;Critical: %s\n&quot;, msg);
+         break;
+     case QtFatalMsg:
+         fprintf(stderr, &quot;Fatal: %s\n&quot;, msg);
+         abort();
+     }
+ }
 
-         int main(int argc, char **argv)
-         {
-             qInstallMsgHandler(myMessageOutput);
-             QApplication app(argc, argv);
-             ...
-             return app.exec();
-         }</pre>
+ int main(int argc, char **argv)
+ {
+     qInstallMsgHandler(myMessageOutput);
+     QApplication app(argc, argv);
+     ...
+     return app.exec();
+ }</pre>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a>, and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/func//qMacVersion" />
 <h3 class="fn"><a name="qMacVersion"></a>int qMacVersion ()</h3>
 <p>Use <a href="qsysinfo.html#MacintoshVersion-var">QSysInfo::MacintoshVersion</a> instead.</p>
 <p>See also <a href="qsysinfo.html">QSysInfo</a>.</p>
 <a name="//apple_ref/cpp/func//qMax" />
-<h3 class="fn"><a name="qMax"></a>const T &amp; qMax ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
+<h3 class="fn"><a name="qMaxx"></a>const T &amp; qMax ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
 <p>Returns the maximum of <i>value1</i> and <i>value2</i>. For example:</p>
-<pre>         int myValue = 6;
-         int yourValue = 4;
+<pre> int myValue = 6;
+ int yourValue = 4;
 
-         int maxValue = qMax(myValue, yourValue);
-         <span class="comment">// maxValue == myValue</span></pre>
-<p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
+ int maxValue = qMax(myValue, yourValue);
+<span class="comment"> // maxValue == myValue</span></pre>
+<p>See also <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qMin" />
-<h3 class="fn"><a name="qMin"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
+<h3 class="fn"><a name="qMinx"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
 <p>Returns the minimum of <i>value1</i> and <i>value2</i>. For example:</p>
-<pre>         int myValue = 6;
-         int yourValue = 4;
+<pre> int myValue = 6;
+ int yourValue = 4;
 
-         int minValue = qMin(myValue, yourValue);
-         <span class="comment">// minValue == yourValue</span></pre>
-<p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
+ int minValue = qMin(myValue, yourValue);
+<span class="comment"> // minValue == yourValue</span></pre>
+<p>See also <a href="qtglobal.html#qMaxx">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qRound64" />
 <h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
 <p>Rounds <i>value</i> to the nearest 64-bit integer. For example:</p>
-<pre>         qreal valueA = 42949672960.3;
-         qreal valueB = 42949672960.7;
+<pre> qreal valueA = 42949672960.3;
+ qreal valueB = 42949672960.7;
 
-         int roundedValueA = qRound(valueA);
-         \\ roundedValueA = 42949672960
-         int roundedValueB = qRound(valueB);
-         \\ roundedValueB = 42949672961</pre>
+ int roundedValueA = qRound(valueA);
+<span class="comment"> // roundedValueA = 42949672960</span>
+ int roundedValueB = qRound(valueB);
+<span class="comment"> // roundedValueB = 42949672961</span></pre>
 <a name="//apple_ref/cpp/func//qRound" />
 <h3 class="fn"><a name="qRound"></a>int qRound ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
 <p>Rounds <i>value</i> to the nearest integer. For example:</p>
-<pre>         qreal valueA = 2.3;
-         qreal valueB = 2.7;
+<pre> qreal valueA = 2.3;
+ qreal valueB = 2.7;
 
-         int roundedValueA = qRound(valueA);
-         \\ roundedValueA = 2
-         int roundedValueB = qRound(valueB);
-         \\ roundedValueB = 3</pre>
+ int roundedValueA = qRound(valueA);
+<span class="comment"> // roundedValueA = 2</span>
+ int roundedValueB = qRound(valueB);
+<span class="comment"> // roundedValueB = 3</span></pre>
 <a name="//apple_ref/cpp/func//qToBigEndian" />
 <h3 class="fn"><a name="qToBigEndian"></a>void qToBigEndian ( T <i>src</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>dest</i> )</h3>
 <p>Writes the number <i>src</i> with template type <tt>T</tt> to the memory location at <i>dest</i> in big-endian byte order.</p>
@@ -475,14 +476,14 @@
 <p>Calls the message handler with the warning message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger. This function does nothing if <tt>QT_NO_WARNING_OUTPUT</tt> was defined during compilation; it exits if the environment variable <tt>QT_FATAL_WARNINGS</tt> is defined.</p>
 <p>This function takes a format string and a list of arguments, similar to the C printf() function.</p>
 <p>Example:</p>
-<pre>         void f(int c)
-         {
-             if (c &gt; 200)
-                 qWarning(&quot;f: bad argument, c == %d&quot;, c);
-         }</pre>
+<pre> void f(int c)
+ {
+     if (c &gt; 200)
+         qWarning(&quot;f: bad argument, c == %d&quot;, c);
+ }</pre>
 <p>If you include &lt;QtDebug&gt;, a more convenient syntax is also available:</p>
-<pre>        qWarning() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other value:&quot;
-        &lt;&lt; i;</pre>
+<pre> qWarning() &lt;&lt; &quot;Brush:&quot; &lt;&lt; myQBrush &lt;&lt; &quot;Other value:&quot;
+ &lt;&lt; i;</pre>
 <p>This syntax inserts a space between each item, and appends a newline at the end.</p>
 <p><b>Warning:</b> The internal buffer is limited to 8192 bytes, including the '\0'-terminator.</p>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), <a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
@@ -511,31 +512,47 @@
 <a name="//apple_ref/cpp/macro//QT_POINTER_SIZE" />
 <h3 class="fn"><a name="QT_POINTER_SIZE"></a>QT_POINTER_SIZE</h3>
 <p>Expands to the size of a pointer in bytes (4 or 8). This is equivalent to <tt>sizeof(void *)</tt> but can be used in a preprocessor directive.</p>
+<a name="//apple_ref/cpp/macro//QT_REQUIRE_VERSION" />
+<h3 class="fn"><a name="QT_REQUIRE_VERSION"></a>QT_REQUIRE_VERSION ( int <i>argc</i>, char ** <i>argv</i>, const char * <i>version</i> )</h3>
+<p>This macro can be used to ensure that the application is run against a recent enough version of Qt. This is especially useful if your application depends on a specific bug fix introduced in a bug-fix release (e.g&#x2e;, 4.0&#x2e;2).</p>
+<p>The <i>argc</i> and <i>argv</i> parameters are the <tt>main()</tt> function's <tt>argc</tt> and <tt>argv</tt> parameters. The <i>version</i> parameter is a string literal that specifies which version of Qt the application requires (e.g&#x2e;, &quot;4.0&#x2e;2&quot;).</p>
+<p>Example:</p>
+<pre> #include &lt;QApplication&gt;
+ #include &lt;QMessageBox&gt;
+
+ int main(int argc, char *argv[])
+ {
+     QT_REQUIRE_VERSION(argc, argv, &quot;4.0.2&quot;)
+
+     QApplication app(argc, argv);
+     ...
+     return app.exec();
+ }</pre>
 <a name="//apple_ref/cpp/macro//QT_TRANSLATE_NOOP3" />
 <h3 class="fn"><a name="QT_TRANSLATE_NOOP3"></a>QT_TRANSLATE_NOOP3 (  <i>context</i>,  <i>sourceText</i>,  <i>comment</i> )</h3>
 <p>Marks the string literal <i>sourceText</i> for dynamic translation in the given <i>context</i> and with <i>comment</i>, i.e the stored <i>sourceText</i> will not be altered. The <i>context</i> is typically a class and also needs to be specified as string literal. The string literal <i>comment</i> will be available for translators using e.g&#x2e; Qt Linguist.</p>
 <p>The macro expands to anonymous struct of the two string literals passed as <i>sourceText</i> and <i>comment</i>.</p>
 <p>Example:</p>
-<pre>         static { const char *source; const char *comment; } greeting_strings[] =
-         {
-             QT_TRANSLATE_NOOP3(&quot;FriendlyConversation&quot;, &quot;Hello&quot;,
-                                &quot;A really friendly hello&quot;),
-             QT_TRANSLATE_NOOP3(&quot;FriendlyConversation&quot;, &quot;Goodbye&quot;,
-                                &quot;A really friendly goodbye&quot;)
-         };
+<pre> static { const char *source; const char *comment; } greeting_strings[] =
+ {
+     QT_TRANSLATE_NOOP3(&quot;FriendlyConversation&quot;, &quot;Hello&quot;,
+                        &quot;A really friendly hello&quot;),
+     QT_TRANSLATE_NOOP3(&quot;FriendlyConversation&quot;, &quot;Goodbye&quot;,
+                        &quot;A really friendly goodbye&quot;)
+ };
 
-         QString FriendlyConversation::greeting(int type)
-         {
-             return tr(greeting_strings[type].source,
-                       greeting_strings[type].comment);
-         }
+ QString FriendlyConversation::greeting(int type)
+ {
+     return tr(greeting_strings[type].source,
+               greeting_strings[type].comment);
+ }
 
-         QString global_greeting(int type)
-         {
-             return qApp-&gt;translate(&quot;FriendlyConversation&quot;,
-                    greeting_strings[type].source,
-                    greeting_strings[type].comment);
-         }</pre>
+ QString global_greeting(int type)
+ {
+     return qApp-&gt;translate(&quot;FriendlyConversation&quot;,
+            greeting_strings[type].source,
+            greeting_strings[type].comment);
+ }</pre>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>(), <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <a name="//apple_ref/cpp/macro//QT_TRANSLATE_NOOP" />
@@ -543,46 +560,46 @@
 <p>Marks the string literal <i>sourceText</i> for dynamic translation in the given <i>context</i>, i.e the stored <i>sourceText</i> will not be altered. The <i>context</i> is typically a class and also needs to be specified as string literal.</p>
 <p>The macro expands to <i>sourceText</i>.</p>
 <p>Example:</p>
-<pre>         static const char *greeting_strings[] = {
-             QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Hello&quot;),
-             QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Goodbye&quot;)
-         };
+<pre> static const char *greeting_strings[] = {
+     QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Hello&quot;),
+     QT_TRANSLATE_NOOP(&quot;FriendlyConversation&quot;, &quot;Goodbye&quot;)
+ };
 
-         QString FriendlyConversation::greeting(int type)
-         {
-             return tr(greeting_strings[type]);
-         }
+ QString FriendlyConversation::greeting(int type)
+ {
+     return tr(greeting_strings[type]);
+ }
 
-         QString global_greeting(int type)
-         {
-             return qApp-&gt;translate(&quot;FriendlyConversation&quot;,
-                    greeting_strings[type]);
-         }</pre>
+ QString global_greeting(int type)
+ {
+     return qApp-&gt;translate(&quot;FriendlyConversation&quot;,
+            greeting_strings[type]);
+ }</pre>
 <p>See also <a href="qtglobal.html#QT_TR_NOOP">QT_TR_NOOP</a>(), <a href="qtglobal.html#QT_TRANSLATE_NOOP3">QT_TRANSLATE_NOOP3</a>(), and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <a name="//apple_ref/cpp/macro//QT_TR_NOOP" />
 <h3 class="fn"><a name="QT_TR_NOOP"></a>QT_TR_NOOP (  <i>sourceText</i> )</h3>
 <p>Marks the string literal <i>sourceText</i> for dynamic translation in the current context (class), i.e the stored <i>sourceText</i> will not be altered.</p>
 <p>The macro expands to <i>sourceText</i>.</p>
 <p>Example:</p>
-<pre>         QString FriendlyConversation::greeting(int type)
-         {
-         static const char *greeting_strings[] = {
-             QT_TR_NOOP(&quot;Hello&quot;),
-             QT_TR_NOOP(&quot;Goodbye&quot;)
-         };
-         return tr(greeting_strings[type]);
-         }</pre>
+<pre> QString FriendlyConversation::greeting(int type)
+ {
+ static const char *greeting_strings[] = {
+     QT_TR_NOOP(&quot;Hello&quot;),
+     QT_TR_NOOP(&quot;Goodbye&quot;)
+ };
+ return tr(greeting_strings[type]);
+ }</pre>
 <p>See also <a href="qtglobal.html#QT_TRANSLATE_NOOP">QT_TRANSLATE_NOOP</a>() and <a href="i18n.html">Internationalization with Qt</a>.</p>
 <a name="//apple_ref/cpp/macro//QT_VERSION" />
 <h3 class="fn"><a name="QT_VERSION"></a>QT_VERSION</h3>
 <p>This macro expands a numeric value of the form 0xMMNNPP (MM = major, NN = minor, PP = patch) that specifies Qt's version number. For example, if you compile your application against Qt 4.1&#x2e;2, the QT_VERSION macro will expand to 0x040102.</p>
 <p>You can use QT_VERSION to use the latest Qt features where available. For example:</p>
-<pre>         #if QT_VERSION &gt;= 0x040100
-             QIcon icon = style()-&gt;standardIcon(QStyle::SP_TrashIcon);
-         #else
-             QPixmap pixmap = style()-&gt;standardPixmap(QStyle::SP_TrashIcon);
-             QIcon icon(pixmap);
-         #endif</pre>
+<pre> #if QT_VERSION &gt;= 0x040100
+     QIcon icon = style()-&gt;standardIcon(QStyle::SP_TrashIcon);
+ #else
+     QPixmap pixmap = style()-&gt;standardPixmap(QStyle::SP_TrashIcon);
+     QIcon icon(pixmap);
+ #endif</pre>
 <p>See also <a href="qtglobal.html#QT_VERSION_STR">QT_VERSION_STR</a> and <a href="qtglobal.html#qVersion">qVersion</a>().</p>
 <a name="//apple_ref/cpp/macro//QT_VERSION_STR" />
 <h3 class="fn"><a name="QT_VERSION_STR"></a>QT_VERSION_STR</h3>
@@ -593,55 +610,55 @@
 <p>Prints a warning message containing the source code file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT() is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre>         <span class="comment">// File: div.cpp</span>
+<pre><span class="comment"> // File: div.cpp</span>
 
-         #include &lt;QtGlobal&gt;
+ #include &lt;QtGlobal&gt;
 
-         int divide(int a, int b)
-         {
-             Q_ASSERT(b != 0);
-             return a / b;
-         }</pre>
+ int divide(int a, int b)
+ {
+     Q_ASSERT(b != 0);
+     return a / b;
+ }</pre>
 <p>If <tt>b</tt> is zero, the Q_ASSERT statement will output the following message using the <a href="qtglobal.html#qFatal">qFatal</a>() function:</p>
-<pre>         ASSERT: &quot;b == 0&quot; in file div.cpp, line 7</pre>
+<pre> ASSERT: &quot;b == 0&quot; in file div.cpp, line 7</pre>
 <p>See also <a href="qtglobal.html#Q_ASSERT_X">Q_ASSERT_X</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_ASSERT_X" />
 <h3 class="fn"><a name="Q_ASSERT_X"></a>void Q_ASSERT_X ( bool <i>test</i>, const char * <i>where</i>, const char * <i>what</i> )</h3>
 <p>Prints the message <i>what</i> together with the location <i>where</i>, the source file name and line number if <i>test</i> is false.</p>
 <p>Q_ASSERT_X is useful for testing pre- and post-conditions during development. It does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre>         <span class="comment">// File: div.cpp</span>
+<pre><span class="comment"> // File: div.cpp</span>
 
-         #include &lt;QtGlobal&gt;
+ #include &lt;QtGlobal&gt;
 
-         int divide(int a, int b)
-         {
-             Q_ASSERT_X(b != 0, &quot;divide&quot;, &quot;division by zero&quot;);
-             return a / b;
-         }</pre>
+ int divide(int a, int b)
+ {
+     Q_ASSERT_X(b != 0, &quot;divide&quot;, &quot;division by zero&quot;);
+     return a / b;
+ }</pre>
 <p>If <tt>b</tt> is zero, the Q_ASSERT_X statement will output the following message using the <a href="qtglobal.html#qFatal">qFatal</a>() function:</p>
-<pre>         ASSERT failure in divide: &quot;division by zero&quot;, file div.cpp, line 7</pre>
+<pre> ASSERT failure in divide: &quot;division by zero&quot;, file div.cpp, line 7</pre>
 <p>See also <a href="qtglobal.html#Q_ASSERT">Q_ASSERT</a>(), <a href="qtglobal.html#qFatal">qFatal</a>(), and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_BIG_ENDIAN" />
 <h3 class="fn"><a name="Q_BIG_ENDIAN"></a>Q_BIG_ENDIAN</h3>
 <p>This macro represents a value you can compare to the macro <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> to determine the endian-ness of your system. In a big-endian system, the most significant byte is stored at the lowest address. The other bytes follow in decreasing order of significance.</p>
-<pre>     #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-     ...
-     #endif</pre>
+<pre> #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+ ...
+ #endif</pre>
 <p>See also <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> and <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_BYTE_ORDER" />
 <h3 class="fn"><a name="Q_BYTE_ORDER"></a>Q_BYTE_ORDER</h3>
 <p>This macro can be used to determine the byte order your system uses for storing data in memory. i.e&#x2e;, whether your system is little-endian or big-endian. It is set by Qt to one of the macros <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a> or <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a>. You normally won't need to worry about endian-ness, but you might, for example if you need to know which byte of an integer or UTF-16 character is stored in the lowest address. Endian-ness is important in networking, where computers with different values for Q_BYTE_ORDER must pass data back and forth.</p>
 <p>Use this macro as in the following examples.</p>
-<pre>     #if Q_BYTE_ORDER == Q_BIG_ENDIAN
-     ...
-     #endif
+<pre> #if Q_BYTE_ORDER == Q_BIG_ENDIAN
+ ...
+ #endif
 
-     or
+ or
 
-     #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-     ...
-     #endif</pre>
+ #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ ...
+ #endif</pre>
 <p>See also <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a> and <a href="qtglobal.html#Q_LITTLE_ENDIAN">Q_LITTLE_ENDIAN</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_CC_BOR" />
 <h3 class="fn"><a name="Q_CC_BOR"></a>Q_CC_BOR</h3>
@@ -708,12 +725,12 @@
 <p>If <i>pointer</i> is 0, prints a warning message containing the source code's file name and line number, saying that the program ran out of memory.</p>
 <p>Q_CHECK_PTR does nothing if <tt>QT_NO_DEBUG</tt> was defined during compilation.</p>
 <p>Example:</p>
-<pre>         int *a;
+<pre> int *a;
 
-         Q_CHECK_PTR(a = new int[80]);   <span class="comment">// WRONG</span>!
+ Q_CHECK_PTR(a = new int[80]);   <span class="comment">// WRONG</span>!
 
-         a = new (nothrow) int[80];      <span class="comment">// Right</span>
-         Q_CHECK_PTR(a);</pre>
+ a = new (nothrow) int[80];      <span class="comment">// Right</span>
+ Q_CHECK_PTR(a);</pre>
 <p>See also <a href="qtglobal.html#qWarning">qWarning</a>() and <a href="debug.html">Debugging Techniques</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_DECLARE_TYPEINFO" />
 <h3 class="fn"><a name="Q_DECLARE_TYPEINFO"></a>Q_DECLARE_TYPEINFO (  <i>Type</i>,  <i>Flags</i> )</h3>
@@ -725,31 +742,31 @@
 <li><tt>Q_COMPLEX_TYPE</tt> (the default) specifies that <i>Type</i> has constructors and/or a destructor and that it may not be moved in memory.</li>
 </ul>
 <p>Example of a &quot;primitive&quot; type:</p>
-<pre>         struct Point2D
-         {
-             int x;
-             int y;
-         };
+<pre> struct Point2D
+ {
+     int x;
+     int y;
+ };
 
-         Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);</pre>
+ Q_DECLARE_TYPEINFO(Point2D, Q_PRIMITIVE_TYPE);</pre>
 <p>Example of a movable type:</p>
-<pre>         class Point2D
-         {
-         public:
-             Point2D() { data = new int[2]; }
-             Point2D(const Point2D &amp;other) { ... }
-             ~Point2D() { delete[] data; }
+<pre> class Point2D
+ {
+ public:
+     Point2D() { data = new int[2]; }
+     Point2D(const Point2D &amp;other) { ... }
+     ~Point2D() { delete[] data; }
 
-             Point2D &amp;operator=(const Point2D &amp;other) { ... }
+     Point2D &amp;operator=(const Point2D &amp;other) { ... }
 
-             int x() const { return data[0]; }
-             int y() const { return data[1]; }
+     int x() const { return data[0]; }
+     int y() const { return data[1]; }
 
-         private:
-             int *data;
-         };
+ private:
+     int *data;
+ };
 
-         Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);</pre>
+ Q_DECLARE_TYPEINFO(Point2D, Q_MOVABLE_TYPE);</pre>
 <a name="//apple_ref/cpp/macro//Q_FOREACH" />
 <h3 class="fn"><a name="Q_FOREACH"></a>Q_FOREACH (  <i>variable</i>,  <i>container</i> )</h3>
 <p>Same as foreach(<i>variable</i>, <i>container</i>).</p>
@@ -764,30 +781,30 @@
 <h3 class="fn"><a name="Q_FUNC_INFO"></a>const char * Q_FUNC_INFO ()</h3>
 <p>Expands to a string that describe the function the macro resides in. How this string looks more specifically is compiler dependent. With GNU GCC it is typically the function signature, while with other compilers it might be the line and column number.</p>
 <p>Q_FUNC_INFO can be conveniently used with <a href="qtglobal.html#qDebug">qDebug</a>(). For example, this function:</p>
-<pre>         template&lt;typename TInputType&gt;
-         const TInputType &amp;myMin(const TInputType &amp;value1, const TInputType &amp;value2)
-         {
-             qDebug() &lt;&lt; Q_FUNC_INFO &lt;&lt; &quot;was called with value1:&quot; &lt;&lt; value1 &lt;&lt; &quot;value2:&quot; &lt;&lt; value2;
+<pre> template&lt;typename TInputType&gt;
+ const TInputType &amp;myMin(const TInputType &amp;value1, const TInputType &amp;value2)
+ {
+     qDebug() &lt;&lt; Q_FUNC_INFO &lt;&lt; &quot;was called with value1:&quot; &lt;&lt; value1 &lt;&lt; &quot;value2:&quot; &lt;&lt; value2;
 
-             if(value1 &lt; value2)
-                 return value1;
-             else
-                 return value2;
-         }</pre>
+     if(value1 &lt; value2)
+         return value1;
+     else
+         return value2;
+ }</pre>
 <p>when instantiated with the integer type, will with the GCC compiler produce:</p>
 <p><tt>const TInputType&amp; myMin(const TInputType&amp;, const TInputType&amp;) [with TInputType = int] was called with value1: 3 value2: 4</tt></p>
 <p>If this macro is used outside a function, the behavior is undefined.</p>
 <a name="//apple_ref/cpp/macro//Q_INT64_C" />
 <h3 class="fn"><a name="Q_INT64_C"></a><a href="qtglobal.html#qint64-typedef">qint64</a> Q_INT64_C (  <i>literal</i> )</h3>
 <p>Wraps the signed 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
-<pre>         qint64 value = Q_INT64_C(932838457459459);</pre>
+<pre> qint64 value = Q_INT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#qint64-typedef">qint64</a> and <a href="qtglobal.html#Q_UINT64_C">Q_UINT64_C</a>().</p>
 <a name="//apple_ref/cpp/macro//Q_LITTLE_ENDIAN" />
 <h3 class="fn"><a name="Q_LITTLE_ENDIAN"></a>Q_LITTLE_ENDIAN</h3>
 <p>This macro represents a value you can compare to the macro <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> to determine the endian-ness of your system. In a little-endian system, the least significant byte is stored at the lowest address. The other bytes follow in increasing order of significance.</p>
-<pre>     #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
-     ...
-     #endif</pre>
+<pre> #if Q_BYTE_ORDER == Q_LITTLE_ENDIAN
+ ...
+ #endif</pre>
 <p>See also <a href="qtglobal.html#Q_BYTE_ORDER">Q_BYTE_ORDER</a> and <a href="qtglobal.html#Q_BIG_ENDIAN">Q_BIG_ENDIAN</a>.</p>
 <a name="//apple_ref/cpp/macro//Q_OS_AIX" />
 <h3 class="fn"><a name="Q_OS_AIX"></a>Q_OS_AIX</h3>
@@ -879,7 +896,7 @@
 <a name="//apple_ref/cpp/macro//Q_UINT64_C" />
 <h3 class="fn"><a name="Q_UINT64_C"></a><a href="qtglobal.html#quint64-typedef">quint64</a> Q_UINT64_C (  <i>literal</i> )</h3>
 <p>Wraps the unsigned 64-bit integer <i>literal</i> in a platform-independent way. For example:</p>
-<pre>         quint64 value = Q_UINT64_C(932838457459459);</pre>
+<pre> quint64 value = Q_UINT64_C(932838457459459);</pre>
 <p>See also <a href="qtglobal.html#quint64-typedef">quint64</a> and <a href="qtglobal.html#Q_INT64_C">Q_INT64_C</a>().</p>
 <a name="//apple_ref/cpp/macro//Q_UNUSED" />
 <h3 class="fn"><a name="Q_UNUSED"></a>Q_UNUSED (  <i>name</i> )</h3>
@@ -904,29 +921,29 @@
 <h3 class="fn"><a name="foreach"></a>foreach (  <i>variable</i>,  <i>container</i> )</h3>
 <p>This macro is used to implement Qt's <tt>foreach</tt> loop. The <i>variable</i> parameter is a variable name or variable definition; the <i>container</i> parameter is a Qt container whose value type corresponds to the type of the variable. See <a href="containers.html#the-foreach-keyword">The foreach Keyword</a> for details.</p>
 <p>If you're worried about namespace pollution, you can disable this macro by adding the following line to your <tt>.pro</tt> file:</p>
-<pre>         CONFIG += no_keywords</pre>
+<pre> CONFIG += no_keywords</pre>
 <p>See also <a href="qtglobal.html#Q_FOREACH">Q_FOREACH</a>().</p>
 <a name="//apple_ref/cpp/macro//forever" />
 <h3 class="fn"><a name="forever"></a>forever</h3>
 <p>This macro is provided for convenience for writing infinite loops.</p>
 <p>Example:</p>
-<pre>         forever {
-             ...
-         }</pre>
+<pre> forever {
+     ...
+ }</pre>
 <p>It is equivalent to <tt>for (;;)</tt>.</p>
 <p>If you're worried about namespace pollution, you can disable this macro by adding the following line to your <tt>.pro</tt> file:</p>
-<pre>         CONFIG += no_keywords</pre>
+<pre> CONFIG += no_keywords</pre>
 <p>See also <a href="qtglobal.html#Q_FOREVER">Q_FOREVER</a>.</p>
 <a name="//apple_ref/cpp/macro//qPrintable" />
 <h3 class="fn"><a name="qPrintable"></a>const char * qPrintable ( const <a href="qstring.html">QString</a> &amp; <i>str</i> )</h3>
 <p>Returns <i>str</i> as a <tt>const char *</tt>. This is equivalent to <i>str</i>.toLocal8Bit().constData().</p>
 <p>Example:</p>
-<pre>         qWarning(&quot;%s: %s&quot;, qPrintable(key), qPrintable(value));</pre>
+<pre> qWarning(&quot;%s: %s&quot;, qPrintable(key), qPrintable(value));</pre>
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), and <a href="qtglobal.html#qFatal">qFatal</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

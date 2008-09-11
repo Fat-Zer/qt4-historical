@@ -183,7 +183,7 @@ QSizeF QPlainTextDocumentLayout::documentSize() const
 QRectF QPlainTextDocumentLayout::frameBoundingRect(QTextFrame *) const
 {
     Q_D(const QPlainTextDocumentLayout);
-    return QRectF(0, 0, d->width, INT_MAX);
+    return QRectF(0, 0, d->width, qreal(INT_MAX));
 }
 
 /*!
@@ -679,7 +679,10 @@ void QPlainTextEditPrivate::setTopBlock(int newTopBlock, int newTopLine)
 
     if (doc->blockCount() < SMALL_DOCUMENT_BLOCK_COUNT) {
         int lineNumber = lineCount(newTopBlock) + newTopLine;
-        vbar->setValue(lineNumber);
+        if (vbar->value() == lineNumber)
+            q->QPlainTextEdit::scrollContentsBy(0, 0);
+        else
+            vbar->setValue(lineNumber);
         return;
     }
 
@@ -973,7 +976,6 @@ void QPlainTextEditPrivate::_q_adjustScrollbars()
     int vmax = (blockCount < SMALL_DOCUMENT_BLOCK_COUNT ? lineCount() : blockCount) - 1;
     lastTopLineInMaximumBlock = -1;
 
-
     if (!centerOnScroll) {
         QTextBlock block = doc->lastBlock();
         QRect visible = viewport->rect();
@@ -1196,9 +1198,9 @@ void QPlainTextEditPrivate::ensureViewportLayouted()
    different and simplified text layout called
    QPlainTextDocumentLayout on the text document (see
    QTextDocument::setDocumentLayout()). The plain text document layout
-   does not support tables nor embedded frames, and replaces a
+   does not support tables nor embedded frames, and \e{replaces a
    pixel-exact height calculation with a line-by-line respectively
-   paragraph-by-paragraph scrolling approach. This makes it possible
+   paragraph-by-paragraph scrolling approach}. This makes it possible
    to handle significantly larger documents, and still resize the
    editor with line wrap enabled in real time. It also makes for a
    fast log viewer (see setMaximumBlockCount()).
@@ -1212,9 +1214,10 @@ void QPlainTextEditPrivate::ensureViewportLayouted()
 /*!
     \property QPlainTextEdit::plainText
 
-    This property gets and sets the plain text edit's
-    contents. Previous contents are removed and undo/redo history is
-    reset when the property is set.
+    This property gets and sets the plain text editor's contents. The previous
+    contents are removed and undo/redo history is reset when this property is set.
+
+    By default, for an editor with no contents, this property contains an empty string.
 */
 
 /*!
@@ -1223,6 +1226,8 @@ void QPlainTextEditPrivate::ensureViewportLayouted()
 
     Users are only able to undo or redo actions if this property is
     true, and if there is an action that can be undone (or redone).
+
+    By default, this property is true.
 */
 
 /*!
@@ -1459,6 +1464,7 @@ bool QPlainTextEdit::event(QEvent *e)
 {
     Q_D(QPlainTextEdit);
 
+#ifndef QT_NO_CONTEXTMENU
     if (e->type() == QEvent::ContextMenu
         && static_cast<QContextMenuEvent *>(e)->reason() == QContextMenuEvent::Keyboard) {
         ensureCursorVisible();
@@ -1468,7 +1474,9 @@ bool QPlainTextEdit::event(QEvent *e)
         const bool result = QAbstractScrollArea::event(&ce);
         e->setAccepted(ce.isAccepted());
         return result;
-    } else if (e->type() == QEvent::ShortcutOverride
+    }
+#endif // QT_NO_CONTEXTMENU
+    if (e->type() == QEvent::ShortcutOverride
                || e->type() == QEvent::ToolTip) {
         d->sendControlEvent(e);
     }
@@ -1969,6 +1977,7 @@ bool QPlainTextEdit::focusNextPrevChild(bool next)
     return QAbstractScrollArea::focusNextPrevChild(next);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
   \fn void QPlainTextEdit::contextMenuEvent(QContextMenuEvent *event)
 
@@ -1982,13 +1991,14 @@ bool QPlainTextEdit::focusNextPrevChild(bool next)
 
   Information about the event is passed in the \a event object.
 
-  \snippet doc/src/snippets/code/src.gui.widgets.qplaintextedit.cpp 0
+  \snippet doc/src/snippets/code/src_gui_widgets_qplaintextedit.cpp 0
 */
 void QPlainTextEdit::contextMenuEvent(QContextMenuEvent *e)
 {
     Q_D(QPlainTextEdit);
     d->sendControlEvent(e);
 }
+#endif // QT_NO_CONTEXTMENU
 
 #ifndef QT_NO_DRAGANDDROP
 /*! \reimp
@@ -2219,6 +2229,16 @@ QRect QPlainTextEdit::cursorRect() const
 
 /*!
    \property QPlainTextEdit::overwriteMode
+   \brief whether text entered by the user will overwrite existing text
+
+   As with many text editors, the plain text editor widget can be configured
+   to insert or overwrite existing text with new text entered by the user.
+
+   If this property is true, existing text is overwritten, character-for-character
+   by new text; otherwise, text is inserted at the cursor position, displacing
+   existing text.
+
+   By default, this property is false (new text does not overwrite existing text).
 */
 
 bool QPlainTextEdit::overwriteMode() const
@@ -2236,6 +2256,8 @@ void QPlainTextEdit::setOverwriteMode(bool overwrite)
 /*!
     \property QPlainTextEdit::tabStopWidth
     \brief the tab stop width in pixels
+
+    By default, this property contains a value of 80.
 */
 
 int QPlainTextEdit::tabStopWidth() const
@@ -2434,7 +2456,7 @@ QTextCharFormat QPlainTextEdit::currentCharFormat() const
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qplaintextedit.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qplaintextedit.cpp 1
  */
 void QPlainTextEdit::insertPlainText(const QString &text)
 {
@@ -2506,6 +2528,8 @@ void QPlainTextEdit::setTabChangesFocus(bool b)
 /*!
     \property QPlainTextEdit::documentTitle
     \brief the title of the document parsed from the text.
+
+    By default, this property contains an empty string.
 */
 
 /*!
@@ -2544,6 +2568,8 @@ void QPlainTextEdit::setLineWrapMode(LineWrapMode wrap)
     \property QPlainTextEdit::wordWrapMode
     \brief the mode QPlainTextEdit will use when wrapping text by words
 
+    By default, this property is set to QTextOption::WrapAtWordBoundaryOrAnywhere.
+
     \sa QTextOption::WrapMode
 */
 
@@ -2568,9 +2594,9 @@ void QPlainTextEdit::setWordWrapMode(QTextOption::WrapMode mode)
 
     If set to true, the plain text edit paints the palette background
     on the viewport area not covered by the text document. Otherwise,
-    if set to false, it won't. The feature makes it possible for 
-    the user to visually distinguish between the area of the document,   
-    painted with the base color of the palette, and the empty 
+    if set to false, it won't. The feature makes it possible for
+    the user to visually distinguish between the area of the document,
+    painted with the base color of the palette, and the empty
     area not covered by any document.
 
     The default is false.
@@ -2715,7 +2741,7 @@ void QPlainTextEditPrivate::append(const QString &text, Qt::TextFormat format)
         document->setMaximumBlockCount(0);
 
     int voffset = verticalOffset();
-    const bool atBottom =  control->blockBoundingRect(document->lastBlock()).bottom() + voffset - MARGIN - 1
+    const bool atBottom =  control->blockBoundingRect(document->lastBlock()).bottom() - voffset
                            <= viewport->rect().bottom();
 
     QSizeF documentSize = documentLayout->documentSize();
@@ -2749,12 +2775,11 @@ void QPlainTextEditPrivate::append(const QString &text, Qt::TextFormat format)
     }
 
     documentLayout->priv()->blockDocumentSizeChanged = documentSizeChangedBlocked;
-    if (documentSize != documentLayout->documentSize())
-        _q_adjustScrollbars();
+    _q_adjustScrollbars();
 
     if (atBottom) {
         QTextBlock lastBlock = document->lastBlock();
-        ensureVisible(lastBlock.position() + lastBlock.length() - 1, false);
+        ensureVisible(lastBlock.position() + lastBlock.length() - 1, centerOnScroll);
     }
 }
 
@@ -2880,6 +2905,8 @@ QRectF QPlainTextEdit::blockBoundingRect(const QTextBlock &block) const
 /*!
     \property QPlainTextEdit::blockCount
     \brief the number of text blocks in the document.
+
+    By default, in an empty document, this property contains a value of 1.
 */
 int QPlainTextEdit::blockCount() const
 {

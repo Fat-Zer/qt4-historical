@@ -120,7 +120,7 @@
     \section2 Service Names
 
     When communicating over a bus, applications obtain what is
-    called a "service name": it is how that application choses to be
+    called a "service name": it is how that application chooses to be
     known by other applications on the same bus. The service names
     are brokered by the D-Bus bus daemon and are used to
     route messages from one application to another. An analogous
@@ -145,7 +145,7 @@
     \tt{freedesktop.org} and can be found on the bus under the
     service name:
 
-    \snippet doc/src/snippets/code/doc.src.introtodbus.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_introtodbus.qdoc 0
 
     \section2 Object Paths
 

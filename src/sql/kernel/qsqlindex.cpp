@@ -208,7 +208,7 @@ QString QSqlIndex::toString(const QString& prefix, const QString& sep, bool verb
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlindex.cpp 0
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlindex.cpp 0
 
 */
 QStringList QSqlIndex::toStringList(const QString& prefix, bool verbose) const

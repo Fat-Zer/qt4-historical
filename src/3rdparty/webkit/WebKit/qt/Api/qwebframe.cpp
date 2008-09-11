@@ -715,6 +715,7 @@ bool QWebFrame::event(QEvent *e)
     return QObject::event(e);
 }
 
+#ifndef QT_NO_PRINTER
 /*!
     Prints the frame to the given \a printer.
 
@@ -802,6 +803,7 @@ void QWebFrame::print(QPrinter *printer) const
 
     printContext.end();
 }
+#endif // QT_NO_PRINTER
 
 /*!
     Evaluate JavaScript defined by \a scriptSource using this frame as context.

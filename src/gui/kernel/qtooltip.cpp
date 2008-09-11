@@ -129,6 +129,7 @@ public:
     bool tipChanged(const QPoint &pos, const QString &text, QObject *o);
     void placeTip(const QPoint &pos, QWidget *w);
 
+    static int getTipScreen(const QPoint &pos, QWidget *w);
 protected:
     void timerEvent(QTimerEvent *e);
     void paintEvent(QPaintEvent *e);
@@ -138,8 +139,6 @@ protected:
 private:
     QWidget *widget;
     QRect rect;
-
-    int getTipScreen(const QPoint &pos, QWidget *w);
 };
 
 QTipLabel *QTipLabel::instance = 0;
@@ -396,7 +395,13 @@ void QToolTip::showText(const QPoint &pos, const QString &text, QWidget *w, cons
     }
 
     if (!text.isEmpty()){ // no tip can be reused, create new tip:
-        new QTipLabel(text, w); // sets QTipLabel::instance to itself
+        new QTipLabel(text, 
+#ifdef Q_WS_WIN
+            QApplication::desktop()->screen(QTipLabel::getTipScreen(pos, w))
+#else
+            w
+#endif
+            ); // sets QTipLabel::instance to itself
         QTipLabel::instance->setTipRect(w, rect);
         QTipLabel::instance->placeTip(pos, w);
         QTipLabel::instance->setObjectName(QLatin1String("qtooltip_label"));

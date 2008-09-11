@@ -554,7 +554,6 @@ QTextHtmlParserNode *QTextHtmlParser::newNode(int parent)
         newNode->id = Html_unknown;
     } else {
         nodes.resize(nodes.size() + 1);
-        nodes[0].blockFormat.setLayoutDirection(Qt::LeftToRight); // HTML default
         newNode = &nodes.last();
     }
 
@@ -1008,7 +1007,11 @@ void QTextHtmlParserNode::initializeProperties(const QTextHtmlParserNode *parent
 {
     // inherit properties from parent element
     charFormat = parent->charFormat;
-    blockFormat.setLayoutDirection(parent->blockFormat.layoutDirection());
+
+    if (id == Html_html)
+        blockFormat.setLayoutDirection(Qt::LeftToRight); // HTML default
+    else if (parent->blockFormat.hasProperty(QTextFormat::LayoutDirection))
+        blockFormat.setLayoutDirection(parent->blockFormat.layoutDirection());
 
     if (parent->displayMode == QTextHtmlElement::DisplayNone)
         displayMode = QTextHtmlElement::DisplayNone;

@@ -48,9 +48,9 @@
     \ingroup qt-embedded
 
     The procedure of deploying an Qt application on \l{Qt for Embedded Linux}
-    is essentially the same as the deployment procedure on Qt/X11
+    is essentially the same as the deployment procedure on X11 platforms
     which is described in detail in the \l {Deploying an Application
-    on Qt/X11} documentation. See also the \l {Deploying Qt
+    on X11 Platforms} documentation. See also the \l {Deploying Qt
     applications}{general remarks} about deploying Qt applications.
 
     In addition, there is a couple of Qt for Embedded Linux specific issues to

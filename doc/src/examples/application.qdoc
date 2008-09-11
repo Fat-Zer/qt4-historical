@@ -252,7 +252,7 @@
     side of the menu bar. Try running the application with various
     styles and see the results:
 
-    \snippet doc/src/snippets/code/doc.src.examples.application.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_application.qdoc 0
 
     Let's now review the toolbars:
 

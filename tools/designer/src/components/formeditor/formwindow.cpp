@@ -379,6 +379,7 @@ bool FormWindow::isChildOf(const QWidget *c, const QWidget *p)
 
 void FormWindow::setCursorToAll(const QCursor &c, QWidget *start)
 {
+#ifndef QT_NO_CURSOR
     start->setCursor(c);
     const QWidgetList widgets = qFindChildren<QWidget*>(start);
     foreach (QWidget *widget, widgets) {
@@ -386,6 +387,7 @@ void FormWindow::setCursorToAll(const QCursor &c, QWidget *start)
             widget->setCursor(c);
         }
     }
+#endif
 }
 
 void FormWindow::init()
@@ -722,10 +724,14 @@ bool FormWindow::handleMouseReleaseEvent(QWidget *w, QWidget *mw, QMouseEvent *e
 
     m_startPos = QPoint();
 
+    /* Inform about selection changes (left/mid or context menu). Also triggers
+     * in the case of an empty rubber drag that cleared the selection in
+     * MousePressEvent. */
     switch (e->button()) {
     case Qt::LeftButton:
+    case Qt::MidButton:
     case Qt::RightButton:
-        emitSelectionChanged(); // inform about selection changes (left or context menu)
+        emitSelectionChanged();
         break;
     default:
         break;
@@ -1795,7 +1801,9 @@ void FormWindow::manageWidget(QWidget *w)
     m_insertedWidgets.insert(w);
     m_widgets.append(w);
 
+#ifndef QT_NO_CURSOR
     setCursorToAll(Qt::ArrowCursor, w);
+#endif
 
     emit changed();
     emit widgetManaged(w);

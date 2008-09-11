@@ -61,7 +61,7 @@ QT_BEGIN_NAMESPACE
     The registration of an extension factory is typically made in the
     QDesignerCustomWidgetInterface::initialize() function:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.qextensionmanager.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_extension_qextensionmanager.cpp 0
 
     The QExtensionManager is not intended to be instantiated
     directly. You can retrieve an interface to \QD's extension manager

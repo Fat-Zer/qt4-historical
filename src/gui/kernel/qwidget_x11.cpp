@@ -978,16 +978,16 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
                     }
                 } else if (isTransient(w)) {
                     /*
-                       when reparenting toplevel windows with toplevel-transient children,
-                       we need to make sure that the window manager gets the updated
-                       WM_TRANSIENT_FOR information... unfortunately, some window managers
-                       don't handle changing WM_TRANSIENT_FOR before the toplevel window is
-                       visible, so we unmap and remap all toplevel-transient children *after*
-                       the toplevel parent has been mapped.  thankfully, this is easy in Qt :)
+                      when reparenting toplevel windows with toplevel-transient children,
+                      we need to make sure that the window manager gets the updated
+                      WM_TRANSIENT_FOR information... unfortunately, some window managers
+                      don't handle changing WM_TRANSIENT_FOR before the toplevel window is
+                      visible, so we unmap and remap all toplevel-transient children *after*
+                      the toplevel parent has been mapped.  thankfully, this is easy in Qt :)
 
-                       note that the WM_TRANSIENT_FOR hint is actually updated in
-                       QWidgetPrivate::show_sys()
-                       */
+                      note that the WM_TRANSIENT_FOR hint is actually updated in
+                      QWidgetPrivate::show_sys()
+                    */
                     if (w->internalWinId())
                         XUnmapWindow(X11->display, w->internalWinId());
                     QApplication::postEvent(w, new QEvent(QEvent::ShowWindowRequest));
@@ -997,8 +997,41 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
         qPRCreate(q, old_winid);
         updateSystemBackground();
 
-        if (old_winid)
+        if (old_winid) {
+            Window *cmwret;
+            int count;
+            if (XGetWMColormapWindows(X11->display, old_winid, &cmwret, &count)) {
+                Window *cmw;
+                int cmw_size = sizeof(Window)*count;
+                cmw = new Window[count];
+                memcpy((char *)cmw, (char *)cmwret, cmw_size);
+                XFree((char *)cmwret);
+                int i;
+                for (i=0; i<count; i++) {
+                    if (cmw[i] == old_winid) {
+                        cmw[i] = q->internalWinId();
+                        break;
+                    }
+                }
+                int top_count;
+                if (XGetWMColormapWindows(X11->display, q->window()->internalWinId(),
+                                          &cmwret, &top_count))
+                {
+                    Window *merged_cmw = new Window[count + top_count];
+                    memcpy((char *)merged_cmw, (char *)cmw, cmw_size);
+                    memcpy((char *)merged_cmw + cmw_size, (char *)cmwret, sizeof(Window)*top_count);
+                    delete [] cmw;
+                    XFree((char *)cmwret);
+                    cmw = merged_cmw;
+                    count += top_count;
+                }
+
+                XSetWMColormapWindows(X11->display, q->window()->internalWinId(), cmw, count);
+                delete [] cmw;
+            }
+
             qt_XDestroyWindow(q, X11->display, old_winid);
+        }
     }
 
     // check if we need to register our dropsite
@@ -2588,7 +2621,7 @@ void QWidgetPrivate::updateFrameStrut()
     }
 
     Atom type_ret;
-    Window l = q->effectiveWinId(), w = l, p, r; // target window, it's parent, root
+    Window l = q->effectiveWinId(), w = l, p, r; // target window, its parent, root
     Window *c;
     int i_unused;
     unsigned int nc;

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/accessible.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/accessible.qdoc -->
 <head>
   <title>Qt 4.4: Accessibility</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Accessibility<br /><span class="subtitle"></span>
 </h1>
 <ul><li><a href="#introduction">Introduction</a></li>
@@ -79,9 +79,9 @@
 <p>To provide accessibility support for a widget or other user interface element, you need to implement the <a href="qaccessibleinterface.html">QAccessibleInterface</a> and distribute it in a <a href="qaccessibleplugin.html">QAccessiblePlugin</a>. It is also possible to compile the interface into the application and provide a <a href="qaccessible.html#InterfaceFactory-typedef">QAccessible::InterfaceFactory</a> for it. The factory can be used if you link statically or do not want the added complexity of plugins. This can be an advantage if you, for instance, are delivering a 3-rd party library.</p>
 <p>All widgets and other user interface elements should have interfaces and plugins. If you want your application to support accessibility, you will need to consider the following:</p>
 <ul>
-<li>Qt already supports accessibility for its own widgets. A good way to ensure accessibility compliance is to use Qt's widgets as much as possible.</li>
-<li>You need to send accessibility events from the custom user interface elements that you implement, which are usually custom widgets.</li>
-<li><a href="qaccessibleinterface.html">QAccessibleInterface</a> needs to be implemented for widgets that you want to make available to accessibility clients.</li>
+<li>Qt already implements accessibility for its own widgets. We therefore recommend that you use Qt widgets where possible.</li>
+<li>A <a href="qaccessibleinterface.html">QAccessibleInterface</a> needs to be implemented for each element that you want to make available to accessibility clients.</li>
+<li>You need to send accessibility events from the custom user interface elements that you implement.</li>
 </ul>
 <p>In general, it is recommended that you are somewhat familiar with MSAA, which Qt originally was built for. You should also study the enum values of <a href="qaccessible.html">QAccessible</a>, which describe the roles, actions, relationships, and events that you need to consider.</p>
 <p>Note that you can examine how Qt's widgets implement their accessibility. One major problem with the MSAA standard is that interfaces are often implemented in an inconsistent way. This makes life difficult for clients and often leads to guesswork on object functionality.</p>
@@ -275,8 +275,8 @@
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

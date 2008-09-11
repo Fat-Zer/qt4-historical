@@ -808,6 +808,21 @@ void HtmlGenerator::generateClassLikeNode(const InnerNode *inner, CodeMarker *ma
     if (!fixedModule.isEmpty())
         subtitleText << "[" << Atom(Atom::AutoLink, fixedModule) << " module]";
 
+    if (fixedModule.isEmpty()) {
+        QMultiMap<QString, QString> publicGroups = tre->publicGroups();
+        QList<QString> groupNames = publicGroups.values(inner->name());
+        if (!groupNames.isEmpty()) {
+            qSort(groupNames.begin(), groupNames.end());
+            subtitleText << "[";
+            for (int j=0; j<groupNames.count(); j++) {
+                subtitleText <<  Atom(Atom::AutoLink, groupNames[j]);
+                if (j<groupNames.count()-1)
+                    subtitleText <<", ";
+            }
+            subtitleText << "]";
+        }
+    }
+
     generateHeader(title, inner, marker, true);
     generateTitle(title, subtitleText, SmallSubTitle, inner, marker);
 
@@ -2020,7 +2035,7 @@ void HtmlGenerator::generateSectionInheritedList(const Section& section, const N
             out() << section.pluralMember;
         }
         out() << " inherited from <a href=\"" << fileName((*p).first)
-              << "#" << cleanRef(section.name.toLower()) << "\">"
+              << "#" << HtmlGenerator::cleanRef(section.name.toLower()) << "\">"
               << protect(marker->plainFullName((*p).first, relative))
               << "</a></li>\n";
         ++p;
@@ -2101,6 +2116,8 @@ QString HtmlGenerator::cleanRef( const QString& ref )
             clean += "-eq";
         } else if ( u == '>' ) {
             clean += "-gt";
+        } else if ( u == '#' ) {
+            clean += "#";
         } else {
             clean += "-";
             clean += QString::number((int)u, 16);
@@ -2111,7 +2128,7 @@ QString HtmlGenerator::cleanRef( const QString& ref )
 
 QString HtmlGenerator::registerRef( const QString& ref )
 {
-    QString clean = cleanRef( ref );
+    QString clean = HtmlGenerator::cleanRef( ref );
 
     for ( ;; ) {
         QString& prevRef = refMap[clean.toLower()];

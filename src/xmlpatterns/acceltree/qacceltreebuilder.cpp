@@ -51,15 +51,15 @@ template <bool FromDocument>
 AccelTreeBuilder<FromDocument>::AccelTreeBuilder(const QUrl &docURI,
                                                  const QUrl &baseURI,
                                                  const NamePool::Ptr &np,
-                                                 const ReportContext::Ptr &context) : m_preNumber(-1)
-                                                                                    , m_isPreviousAtomic(false)
-                                                                                    , m_hasCharacters(false)
-                                                                                    , m_isCharactersCompressed(false)
-                                                                                    , m_namePool(np)
-                                                                                    , m_document(new AccelTree(docURI, baseURI))
-                                                                                    , m_skippedDocumentNodes(0)
-                                                                                    , m_documentURI(docURI)
-                                                                                    , m_context(context)
+                                                 ReportContext *const context) : m_preNumber(-1)
+                                                                               , m_isPreviousAtomic(false)
+                                                                               , m_hasCharacters(false)
+                                                                               , m_isCharactersCompressed(false)
+                                                                               , m_namePool(np)
+                                                                               , m_document(new AccelTree(docURI, baseURI))
+                                                                               , m_skippedDocumentNodes(0)
+                                                                               , m_documentURI(docURI)
+                                                                               , m_context(context)
 {
     Q_ASSERT(m_namePool);
 

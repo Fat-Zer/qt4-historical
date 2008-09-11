@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.4: Porting to Qt 4</title>
   <link rel="prev" href="porting.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="porting.html">Porting Guides</a>]
 [<a href="porting.html">Contents</a>]
@@ -25,10 +25,11 @@
 <p>This document describes the process of porting applications from Qt 3 to Qt 4. If you haven't yet made the decision about porting, or are unsure about whether it is worth it, take a look at the <a href="qt4-intro.html">key features</a> offered by Qt 4. See also <a href="porting4-overview.html">Moving from Qt 3 to Qt 4</a> for tips on how to write Qt 3 code that is easy to port to Qt 4.</p>
 <p><b>Other porting guides:</b></p>
 <ul>
-<li><a href="porting4-dnd.html">Porting to Qt 4 - Drag and Drop</a></li>
-<li><a href="porting4-designer.html">Porting .ui Files to Qt 4</a></li>
-<li><a href="graphicsview-porting.html">Porting to Graphics View</a></li>
-<li><a href="qt3to4.html">qt3to4 - The Qt 3 to 4 Porting Tool</a></li>
+<li><a href="porting4-overview.html">Moving from Qt 3 to Qt 4</a> &mdash; covers some high level topics relevant to developers porting from Qt 3 to Qt 4.</li>
+<li><a href="porting4-dnd.html">Porting to Qt 4 - Drag and Drop</a> &mdash; covers differences in the way drag and drop is handled between Qt 3 and Qt 4.</li>
+<li><a href="porting4-designer.html">Porting .ui Files to Qt 4</a> &mdash; describes the new format used to describe forms created with <i>Qt Designer</i>.</li>
+<li><a href="graphicsview-porting.html">Porting to Graphics View</a> &mdash; provides a class-by-class overview of the differences between Qt 3's canvas API and Qt 4's Graphics View framework.</li>
+<li><a href="qt3to4.html">qt3to4 - The Qt 3 to 4 Porting Tool</a> &mdash; provides an overview of a tool aimed at helping developers start the process of porting an application to Qt 4.</li>
 </ul>
 <p>The Qt 4 series is not binary compatible with the 3 series. This means programs compiled for Qt 3 must be recompiled to work with Qt 4. Qt 4 is also not completely <i>source</i> compatible with 3, however nearly all points of incompatibility cause compiler errors or run-time messages (rather than mysterious results). Qt 4 includes many additional features and discards obsolete functionality. Porting from Qt 3 to Qt 4 requires some effort, but once completed the considerable additional power and flexibility of Qt 4 is available for use in your applications.</p>
 <p>To port code from Qt 3 to Qt 4:</p>
@@ -722,7 +723,7 @@
 </ol>
 <a name="qaquastyle"></a>
 <h3>QAquaStyle</h3>
-<p>The <tt>QAquaStyle</tt> class first appeared in Qt 3.0, when the Qt/Mac port was first released. It emulated Apple's &quot;Aqua&quot; theme. In Qt 3.1, <a href="#qaquastyle">QAquaStyle</a> was obsoleted by <a href="qmacstyle.html">QMacStyle</a>, which uses Appearance Manager to perform its drawing.</p>
+<p>The <tt>QAquaStyle</tt> class first appeared in Qt 3.0, when the Qt for Mac OS X port was first released. It emulated Apple's &quot;Aqua&quot; theme. In Qt 3.1, <a href="#qaquastyle">QAquaStyle</a> was obsoleted by <a href="qmacstyle.html">QMacStyle</a>, which uses Appearance Manager to perform its drawing.</p>
 <p>The <tt>QAquaStyle</tt> class is no longer provided in Qt 4. Use <a href="qmacstyle.html">QMacStyle</a> instead.</p>
 <a name="qasciidict-section"></a><a name="qasciicache-t"></a>
 <h3>QAsciiCache&lt;T&gt;</h3>
@@ -1623,7 +1624,7 @@
 <a name="qpaintdevice"></a>
 <h3>QPaintDevice</h3>
 <p>To reimplement painter backends one previously needed to reimplement the virtual function QPaintDevice::cmd(). This function is taken out and should is replaced with the function <a href="qpaintdevice.html#paintEngine">QPaintDevice::paintEngine</a>() and the abstract class <a href="qpaintengine.html">QPaintEngine</a>. <a href="qpaintengine.html">QPaintEngine</a> provides virtual functions for all drawing operations that can be performed on a painter backend.</p>
-<p>bitBlt() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
+<p><a href="qimage-qt3.html#bitBlt">bitBlt</a>() and copyBlt() are now only compatibility functions. Use <a href="qpainter.html#drawPixmap">QPainter::drawPixmap</a>() instead.</p>
 <a name="qpaintdevicemetrics"></a>
 <h3>QPaintDeviceMetrics</h3>
 <p>All functions that used to be provided by the <tt>QPaintDeviceMetrics</tt> class have now been moved to <a href="qpaintdevice.html">QPaintDevice</a>.</p>
@@ -2085,7 +2086,10 @@
 <p>See <a href="richtext.html">Rich Text Processing</a> for an overview of the Qt 4 rich text classes.</p>
 <a name="qslider"></a>
 <h3>QSlider</h3>
-<p>The QSlider::sliderStart() and QSlider::sliderRect() functions have been removed. You can retrieve this information using <a href="qabstractslider.html#sliderPosition-prop">QAbstractSlider::sliderPosition</a>() and QStyle::querySubControlMetrics(), respectively.</p>
+<p>The QSlider::sliderStart() and QSlider::sliderRect() functions have been removed.</p>
+<p>The slider's rect can now be retrieved using the code snippet below:</p>
+<pre> QSlider *slider;
+ slider-&gt;style()-&gt;subControlRect(CC_Slider, sliderOption, SC_SliderHandle, slider);</pre>
 <p>In addition, the direction of a vertical <a href="qslider.html">QSlider</a> has changed, i.e&#x2e; the bottom is now the minimum, and the top the maximum. You can use the <a href="qabstractslider.html#invertedAppearance-prop">QAbstractSlider::invertedAppearance</a> property to control this behavior.</p>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qslider.html">QSlider</a> properties in Qt 3 that have changed in Qt 4.</p>
 <a name="qsocket"></a>
@@ -2145,7 +2149,7 @@
 <p>See <a href="qtsql.html">QtSql Module</a> for an overview of the new SQL classes.</p>
 <a name="qsqlquery"></a>
 <h3>QSqlQuery</h3>
-<p><a href="qsqlquery-qt3.html#prev">QSqlQuery::prev</a>() was renamed to <a href="qsqlquery.html#previous">QSqlQuery::previous</a>(). There is a function call for compatibility, but if you subclassed <a href="qsqlquery.html">QSqlQuery</a>, you have to reimplement previous() instead of prev().</p>
+<p><a href="qsqlquery-qt3.html#prev">QSqlQuery::prev</a>() was renamed to <a href="qsqlquery.html#previous">QSqlQuery::previous</a>(). <a href="qsqlquery-qt3.html#prev">QSqlQuery::prev</a>() remains, but it just calls previous(). <a href="qsqlquery.html">QSqlQuery</a> no longer has any virtual methods, i.e&#x2e;, exec(), value(), seek(), next(), prev(), first(), last(), and the destructor are no longer virtual.</p>
 <a name="qsqlrecord"></a>
 <h3>QSqlRecord</h3>
 <p><a href="qsqlrecord.html">QSqlRecord</a> behaves like a vector now, <a href="qsqlrecord.html#insert">QSqlRecord::insert</a>() will actually insert a new field instead of replacing the existing one.</p>
@@ -2473,6 +2477,7 @@
 <li><a href="qwidget-qt3.html#BackgroundOrigin-enum">QWidget::BackgroundOrigin</a> backgroundOrigin() const</li>
 <li><a href="qwidget-qt3.html#backgroundOffset">QWidget::backgroundOffset</a>()</li>
 </ul>
+<p>Sample code on how to do obtain similar behavior from Qt 4, previously handled by some of the above functions can be found in the <a href="http://doc.trolltech.com/qwidget-qt3.html">Qt 3 Support Members for QWidget</a> page.</p>
 <p>A widget now receives change events in its <a href="qwidget.html#changeEvent">QWidget::changeEvent</a>() handler. This makes the following virtual change handlers obsolete:</p>
 <ul>
 <li>QWidget::styleChange - use <a href="qevent.html#Type-enum">QEvent::StyleChange</a></li>
@@ -2555,6 +2560,8 @@
 </ul>
 <p>The internal clearWState() function was removed. Use <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>() instead.</p>
 <p>setWFlags() was renamed <a href="qwidget.html#windowFlags-prop">QWidget::setWindowFlags</a>().</p>
+<p>clearWFlags() has no direct replacement. You can use <a href="qwidget.html#setAttribute">QWidget::setAttribute</a>() instead. For example, <tt>setAttribute(..., false)</tt> to clear an attribute. More information is available <a href="http://doc.trolltech.com/qwidget.html#setAttribute">here</a>.</p>
+<p>testWFlags() was renamed to <a href="qwidget.html#testAttribute">testAttribute()</a>.</p>
 <p>See <a href="#properties">Properties</a> for a list of <a href="qwidget.html">QWidget</a> properties in Qt 3 that have changed in Qt 4.</p>
 <a name="qwidgetfactory"></a>
 <h3>QWidgetFactory</h3>
@@ -2584,8 +2591,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

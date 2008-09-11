@@ -55,7 +55,7 @@
     project file ensures that an application is compiled and linked
     appropriately:
 
-    \snippet doc/src/snippets/code/doc.src.qtwebkit.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtwebkit.qdoc 0
 
     This line is necessary because only the QtCore and QtGui modules are used
     in the default build process.
@@ -63,7 +63,7 @@
     To include the definitions of the module's classes, use the following
     directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtwebkit.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtwebkit.qdoc 1
 
     \section1 Architecture
 

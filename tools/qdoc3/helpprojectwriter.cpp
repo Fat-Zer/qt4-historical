@@ -47,6 +47,7 @@
 
 #include "atom.h"
 #include "helpprojectwriter.h"
+#include "htmlgenerator.h"
 #include "config.h"
 #include "node.h"
 #include "tree.h"
@@ -153,14 +154,14 @@ void HelpProjectWriter::readSelectors(SubProject &subproject, const QStringList 
 
 void HelpProjectWriter::addExtraFile(const QString &file)
 {
-    foreach (HelpProject project, projects)
-        project.extraFiles.insert(file);
+    for (int i = 0; i < projects.size(); ++i)
+        projects[i].extraFiles.insert(file);
 }
 
 void HelpProjectWriter::addExtraFiles(const QSet<QString> &files)
 {
-    foreach (HelpProject project, projects)
-        project.extraFiles.unite(files);
+    for (int i = 0; i < projects.size(); ++i)
+        projects[i].extraFiles.unite(files);
 }
 
 /*
@@ -201,7 +202,7 @@ bool HelpProjectWriter::generateSection(HelpProject &project,
     if (!node->url().isEmpty())
         return false;
 
-    if (node->access() == Node::Private)
+    if (node->access() == Node::Private || node->status() == Node::Internal)
         return false;
 
     if (node->name().isEmpty())
@@ -261,6 +262,10 @@ bool HelpProjectWriter::generateSection(HelpProject &project,
                 const EnumNode *enumNode = static_cast<const EnumNode*>(node);
                 foreach (EnumItem item, enumNode->items()) {
                     QStringList details;
+                    
+                    if (enumNode->itemAccess(item.name()) == Node::Private)
+                        continue;
+
                     if (!node->parent()->name().isEmpty()) {
                         details << node->parent()->name()+"::"+item.name(); // "name"
                         details << node->parent()->name()+"::"+item.name(); // "id"
@@ -414,8 +419,8 @@ void HelpProjectWriter::generateSections(HelpProject &project,
 void HelpProjectWriter::generate(const Tree *tre)
 {
     this->tree = tre;
-    foreach (HelpProject project, projects)
-        generateProject(project);
+    for (int i = 0; i < projects.size(); ++i)
+        generateProject(projects[i]);
 }
 
 void HelpProjectWriter::writeNode(HelpProject &project, QXmlStreamWriter &writer,
@@ -568,7 +573,7 @@ void HelpProjectWriter::generateProject(HelpProject &project)
     QString indexPath = tree->fullDocumentLocation(tree->findFakeNodeByTitle(project.indexTitle));
     if (indexPath.isEmpty())
         indexPath = "index.html";
-    writer.writeAttribute("ref", indexPath);
+    writer.writeAttribute("ref", HtmlGenerator::cleanRef(indexPath));
     writer.writeAttribute("title", project.indexTitle);
     project.files.insert(tree->fullDocumentLocation(rootNode));
 
@@ -580,7 +585,7 @@ void HelpProjectWriter::generateProject(HelpProject &project)
         if (!name.isEmpty()) {
             writer.writeStartElement("section");
             QString indexPath = tree->fullDocumentLocation(tree->findFakeNodeByTitle(subproject.indexTitle));
-            writer.writeAttribute("ref", indexPath);
+            writer.writeAttribute("ref", HtmlGenerator::cleanRef(indexPath));
             writer.writeAttribute("title", subproject.title);
             project.files.insert(indexPath);
         }
@@ -600,7 +605,7 @@ void HelpProjectWriter::generateProject(HelpProject &project)
         writer.writeStartElement("keyword");
         writer.writeAttribute("name", details[0]);
         writer.writeAttribute("id", details[1]);
-        writer.writeAttribute("ref", details[2]);
+        writer.writeAttribute("ref", HtmlGenerator::cleanRef(details[2]));
         writer.writeEndElement(); //keyword
     }
     writer.writeEndElement(); // keywords

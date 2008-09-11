@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qkeysequence.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qkeysequence.cpp -->
 <head>
   <title>Qt 4.4: QKeySequence Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QKeySequence Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QKeySequence class encapsulates a key sequence as used by shortcuts. <a href="#details">More...</a></p>
@@ -60,8 +60,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-lt-lt-10">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-gt-gt-6">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-lt-lt-119">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qkeysequence.html#operator-gt-gt-72">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -75,10 +75,10 @@
 <li>For hard-coded shortcuts, integer key codes can be specified with a combination of values defined by the <a href="qt.html#Key-enum">Qt::Key</a> and <a href="qt.html#Modifier-enum">Qt::Modifier</a> enum values. Each key code consists of a single <a href="qt.html#Key-enum">Qt::Key</a> value and zero or more modifiers, such as <a href="qt.html#Modifier-enum">Qt::SHIFT</a>, <a href="qt.html#Modifier-enum">Qt::CTRL</a>, <a href="qt.html#Modifier-enum">Qt::ALT</a> and <a href="qt.html#Modifier-enum">Qt::META</a>.</li>
 </ul>
 <p>For example, <b>Ctrl P</b> might be a sequence used as a shortcut for printing a document, and can be specified in any of the following ways:</p>
-<pre>     QKeySequence(QKeySequence::Print}
-     QKeySequence(tr(&quot;Ctrl+P&quot;))
-     QKeySequence(tr(&quot;Ctrl+p&quot;))
-     QKeySequence(Qt::CTRL + Qt::Key_P)</pre>
+<pre> QKeySequence(QKeySequence::Print}
+ QKeySequence(tr(&quot;Ctrl+P&quot;))
+ QKeySequence(tr(&quot;Ctrl+p&quot;))
+ QKeySequence(Qt::CTRL + Qt::Key_P)</pre>
 <p>Note that, for letters, the case used in the specification string does not matter. In the above examples, the user does not need to hold down the <b>Shift</b> key to activate a shortcut specified with &quot;Ctrl+P&quot;. However, for other keys, the use of <b>Shift</b> as an unspecified extra modifier key can lead to confusion for users of an application whose keyboards have different layouts to those used by the developers. See the <a href="#keyboard-layout-issues">Keyboard Layout Issues</a> section below for more details.</p>
 <p>It is preferable to use standard shortcuts where possible. When creating key sequences for non-standard shortcuts, you should use human-readable strings in preference to hard-coded integer values.</p>
 <p>QKeySequence objects can be cast to a <a href="qstring.html">QString</a> to obtain a human-readable translated version of the sequence. Similarly, the <a href="qkeysequence.html#toString">toString</a>() function produces human-readable strings for use in menus. On Mac OS X, the appropriate symbols are used to describe keyboard shortcuts using special keys on the Macintosh keyboard.</p>
@@ -163,8 +163,9 @@
 <h3>GNU Emacs Style Key Sequences</h3>
 <p>Key sequences similar to those used in <a href="http://www.gnu.org/software/emacs/">GNU Emacs</a>, allowing up to four key codes, can be created by using the multiple argument constructor, or by passing a human-readable string of comma-separated key sequences.</p>
 <p>For example, the key sequence, <b>Ctrl X</b> followed by <b>Ctrl C</b>, can be specified using either of the following ways:</p>
-<pre>     QKeySequence(tr(&quot;Ctrl+X, Ctrl+C&quot;))
-     QKeySequence(Qt::CTRL + Qt::Key_X, Qt::CTRL + Qt::Key_C)</pre>
+<pre> QKeySequence(tr(&quot;Ctrl+X, Ctrl+C&quot;))
+ QKeySequence(Qt::CTRL + Qt::Key_X, Qt::CTRL + Qt::Key_C)</pre>
+<p><b>Warning:</b> A <a href="qapplication.html">QApplication</a> instance must have been constructed before a QKeySequence is created; otherwise, your application may crash.</p>
 <p>See also <a href="qshortcut.html">QShortcut</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -328,9 +329,9 @@
 <p>Creates a key sequence from the <i>key</i> string. For example &quot;Ctrl+O&quot; gives CTRL+'O'. The strings &quot;Ctrl&quot;, &quot;Shift&quot;, &quot;Alt&quot; and &quot;Meta&quot; are recognized, as well as their translated equivalents in the &quot;<a href="qshortcut.html">QShortcut</a>&quot; context (using <a href="qobject.html#tr">QObject::tr</a>()).</p>
 <p>Up to four key codes may be entered by separating them with commas, e.g&#x2e; &quot;Alt+X,Ctrl+S,Q&quot;.</p>
 <p>This constructor is typically used with <a href="qobject.html#tr">tr</a>(), so that shortcut keys can be replaced in translations:</p>
-<pre>         QMenu *file = new QMenu(this);
-         file-&gt;addAction(tr(&quot;&amp;Open...&quot;), this, SLOT(open()),
-                           QKeySequence(tr(&quot;Ctrl+O&quot;, &quot;File|Open&quot;)));</pre>
+<pre> QMenu *file = new QMenu(this);
+ file-&gt;addAction(tr(&quot;&amp;Open...&quot;), this, SLOT(open()),
+                   QKeySequence(tr(&quot;Ctrl+O&quot;, &quot;File|Open&quot;)));</pre>
 <p>Note the &quot;File|Open&quot; translator comment. It is by no means necessary, but it provides some context for the human translator.</p>
 <h3 class="fn"><a name="QKeySequence-3"></a>QKeySequence::QKeySequence ( int <i>k1</i>, int <i>k2</i> = 0, int <i>k3</i> = 0, int <i>k4</i> = 0 )</h3>
 <p>Constructs a key sequence with up to 4 keys <i>k1</i>, <i>k2</i>, <i>k3</i> and <i>k4</i>.</p>
@@ -410,18 +411,18 @@
 <p>Returns a reference to the element at position <i>index</i> in the key sequence. This can only be used to read an element.</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-119"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QKeySequence &amp; <i>sequence</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the key <i>sequence</i> to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-6"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-72"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QKeySequence &amp; <i>sequence</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a key sequence from the <i>stream</i> into the key <i>sequence</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

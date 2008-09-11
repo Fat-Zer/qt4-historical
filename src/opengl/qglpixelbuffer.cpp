@@ -101,7 +101,9 @@ void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &form
         qctx->d_func()->valid = true;
 #if defined(Q_WS_WIN)
         qctx->d_func()->dc = dc;
+#if !defined(QT_OPENGL_ES)
         qctx->d_func()->rc = ctx;
+#endif
 #elif defined(Q_WS_X11)
         qctx->d_func()->cx = ctx;
         qctx->d_func()->pbuf = (void *) pbuf;
@@ -109,6 +111,12 @@ void QGLPixelBufferPrivate::common_init(const QSize &size, const QGLFormat &form
 #elif defined(Q_WS_MAC)
         qctx->d_func()->cx = ctx;
         qctx->d_func()->vi = 0;
+#endif
+#if defined(QT_OPENGL_ES)
+        qctx->d_func()->dpy = dpy;
+        qctx->d_func()->cx = ctx;
+        qctx->d_func()->config = config;
+        qctx->d_func()->surface = pbuf;
 #endif
     }
 }
@@ -245,7 +253,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.opengl.qglpixelbuffer.cpp 0
+    \snippet doc/src/snippets/code/src_opengl_qglpixelbuffer.cpp 0
 
     \warning This function uses the \c {render_texture} extension,
     which is currently not supported under X11. An alternative that
@@ -261,8 +269,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
 
 /*! \fn void QGLPixelBuffer::releaseFromDynamicTexture()
 
-    Releases the pbuffer from any previously bound texture. Returns
-    true on success; otherwise returns false.
+    Releases the pbuffer from any previously bound texture.
 
     \sa bindToDynamicTexture()
 */
@@ -281,7 +288,7 @@ GLuint QGLPixelBuffer::generateDynamicTexture() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.opengl.qglpixelbuffer.cpp 1
+    \snippet doc/src/snippets/code/src_opengl_qglpixelbuffer.cpp 1
 
     An alternative on Windows and Mac OS X systems that support the
     \c render_texture extension is to use bindToDynamicTexture() to

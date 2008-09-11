@@ -163,6 +163,8 @@ QT_BEGIN_NAMESPACE
 
     This property is declared in QGraphicsItem.
 
+    By default, this property is true.
+
     \sa QGraphicsItem::isEnabled(), QGraphicsItem::setEnabled()
 */
 
@@ -171,6 +173,8 @@ QT_BEGIN_NAMESPACE
     \brief whether the item is visible or not
 
     This property is declared in QGraphicsItem.
+
+    By default, this property is true.
 
     \sa QGraphicsItem::isVisible(), QGraphicsItem::setVisible(), show(),
     hide()
@@ -235,8 +239,10 @@ QGraphicsWidget::~QGraphicsWidget()
     update any child widgets's geometry.
 
     This property does not affect any layout of the parent widget. If the
-    widget itself is managed by a parent layout, e.g., it has a parent widget
+    widget itself is managed by a parent layout; e.g., it has a parent widget
     with a layout assigned, that layout will not activate.
+
+    By default, this property contains a size with zero width and height.
 
     \sa setGeometry(), QGraphicsSceneResizeEvent, QGraphicsLayout
 */
@@ -512,7 +518,7 @@ QRectF QGraphicsWidget::windowFrameRect() const
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicswidget.cpp 0
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicswidget.cpp 0
 
     \sa QStyleOption::initFrom()
 */
@@ -804,6 +810,8 @@ void QGraphicsWidget::setStyle(QStyle *style)
     \l{QEvent::FontChange}{FontChange} event and notifies all its
     descendants so that they can resolve their fonts as well.
 
+    By default, this property contains the application's default font.
+
     \sa QApplication::font(), QGraphicsScene::font, QFont::resolve()
 */
 QFont QGraphicsWidget::font() const
@@ -820,7 +828,7 @@ void QGraphicsWidget::setFont(const QFont &font)
 
 /*!
     \property QGraphicsWidget::palette
-    \brief the widgets' palette
+    \brief the widget's palette
 
     This property provides the widget's palette. The palette provides colors
     and brushes for color groups (e.g., QPalette::Button) and states (e.g.,
@@ -838,6 +846,8 @@ void QGraphicsWidget::setFont(const QFont &font)
     the scene. It then sends itself a \l{QEvent::PaletteChange}{PaletteChange}
     event, and notifies all its descendants so they can resolve their palettes
     as well.
+
+    By default, this property contains the application's default palette.
 
     \sa QApplication::palette(), QGraphicsScene::palette, QPalette::resolve()
 */
@@ -1493,11 +1503,13 @@ Qt::WindowType QGraphicsWidget::windowType() const
 
 /*!
     \property QGraphicsWidget::windowFlags
-    \brief This propery holds the widget's window flags.
+    \brief the widget's window flags
 
-    Window flags are a combination a window type (e.g. Qt::Dialog) and several
-    flags giving hints on the behaviour of the window. The behaviour is
-    platform dependent.
+    Window flags are a combination of a window type (e.g., Qt::Dialog) and
+    several flags giving hints on the behavior of the window. The behavior
+    is platform-dependent.
+
+    By default, this property contains no window flags.
 */
 Qt::WindowFlags QGraphicsWidget::windowFlags() const
 {
@@ -1548,8 +1560,9 @@ bool QGraphicsWidget::isActiveWindow() const
     \property QGraphicsWidget::windowTitle
     \brief This property holds the window title (caption).
 
-    This property is only used for windows. If no title has been set, the
-    title is an empty string.
+    This property is only used for windows.
+
+    By default, if no title has been set, this property contains an empty string.
 */
 void QGraphicsWidget::setWindowTitle(const QString &title)
 {
@@ -1619,11 +1632,11 @@ QGraphicsWidget *QGraphicsWidget::focusWidget() const
     Note that since the tab order of the \a second widget is changed, you
     should order a chain like this:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicswidget.cpp 1
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicswidget.cpp 1
 
     \e not like this:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicswidget.cpp 2
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicswidget.cpp 2
 
     If \a first is 0, this indicates that \a second should be the first widget
     to receive input focus should the scene gain Tab focus (i.e., the user

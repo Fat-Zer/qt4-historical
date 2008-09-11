@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/richtext.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/richtext.qdoc -->
 <head>
   <title>Qt 4.4: Common Rich Text Editing Tasks</title>
   <link rel="prev" href="richtext-cursor.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="richtext-cursor.html">The QTextCursor Interface</a>]
 [<a href="richtext.html">Contents</a>]
@@ -31,15 +31,15 @@
 <a name="using-qtextedit"></a>
 <h2>Using QTextEdit</h2>
 <p>A text editor widget can be constructed and used to display HTML in the following way:</p>
-<pre>     QTextEdit *editor = new QTextEdit(parent);
-     editor-&gt;setHtml(aStringContainingHTMLtext);
-     editor-&gt;show();</pre>
+<pre> QTextEdit *editor = new QTextEdit(parent);
+ editor-&gt;setHtml(aStringContainingHTMLtext);
+ editor-&gt;show();</pre>
 <p>By default, the text editor contains a document with a root frame, inside which is an empty text block. This document can be obtained so that it can be modified directly by the application:</p>
-<pre>     QTextDocument *document = editor-&gt;document();</pre>
+<pre> QTextDocument *document = editor-&gt;document();</pre>
 <p>The text editor's cursor may also be used to edit a document:</p>
-<pre>     QTextCursor cursor = editor-&gt;textCursor();</pre>
+<pre> QTextCursor cursor = editor-&gt;textCursor();</pre>
 <p>Although a document can be edited using many cursors at once, a <a href="qtextedit.html">QTextEdit</a> only displays a single cursor at a time. Therefore, if we want to update the editor to display a particular cursor or its selection, we need to set the editor's cursor after we have modified the document:</p>
-<pre>     editor-&gt;setTextCursor(cursor);</pre>
+<pre> editor-&gt;setTextCursor(cursor);</pre>
 <a name="selecting-text"></a>
 <h2>Selecting Text</h2>
 <p>Text is selected by moving the cursor using operations that are similar to those performed by a user in a text editor. To select text between two points in the document, we need to position the cursor at the first point then move it using a special mode (<a href="qtextcursor.html#MoveMode-enum">QTextCursor::MoveMode</a>) with a move operation (<a href="qtextcursor.html#MoveOperation-enum">QTextCursor::MoveOperation</a>). When we select the text, we leave the selection anchor at the old cursor position just as the user might do by holding down the Shift key when selecting text:</p>
@@ -82,8 +82,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

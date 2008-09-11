@@ -263,7 +263,7 @@ void QSpinBox::setValue(int value)
     Typical use is to display a unit of measurement or a currency
     symbol. For example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 0
 
     To turn off the prefix display, set this property to an empty
     string. The default is no prefix. The prefix is not displayed when
@@ -296,7 +296,7 @@ void QSpinBox::setPrefix(const QString &prefix)
     use is to display a unit of measurement or a currency symbol. For
     example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 1
 
     To turn off the suffix display, set this property to an empty
     string. The default is no suffix. The suffix is not displayed for
@@ -424,9 +424,9 @@ void QSpinBox::setMaximum(int maximum)
     Convenience function to set the \a minimum, and \a maximum values
     with a single function call.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 2
     is equivalent to:
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 3
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 3
 
     \sa minimum maximum
 */
@@ -629,7 +629,7 @@ void QDoubleSpinBox::setValue(double value)
     Typical use is to display a unit of measurement or a currency
     symbol. For example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 4
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 4
 
     To turn off the prefix display, set this property to an empty
     string. The default is no prefix. The prefix is not displayed when
@@ -663,7 +663,7 @@ void QDoubleSpinBox::setPrefix(const QString &prefix)
     use is to display a unit of measurement or a currency symbol. For
     example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 5
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 5
 
     To turn off the suffix display, set this property to an empty
     string. The default is no suffix. The suffix is not displayed for
@@ -798,9 +798,9 @@ void QDoubleSpinBox::setMaximum(double maximum)
     Note: The maximum and minimum values will be rounded to match the
     decimals property.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 6
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 6
     is equivalent to:
-    \snippet doc/src/snippets/code/src.gui.widgets.qspinbox.cpp 7
+    \snippet doc/src/snippets/code/src_gui_widgets_qspinbox.cpp 7
 
     \sa minimum maximum
 */

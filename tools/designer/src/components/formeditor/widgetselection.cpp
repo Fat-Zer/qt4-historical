@@ -91,6 +91,7 @@ WidgetHandle::WidgetHandle(FormWindow *parent, WidgetHandle::Type t, WidgetSelec
 
 void WidgetHandle::updateCursor()
 {
+#ifndef QT_NO_CURSOR
     if (!m_active) {
         setCursor(Qt::ArrowCursor);
         return;
@@ -124,6 +125,7 @@ void WidgetHandle::updateCursor()
     default:
         Q_ASSERT(0);
     }
+#endif
 }
 
 QDesignerFormEditorInterface *WidgetHandle::core() const

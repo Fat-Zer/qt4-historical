@@ -87,13 +87,13 @@ public:
     Q3SqlForm, you must install your own Q3SqlPropertyMap for that table
     or form. Example:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlpropertymap.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlpropertymap.cpp 0
 
     You can also replace the global Q3SqlPropertyMap that is used by
     default. (Bear in mind that Q3SqlPropertyMap takes ownership of the
     new default map.)
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlpropertymap.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlpropertymap.cpp 1
 
     \sa Q3DataTable, Q3SqlForm, Q3SqlEditorFactory
 */

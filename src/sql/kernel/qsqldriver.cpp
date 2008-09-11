@@ -190,7 +190,7 @@ bool QSqlDriver::isOpenError() const
     \value NamedPlaceholders  Whether the driver supports the use of named placeholders.
     \value PositionalPlaceholders  Whether the driver supports the use of positional placeholders.
     \value LastInsertId  Whether the driver supports returning the Id of the last touched row.
-    \value BatchOperations  Whether the driver supports batched operations, see QSqlResult::execBatch()
+    \value BatchOperations  Whether the driver supports batched operations, see QSqlQuery::execBatch()
     \value SimpleLocking  Whether the driver disallows a write lock on a table while other queries have a read lock on it.
     \value LowPrecisionNumbers  Whether the driver allows fetching numerical values with low precision.
     \value EventNotifications Whether the driver supports database event notifications.
@@ -606,11 +606,11 @@ QString QSqlDriver::formatValue(const QSqlField &field, bool trimStrings) const
 
     This example retrieves the handle for a connection to sqlite:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqldriver.cpp 0
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqldriver.cpp 0
 
     This snippet returns the handle for PostgreSQL or MySQL:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqldriver.cpp 1
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqldriver.cpp 1
 
     \sa QSqlResult::handle()
 */

@@ -72,6 +72,12 @@ QT_BEGIN_NAMESPACE
 # define QT_SOCKOPTLEN_T QT_SOCKLEN_T
 #endif
 
+// HP-UXi has a bug in getaddrinfo(3) that makes it thread-unsafe
+// with this flag. So disable it in that platform.
+#if defined(AI_ADDRCONFIG) && !defined(Q_OS_HPUX)
+#  define Q_ADDRCONFIG          AI_ADDRCONFIG
+#endif
+
 typedef int (*res_init_proto)(void);
 static res_init_proto local_res_init = 0;
 
@@ -167,12 +173,12 @@ QHostInfo QHostInfoAgent::fromName(const QString &hostName)
     struct addrinfo hints;
     memset(&hints, 0, sizeof(hints));
     hints.ai_family = PF_UNSPEC;
-# ifdef AI_ADDRCONFIG
-    hints.ai_flags = AI_ADDRCONFIG;
-# endif
+#ifdef Q_ADDRCONFIG
+    hints.ai_flags = Q_ADDRCONFIG;
+#endif
 
     int result = getaddrinfo(hostName.toLatin1().constData(), 0, &hints, &res);
-# ifdef AI_ADDRCONFIG
+# ifdef Q_ADDRCONFIG
     if (result == EAI_BADFLAGS) {
         // if the lookup failed with AI_ADDRCONFIG set, try again without it
         hints.ai_flags = 0;

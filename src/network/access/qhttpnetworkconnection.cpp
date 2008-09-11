@@ -278,8 +278,8 @@ QByteArray QHttpNetworkRequestPrivate::header(const QHttpNetworkRequest &request
     ba += " HTTP/" + majorVersion.toLatin1() + "." + minorVersion.toLatin1() + "\r\n";
 
     QList<QPair<QByteArray, QByteArray> > fields = request.header();
-    QList<QPair<QByteArray, QByteArray> >::const_iterator it = fields.begin();
-    for (; it != fields.end(); ++it)
+    QList<QPair<QByteArray, QByteArray> >::const_iterator it = fields.constBegin();
+    for (; it != fields.constEnd(); ++it)
         ba += it->first + ": " + it->second + "\r\n";
     if (request.d->operation == QHttpNetworkRequest::Post) {
         // add content type, if not set in the request
@@ -1154,7 +1154,7 @@ bool QHttpNetworkConnectionPrivate::ensureConnection(QAbstractSocket *socket)
 
 #ifndef QT_NO_NETWORKPROXY
         // HTTPS always use transparent proxy.
-        if (networkProxy.type() == QNetworkProxy::HttpCachingProxy && !encrypt) {
+        if (networkProxy.type() != QNetworkProxy::NoProxy && !encrypt) {
             connectHost = networkProxy.hostName();
             connectPort = networkProxy.port();
         }
@@ -1218,7 +1218,7 @@ bool QHttpNetworkConnectionPrivate::sendRequest(QAbstractSocket *socket)
         createAuthorization(socket, channels[i].request);
 #ifndef QT_NO_NETWORKPROXY
         QByteArray header = QHttpNetworkRequestPrivate::header(channels[i].request,
-            (networkProxy.type() == QNetworkProxy::HttpCachingProxy));
+            (networkProxy.type() != QNetworkProxy::NoProxy));
 #else
         QByteArray header = QHttpNetworkRequestPrivate::header(channels[i].request,
             false);
@@ -1462,7 +1462,7 @@ void QHttpNetworkConnectionPrivate::allDone(QAbstractSocket *socket, QHttpNetwor
 {
 #ifndef QT_NO_COMPRESS
     // expand the whole data.
-    if (reply->d_func()->autoDecompress && !reply->d_func()->streamEnd)
+    if (expectContent(reply) && reply->d_func()->autoDecompress && !reply->d_func()->streamEnd)
         expand(socket, reply, true); // ### if expand returns false, its an error
 #endif
     // while handling 401 & 407, we might reset the status code, so save this.
@@ -1541,8 +1541,8 @@ bool QHttpNetworkConnectionPrivate::handleAuthenticateChallenge(QAbstractSocket 
     //create the response header to be used with QAuthenticatorPrivate.
     QHttpResponseHeader responseHeader;
     QList<QPair<QByteArray, QByteArray> > fields = reply->header();
-    QList<QPair<QByteArray, QByteArray> >::const_iterator it = fields.begin();
-    while (it != fields.end()) {
+    QList<QPair<QByteArray, QByteArray> >::const_iterator it = fields.constBegin();
+    while (it != fields.constEnd()) {
         responseHeader.addValue(QString::fromLatin1(it->first), QString::fromUtf8(it->second));
         it++;
     }

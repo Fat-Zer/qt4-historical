@@ -613,6 +613,8 @@ void QToolBar::setFloatable(bool floatable)
     \property QToolBar::floating
     \brief whether the toolbar is an independent window.
 
+    By default, this property is true.
+
     \sa QWidget::isWindow()
 */
 bool QToolBar::isFloating() const
@@ -858,6 +860,8 @@ QAction *QToolBar::insertSeparator(QAction *before)
 /*!
     Adds the given \a widget to the toolbar as the toolbar's last
     item.
+
+    The toolbar takes ownership of \a widget.
 
     If you add a QToolButton with this method, the tools bar's
     Qt::ToolButtonStyle will not be respected.

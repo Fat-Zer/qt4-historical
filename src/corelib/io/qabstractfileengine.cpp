@@ -81,7 +81,7 @@ QT_BEGIN_NAMESPACE
 
     For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qabstractfileengine.cpp 0
 
     When the handler is destroyed, it is automatically removed from Qt.
 
@@ -148,7 +148,7 @@ QAbstractFileEngineHandler::~QAbstractFileEngineHandler()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qabstractfileengine.cpp 1
 
     \sa QAbstractFileEngine::create()
 */
@@ -806,7 +806,7 @@ bool QAbstractFileEngine::unmap(uchar *address)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qabstractfileengine.cpp 2
 
     QAbstractFileEngineIterator is associated with a path, name filters, and
     entry filters. The path is the directory that the iterator lists entries
@@ -831,7 +831,7 @@ bool QAbstractFileEngine::unmap(uchar *address)
     Here is an example of how to implement an interator that returns each of
     three fixed entries in sequence.
 
-    \snippet doc/src/snippets/code/src.corelib.io.qabstractfileengine.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qabstractfileengine.cpp 3
 
     Note: QAbstractFileEngineIterator does not deal with QDir::IteratorFlags;
     it simply returns entries for a single directory.

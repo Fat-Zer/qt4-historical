@@ -82,9 +82,9 @@ public:
 /*!
   \enum QCryptographicHash::Algorithm
 
-  \value Md4 Generate an Md4 hash sum
-  \value Md5 Generate an Md5 hash sum
-  \value Sha1 Generate an Sha1 hash sum
+  \value Md4 Generate an MD4 hash sum
+  \value Md5 Generate an MD5 hash sum
+  \value Sha1 Generate an SHA1 hash sum
 */
 
 /*!
@@ -154,6 +154,8 @@ void QCryptographicHash::addData(const QByteArray &data)
 
 /*!
   Returns the final hash value.
+
+  \sa QByteArray::toHex()
 */
 QByteArray QCryptographicHash::result() const
 {

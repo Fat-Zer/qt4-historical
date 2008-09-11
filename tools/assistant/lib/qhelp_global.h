@@ -48,6 +48,7 @@
 #include <QtCore/QString>
 #include <QtCore/QObject>
 #include <QtCore/QRegExp>
+#include <QtCore/QMutexLocker>
 #include <QtGui/QTextDocument>
 
 QT_BEGIN_HEADER
@@ -64,14 +65,22 @@ QT_MODULE(Help)
 #   define QHELP_EXPORT Q_DECL_IMPORT
 #endif
 
-namespace {
-
-    QString uniquifyConnectionName(const QString &name, void *pointer)
+class QHelpGlobal {
+public:
+    static QString uniquifyConnectionName(const QString &name, void *pointer)
     {
-        return QString::fromLatin1("%1-%2").arg(name).arg(long(pointer));
+        static int counter = 0;
+        static QMutex mutex;
+
+        QMutexLocker locker(&mutex);
+        if (++counter > 1000)
+            counter = 0;
+        
+        return QString::fromLatin1("%1-%2-%3")
+            .arg(name).arg(long(pointer)).arg(counter);
     };
 
-    QString documentTitle(const QString &content)
+    static QString documentTitle(const QString &content)
     {
         QString title = QObject::tr("Untitled");
         if (!content.isEmpty()) {
@@ -79,7 +88,7 @@ namespace {
             int end = content.indexOf(QLatin1String("</title>"), 0, Qt::CaseInsensitive);
             if ((end - start) > 0) {
                 title = content.mid(start, end - start);
-                if (Qt::mightBeRichText(title)) {
+                if (Qt::mightBeRichText(title) || title.contains(QLatin1Char('&'))) {
                     QTextDocument doc;
                     doc.setHtml(title);
                     title = doc.toPlainText();
@@ -89,7 +98,7 @@ namespace {
         return title;
     };
 
-    QString charsetFromData(const QByteArray &data)
+    static QString charsetFromData(const QByteArray &data)
     {
         QString encoding;
         int start = data.indexOf("<meta", 0);
@@ -108,8 +117,7 @@ namespace {
 
         return encoding;
     }
-
-}
+};
 
 QT_END_NAMESPACE
 

@@ -1,77 +1,98 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS><TS version="1.1" language="zh">
+<defaultcodec></defaultcodec>
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="31"/>
+        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="82"/>
         <source>&amp;Close</source>
         <translation>关闭(&amp;C)</translation>
     </message>
 </context>
 <context>
+    <name>AboutLabel</name>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="68"/>
+        <source>Warning</source>
+        <translation>警告</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="69"/>
+        <source>Unable to launch external application.
+</source>
+        <translation>不能启动外部应用程序。
+</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/aboutdialog.cpp" line="70"/>
+        <source>OK</source>
+        <translation>确定</translation>
+    </message>
+</context>
+<context>
     <name>BookmarkDialog</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="254"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="268"/>
         <source>Bookmarks</source>
         <translation>书签</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="19"/>
         <source>Add Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>添加书签</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="29"/>
         <source>Bookmark:</source>
-        <translation type="unfinished"></translation>
+        <translation>书签：</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="36"/>
         <source>Add in Folder:</source>
-        <translation type="unfinished"></translation>
+        <translation>添加到文件夹：</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="65"/>
         <source>+</source>
-        <translation type="unfinished"></translation>
+        <translation>+</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/bookmarkdialog.ui" line="93"/>
         <source>New Folder</source>
-        <translation type="unfinished">新建文件夹</translation>
+        <translation>新建文件夹</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="191"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="199"/>
         <source>Delete Folder</source>
-        <translation type="unfinished">删除文件夹</translation>
+        <translation>删除文件夹</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="192"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="200"/>
         <source>Rename Folder</source>
-        <translation type="unfinished">重命名文件夹</translation>
+        <translation>重命名文件夹</translation>
     </message>
 </context>
 <context>
     <name>BookmarkManager</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="582"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="646"/>
         <source>Bookmarks</source>
-        <translation type="unfinished">书签</translation>
+        <translation>书签</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="618"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="682"/>
         <source>Remove</source>
-        <translation type="unfinished">移除</translation>
+        <translation>移除</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="620"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="684"/>
         <source>You are going to delete a Folder, this will also&lt;br&gt;remove it&apos;s content. Are you sure to continue?</source>
-        <translation type="unfinished">您将要删除一个文件夹，这将会导致&lt;br&gt;对该文件夹内容的删除。您确认要继续么？</translation>
+        <translation>您将要删除一个文件夹，这将会导致&lt;br&gt;对该文件夹内容的删除。您确认要继续么？</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="734"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="800"/>
         <source>New Folder</source>
-        <translation type="unfinished">新建文件夹</translation>
+        <translation>新建文件夹</translation>
     </message>
 </context>
 <context>
@@ -82,7 +103,7 @@
         <translation type="obsolete">书签</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="419"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="440"/>
         <source>Remove</source>
         <translation>移除</translation>
     </message>
@@ -92,44 +113,44 @@
         <translation type="obsolete">您将要删除一个文件夹，这将会导致&lt;br&gt;对该文件夹内容的删除。您确认要继续么？</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="345"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="363"/>
         <source>Delete Folder</source>
         <translation>删除文件夹</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="346"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="364"/>
         <source>Rename Folder</source>
         <translation>重命名文件夹</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="348"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="366"/>
         <source>Show Bookmark</source>
         <translation>显示文件夹</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="349"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="367"/>
         <source>Show Bookmark in New Tab</source>
         <translation>在新标签页中显示书签</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="352"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="370"/>
         <source>Delete Bookmark</source>
         <translation>删除书签</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="353"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="371"/>
         <source>Rename Bookmark</source>
         <translation>重命名书签</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="390"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="409"/>
         <source>Search for:</source>
-        <translation type="unfinished"></translation>
+        <translation>搜索：</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="411"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="431"/>
         <source>Add</source>
-        <translation type="unfinished">添加</translation>
+        <translation>添加</translation>
     </message>
 </context>
 <context>
@@ -175,7 +196,7 @@
         <translation>把这个页面添加为书签...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="866"/>
+        <location filename="../tools/assistant/tools/assistant/centralwidget.cpp" line="871"/>
         <source>Search</source>
         <translation>搜索</translation>
     </message>
@@ -198,12 +219,17 @@
     <message>
         <location filename="../tools/assistant/tools/assistant/filternamedialog.ui" line="13"/>
         <source>FilterNameDialog</source>
-        <translation>过滤器名称对话框</translation>
+        <translation type="obsolete">过滤器名称对话框</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/filternamedialog.ui" line="25"/>
         <source>Filter Name:</source>
         <translation>过滤器名称：</translation>
+    </message>
+    <message>
+        <location filename="../tools/assistant/tools/assistant/filternamedialog.ui" line="13"/>
+        <source>Add Filter Name</source>
+        <translation>添加过滤器名称</translation>
     </message>
 </context>
 <context>
@@ -265,7 +291,7 @@
 <context>
     <name>HelpViewer</name>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="255"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="270"/>
         <source>Help</source>
         <translation>帮助</translation>
     </message>
@@ -277,22 +303,22 @@
 </translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="257"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="272"/>
         <source>OK</source>
         <translation>确定</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="275"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="290"/>
         <source>&lt;title&gt;Error 404...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
         <translation>&lt;title&gt;404 错误...&lt;/title&gt;&lt;div align=&quot;center&quot;&gt;&lt;br&gt;&lt;br&gt;&lt;h1&gt;不能找到该页面&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="364"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="378"/>
         <source>Copy &amp;Link Location</source>
         <translation>复制链接地址(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="367"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="381"/>
         <source>Open Link in New Tab<byte value="x9"/>Ctrl+LMB</source>
         <translation>在新标签页中打开链接<byte value="x9"/>Ctrl+LMB</translation>
     </message>
@@ -302,10 +328,11 @@
         <translation>在新标签页中打开链接</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="256"/>
+        <location filename="../tools/assistant/tools/assistant/helpviewer.cpp" line="271"/>
         <source>Unable to launch external application.
 </source>
-        <translation type="unfinished"></translation>
+        <translation>不能启动外部应用程序。
+</translation>
     </message>
 </context>
 <context>
@@ -444,7 +471,7 @@
         <translation>搜索</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="773"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="777"/>
         <source>Qt Assistant</source>
         <translation>Qt 助手</translation>
     </message>
@@ -719,27 +746,27 @@
         <translation>不能找到相关内容项目。</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="748"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="751"/>
         <source>Open Source Edition</source>
         <translation>开源版本</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="752"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="755"/>
         <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
         <translation>这个版本的 Qt 助手是 Qt 开源版本的一部分，用于开发开源应用程序。Qt 是一个用于跨平台应用程序开发的综合 C++ 框架。</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="761"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="764"/>
         <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
         <translation>我们已经允许您在 Qt 商业许可协议下使用本程序。有关细节，请阅读本软件发行中所带的 LICENSE 文件。</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="776"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="782"/>
         <source>About %1</source>
         <translation>关于 %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="894"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="900"/>
         <source>Updating search index</source>
         <translation>正在更新搜索索引</translation>
     </message>
@@ -779,49 +806,49 @@
         <translation type="obsolete">移除</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="755"/>
+        <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="758"/>
         <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://trolltech.com/company/about/businessmodel&quot;&gt;http://trolltech.com/company/about/businessmodel&lt;/a&gt; for an overview of Qt licensing.</source>
         <translation>开发商业（闭源）应用程序，你需要商业 Qt 许可。对于 Qt 许可的概览，请参考&lt;a href=&quot;http://www.trolltech.com/company/about/businessmodel&quot;&gt;www.trolltech.com/company/about/businessmodel&lt;/a&gt;。</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="352"/>
         <source>&amp;File</source>
-        <translation type="unfinished"></translation>
+        <translation>文件(&amp;F)</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="372"/>
         <source>&amp;Edit</source>
-        <translation type="unfinished"></translation>
+        <translation>编辑(&amp;E)</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="401"/>
         <source>&amp;View</source>
-        <translation type="unfinished"></translation>
+        <translation>查看(&amp;V)</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="427"/>
         <source>ALT+O</source>
-        <translation type="unfinished"></translation>
+        <translation>ALT+O</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="431"/>
         <source>&amp;Go</source>
-        <translation type="unfinished"></translation>
+        <translation>前往(&amp;G)</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="466"/>
         <source>&amp;Bookmarks</source>
-        <translation type="unfinished"></translation>
+        <translation>书签(&amp;B)</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="468"/>
         <source>CTRL+D</source>
-        <translation type="unfinished"></translation>
+        <translation>CTRL+D</translation>
     </message>
     <message>
         <location filename="../tools/assistant/tools/assistant/mainwindow.cpp" line="470"/>
         <source>&amp;Help</source>
-        <translation type="unfinished"></translation>
+        <translation>帮助(&amp;H)</translation>
     </message>
 </context>
 <context>
@@ -1044,9 +1071,9 @@ Reason:
         <translation>不能读取指定的收藏文件！</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="535"/>
+        <location filename="../tools/assistant/tools/assistant/bookmarkmanager.cpp" line="598"/>
         <source>Bookmark</source>
-        <translation type="unfinished"></translation>
+        <translation>书签</translation>
     </message>
 </context>
 <context>

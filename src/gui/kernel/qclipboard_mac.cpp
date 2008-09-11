@@ -248,7 +248,7 @@ OSStatus QMacPasteboard::promiseKeeper(PasteboardRef paste, PasteboardItemID id,
 #endif
 
     QList<QByteArray> md = promise.convertor->convertFromMime(promise.mime, promise.data, flavorAsQString);
-    if (md.size() < promise.offset)
+    if (md.size() <= promise.offset)
         return cantGetFlavorErr;
     const QByteArray &ba = md[promise.offset];
     QCFType<CFDataRef> data = CFDataCreate(0, (UInt8*)ba.constData(), ba.size());

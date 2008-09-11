@@ -312,8 +312,6 @@ static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOpti
         return;
 #endif
 
-    const QRect rect = widget->style()->subControlRect(complexControl, &opt, subControl, widget);
-
     // Convert CC_MdiControls to CC_TitleBar. Sub controls of different complex
     // controls cannot be in the same switch as they might have the same value.
     if (complexControl == QStyle::CC_MdiControls) {
@@ -326,6 +324,10 @@ static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOpti
         else
             subControl = QStyle::SC_None;
     }
+
+    // Don't change the tooltip for the base widget itself.
+    if (subControl == QStyle::SC_None)
+        return;
 
     QString toolTip;
 
@@ -361,6 +363,7 @@ static void showToolTip(QHelpEvent *helpEvent, QWidget *widget, const QStyleOpti
         break;
     }
 
+    const QRect rect = widget->style()->subControlRect(complexControl, &opt, subControl, widget);
     QToolTip::showText(helpEvent->globalPos(), toolTip, widget, rect);
 }
 #endif // QT_NO_TOOLTIP
@@ -1117,7 +1120,7 @@ void QMdiSubWindowPrivate::updateGeometryConstraints()
     if (!q->parent())
         return;
 
-    internalMinimumSize = (!q->isMinimized() && !q->minimumSize().isNull()) 
+    internalMinimumSize = (!q->isMinimized() && !q->minimumSize().isNull())
                           ? q->minimumSize() : q->minimumSizeHint();
     int margin, minWidth;
     sizeParameters(&margin, &minWidth);
@@ -1766,7 +1769,7 @@ bool QMdiSubWindowPrivate::drawTitleBarWhenMaximized() const
     if (isChildOfTabbedQMdiArea(q))
         return false;
 
-#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC) || defined(Q_OS_WINCE)
+#if defined(Q_WS_MAC) && !defined(QT_NO_STYLE_MAC) || defined(Q_OS_WINCE_WM)
     return true;
 #else
     if (q->style()->styleHint(QStyle::SH_Workspace_FillSpaceOnMaximize, 0, q))
@@ -1888,8 +1891,11 @@ void QMdiSubWindowPrivate::enterRubberBandMode()
         return;
     Q_ASSERT(oldGeometry.isValid());
     Q_ASSERT(q->parent());
-    if (!rubberBand)
+    if (!rubberBand) {
         rubberBand = new QRubberBand(QRubberBand::Rectangle, q->parentWidget());
+        // For accessibility to identify this special widget.
+        rubberBand->setObjectName(QLatin1String("qt_rubberband"));
+    }
     QPoint rubberBandPos = q->mapToParent(QPoint(0, 0));
     rubberBand->setGeometry(rubberBandPos.x(), rubberBandPos.y(),
                             oldGeometry.width(), oldGeometry.height());
@@ -3418,7 +3424,7 @@ void QMdiSubWindow::keyPressEvent(QKeyEvent *keyEvent)
 #endif
 }
 
-#ifndef QT_NO_MENU
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -3437,7 +3443,7 @@ void QMdiSubWindow::contextMenuEvent(QContextMenuEvent *contextMenuEvent)
         contextMenuEvent->ignore();
     }
 }
-#endif // QT_NO_MENU
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \reimp

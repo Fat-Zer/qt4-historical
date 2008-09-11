@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/opengl/qglframebufferobject.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/opengl/qglframebufferobject.cpp -->
 <head>
   <title>Qt 4.4: QGLFramebufferObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGLFramebufferObject Class Reference<br /><span class="small-subtitle">[<a href="qtopengl.html">QtOpenGL</a> module]</span>
 </h1>
 <p>The QGLFramebufferObject class encapsulates an OpenGL framebuffer object. <a href="#details">More...</a></p>
@@ -73,7 +73,7 @@
 <li>It is possible to attach several rendering buffers (or texture objects) to the same framebuffer object, and render to all of them without doing a context switch.</li>
 <li>The OpenGL framebuffer extension is a pure GL extension with no system dependant WGL, AGL or GLX parts. This makes using framebuffer objects more portable.</li>
 </ol>
-<p>Note that <a href="qpainter.html">QPainter</a> antialiasing of drawing primitives will not work when using a QGLFramebufferObject as a paintdevice. This is because sample buffers, which are needed for antialiasing, are not yet supported in application-defined framebuffer objects. However, an extension to solve this has already been approved by the OpenGL ARB (<tt>GL_EXT_framebuffer_multisample</tt>), and will most likely be available in the near future.</p>
+<p>Note that primitives drawn to a QGLFramebufferObject with <a href="qpainter.html">QPainter</a> will only be antialiased if the <a href="qpainter.html#RenderHint-enum">QPainter::HighQualityAntialiasing</a> render hint is set. This is because there is currently no support for the <tt>GL_EXT_framebuffer_multisample</tt> extension, which is required to do multisample based antialiasing. Also note that the <a href="qpainter.html#RenderHint-enum">QPainter::HighQualityAntialiasing</a> render hint requires the <tt>GL_ARB_fragment_program</tt> extension to work in OpenGL.</p>
 <p>See also <a href="opengl-framebufferobject.html">Framebuffer Object Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -157,8 +157,8 @@
 <p>Returns the contents of this framebuffer object as a <a href="qimage.html">QImage</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

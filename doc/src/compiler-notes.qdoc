@@ -84,7 +84,7 @@
     The released package of the compiler has some bugs that lead to
     miscompilations. We recommend using gcc 4.0.1 or later, or to use a recent
     CVS snapshot of the gcc 4.0 branch. The version of gcc 4.0.0 that is
-    shipped with Mac OS X 10.4 "Tiger" is known to work with Qt/Mac.
+    shipped with Mac OS X 10.4 "Tiger" is known to work with Qt for Mac OS X.
 
     \section2 HP-UX
 
@@ -208,7 +208,7 @@
     \c{C:\Program files\Qt\}) so you will have to move it to another place,
     or explicitly set the path yourself; for example:
 
-    \snippet doc/src/snippets/code/doc.src.compiler-notes.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_compiler-notes.qdoc 0
 
     Visual C++ 6.0 requires Service Pack 5 to work correctly with Qt.
     If you are using Visual C++ version 6.0 we highly recommend that you
@@ -241,7 +241,7 @@
     \o "The second step is to use the makeC++SharedLib command to create the
        shared object. The command has many optional arguments, but in its
        simplest form, can be used as follows:"
-       \snippet doc/src/snippets/code/doc.src.compiler-notes.qdoc 1
+       \snippet doc/src/snippets/code/doc_src_compiler-notes.qdoc 1
     \o "The full path name to the command is not required; however, to avoid
        this, you will have to add the directory in which it is located to
        your PATH environment variable. The command is located in the

@@ -108,7 +108,7 @@
 
     For example, a \c qt.conf file could contain the following:
 
-    \snippet doc/src/snippets/code/doc.src.qt-conf.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qt-conf.qdoc 0
 
     Subgroups of the \c Paths group may be used to specify locations
     for specific versions of the Qt libraries. Such subgroups are of
@@ -121,7 +121,7 @@
 
     For example, given the following groups:
 
-    \snippet doc/src/snippets/code/doc.src.qt-conf.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qt-conf.qdoc 1
 
     The current version will be matched as shown:
 

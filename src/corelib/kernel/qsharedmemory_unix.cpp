@@ -49,9 +49,12 @@
 #include <qdir.h>
 #include <qdebug.h>
 
+#include <errno.h>
+
 QT_BEGIN_NAMESPACE
 
-#include <errno.h>
+#ifndef QT_NO_SHAREDMEMORY
+
 #include <sys/types.h>
 #include <sys/ipc.h>
 #include <sys/shm.h>
@@ -59,8 +62,6 @@ QT_BEGIN_NAMESPACE
 #include <sys/stat.h>
 #include <fcntl.h>
 #include <unistd.h>
-
-#ifndef QT_NO_SHAREDMEMORY
 
 QSharedMemoryPrivate::QSharedMemoryPrivate()
     : QObjectPrivate(), memory(0), size(0), error(QSharedMemory::NoError),
@@ -139,6 +140,7 @@ key_t QSharedMemoryPrivate::handle()
 
 #endif // QT_NO_SHAREDMEMORY
 
+#if !(defined(QT_NO_SHAREDMEMORY) && defined(QT_NO_SYSTEMSEMAPHORE))
 /*!
     \internal
     Creates the unix file if needed.
@@ -164,6 +166,7 @@ int QSharedMemoryPrivate::createUnixKeyFile(const QString &fileName)
     }
     return 1;
 }
+#endif // QT_NO_SHAREDMEMORY && QT_NO_SYSTEMSEMAPHORE
 
 #ifndef QT_NO_SHAREDMEMORY
 
@@ -221,7 +224,7 @@ bool QSharedMemoryPrivate::attach(QSharedMemory::AccessMode mode)
 
     int id = shmget(handle(), 0, (mode == QSharedMemory::ReadOnly ? 0444 : 0660));
     if (-1 == id) {
-        setErrorString(QLatin1String("QSharedMemory::attach"));
+        setErrorString(QLatin1String("QSharedMemory::attach (shmget)"));
         return false;
     }
 
@@ -229,7 +232,7 @@ bool QSharedMemoryPrivate::attach(QSharedMemory::AccessMode mode)
     memory = shmat(id, 0, (mode == QSharedMemory::ReadOnly ? SHM_RDONLY : 0));
     if ((void*) - 1 == memory) {
         memory = 0;
-        setErrorString(QLatin1String("QSharedMemory::attach"));
+        setErrorString(QLatin1String("QSharedMemory::attach (shmat)"));
         return false;
     }
 
@@ -238,7 +241,7 @@ bool QSharedMemoryPrivate::attach(QSharedMemory::AccessMode mode)
     if (!shmctl(id, IPC_STAT, &shmid_ds)) {
         size = (int)shmid_ds.shm_segsz;
     } else {
-        setErrorString(QLatin1String("QSharedMemory::attach"));
+        setErrorString(QLatin1String("QSharedMemory::attach (shmctl)"));
         return false;
     }
 
@@ -270,8 +273,12 @@ bool QSharedMemoryPrivate::detach()
 
     struct shmid_ds shmid_ds;
     if (0 != shmctl(id, IPC_STAT, &shmid_ds)) {
-        setErrorString(QLatin1String("QSharedMemory::detach shmget"));
-        return false;
+        switch (errno) {
+        case EINVAL:
+            return true;
+        default:
+            return false;
+        }
     }
     // If there are no attachments then remove it.
     if (shmid_ds.shm_nattch == 0) {
@@ -279,7 +286,12 @@ bool QSharedMemoryPrivate::detach()
         struct shmid_ds shmid_ds;
         if (-1 == shmctl(id, IPC_RMID, &shmid_ds)) {
             setErrorString(QLatin1String("QSharedMemory::remove"));
-            return false;
+            switch (errno) {
+            case EINVAL:
+                return true;
+            default:
+                return false;
+            }
         }
 
         // remove file

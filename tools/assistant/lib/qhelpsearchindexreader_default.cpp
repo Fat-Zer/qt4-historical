@@ -497,7 +497,6 @@ void Reader::cleanupIndex(EntryTable &entryTable)
 QHelpSearchIndexReader::QHelpSearchIndexReader()
     : QThread()
     , m_cancel(false)
-    , m_collectionFile(QString())
 {
     // nothing todo
 }
@@ -519,7 +518,8 @@ void QHelpSearchIndexReader::cancelSearching()
     mutex.unlock();
 }
 
-void QHelpSearchIndexReader::search(const QString &collectionFile, 
+void QHelpSearchIndexReader::search(const QString &collectionFile,
+                                    const QString &indexFilesFolder,
                                     const QList<QHelpSearchQuery> &queryList)
 {
     QMutexLocker lock(&mutex);
@@ -528,6 +528,7 @@ void QHelpSearchIndexReader::search(const QString &collectionFile,
     this->m_cancel = false;
     this->m_query = queryList;
     this->m_collectionFile = collectionFile;
+    this->m_indexFilesFolder = indexFilesFolder;
 
     start(QThread::NormalPriority);
 }
@@ -554,6 +555,7 @@ void QHelpSearchIndexReader::run()
     const QList<QHelpSearchQuery> &queryList = this->m_query;
     const QLatin1String key("DefaultSearchNamespaces");
     const QString collectionFile(this->m_collectionFile);
+    const QString indexPath = m_indexFilesFolder;
     
     mutex.unlock();
 
@@ -571,13 +573,7 @@ void QHelpSearchIndexReader::run()
     QHelpEngineCore engine(collectionFile, 0);
     if (!engine.setupData())
         return;
-
-    QString indexPath = engine.customValue(QLatin1String("indexFilesFolder")).toString();
-    QDir dir(indexPath);
-    if (!dir.isAbsolute()) {
-        indexPath = QFileInfo(engine.collectionFile()).path() + dir.separator() + dir.path();
-    }
-
+    
     const QStringList registeredDocs = engine.registeredDocumentations();
     const QStringList indexedNamespaces = engine.customValue(key).toString().
         split(QLatin1String("|"), QString::SkipEmptyParts);

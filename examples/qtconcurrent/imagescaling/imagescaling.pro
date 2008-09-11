@@ -5,8 +5,6 @@ INCLUDEPATH += .
 # Input
 SOURCES += main.cpp imagescaling.cpp
 HEADERS += imagescaling.h
-OBJECTS_DIR = .obj
-MOC_DIR = .moc
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/qtconcurrent/imagescaling

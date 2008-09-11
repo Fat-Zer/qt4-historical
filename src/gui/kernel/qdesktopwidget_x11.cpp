@@ -183,15 +183,17 @@ void QDesktopWidgetPrivate::init()
                 h = HeightOfScreen(ScreenOfDisplay(X11->display, i));
             }
 
-        // merge a "cloned" screen with the previous, hiding all crtcs
-        // that are currently showing a sub-rect of the previous screen
         rects[j].setRect(x, y, w, h);
-        if (j > 0 && rects[j-1].intersects(rects[j]) &&
-                (rects[j].width()*rects[j].height()) >
-                (rects[j-1].width()*rects[j-1].height())) {
-            rects[j-1] = rects[j];
-           j--;
+
+        if (use_xinerama && j > 0 && rects[j-1].intersects(rects[j])) {
+            // merge a "cloned" screen with the previous, hiding all crtcs
+            // that are currently showing a sub-rect of the previous screen
+            if ((rects[j].width()*rects[j].height()) >
+                (rects[j-1].width()*rects[j-1].height()))
+                rects[j-1] = rects[j];
+            j--;
         }
+
         workareas[i] = QRect();
     }
 

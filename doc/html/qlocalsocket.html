@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/socket/qlocalsocket.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/network/socket/qlocalsocket.cpp -->
 <head>
   <title>Qt 4.4: QLocalSocket Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLocalSocket Class Reference<br /><span class="small-subtitle">[<a href="qtnetwork.html">QtNetwork</a> module]</span>
 </h1>
 <p>The QLocalSocket class provides a local socket. <a href="#details">More...</a></p>
@@ -162,7 +162,7 @@
 <h3 class="fn"><a name="error-2"></a>void QLocalSocket::error ( <a href="qlocalsocket.html#LocalSocketError-enum">QLocalSocket::LocalSocketError</a> <i>socketError</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>This signal is emitted after an error occurred. The <i>socketError</i> parameter describes the type of error that occurred.</p>
-<p><a href="qlocalsocket.html#LocalSocketError-enum">QLocalSocket::LocalSocketError</a> is not a registered metatype, so for queued connections, you will have to register it with Q_REGISTER_METATYPE.</p>
+<p><a href="qlocalsocket.html#LocalSocketError-enum">QLocalSocket::LocalSocketError</a> is not a registered metatype, so for queued connections, you will have to register it with Q_DECLARE_METATYPE.</p>
 <p>See also <a href="qlocalsocket.html#error">error</a>() and <a href="qiodevice.html#errorString">errorString</a>().</p>
 <a name="//apple_ref/cpp/instm/QLocalSocket/flush" />
 <h3 class="fn"><a name="flush"></a>bool QLocalSocket::flush ()</h3>
@@ -210,24 +210,24 @@
 <a name="//apple_ref/cpp/instm/QLocalSocket/stateChanged" />
 <h3 class="fn"><a name="stateChanged"></a>void QLocalSocket::stateChanged ( <a href="qlocalsocket.html#LocalSocketState-enum">QLocalSocket::LocalSocketState</a> <i>socketState</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted whenever <a href="qlocalsocket.html">QLocalSocket</a>'s state changes. The <i>socketState</i> parameter is the new state.</p>
-<p>QLocalSocket::SocketState is not a registered metatype, so for queued connections, you will have to register it with Q_REGISTER_METATYPE.</p>
+<p>QLocalSocket::SocketState is not a registered metatype, so for queued connections, you will have to register it with Q_DECLARE_METATYPE.</p>
 <p>See also <a href="qlocalsocket.html#state">state</a>().</p>
 <a name="//apple_ref/cpp/instm/QLocalSocket/waitForConnected" />
 <h3 class="fn"><a name="waitForConnected"></a>bool QLocalSocket::waitForConnected ( int <i>msec</i> = 30000 )</h3>
 <p>Waits until the socket is connected, up to <i>msec</i> milliseconds. If the connection has been established, this function returns true; otherwise it returns false. In the case where it returns false, you can call <a href="qlocalsocket.html#error">error</a>() to determine the cause of the error.</p>
 <p>The following example waits up to one second for a connection to be established:</p>
-<pre>         socket-&gt;connectToServer(&quot;market&quot;);
-         if (socket-&gt;waitForConnected(1000))
-             qDebug(&quot;Connected!&quot;);</pre>
+<pre> socket-&gt;connectToServer(&quot;market&quot;);
+ if (socket-&gt;waitForConnected(1000))
+     qDebug(&quot;Connected!&quot;);</pre>
 <p>If msecs is -1, this function will not time out.</p>
 <p>See also <a href="qlocalsocket.html#connectToServer">connectToServer</a>() and <a href="qlocalsocket.html#connected">connected</a>().</p>
 <a name="//apple_ref/cpp/instm/QLocalSocket/waitForDisconnected" />
 <h3 class="fn"><a name="waitForDisconnected"></a>bool QLocalSocket::waitForDisconnected ( int <i>msecs</i> = 30000 )</h3>
 <p>Waits until the socket has disconnected, up to <i>msecs</i> milliseconds. If the connection has been disconnected, this function returns true; otherwise it returns false. In the case where it returns false, you can call <a href="qlocalsocket.html#error">error</a>() to determine the cause of the error.</p>
 <p>The following example waits up to one second for a connection to be closed:</p>
-<pre>         socket-&gt;disconnectFromServer();
-         if (socket-&gt;waitForDisconnected(1000))
-             qDebug(&quot;Disconnected!&quot;);</pre>
+<pre> socket-&gt;disconnectFromServer();
+ if (socket-&gt;waitForDisconnected(1000))
+     qDebug(&quot;Disconnected!&quot;);</pre>
 <p>If msecs is -1, this function will not time out.</p>
 <p>See also <a href="qlocalsocket.html#disconnectFromServer">disconnectFromServer</a>() and <a href="qiodevice.html#close">close</a>().</p>
 <a name="//apple_ref/cpp/instm/QLocalSocket/waitForReadyRead" />
@@ -238,8 +238,8 @@
 <p>See also <a href="qiodevice.html#waitForBytesWritten">waitForBytesWritten</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

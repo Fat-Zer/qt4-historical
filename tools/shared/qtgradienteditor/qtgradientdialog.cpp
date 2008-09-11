@@ -187,12 +187,12 @@ void QtGradientDialogPrivate::slotAboutToShowDetails(bool details, int extension
 
     The convenient static functions getGradient() provide modal gradient dialogs, e.g.:
 
-    \snippet doc/src/snippets/code/tools.shared.qtgradienteditor.qtgradientdialog.cpp 0
+    \snippet doc/src/snippets/code/tools_shared_qtgradienteditor_qtgradientdialog.cpp 0
 
     In order to have more control over the properties of QtGradientDialog use
     standard QDialog::exec() method:
 
-    \snippet doc/src/snippets/code/tools.shared.qtgradienteditor.qtgradientdialog.cpp 1
+    \snippet doc/src/snippets/code/tools_shared_qtgradienteditor_qtgradientdialog.cpp 1
 
     \sa {Gradient View Example}
 */
@@ -250,8 +250,8 @@ QGradient QtGradientDialog::gradient() const
     \o \inlineimage qtgradientdialogbackgroundcheckered.png
     \o \inlineimage qtgradientdialogbackgroundtransparent.png
     \row
-    \o \snippet doc/src/snippets/code/tools.shared.qtgradienteditor.qtgradientdialog.cpp 2
-    \o \snippet doc/src/snippets/code/tools.shared.qtgradienteditor.qtgradientdialog.cpp 3
+    \o \snippet doc/src/snippets/code/tools_shared_qtgradienteditor_qtgradientdialog.cpp 2
+    \o \snippet doc/src/snippets/code/tools_shared_qtgradienteditor_qtgradientdialog.cpp 3
     \endtable
 
     When this property is set to true (the default) widgets inside gradient dialog like color button,

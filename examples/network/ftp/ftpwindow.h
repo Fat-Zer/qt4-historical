@@ -68,6 +68,7 @@ public:
     FtpWindow(QWidget *parent = 0);
     QSize sizeHint() const;
 
+//![0]
 private slots:
     void connectOrDisconnect();
     void downloadFile();
@@ -80,6 +81,7 @@ private slots:
     void updateDataTransferProgress(qint64 readBytes,
                                     qint64 totalBytes);
     void enableDownloadButton();
+//![0]
 
 private:
     QLabel *ftpServerLabel;
@@ -93,10 +95,12 @@ private:
     QDialogButtonBox *buttonBox;
     QProgressDialog *progressDialog;
 
+//![1]
     QHash<QString, bool> isDirectory;
     QString currentPath;
     QFtp *ftp;
     QFile *file;
+//![1]
 };
 
 #endif

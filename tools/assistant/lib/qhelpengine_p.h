@@ -77,7 +77,7 @@ class QHelpEngineCorePrivate : public QObject
     Q_OBJECT
 
 public:
-    QHelpEngineCorePrivate() {}
+    QHelpEngineCorePrivate();
     virtual ~QHelpEngineCorePrivate();
 
     virtual void init(const QString &collectionFile,

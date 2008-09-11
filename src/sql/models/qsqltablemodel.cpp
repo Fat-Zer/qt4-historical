@@ -287,14 +287,16 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
 /*!
     \fn QSqlTableModel::beforeDelete(int row)
 
-    This signal is emitted before the \a row is deleted.
+    This signal is emitted by deleteRowFromTable() before the \a row
+    is deleted from the currently active database table.
 */
 
 /*!
     \fn void QSqlTableModel::primeInsert(int row, QSqlRecord &record)
 
-    This signal is emitted when an insertion is initiated in the given
-    \a row. The \a record parameter can be written to (since it is a
+    This signal is emitted by insertRows(), when an insertion is
+    initiated in the given \a row of the currently active database
+    table. The \a record parameter can be written to (since it is a
     reference), for example to populate some fields with default
     values.
 */
@@ -302,16 +304,18 @@ QSqlRecord QSqlTableModelPrivate::primaryValues(int row)
 /*!
     \fn QSqlTableModel::beforeInsert(QSqlRecord &record)
 
-    This signal is emitted before a new row is inserted. The
-    values that are about to be inserted are stored in \a record
-    and can be modified before they will be inserted.
+    This signal is emitted by insertRowIntoTable() before a new row is
+    inserted into the currently active database table. The values that
+    are about to be inserted are stored in \a record and can be
+    modified before they will be inserted.
 */
 
 /*!
     \fn QSqlTableModel::beforeUpdate(int row, QSqlRecord &record)
 
-    This signal is emitted before the \a row is updated with the
-    values from \a record.
+    This signal is emitted by updateRowInTable() before the \a row is
+    updated in the currently active database table with the values
+    from \a record.
 
     Note that only values that are marked as generated will be updated.
     The generated flag can be set with \l QSqlRecord::setGenerated()
@@ -665,10 +669,14 @@ bool QSqlTableModel::deleteRowFromTable(int row)
 
     QSqlRecord rec = d->primaryValues(row);
     bool prepStatement = d->db.driver()->hasFeature(QSqlDriver::PreparedQueries);
-    QString stmt = d->db.driver()->sqlStatement(QSqlDriver::DeleteStatement, d->tableName,
-                                                QSqlRecord(), prepStatement);
-    QString where = d->db.driver()->sqlStatement(QSqlDriver::WhereStatement, d->tableName,
-                                                rec, prepStatement);
+    QString stmt = d->db.driver()->sqlStatement(QSqlDriver::DeleteStatement,
+                                                d->tableName,
+                                                QSqlRecord(),
+                                                prepStatement);
+    QString where = d->db.driver()->sqlStatement(QSqlDriver::WhereStatement,
+                                                 d->tableName,
+                                                 rec,
+                                                 prepStatement);
 
     if (stmt.isEmpty() || where.isEmpty()) {
         d->error = QSqlError(QLatin1String("Unable to delete row"), QString(),
@@ -1006,8 +1014,10 @@ QString QSqlTableModel::selectStatement() const
         return query;
     }
 
-    query = d->db.driver()->sqlStatement(QSqlDriver::SelectStatement, d->tableName,
-                                          d->rec, false);
+    query = d->db.driver()->sqlStatement(QSqlDriver::SelectStatement,
+                                         d->tableName,
+                                         d->rec,
+                                         false);
     if (query.isEmpty()) {
         d->error = QSqlError(QLatin1String("Unable to select fields from table ") + d->tableName,
                              QString(), QSqlError::StatementError);

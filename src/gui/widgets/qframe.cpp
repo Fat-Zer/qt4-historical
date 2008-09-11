@@ -82,7 +82,7 @@ inline void QFramePrivate::init()
     screen. QProgressBar has a "sunken" look. QLabel has a flat look.
     The frames of widgets like these can be changed.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qframe.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qframe.cpp 0
 
     The QFrame class can also be used directly for creating simple
     placeholder frames without any contents.

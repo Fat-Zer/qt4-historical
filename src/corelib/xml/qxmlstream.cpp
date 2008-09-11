@@ -241,7 +241,7 @@ QXmlStreamEntityResolver *QXmlStreamReader::entityResolver() const
 
   A typical loop with QXmlStreamReader looks like this:
 
-  \snippet doc/src/snippets/code/src.corelib.xml.qxmlstream.cpp 0
+  \snippet doc/src/snippets/code/src_corelib_xml_qxmlstream.cpp 0
 
 
   QXmlStreamReader is a well-formed XML 1.0 parser that does \e not
@@ -3412,7 +3412,7 @@ void QXmlStreamWriter::writeEmptyElement(const QString &namespaceUri, const QStr
 
 
   This is a convenience function equivalent to:
-  \snippet doc/src/snippets/code/src.corelib.xml.qxmlstream.cpp 1
+  \snippet doc/src/snippets/code/src_corelib_xml_qxmlstream.cpp 1
 
 */
 void QXmlStreamWriter::writeTextElement(const QString &qualifiedName, const QString &text)
@@ -3429,7 +3429,7 @@ void QXmlStreamWriter::writeTextElement(const QString &qualifiedName, const QStr
 
 
   This is a convenience function equivalent to:
-  \snippet doc/src/snippets/code/src.corelib.xml.qxmlstream.cpp 2
+  \snippet doc/src/snippets/code/src_corelib_xml_qxmlstream.cpp 2
 
 */
 void QXmlStreamWriter::writeTextElement(const QString &namespaceUri, const QString &name, const QString &text)

@@ -67,8 +67,10 @@ struct InheritanceBound
 
     InheritanceBound()
 	: access(Node::Public) { }
-    InheritanceBound( Node::Access access0, const QStringList& basePath0,
-		      const QString &dataTypeWithTemplateArgs0, InnerNode *parent)
+    InheritanceBound(Node::Access access0,
+                     const QStringList& basePath0,
+                     const QString &dataTypeWithTemplateArgs0,
+                     InnerNode *parent)
 	: access(access0), basePath(basePath0),
 	  dataTypeWithTemplateArgs(dataTypeWithTemplateArgs0),
           parent(parent) { }
@@ -93,29 +95,48 @@ public:
     QMap<ClassNode *, QList<InheritanceBound> > unresolvedInheritanceMap;
     PropertyMap unresolvedPropertyMap;
     GroupMap groupMap;
+    QMultiMap<QString, QString> publicGroupMap;
     FakeNodeHash fakeNodesByTitle;
     TargetHash targetHash;
     QList<QPair<ClassNode*,QString> > basesList;
     QList<QPair<FunctionNode*,QString> > relatedList;
 };
 
+/*!
+  \class Tree
+ */
+
+/*!
+  The default constructor is the only constructor.
+ */
 Tree::Tree()
     : roo( 0, "" )
 {
     priv = new TreePrivate;
 }
 
+/*!
+  The destructor deletes the internal, private tree.
+ */
 Tree::~Tree()
 {
     delete priv;
 }
 
+/*!
+ */
 Node *Tree::findNode(const QStringList &path, Node *relative, int findFlags)
 {
-    return const_cast<Node *>(const_cast<const Tree *>(this)->findNode(path, relative, findFlags));
+    return const_cast<Node*>(const_cast<const Tree*>(this)->findNode(path,
+                                                                     relative,
+                                                                     findFlags));
 }
 
-const Node *Tree::findNode(const QStringList &path, const Node *relative, int findFlags) const
+/*!
+ */
+const Node *Tree::findNode(const QStringList &path,
+                           const Node *relative,
+                           int findFlags) const
 {
     if (!relative)
         relative = root();
@@ -128,9 +149,10 @@ const Node *Tree::findNode(const QStringList &path, const Node *relative, int fi
 	    if (node == 0 || !node->isInnerNode())
 	        break;
 
-            const Node *next = static_cast<const InnerNode *>(node)->findNode(path.at(i));
-            if (!next && (findFlags & SearchEnumValues) && i == path.size() - 1)
-                next = static_cast<const InnerNode *>(node)->findEnumNodeForValue(path.at(i));
+            const Node *next =
+                static_cast<const InnerNode*>(node)->findNode(path.at(i));
+            if (!next && (findFlags & SearchEnumValues) && i == path.size()-1)
+                next = static_cast<const InnerNode*>(node)->findEnumNodeForValue(path.at(i));
 
             if (!next && node->type() == Node::Class && (findFlags & SearchBaseClasses)) {
                 NodeList baseClasses = allBaseClasses(static_cast<const ClassNode *>(node));
@@ -155,13 +177,24 @@ const Node *Tree::findNode(const QStringList &path, const Node *relative, int fi
     return 0;
 }
 
-Node *Tree::findNode(const QStringList &path, Node::Type type, Node *relative, int findFlags)
+/*!
+ */
+Node *Tree::findNode(const QStringList &path,
+                     Node::Type type,
+                     Node *relative,
+                     int findFlags)
 {
-    return const_cast<Node *>(const_cast<const Tree *>(this)->findNode(path, type, relative,
-                                                                       findFlags));
+    return const_cast<Node*>(const_cast<const Tree*>(this)->findNode(path,
+                                                                     type,
+                                                                     relative,
+                                                                     findFlags));
 }
 
-const Node *Tree::findNode(const QStringList &path, Node::Type type, const Node *relative,
+/*!
+ */
+const Node *Tree::findNode(const QStringList &path,
+                           Node::Type type,
+                           const Node *relative,
                            int findFlags) const
 {
     const Node *node = findNode(path, relative, findFlags);
@@ -170,13 +203,20 @@ const Node *Tree::findNode(const QStringList &path, Node::Type type, const Node 
     return 0;
 }
 
-FunctionNode *Tree::findFunctionNode(const QStringList& path, Node *relative, int findFlags)
+/*!
+ */
+FunctionNode *Tree::findFunctionNode(const QStringList& path,
+                                     Node *relative,
+                                     int findFlags)
 {
     return const_cast<FunctionNode *>(
                 const_cast<const Tree *>(this)->findFunctionNode(path, relative, findFlags));
 }
 
-const FunctionNode *Tree::findFunctionNode(const QStringList &path, const Node *relative,
+/*!
+ */
+const FunctionNode *Tree::findFunctionNode(const QStringList &path,
+                                           const Node *relative,
                                            int findFlags) const
 {
     if (!relative)
@@ -234,16 +274,26 @@ const FunctionNode *Tree::findFunctionNode(const QStringList &path, const Node *
     return 0;
 }
 
-FunctionNode *Tree::findFunctionNode(const QStringList &parentPath, const FunctionNode *clone,
-                                     Node *relative, int findFlags)
+/*!
+ */
+FunctionNode *Tree::findFunctionNode(const QStringList &parentPath,
+                                     const FunctionNode *clone,
+                                     Node *relative,
+                                     int findFlags)
 {
     return const_cast<FunctionNode *>(
-		const_cast<const Tree *>(this)->findFunctionNode(parentPath, clone,
-                                      				 relative, findFlags));
+		const_cast<const Tree *>(this)->findFunctionNode(parentPath,
+                                                                 clone,
+                                      				 relative,
+                                                                 findFlags));
 }
 
-const FunctionNode *Tree::findFunctionNode(const QStringList &parentPath, const FunctionNode *clone,
-                                           const Node *relative, int findFlags) const
+/*!
+ */
+const FunctionNode *Tree::findFunctionNode(const QStringList &parentPath,
+                                           const FunctionNode *clone,
+                                           const Node *relative,
+                                           int findFlags) const
 {
     const Node *parent = findNode(parentPath, relative, findFlags);
     if ( parent == 0 || !parent->isInnerNode() ) {
@@ -256,6 +306,8 @@ const FunctionNode *Tree::findFunctionNode(const QStringList &parentPath, const 
 static const int NumSuffixes = 3;
 static const char * const suffixes[NumSuffixes] = { "", "s", "es" };
 
+/*!
+ */
 const FakeNode *Tree::findFakeNodeByTitle(const QString &title) const
 {
     for (int pass = 0; pass < NumSuffixes; ++pass) {
@@ -284,7 +336,10 @@ const FakeNode *Tree::findFakeNodeByTitle(const QString &title) const
     return 0;
 }
 
-const Node *Tree::findUnambiguousTarget(const QString &target, Atom *&atom) const
+/*!
+ */
+const Node*
+Tree::findUnambiguousTarget(const QString &target, Atom *&atom) const
 {
     Target bestTarget = {0, 0, INT_MAX};
     int numBestTargets = 0;
@@ -314,6 +369,8 @@ const Node *Tree::findUnambiguousTarget(const QString &target, Atom *&atom) cons
     return 0;
 }
 
+/*!
+ */
 Atom *Tree::findTarget(const QString &target, const Node *node) const
 {
     for (int pass = 0; pass < NumSuffixes; ++pass) {
@@ -331,32 +388,62 @@ Atom *Tree::findTarget(const QString &target, const Node *node) const
     return 0;
 }
 
-void Tree::addBaseClass( ClassNode *subclass, Node::Access access,
-			 const QStringList &basePath,
-			 const QString &dataTypeWithTemplateArgs,
-                         InnerNode *parent )
+/*!
+ */
+void Tree::addBaseClass(ClassNode *subclass, Node::Access access,
+                        const QStringList &basePath,
+                        const QString &dataTypeWithTemplateArgs,
+                        InnerNode *parent )
 {
     priv->unresolvedInheritanceMap[subclass].append(
-	    InheritanceBound(access, basePath, dataTypeWithTemplateArgs, parent));
+	    InheritanceBound(access,
+                             basePath,
+                             dataTypeWithTemplateArgs,
+                             parent)
+                                                    );
 }
 
 
-void Tree::addPropertyFunction(PropertyNode *property, const QString &funcName,
+/*!
+ */
+void Tree::addPropertyFunction(PropertyNode *property,
+                               const QString &funcName,
 			       PropertyNode::FunctionRole funcRole)
 {
     priv->unresolvedPropertyMap[property].insert(funcRole, funcName);
 }
 
+/*!
+ */
 void Tree::addToGroup(Node *node, const QString &group)
 {
     priv->groupMap.insert(group, node);
 }
 
+/*!
+ */
 QMultiMap<QString, Node *> Tree::groups() const
 {
     return priv->groupMap;
 }
 
+/*!
+ */
+void Tree::addToPublicGroup(Node *node, const QString &group)
+{
+    priv->publicGroupMap.insert(node->name(), group);
+    addToGroup(node, group);
+}
+
+/*!
+ */
+QMultiMap<QString, QString> Tree::publicGroups() const
+{
+    return priv->publicGroupMap;
+}
+
+/*!
+ */
 void Tree::resolveInheritance(NamespaceNode *rootNode)
 {
     if (!rootNode)
@@ -378,6 +465,8 @@ void Tree::resolveInheritance(NamespaceNode *rootNode)
     }
 }
 
+/*!
+ */
 void Tree::resolveProperties()
 {
     PropertyMap::ConstIterator propEntry;
@@ -422,20 +511,28 @@ void Tree::resolveProperties()
     priv->unresolvedPropertyMap.clear();
 }
 
+/*!
+ */
 void Tree::resolveInheritance(int pass, ClassNode *classe)
 {
     if ( pass == 0 ) {
 	QList<InheritanceBound> bounds = priv->unresolvedInheritanceMap[classe];
 	QList<InheritanceBound>::ConstIterator b = bounds.begin();
 	while ( b != bounds.end() ) {
-	    ClassNode *baseClass = (ClassNode *)findNode((*b).basePath, Node::Class);
+	    ClassNode *baseClass = (ClassNode*)findNode((*b).basePath,
+                                                        Node::Class);
             if (!baseClass && (*b).parent)
-                baseClass = (ClassNode *)findNode((*b).basePath, Node::Class, (*b).parent);
+                baseClass = (ClassNode*)findNode((*b).basePath,
+                                                 Node::Class,
+                                                 (*b).parent);
 	    if (baseClass)
-		classe->addBaseClass((*b).access, baseClass, (*b).dataTypeWithTemplateArgs);
+		classe->addBaseClass((*b).access,
+                                     baseClass,
+                                     (*b).dataTypeWithTemplateArgs);
 	    ++b;
 	}
-    } else {
+    }
+    else {
 	NodeList::ConstIterator c = classe->childNodes().begin();
 	while ( c != classe->childNodes().end() ) {
 	    if ( (*c)->type() == Node::Function ) {
@@ -446,7 +543,8 @@ void Tree::resolveInheritance(int pass, ClassNode *classe)
 			func->setVirtualness( FunctionNode::ImpureVirtual );
 		    func->setReimplementedFrom( from );
 		}
-	    } else if ((*c)->type() == Node::Property) {
+	    }
+            else if ((*c)->type() == Node::Property) {
                 fixPropertyUsingBaseClasses(classe, static_cast<PropertyNode *>(*c));
             }
 	    ++c;
@@ -454,6 +552,8 @@ void Tree::resolveInheritance(int pass, ClassNode *classe)
     }
 }
 
+/*!
+ */
 void Tree::resolveGroups()
 {
     GroupMap::const_iterator i;
@@ -462,10 +562,12 @@ void Tree::resolveGroups()
         if (i.value()->access() == Node::Private)
             continue;
 
-        FakeNode *fake = static_cast<FakeNode *>(findNode(QStringList(i.key()), Node::Fake));
+        FakeNode *fake =
+            static_cast<FakeNode*>(findNode(QStringList(i.key()),Node::Fake));
         if (fake && fake->subType() == FakeNode::Group) {
             fake->addGroupMember(i.value());
-        } else {
+        }
+        else {
             if (prevGroup != i.key())
                 i.value()->doc().location().warning(tr("No such group '%1'").arg(i.key()));
         }
@@ -476,6 +578,8 @@ void Tree::resolveGroups()
     //priv->groupMap.clear();
 }
 
+/*!
+ */
 void Tree::resolveTargets()
 {
     // need recursion
@@ -524,6 +628,8 @@ void Tree::resolveTargets()
     }
 }
 
+/*!
+ */
 void Tree::fixInheritance(NamespaceNode *rootNode)
 {
     if (!rootNode)
@@ -541,12 +647,15 @@ void Tree::fixInheritance(NamespaceNode *rootNode)
     }
 }
 
-FunctionNode *Tree::findVirtualFunctionInBaseClasses(ClassNode *classe, FunctionNode *clone)
+/*!
+ */
+FunctionNode *Tree::findVirtualFunctionInBaseClasses(ClassNode *classe,
+                                                     FunctionNode *clone)
 {
     QList<RelatedClass>::ConstIterator r = classe->baseClasses().begin();
     while ( r != classe->baseClasses().end() ) {
 	FunctionNode *func;
-        if ( ((func = findVirtualFunctionInBaseClasses((*r).node, clone)) != 0 ||
+        if (((func = findVirtualFunctionInBaseClasses((*r).node, clone)) != 0 ||
 	      (func = (*r).node->findFunctionNode(clone)) != 0) ) {
 	    if (func->virtualness() != FunctionNode::NonVirtual)
 	        return func;
@@ -556,21 +665,29 @@ FunctionNode *Tree::findVirtualFunctionInBaseClasses(ClassNode *classe, Function
     return 0;
 }
 
-void Tree::fixPropertyUsingBaseClasses(ClassNode *classe, PropertyNode *property)
+/*!
+ */
+void Tree::fixPropertyUsingBaseClasses(ClassNode *classe,
+                                       PropertyNode *property)
 {
     QList<RelatedClass>::const_iterator r = classe->baseClasses().begin();
     while (r != classe->baseClasses().end()) {
-	PropertyNode *baseProperty = static_cast<PropertyNode *>(r->node->findNode(property->name(), Node::Property));
+	PropertyNode *baseProperty =
+            static_cast<PropertyNode *>(r->node->findNode(property->name(),
+                                                          Node::Property));
         if (baseProperty) {
             fixPropertyUsingBaseClasses(r->node, baseProperty);
             property->setOverriddenFrom(baseProperty);
-        } else {
+        }
+        else {
             fixPropertyUsingBaseClasses(r->node, property);
         }
  	++r;
     }
 }
 
+/*!
+ */
 NodeList Tree::allBaseClasses(const ClassNode *classe) const
 {
     NodeList result;
@@ -581,12 +698,16 @@ NodeList Tree::allBaseClasses(const ClassNode *classe) const
     return result;
 }
 
+/*!
+ */
 void Tree::readIndexes(const QStringList &indexFiles)
 {
     foreach (QString indexFile, indexFiles)
         readIndexFile(indexFile);
 }
 
+/*!
+ */
 void Tree::readIndexFile(const QString &path)
 {
     QFile file(path);
@@ -616,8 +737,11 @@ void Tree::readIndexFile(const QString &path)
     }
 }
 
+/*!
+ */
 void Tree::readIndexSection(const QDomElement &element,
-    InnerNode *parent, const QString &indexUrl)
+                            InnerNode *parent,
+                            const QString &indexUrl)
 {
     QString name = element.attribute("name");
     QString href = element.attribute("href");
@@ -633,7 +757,8 @@ void Tree::readIndexSection(const QDomElement &element,
         else if (!indexUrl.isNull())
             location = Location(name.toLower() + ".html");
 
-    } else if (element.nodeName() == "class") {
+    }
+    else if (element.nodeName() == "class") {
         section = new ClassNode(parent, name);
         priv->basesList.append(QPair<ClassNode*,QString>(
             static_cast<ClassNode*>(section), element.attribute("bases")));
@@ -643,7 +768,8 @@ void Tree::readIndexSection(const QDomElement &element,
         else if (!indexUrl.isNull())
             location = Location(name.toLower() + ".html");
 
-    } else if (element.nodeName() == "page") {
+    }
+    else if (element.nodeName() == "page") {
         FakeNode::SubType subtype;
         if (element.attribute("subtype") == "example")
             subtype = FakeNode::Example;
@@ -675,11 +801,13 @@ void Tree::readIndexSection(const QDomElement &element,
 
         section = fakeNode;
 
-    } else if (element.nodeName() == "enum") {
+    }
+    else if (element.nodeName() == "enum") {
         EnumNode *enumNode = new EnumNode(parent, name);
 
         if (!indexUrl.isEmpty())
-            location = Location(indexUrl + "/" + parent->name().toLower() + ".html");
+            location =
+                Location(indexUrl + "/" + parent->name().toLower() + ".html");
         else if (!indexUrl.isNull())
             location = Location(parent->name().toLower() + ".html");
 
@@ -696,15 +824,18 @@ void Tree::readIndexSection(const QDomElement &element,
         section = new TypedefNode(parent, name);
 
         if (!indexUrl.isEmpty())
-            location = Location(indexUrl + "/" + parent->name().toLower() + ".html");
+            location =
+                Location(indexUrl + "/" + parent->name().toLower() + ".html");
         else if (!indexUrl.isNull())
             location = Location(parent->name().toLower() + ".html");
 
-    } else if (element.nodeName() == "property") {
+    }
+    else if (element.nodeName() == "property") {
         section = new PropertyNode(parent, name);
 
         if (!indexUrl.isEmpty())
-            location = Location(indexUrl + "/" + parent->name().toLower() + ".html");
+            location =
+                Location(indexUrl + "/" + parent->name().toLower() + ".html");
         else if (!indexUrl.isNull())
             location = Location(parent->name().toLower() + ".html");
 
@@ -769,11 +900,13 @@ void Tree::readIndexSection(const QDomElement &element,
         section = functionNode;
 
         if (!indexUrl.isEmpty())
-            location = Location(indexUrl + "/" + parent->name().toLower() + ".html");
+            location =
+                Location(indexUrl + "/" + parent->name().toLower() + ".html");
         else if (!indexUrl.isNull())
             location = Location(parent->name().toLower() + ".html");
 
-    } else if (element.nodeName() == "variable") {
+    }
+    else if (element.nodeName() == "variable") {
         section = new VariableNode(parent, name);
 
         if (!indexUrl.isEmpty())
@@ -781,7 +914,8 @@ void Tree::readIndexSection(const QDomElement &element,
         else if (!indexUrl.isNull())
             location = Location(parent->name().toLower() + ".html");
 
-    } else if (element.nodeName() == "keyword") {
+    }
+    else if (element.nodeName() == "keyword") {
         Target target;
         target.node = parent;
         target.priority = 1;
@@ -789,7 +923,8 @@ void Tree::readIndexSection(const QDomElement &element,
         priv->targetHash.insert(name, target);
         return;
 
-    } else if (element.nodeName() == "target") {
+    }
+    else if (element.nodeName() == "target") {
         Target target;
         target.node = parent;
         target.priority = 2;
@@ -797,7 +932,8 @@ void Tree::readIndexSection(const QDomElement &element,
         priv->targetHash.insert(name, target);
         return;
 
-    } else if (element.nodeName() == "contents") {
+    }
+    else if (element.nodeName() == "contents") {
         Target target;
         target.node = parent;
         target.priority = 3;
@@ -805,7 +941,8 @@ void Tree::readIndexSection(const QDomElement &element,
         priv->targetHash.insert(name, target);
         return;
 
-    } else
+    }
+    else
         return;
 
     QString access = element.attribute("access");
@@ -828,7 +965,8 @@ void Tree::readIndexSection(const QDomElement &element,
             section->setThreadSafeness(Node::ThreadSafe);
         else
             section->setThreadSafeness(Node::UnspecifiedSafeness);
-    } else
+    }
+    else
         section->setThreadSafeness(Node::UnspecifiedSafeness);
 
     QString status = element.attribute("status");
@@ -885,6 +1023,8 @@ void Tree::readIndexSection(const QDomElement &element,
     }
 }
 
+/*!
+ */
 QString Tree::readIndexText(const QDomElement &element)
 {
     QString text;
@@ -897,6 +1037,8 @@ QString Tree::readIndexText(const QDomElement &element)
     return text;
 }
 
+/*!
+ */
 void Tree::resolveIndex()
 {
     QPair<ClassNode*,QString> pair;
@@ -921,12 +1063,12 @@ void Tree::resolveIndex()
 }
 
 /*!
-    Generate the index section with the given \a writer for the \a node
-    specified, returning true if an element was written; otherwise returns
-    false.
-*/
-
-bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
+  Generate the index section with the given \a writer for the \a node
+  specified, returning true if an element was written; otherwise returns
+  false.
+ */
+bool Tree::generateIndexSection(QXmlStreamWriter &writer,
+                                const Node *node,
                                 bool generateInternalNodes) const
 {
     if (!node->url().isEmpty())
@@ -1077,8 +1219,10 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
 
     case Node::Fake:
         {
-            // Fake nodes (such as manual pages) contain subtypes, titles and other
-            // attributes.
+            /*
+              Fake nodes (such as manual pages) contain subtypes,
+              titles and other attributes.
+            */
 
             const FakeNode *fakeNode = static_cast<const FakeNode*>(node);
             switch (fakeNode->subType()) {
@@ -1115,10 +1259,13 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
 
     case Node::Function:
         {
-            // Function nodes contain information about the type of function being
-            // described.
+            /*
+              Function nodes contain information about the type of
+              function being described.
+            */
 
-            const FunctionNode *functionNode = static_cast<const FunctionNode*>(node);
+            const FunctionNode *functionNode =
+                static_cast<const FunctionNode*>(node);
 
             switch (functionNode->virtualness()) {
                 case FunctionNode::NonVirtual:
@@ -1205,9 +1352,11 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
 
     case Node::Variable:
         {
-            const VariableNode *variableNode = static_cast<const VariableNode*>(node);
+            const VariableNode *variableNode =
+                static_cast<const VariableNode*>(node);
             writer.writeAttribute("type", variableNode->dataType());
-            writer.writeAttribute("static", variableNode->isStatic()?"true":"false");
+            writer.writeAttribute("static",
+                                  variableNode->isStatic() ? "true" : "false");
         }
         break;
     default:
@@ -1251,7 +1400,8 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
         if (inner->doc().hasKeywords()) {
             foreach (Atom *keyword, inner->doc().keywords()) {
                 writer.writeStartElement("keyword");
-                writer.writeAttribute("name", Doc::canonicalTitle(keyword->string()));
+                writer.writeAttribute("name",
+                                      Doc::canonicalTitle(keyword->string()));
                 writer.writeEndElement(); // keyword
             }
         }
@@ -1269,7 +1419,8 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
             }
         }
 
-    } else if (node->type() == Node::Function) {
+    }
+    else if (node->type() == Node::Function) {
 
         const FunctionNode *functionNode = static_cast<const FunctionNode*>(node);
         // Write a signature attribute for convenience.
@@ -1278,7 +1429,8 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
 
         foreach (Parameter parameter, functionNode->parameters()) {
             QString leftType = parameter.leftType();
-            const Node *leftNode = const_cast<Tree *>(this)->findNode(parameter.leftType().split("::"),
+            const Node *leftNode =
+                const_cast<Tree*>(this)->findNode(parameter.leftType().split("::"),
                 Node::Typedef, 0, SearchBaseClasses|NonFunction);
             if (!leftNode) {
                 leftNode = const_cast<Tree *>(this)->findNode(
@@ -1287,11 +1439,13 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
             }
             if (leftNode) {
                 if (leftNode->type() == Node::Typedef) {
-                    const TypedefNode *typedefNode = static_cast<const TypedefNode *>(leftNode);
+                    const TypedefNode *typedefNode =
+                        static_cast<const TypedefNode *>(leftNode);
                     if (typedefNode->associatedEnum()) {
                         leftType = "QFlags<"+fullDocumentName(typedefNode->associatedEnum())+">";
                     }
-                } else
+                }
+                else
                     leftType = fullDocumentName(leftNode);
             }
             resolvedParameters.append(leftType);
@@ -1313,7 +1467,8 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
             writer.writeEndElement(); // parameter
         }
 
-    } else if (node->type() == Node::Enum) {
+    }
+    else if (node->type() == Node::Enum) {
 
         const EnumNode *enumNode = static_cast<const EnumNode*>(node);
         if (enumNode->flagsType()) {
@@ -1327,7 +1482,8 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
             writer.writeEndElement(); // value
         }
 
-    } else if (node->type() == Node::Typedef) {
+    }
+    else if (node->type() == Node::Typedef) {
 
         const TypedefNode *typedefNode = static_cast<const TypedefNode*>(node);
         if (typedefNode->associatedEnum()) {
@@ -1339,7 +1495,10 @@ bool Tree::generateIndexSection(QXmlStreamWriter &writer, const Node *node,
     return true;
 }
 
-void Tree::generateIndexSections(QXmlStreamWriter &writer, const Node *node,
+/*!
+ */
+void Tree::generateIndexSections(QXmlStreamWriter &writer,
+                                 const Node *node,
                                  bool generateInternalNodes) const
 {
     if (generateIndexSection(writer, node, generateInternalNodes)) {
@@ -1362,8 +1521,12 @@ void Tree::generateIndexSections(QXmlStreamWriter &writer, const Node *node,
     }
 }
 
-void Tree::generateIndex(const QString &fileName, const QString &url,
-                         const QString &title, bool generateInternalNodes) const
+/*!
+ */
+void Tree::generateIndex(const QString &fileName,
+                         const QString &url,
+                         const QString &title,
+                         bool generateInternalNodes) const
 {
     QFile file(fileName);
     if (!file.open(QFile::WriteOnly | QFile::Text))
@@ -1388,12 +1551,12 @@ void Tree::generateIndex(const QString &fileName, const QString &url,
 }
 
 /*!
-    Generate the tag file section with the given \a writer for the \a node
-    specified, returning true if an element was written; otherwise returns
-    false.
-*/
-
-void Tree::generateTagFileCompounds(QXmlStreamWriter &writer, const InnerNode *inner) const
+  Generate the tag file section with the given \a writer for the \a node
+  specified, returning true if an element was written; otherwise returns
+  false.
+ */
+void Tree::generateTagFileCompounds(QXmlStreamWriter &writer,
+                                    const InnerNode *inner) const
 {
     foreach (const Node *node, inner->childNodes()) {
 
@@ -1473,7 +1636,10 @@ void Tree::generateTagFileCompounds(QXmlStreamWriter &writer, const InnerNode *i
     }
 }
 
-void Tree::generateTagFileMembers(QXmlStreamWriter &writer, const InnerNode *inner) const
+/*!
+ */
+void Tree::generateTagFileMembers(QXmlStreamWriter &writer,
+                                  const InnerNode *inner) const
 {
     foreach (const Node *node, inner->childNodes()) {
 
@@ -1547,10 +1713,13 @@ void Tree::generateTagFileMembers(QXmlStreamWriter &writer, const InnerNode *inn
             break;
         case Node::Function:
             {
-                // Function nodes contain information about the type of function being
-                // described.
+                /*
+                  Function nodes contain information about
+                  the type of function being described.
+                */
 
-                const FunctionNode *functionNode = static_cast<const FunctionNode*>(node);
+                const FunctionNode *functionNode =
+                    static_cast<const FunctionNode*>(node);
                 writer.writeAttribute("protection", access);
 
                 switch (functionNode->virtualness()) {
@@ -1566,12 +1735,14 @@ void Tree::generateTagFileMembers(QXmlStreamWriter &writer, const InnerNode *inn
                     default:
                         break;
                 }
-                writer.writeAttribute("static", functionNode->isStatic()?"yes":"no");
+                writer.writeAttribute("static",
+                                      functionNode->isStatic() ? "yes" : "no");
 
                 if (functionNode->virtualness() == FunctionNode::NonVirtual)
                     writer.writeTextElement("type", functionNode->returnType());
                 else
-                    writer.writeTextElement("type", "virtual " + functionNode->returnType());
+                    writer.writeTextElement("type",
+                                            "virtual " + functionNode->returnType());
 
                 writer.writeTextElement("name", objName);
                 QStringList pieces = fullDocumentLocation(node).split("#");
@@ -1666,6 +1837,8 @@ void Tree::generateTagFileMembers(QXmlStreamWriter &writer, const InnerNode *inn
     }
 }
 
+/*!
+ */
 void Tree::generateTagFile(const QString &fileName) const
 {
     QFile file(fileName);
@@ -1685,6 +1858,8 @@ void Tree::generateTagFile(const QString &fileName) const
     file.close();
 }
 
+/*!
+ */
 void Tree::addExternalLink(const QString &url, const Node *relative)
 {
     FakeNode *fakeNode = new FakeNode(root(), url, FakeNode::ExternalPage);
@@ -1698,10 +1873,9 @@ void Tree::addExternalLink(const QString &url, const Node *relative)
 }
 
 /*!
-    Returns the full document location for HTML-based documentation.
-    This should be moved into the HTML generator.
-*/
-
+  Returns the full document location for HTML-based documentation.
+  This should be moved into the HTML generator.
+ */
 QString Tree::fullDocumentLocation(const Node *node) const
 {
     if (!node)
@@ -1718,9 +1892,11 @@ QString Tree::fullDocumentLocation(const Node *node) const
             return node->fileBase() + ".html";
         else
             return "";
-    } else if (node->type() == Node::Fake) {
+    }
+    else if (node->type() == Node::Fake) {
         return node->fileBase() + ".html";
-    } else if (node->fileBase().isEmpty())
+    }
+    else if (node->fileBase().isEmpty())
         return "";
 
     QString parentName;
@@ -1735,13 +1911,18 @@ QString Tree::fullDocumentLocation(const Node *node) const
         case Node::Class:
         case Node::Namespace:
             if (parentNode && !parentNode->name().isEmpty())
-                return parentName.replace(".html", "") + "-" + node->fileBase().toLower() + ".html";
+                return parentName.replace(".html", "") + "-"
+                    + node->fileBase().toLower() + ".html";
             else
                 return node->fileBase() + ".html";
         case Node::Function:
             {
-                // Functions can be destructors, overloaded, or have associated properties.
-                const FunctionNode *functionNode = static_cast<const FunctionNode *>(node);
+                /*
+                  Functions can be destructors, overloaded, or
+                  have associated properties.
+                */
+                const FunctionNode *functionNode =
+                    static_cast<const FunctionNode *>(node);
 
                 // Functions can be compatibility functions or be obsolete.
                 switch (node->status()) {
@@ -1768,8 +1949,11 @@ QString Tree::fullDocumentLocation(const Node *node) const
                     return parentName + "#" + functionNode->name();
             }
 
-       // Use node->name() instead of node->fileBase() as the latter returns the
-       // name in lower-case. For HTML anchors, we need to preserve the case.
+            /*
+              Use node->name() instead of node->fileBase() as
+              the latter returns the name in lower-case. For
+              HTML anchors, we need to preserve the case.
+            */
         case Node::Enum:
             return parentName + "#" + node->name() + "-enum";
         case Node::Typedef:
@@ -1793,6 +1977,8 @@ QString Tree::fullDocumentLocation(const Node *node) const
     return "";
 }
 
+/*!
+ */
 QString Tree::fullDocumentName(const Node *node) const
 {
     if (!node)

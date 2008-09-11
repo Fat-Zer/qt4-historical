@@ -84,6 +84,11 @@ Item::Iterator::Ptr CombineNodes::evaluateSequence(const DynamicContext::Ptr &co
     }
 }
 
+Item CombineNodes::evaluateSingleton(const DynamicContext::Ptr &context) const
+{
+    return evaluateSequence(context)->next();
+}
+
 Expression::Ptr CombineNodes::typeCheck(const StaticContext::Ptr &context,
                                         const SequenceType::Ptr &reqType)
 {
@@ -127,10 +132,19 @@ QString CombineNodes::displayName(const Operator op)
 
 SequenceType::Ptr CombineNodes::staticType() const
 {
-    /* If you change the inference to be narrow, write tests that triggers CombineNodes::evaluateSingleton()
-     * to be called. That's right, it doesn't exist, which means we will fallback to evaluateEBV() which
-     * isn't what we want in that case. */
-    return CommonSequenceTypes::ZeroOrMoreNodes;
+    const SequenceType::Ptr t1(m_operand1->staticType());
+    const SequenceType::Ptr t2(m_operand2->staticType());
+
+     Cardinality card;
+
+     /* Optimization: the cardinality can be better inferred for
+      * Intersect and Except, although it's not trivial code. */
+     if(m_operator == Union)
+         card = t1->cardinality() | t2->cardinality();
+     else /* Except. */
+         card = Cardinality::zeroOrMore();
+
+     return makeGenericSequenceType(t1->itemType() | t2->itemType(), card);
 }
 
 SequenceType::List CombineNodes::expectedOperandTypes() const

@@ -344,7 +344,7 @@ void Q3GridView::dimensionChange(int, int) {}
   The painter is not clipped by default in order to get maximum
   efficiency. If you want clipping, use
 
-  \snippet doc/src/snippets/code/src.qt3support.widgets.q3gridview.cpp 0
+  \snippet doc/src/snippets/code/src_qt3support_widgets_q3gridview.cpp 0
 */
 
 /*!

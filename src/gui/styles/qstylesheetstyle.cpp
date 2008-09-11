@@ -89,6 +89,7 @@ QT_BEGIN_NAMESPACE
 
 using namespace QCss;
 
+
 class QStyleSheetStylePrivate : public QWindowsStylePrivate
 {
     Q_DECLARE_PUBLIC(QStyleSheetStyle)
@@ -103,6 +104,32 @@ static QHash<const QWidget *, QRenderRules> *renderRulesCache = 0;
 static QHash<const QWidget *, int> *customPaletteWidgets = 0; // widgets whose palette we tampered
 static QHash<const void *, StyleSheet> *styleSheetCache = 0; // parsed style sheets
 static QSet<const QWidget *> *autoFillDisabledWidgets = 0;
+
+
+/* RECURSION_GUARD:
+ * the QStyleSheetStyle is a proxy. If used with others proxy style, we may end up with something like:
+ * QStyleSheetStyle -> ProxyStyle -> QStyleSheetStyle -> OriginalStyle
+ * Recursion may happen if the style call the widget()->style() again.
+ * Not to mention the performence penalty of having two lookup of rules.
+ *
+ * The first instance of QStyleSheetStyle will set globalStyleSheetStyle to itself. The second one
+ * will notice the globalStyleSheetStyle is not istelf and call its base style directly.
+ */
+static const QStyleSheetStyle *globalStyleSheetStyle = 0;
+class QStyleSheetStyleRecursionGuard
+{
+    public:
+        QStyleSheetStyleRecursionGuard(const QStyleSheetStyle *that)
+            :  guarded(globalStyleSheetStyle == 0)
+            {
+                if (guarded) globalStyleSheetStyle = that;
+            }
+        ~QStyleSheetStyleRecursionGuard() { if (guarded) globalStyleSheetStyle = 0; }
+        bool guarded;
+};
+#define RECURSION_GUARD(RETURN) \
+    if (globalStyleSheetStyle != 0 && globalStyleSheetStyle != this) { RETURN; } \
+    QStyleSheetStyleRecursionGuard recursion_guard(this);
 
 #define ceil(x) ((int)(x) + ((x) > 0 && (x) != (int)(x)))
 
@@ -957,17 +984,12 @@ QRenderRule::QRenderRule(const QVector<Declaration> &declarations, const QWidget
     }
 
     if (widget) {
-        QStyleSheetStyle *style = qobject_cast<QStyleSheetStyle *>(widget->style());
-#ifndef QT3_SUPPORT
-        Q_ASSERT(style);
-        fixupBorder(style->nativeFrameWidth(widget));
-#else
-        // Q3ComboBox doesn't always have the QStyleSheetStyle on it if it is inside a
-        // Q3Table, even though it has been set on the parent. Since these are not
-        // rendered with stylesheets anyway, we skip the failing parts here.
+        QStyleSheetStyle *style = const_cast<QStyleSheetStyle *>(globalStyleSheetStyle);
+        if (!style)
+           style = qobject_cast<QStyleSheetStyle *>(widget->style());
         if (style)
             fixupBorder(style->nativeFrameWidth(widget));
-#endif
+
     }
     if (hasBorder() && border()->hasBorderImage())
         defaultBackground = QBrush();
@@ -2609,7 +2631,7 @@ static void updateWidgets(const QList<const QWidget *>& widgets)
 int QStyleSheetStyle::numinstances = 0;
 
 QStyleSheetStyle::QStyleSheetStyle(QStyle *base)
-: QWindowsStyle(*new QStyleSheetStylePrivate), base(base), refcount(1)
+    : QWindowsStyle(*new QStyleSheetStylePrivate), base(base), refcount(1)
 {
     ++numinstances;
     if (numinstances == 1) {
@@ -2658,6 +2680,7 @@ void QStyleSheetStyle::widgetDestroyed(QObject *o)
 void QStyleSheetStyle::polish(QWidget *w)
 {
     baseStyle()->polish(w);
+    RECURSION_GUARD(return)
 
     w->setProperty("_q_stylesheet_polished", true);
     w->setAttribute(Qt::WA_StyleSheet, !unstylable(w));
@@ -2758,18 +2781,21 @@ void QStyleSheetStyle::repolish(QWidget *w)
     updateWidgets(children);
 }
 
-void QStyleSheetStyle::repolish(QApplication *)
+void QStyleSheetStyle::repolish(QApplication *app)
 {
+    Q_UNUSED(app);
     styleSheetCache->remove(qApp);
     updateWidgets(styleRulesCache->keys());
 }
 
 void QStyleSheetStyle::unpolish(QWidget *w)
 {
+    baseStyle()->unpolish(w);
+    RECURSION_GUARD(return)
+
     styleRulesCache->remove(w);
     renderRulesCache->remove(w);
     styleSheetCache->remove(w);
-    baseStyle()->unpolish(w);
     unsetPalette(w);
     w->setProperty("_q_stylesheet_minw", QVariant());
     w->setProperty("_q_stylesheet_minh", QVariant());
@@ -2798,10 +2824,11 @@ void QStyleSheetStyle::unpolish(QWidget *w)
 
 void QStyleSheetStyle::unpolish(QApplication *app)
 {
+    baseStyle()->unpolish(app);
+    RECURSION_GUARD(return)
     styleRulesCache->clear();
     renderRulesCache->clear();
     styleSheetCache->remove(qApp);
-    baseStyle()->unpolish(app);
 }
 
 #ifndef QT_NO_TABBAR
@@ -2817,6 +2844,8 @@ inline static bool verticalTabs(QTabBar::Shape shape)
 void QStyleSheetStyle::drawComplexControl(ComplexControl cc, const QStyleOptionComplex *opt, QPainter *p,
                                           const QWidget *w) const
 {
+    RECURSION_GUARD(baseStyle()->drawComplexControl(cc, opt, p, w); return)
+
     QRenderRule rule = renderRule(w, opt);
 
     switch (cc) {
@@ -3238,6 +3267,8 @@ void QStyleSheetStyle::drawComplexControl(ComplexControl cc, const QStyleOptionC
 void QStyleSheetStyle::drawControl(ControlElement ce, const QStyleOption *opt, QPainter *p,
                           const QWidget *w) const
 {
+    RECURSION_GUARD(baseStyle()->drawControl(ce, opt, p, w); return)
+
     QRenderRule rule = renderRule(w, opt);
     int pe1 = PseudoElement_None, pe2 = PseudoElement_None;
     bool fallback = false;
@@ -3978,6 +4009,8 @@ void QStyleSheetStyle::drawItemText(QPainter *painter, const QRect& rect, int al
 void QStyleSheetStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *opt, QPainter *p,
                                      const QWidget *w) const
 {
+    RECURSION_GUARD(baseStyle()->drawPrimitive(pe, opt, p, w); return)
+
     int pseudoElement = PseudoElement_None;
     QRenderRule rule = renderRule(w, opt);
     QRect rect = opt->rect;
@@ -4166,7 +4199,7 @@ void QStyleSheetStyle::drawPrimitive(PrimitiveElement pe, const QStyleOption *op
                         p->fillRect(v2->rect, subRule2.background()->brush);
                     }
                 } else if (v2->features & QStyleOptionViewItemV2::Alternate) {
-                    int pc = v2->state & QStyle::State_Enabled ? PseudoClass_Enabled : PseudoClass_Disabled;
+                    quint64 pc = v2->state & QStyle::State_Enabled ? PseudoClass_Enabled : PseudoClass_Disabled;
                     pc |= PseudoClass_Alternate;
                     QRenderRule subRule2 = renderRule(w, PseudoElement_ViewItem, pc);
                     subRule2.configurePalette(&v2Copy.palette, QPalette::NoRole, QPalette::AlternateBase);
@@ -4276,6 +4309,7 @@ QPixmap QStyleSheetStyle::generatedIconPixmap(QIcon::Mode iconMode, const QPixma
 QStyle::SubControl QStyleSheetStyle::hitTestComplexControl(ComplexControl cc, const QStyleOptionComplex *opt,
                                  const QPoint &pt, const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->hitTestComplexControl(cc, opt, pt, w))
     switch (cc) {
     case CC_TitleBar:
         if (const QStyleOptionTitleBar *tb = qstyleoption_cast<const QStyleOptionTitleBar *>(opt)) {
@@ -4337,6 +4371,8 @@ QRect QStyleSheetStyle::itemTextRect(const QFontMetrics &metrics, const QRect& r
 
 int QStyleSheetStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->pixelMetric(m, opt, w))
+
     QRenderRule rule = renderRule(w, opt);
     QRenderRule subRule;
 
@@ -4616,6 +4652,8 @@ int QStyleSheetStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const 
 QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *opt,
                                          const QSize &csz, const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->sizeFromContents(ct, opt, csz, w))
+
     QRenderRule rule = renderRule(w, opt);
     QSize sz = rule.adjustSize(csz);
 
@@ -4871,6 +4909,7 @@ static QLatin1String propertyNameForStandardPixmap(QStyle::StandardPixmap sp)
 QIcon QStyleSheetStyle::standardIconImplementation(StandardPixmap standardIcon, const QStyleOption *opt,
                                                    const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->standardIcon(standardIcon, opt, w))
     QString s = propertyNameForStandardPixmap(standardIcon);
     if (!s.isEmpty()) {
         QRenderRule rule = renderRule(w, opt);
@@ -4888,6 +4927,7 @@ QPalette QStyleSheetStyle::standardPalette() const
 QPixmap QStyleSheetStyle::standardPixmap(StandardPixmap standardPixmap, const QStyleOption *opt,
                                          const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->standardPixmap(standardPixmap, opt, w))
     QString s = propertyNameForStandardPixmap(standardPixmap);
     if (!s.isEmpty()) {
         QRenderRule rule = renderRule(w, opt);
@@ -4918,6 +4958,7 @@ int QStyleSheetStyle::layoutSpacingImplementation(QSizePolicy::ControlType  cont
 int QStyleSheetStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWidget *w,
                            QStyleHintReturn *shret) const
 {
+    RECURSION_GUARD(return baseStyle()->styleHint(sh, opt, w, shret))
     // Prevent endless loop if somebody use isActiveWindow property as selector.
     // QWidget::isActiveWindow uses this styleHint to determine if the window is active or not
     if (sh == SH_Widget_ShareActivation)
@@ -5006,6 +5047,8 @@ int QStyleSheetStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWi
 QRect QStyleSheetStyle::subControlRect(ComplexControl cc, const QStyleOptionComplex *opt, SubControl sc,
                               const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->subControlRect(cc, opt, sc, w))
+
     QRenderRule rule = renderRule(w, opt);
     switch (cc) {
     case CC_ComboBox:
@@ -5343,6 +5386,8 @@ QRect QStyleSheetStyle::subControlRect(ComplexControl cc, const QStyleOptionComp
 
 QRect QStyleSheetStyle::subElementRect(SubElement se, const QStyleOption *opt, const QWidget *w) const
 {
+    RECURSION_GUARD(return baseStyle()->subElementRect(se, opt, w))
+
     QRenderRule rule = renderRule(w, opt);
 #ifndef QT_NO_TABBAR
     int pe = PseudoElement_None;
@@ -5596,6 +5641,7 @@ bool QStyleSheetStyle::focusPalette(const QWidget* w, const QStyleOption* opt, Q
 
 #ifndef QT_NO_LINEEDIT
     if (qobject_cast<const QLineEdit*>(w)) {
+        RECURSION_GUARD(return false)
         QRenderRule rule = renderRule(w, PseudoElement_None, pseudoClass(opt->state));
         if (!rule.hasPalette())
             return false;

@@ -82,13 +82,13 @@ QLinkedListData QLinkedListData::shared_null = {
     Here's an example of a QLinkedList that stores integers and a
     QLinkedList that stores QTime values:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 0
 
     QLinkedList stores a list of items. The default constructor
     creates an empty list. To insert items into the list, you can use
     operator<<():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 1
 
     If you want to get the first or last item in a linked list, use
     first() or last(). If you want to remove an item from either end
@@ -100,7 +100,7 @@ QLinkedListData QLinkedListData::shared_null = {
     list and do something with it. For this, QLinkedList provides
     takeFirst() and takeLast(). Here's a loop that removes the items
     from a list one at a time and calls \c delete on them:
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 2
 
     QLinkedList's value type must be an \l{assignable data type}.
     This covers most data types that are commonly used, but the
@@ -219,7 +219,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Inserts \a value at the end of the list.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 3
 
     This is the same as list.insert(end(), \a value).
 
@@ -231,7 +231,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Inserts \a value at the beginning of the list.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 4
 
     This is the same as list.insert(begin(), \a value).
 
@@ -243,7 +243,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Removes all occurrences of \a value in the list.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 5
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -259,7 +259,7 @@ QLinkedListData QLinkedListData::shared_null = {
     success; otherwise returns false.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 6
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -588,35 +588,35 @@ QLinkedListData QLinkedListData::shared_null = {
     QLinkedList::insert() before you can start iterating. Here's a
     typical loop that prints all the items stored in a list:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 7
 
     STL-style iterators can be used as arguments to \l{generic
     algorithms}. For example, here's how to find an item in the list
     using the qFind() algorithm:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 8
 
     Let's see a few examples of things we can do with a
     QLinkedList::iterator that we cannot do with a QLinkedList::const_iterator.
     Here's an example that increments every value stored in a
     QLinkedList\<int\> by 2:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 9
 
     Here's an example that removes all the items that start with an
     underscore character in a QLinkedList\<QString\>:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 10
 
     The call to QLinkedList::erase() removes the item pointed to by
     the iterator from the list, and returns an iterator to the next
     item. Here's another way of removing an item while iterating:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 11
 
     It might be tempting to write code like this:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 12
 
     However, this will potentially crash in \c{++i}, because \c i is
     a dangling iterator after the call to erase().
@@ -689,7 +689,7 @@ QLinkedListData QLinkedListData::shared_null = {
     You can change the value of an item by using operator*() on the
     left side of an assignment, for example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 13
 
     \sa operator->()
 */
@@ -821,13 +821,13 @@ QLinkedListData QLinkedListData::shared_null = {
     QLinkedList::insert() before you can start iterating. Here's a
     typical loop that prints all the items stored in a list:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 14
 
     STL-style iterators can be used as arguments to \l{generic
     algorithms}. For example, here's how to find an item in the list
     using the qFind() algorithm:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 15
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 15
 
     Multiple iterators can be used on the same list. If you add items
     to the list, existing iterators will remain valid. If you remove
@@ -1122,7 +1122,7 @@ QLinkedListData QLinkedListData::shared_null = {
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 16
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 16
 
     \sa toStdList()
 */
@@ -1134,7 +1134,7 @@ QLinkedListData QLinkedListData::shared_null = {
     Returns a std::list object with the data contained in this
     QLinkedList. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlinkedlist.cpp 17
+    \snippet doc/src/snippets/code/src_corelib_tools_qlinkedlist.cpp 17
 
     \sa fromStdList()
 */

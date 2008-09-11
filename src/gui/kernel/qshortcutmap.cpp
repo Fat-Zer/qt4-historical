@@ -50,6 +50,7 @@
 #include "qapplication.h"
 #include "qvector.h"
 #include "qmenu.h"
+#include "qmenubar.h"
 #include "qshortcut.h"
 #include "qapplication_p.h"
 #include <private/qaction_p.h>
@@ -58,6 +59,8 @@
 #ifndef QT_NO_SHORTCUT
 
 QT_BEGIN_NAMESPACE
+
+extern bool qt_mac_no_native_menubar; // qmenu_mac.cpp
 
 // To enable verbose output uncomment below
 //#define DEBUG_QSHORTCUTMAP
@@ -517,7 +520,7 @@ QKeySequence::SequenceMatch QShortcutMap::find(QKeyEvent *e)
 /*! \internal
     Clears \a seq to an empty QKeySequence.
     Same as doing (the slower)
-    \snippet doc/src/snippets/code/src.gui.kernel.qshortcutmap.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qshortcutmap.cpp 0
 */
 void QShortcutMap::clearSequence(QVector<QKeySequence> &ksl)
 {
@@ -629,7 +632,13 @@ bool QShortcutMap::correctContext(const QShortcutEntry &item) {
 
 bool QShortcutMap::correctContext(Qt::ShortcutContext context, QWidget *w, QWidget *active_window)
 {
-    if (!w->isVisible() || !w->isEnabled())
+    bool visible = w->isVisible();    
+#ifdef Q_WS_MAC
+    if (!qt_mac_no_native_menubar && qobject_cast<QMenuBar *>(w))
+        visible = true;
+#endif
+
+    if (!visible || !w->isEnabled())
         return false;
 
     if (context == Qt::ApplicationShortcut)

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/graphicsview/qgraphicsproxywidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/graphicsview/qgraphicsproxywidget.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsProxyWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGraphicsProxyWidget Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QGraphicsProxyWidget class provides a proxy layer for embedding a <a href="qwidget.html">QWidget</a> in a <a href="qgraphicsscene.html">QGraphicsScene</a>. <a href="#details">More...</a></p>
@@ -57,57 +57,56 @@
 <p>The QGraphicsProxyWidget class provides a proxy layer for embedding a <a href="qwidget.html">QWidget</a> in a <a href="qgraphicsscene.html">QGraphicsScene</a>.</p>
 <p>QGraphicsProxyWidget embeds any <a href="qwidget.html">QWidget</a>-based widget, for example, a <a href="qpushbutton.html">QPushButton</a>, <a href="qfontcombobox.html">QFontComboBox</a>, or even <a href="qfiledialog.html">QFileDialog</a>, into <a href="qgraphicsscene.html">QGraphicsScene</a>. It forwards events between the two objects and translates between <a href="qwidget.html">QWidget</a>'s integer-based geometry and <a href="qgraphicswidget.html">QGraphicsWidget</a>'s qreal-based geometry. QGraphicsProxyWidget supports all core features of <a href="qwidget.html">QWidget</a>, including tab focus, keyboard input, Drag &amp; Drop, and popups. You can also embed complex widgets, e.g&#x2e;, widgets with subwidgets.</p>
 <p>Example:</p>
-<pre>     int main(int argc, char **argv)
-     {
-         QApplication app(argc, argv);
+<pre> int main(int argc, char **argv)
+ {
+     QApplication app(argc, argv);
 
-         QTabWidget *tabWidget = new QTabWidget;
+     QTabWidget *tabWidget = new QTabWidget;
 
-         QGraphicsScene scene;
-         QGraphicsProxyWidget *proxy = scene.addWidget(tabWidget);
+     QGraphicsScene scene;
+     QGraphicsProxyWidget *proxy = scene.addWidget(tabWidget);
 
-         QGraphicsView view(&amp;scene);
-         view.show();
+     QGraphicsView view(&amp;scene);
+     view.show();
 
-         return app.exec();
-     }</pre>
+     return app.exec();
+ }</pre>
 <p>QGraphicsProxyWidget takes care of automatically embedding popup children of embedded widgets through creating a child proxy for each popup. This means that when an embedded <a href="qcombobox.html">QComboBox</a> shows its popup list, a new QGraphicsProxyWidget is created automatically, embedding the popup, and positioning it correctly.</p>
 <a name="embedding-a-widget-with-qgraphicsproxywidget"></a>
 <h3>Embedding a Widget with QGraphicsProxyWidget</h3>
 <p>There are two ways to embed a widget using QGraphicsProxyWidget. The most common way is to pass a widget pointer to <a href="qgraphicsscene.html#addWidget">QGraphicsScene::addWidget</a>() together with any relevant <a href="qt.html#WindowType-enum">Qt::WindowFlags</a>. This function returns a pointer to a QGraphicsProxyWidget. You can then choose to reparent or position either the proxy, or the embedded widget itself.</p>
 <p>For example, in the code snippet below, we embed a group box into the proxy:</p>
-<pre>     QGroupBox *groupBox = new QGroupBox(&quot;Contact Details&quot;);
-     QLabel *numberLabel = new QLabel(&quot;Telephone number&quot;);
-     QLineEdit *numberEdit = new QLineEdit;
+<pre> QGroupBox *groupBox = new QGroupBox(&quot;Contact Details&quot;);
+ QLabel *numberLabel = new QLabel(&quot;Telephone number&quot;);
+ QLineEdit *numberEdit = new QLineEdit;
 
-     QFormLayout *layout = new QFormLayout;
-     layout-&gt;addRow(numberLabel, numberEdit);
-     groupBox-&gt;setLayout(layout);
+ QFormLayout *layout = new QFormLayout;
+ layout-&gt;addRow(numberLabel, numberEdit);
+ groupBox-&gt;setLayout(layout);
 
-     QGraphicsScene scene;
-     QGraphicsProxyWidget *proxy = scene.addWidget(groupBox);
+ QGraphicsScene scene;
+ QGraphicsProxyWidget *proxy = scene.addWidget(groupBox);
 
-     QGraphicsView view(&amp;scene);
-     view.show();</pre>
+ QGraphicsView view(&amp;scene);
+ view.show();</pre>
 <p>The image below is the output obtained with its contents margin and contents rect labeled.</p>
 <p align="center"><img src="images/qgraphicsproxywidget-embed.png" /></p><p>Alternatively, you can start by creating a new QGraphicsProxyWidget item, and then call <a href="qgraphicsproxywidget.html#setWidget">setWidget</a>() to embed a <a href="qwidget.html">QWidget</a> later. The <a href="qgraphicsproxywidget.html#widget">widget</a>() function returns a pointer to the embedded widget. QGraphicsProxyWidget shares ownership with <a href="qwidget.html">QWidget</a>, so if either of the two widgets are destroyed, the other widget will be automatically destroyed as well.</p>
 <a name="synchronizing-widget-states"></a>
 <h3>Synchronizing Widget States</h3>
 <p>QGraphicsProxyWidget keeps its state in sync with the embedded widget. For example, if the proxy is hidden or disabled, the embedded widget will be hidden or disabled as well, and vice versa. When the widget is embedded by calling addWidget(), QGraphicsProxyWidget copies the state from the widget into the proxy, and after that, the two will stay synchronized where possible. By default, when you embed a widget into a proxy, both the widget and the proxy will be visible because a <a href="qgraphicswidget.html">QGraphicsWidget</a> is visible when created (you do not have to call <a href="qgraphicsitem.html#show">show</a>()). If you explicitly hide the embedded widget, the proxy will also become invisible.</p>
 <p>Example:</p>
-<pre>         QGraphicsScene scene;
+<pre> QGraphicsScene scene;
 
-         QLineEdit *edit = new QLineEdit;
-         QGraphicsProxyWidget *proxy = scene.addWidget(edit);
+ QLineEdit *edit = new QLineEdit;
+ QGraphicsProxyWidget *proxy = scene.addWidget(edit);
 
-         edit-&gt;isVisible();  <span class="comment">// returns true</span>
-         proxy-&gt;isVisible(); <span class="comment">// also returns true</span>
+ edit-&gt;isVisible();  <span class="comment">// returns true</span>
+ proxy-&gt;isVisible(); <span class="comment">// also returns true</span>
 
-         edit-&gt;hide();
+ edit-&gt;hide();
 
-         edit-&gt;isVisible();  <span class="comment">// returns false</span>
-         proxy-&gt;isVisible(); <span class="comment">// also returns false</span>
-     }</pre>
+ edit-&gt;isVisible();  <span class="comment">// returns false</span>
+ proxy-&gt;isVisible(); <span class="comment">// also returns false</span></pre>
 <p>QGraphicsProxyWidget maintains symmetry for the following states:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th><a href="qwidget.html">QWidget</a> state</th><th>QGraphicsProxyWidget state</th><th>Notes</th></tr></thead>
@@ -152,8 +151,8 @@
 <p>See also <a href="qgraphicsproxywidget.html#setWidget">setWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

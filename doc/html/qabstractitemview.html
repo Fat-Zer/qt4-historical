@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qabstractitemview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/itemviews/qabstractitemview.cpp -->
 <head>
   <title>Qt 4.4: QAbstractItemView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QAbstractItemView Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QAbstractItemView class provides the basic functionality for item view classes. <a href="#details">More...</a></p>
@@ -243,10 +243,10 @@
 <p>QAbstractItemView provides common slots such as <a href="qabstractitemview.html#edit">edit</a>() and <a href="qabstractitemview.html#setCurrentIndex">setCurrentIndex</a>(). Many protected slots are also provided, including <a href="qabstractitemview.html#dataChanged">dataChanged</a>(), <a href="qabstractitemview.html#rowsInserted">rowsInserted</a>(), <a href="qabstractitemview.html#rowsAboutToBeRemoved">rowsAboutToBeRemoved</a>(), <a href="qabstractitemview.html#selectionChanged">selectionChanged</a>(), and <a href="qabstractitemview.html#currentChanged">currentChanged</a>().</p>
 <p>The root item is returned by <a href="qabstractitemview.html#rootIndex">rootIndex</a>(), and the current item by <a href="qabstractitemview.html#currentIndex">currentIndex</a>(). To make sure that an item is visible use <a href="qabstractitemview.html#scrollTo">scrollTo</a>().</p>
 <p>Some of QAbstractItemView's functions are concerned with scrolling, for example <a href="qabstractitemview.html#horizontalScrollMode-prop">setHorizontalScrollMode</a>() and <a href="qabstractitemview.html#verticalScrollMode-prop">setVerticalScrollMode</a>(). To set the range of the scroll bars, you can, for example, reimplement the view's <a href="qabstractitemview.html#resizeEvent">resizeEvent</a>() function:</p>
-<pre>         void MyView::resizeEvent(QResizeEvent *event) {
-             horizontalScrollBar()-&gt;setRange(0, realWidth - width());
-             ...
-         }</pre>
+<pre> void MyView::resizeEvent(QResizeEvent *event) {
+     horizontalScrollBar()-&gt;setRange(0, realWidth - width());
+     ...
+ }</pre>
 <p>Note that the range is not updated until the widget is shown.</p>
 <p>Several other functions are concerned with selection control; for example <a href="qabstractitemview.html#selectionMode-prop">setSelectionMode</a>(), and <a href="qabstractitemview.html#selectionBehavior-prop">setSelectionBehavior</a>(). This class provides a default selection model to work with (<a href="qabstractitemview.html#selectionModel">selectionModel</a>()), but this can be replaced by using <a href="qabstractitemview.html#setSelectionModel">setSelectionModel</a>() with an instance of <a href="qitemselectionmodel.html">QItemSelectionModel</a>.</p>
 <p>For complete control over the display and editing of items you can specify a delegate with <a href="qabstractitemview.html#setItemDelegate">setItemDelegate</a>().</p>
@@ -954,8 +954,8 @@
 <p>See also <a href="qabstractitemview.html#visualRect">visualRect</a>() and <a href="qabstractitemview.html#selectedIndexes">selectedIndexes</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

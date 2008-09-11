@@ -45,6 +45,7 @@
   cppcodeparser.cpp
 */
 
+#include <QtCore>
 #include <qfile.h>
 
 #include <stdio.h>
@@ -414,9 +415,9 @@ QSet<QString> CppCodeParser::topicCommands()
                            << COMMAND_PROPERTY << COMMAND_SERVICE << COMMAND_TYPEDEF << COMMAND_VARIABLE;
 }
 
-Node *CppCodeParser::processTopicCommand( const Doc& doc,
-					  const QString& command,
-					  const QString& arg )
+Node *CppCodeParser::processTopicCommand(const Doc& doc,
+                                         const QString& command,
+                                         const QString& arg )
 {
     if ( command == COMMAND_FN ) {
 	QStringList parentPath;
@@ -427,7 +428,8 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 	     !makeFunctionNode("void " + arg, &parentPath, &clone) ) {
 	    doc.location().warning( tr("Invalid syntax in '\\%1'")
 				    .arg(COMMAND_FN) );
-	} else {
+	}
+        else {
             if (!usedNamespaces.isEmpty()) {
                 foreach (QString usedNamespace, usedNamespaces) {
                     QStringList newPath = usedNamespace.split("::") + parentPath;
@@ -447,17 +449,19 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 		    doc.location().warning(tr("Cannot find '%1' in '\\%2'")
 					   .arg(clone->name() + "(...)")
 					   .arg(COMMAND_FN),
-                                           tr("I cannot find any function of that name with the "
-                                              "specified signature. Make sure that the signature "
-                                              "is identical to the declaration, including 'const' "
-                                              "qualifiers."));
-		} else {
-		    doc.location().warning( tr("Missing '%1::' for '%2' in '\\%3'")
+                       tr("I cannot find any function of that name with the "
+                          "specified signature. Make sure that the signature "
+                          "is identical to the declaration, including 'const' "
+                          "qualifiers."));
+		}
+                else {
+		    doc.location().warning(tr("Missing '%1::' for '%2' in '\\%3'")
 					    .arg(lastPath.join("::"))
 					    .arg(clone->name() + "()")
 					    .arg(COMMAND_FN) );
 		}
-	    } else {
+	    }
+            else {
 		lastPath = parentPath;
 	    }
 
@@ -466,17 +470,19 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 	    delete clone;
 	}
 	return func;
-    } else if (command == COMMAND_MACRO) {
+    }
+    else if (command == COMMAND_MACRO) {
 	QStringList parentPath;
 	FunctionNode *func = 0;
 
 	if ( makeFunctionNode(arg, &parentPath, &func, tre->root())) {
             if (!parentPath.isEmpty()) {
-	        doc.location().warning( tr("Invalid syntax in '\\%1'")
-				        .arg(COMMAND_MACRO) );
+	        doc.location().warning(tr("Invalid syntax in '\\%1'")
+                                       .arg(COMMAND_MACRO));
                 delete func;
                 func = 0;
-            } else {
+            }
+            else {
                 func->setMetaness(FunctionNode::MacroWithParams);
                 QList<Parameter> params = func->parameters();
                 for (int i = 0; i < params.size(); ++i) {
@@ -488,18 +494,21 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
                 func->setParameters(params);
             }
             return func;
-        } else if (QRegExp("[A-Za-z_][A-Za-z0-9_]+").exactMatch(arg)) {
+        }
+        else if (QRegExp("[A-Za-z_][A-Za-z0-9_]+").exactMatch(arg)) {
             func = new FunctionNode(tre->root(), arg);
             func->setAccess(Node::Public);
             func->setLocation(doc.location());
             func->setMetaness(FunctionNode::MacroWithoutParams);
-        } else {
+        }
+        else {
 	    doc.location().warning( tr("Invalid syntax in '\\%1'")
 				    .arg(COMMAND_MACRO) );
 
         }
         return func;
-    } else if ( nodeTypeMap.contains(command) ) {
+    }
+    else if ( nodeTypeMap.contains(command) ) {
 
 	// ### split(" ") hack is there to support header file syntax
 	QStringList path = arg.split(" ")[0].split("::");
@@ -524,7 +533,8 @@ Node *CppCodeParser::processTopicCommand( const Doc& doc,
 				   .arg(arg).arg(command));
 	    lastPath = path;
 
-	} else if ( command == COMMAND_SERVICE ) {
+	}
+        else if ( command == COMMAND_SERVICE ) {
 	    // If the command is "\service", then we need to tag the
 	    // class with the actual service name.
 	    QStringList args = arg.split(" ");
@@ -1704,20 +1714,44 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
     QString examplePath = fake->name();
 
     // we can assume that this file always exists
-    QString proFileName = examplePath + "/" + examplePath.split("/").last() + ".pro";
+    QString proFileName = examplePath + "/" +
+        examplePath.split("/").last() + ".pro";
 
     QString userFriendlyFilePath;
-    QString fullPath = Config::findFile(fake->doc().location(), exampleFiles, exampleDirs,
-                                        proFileName, userFriendlyFilePath);
+    QString fullPath = Config::findFile(fake->doc().location(),
+                                        exampleFiles,
+                                        exampleDirs,
+                                        proFileName,
+                                        userFriendlyFilePath);
     if (fullPath.isEmpty()) {
-        fake->doc().location().warning(tr("Cannot find file '%1'").arg(proFileName));
-        return;
+#if 0        
+        qDebug() << "proFileName = " << proFileName;
+        qDebug() << "fullPath = " << fullPath;
+#endif        
+        QString tmp = proFileName;
+        proFileName = examplePath + "/" + "qbuild.pro";
+        userFriendlyFilePath.clear();
+        fullPath = Config::findFile(fake->doc().location(),
+                                    exampleFiles,
+                                    exampleDirs,
+                                    proFileName,
+                                    userFriendlyFilePath);
+#if 0        
+        qDebug() << "proFileName = " << proFileName;
+        qDebug() << "fullPath = " << fullPath;
+#endif        
+        if (fullPath.isEmpty()) {
+            fake->doc().location().warning(
+               tr("Cannot find file '%1' or '%2'").arg(tmp).arg(proFileName));
+            return;
+        }
     }
 
     int sizeOfBoringPartOfName = fullPath.size() - proFileName.size();
     fullPath.truncate(fullPath.lastIndexOf('/'));
 
-    QStringList exampleFiles = Config::getFilesHere(fullPath, exampleNameFilter);
+    QStringList exampleFiles = Config::getFilesHere(fullPath,
+                                                    exampleNameFilter);
     if (!exampleFiles.isEmpty()) {
         // move main.cpp and to the end, if it exists
         QString mainCpp;
@@ -1728,7 +1762,8 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
             if (fileName.endsWith("/main.cpp")) {
                 mainCpp = fileName;
                 i.remove();
-            } else if (fileName.contains("/qrc_") || fileName.contains("/moc_")
+            }
+            else if (fileName.contains("/qrc_") || fileName.contains("/moc_")
                     || fileName.contains("/ui_"))
                 i.remove();
         }
@@ -1740,7 +1775,9 @@ void CppCodeParser::createExampleFileNodes(FakeNode *fake)
     }
 
     foreach (QString exampleFile, exampleFiles)
-        (void) new FakeNode(fake, exampleFile.mid(sizeOfBoringPartOfName), FakeNode::File);
+        (void) new FakeNode(fake,
+                            exampleFile.mid(sizeOfBoringPartOfName),
+                            FakeNode::File);
 }
 
 QT_END_NAMESPACE

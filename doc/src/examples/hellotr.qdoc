@@ -139,13 +139,13 @@
 
     Try running \c lupdate right now, like this:
 
-    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_hellotr.qdoc 0
 
     (The \c -verbose option instructs \c lupdate to display messages that
     explain what it is doing.) You should now have a file \c hellotr_la.ts in
     the current directory, containing this:
 
-    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_examples_hellotr.qdoc 1
 
     You don't need to understand the file format since it is read and
     updated using tools (\c lupdate, \e {Qt Linguist}, \c lrelease).
@@ -158,7 +158,7 @@
 
     To start \e {Qt Linguist}, type
 
-    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_examples_hellotr.qdoc 2
 
     You should now see the text "QPushButton" in the top left pane.
     Double-click it, then click on "Hello world!" and enter "Orbis, te
@@ -168,11 +168,11 @@
     Click the \gui Done checkbox and choose \gui File|Save from the
     menu bar. The \c .ts file will no longer contain
 
-    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_examples_hellotr.qdoc 3
 
     but instead will have
 
-    \snippet doc/src/snippets/code/doc.src.examples.hellotr.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_examples_hellotr.qdoc 4
 
     \section1 Running the Application in Latin
 

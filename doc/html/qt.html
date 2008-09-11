@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qnamespace.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qnamespace.qdoc -->
 <head>
   <title>Qt 4.4: Qt Namespace Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,8 +11,8 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Qt Namespace Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Qt Namespace Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The Qt namespace contains miscellaneous identifiers used throughout the Qt library. <a href="#details">More...</a></p>
 <pre> #include &lt;Qt&gt;</pre><ul>
@@ -348,7 +348,7 @@
 <tr><td valign="top"><tt>Qt::AutoConnection</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">If the signal is emitted from the thread in which the receiving object lives, the slot is invoked directly, as with Qt::DirectConnection; otherwise the signal is queued, as with Qt::QueuedConnection.</td></tr>
 </table></p>
 <p>With queued connections, the parameters must be of types that are known to Qt's meta-object system, because Qt needs to copy the arguments to store them in an event behind the scenes. If you try to use a queued connection and get the error message</p>
-<pre>         QObject::connect: Cannot queue arguments of type 'MyType'</pre>
+<pre> QObject::connect: Cannot queue arguments of type 'MyType'</pre>
 <p>call <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>() to register the data type before you establish the connection.</p>
 <p>See also <a href="threads.html">Thread Support in Qt</a>, <a href="qobject.html#connect">QObject::connect</a>(), and <a href="qmetatype.html#qRegisterMetaType">qRegisterMetaType</a>().</p>
 <a name="//apple_ref/cpp/tag/Qt/ContextMenuPolicy" />
@@ -446,7 +446,7 @@
 <tr><td valign="top"><tt>Qt::ForbiddenCursor</tt></td><td align="center" valign="top"><tt>14</tt></td><td valign="top"><img src="images/cursor-forbidden.png" /> A slashed circle cursor, typically used during drag and drop operations to indicate that dragged content cannot be dropped on particular widgets or inside certain regions.</td></tr>
 <tr><td valign="top"><tt>Qt::OpenHandCursor</tt></td><td align="center" valign="top"><tt>17</tt></td><td valign="top"><img src="images/cursor-openhand.png" /> A cursor representing an open hand, typically used to indicate that the area under the cursor is the visible part of a canvas that the user can click and drag in order to scroll around.</td></tr>
 <tr><td valign="top"><tt>Qt::ClosedHandCursor</tt></td><td align="center" valign="top"><tt>18</tt></td><td valign="top"><img src="images/cursor-closedhand.png" /> A cursor representing a closed hand, typically used to indicate that a dragging operation is in progress that involves scrolling.</td></tr>
-<tr><td valign="top"><tt>Qt::WhatsThisCursor</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top"><img src="images/cursor-whatsthis.png" /> An arrow with a question mark, typically used</td></tr>
+<tr><td valign="top"><tt>Qt::WhatsThisCursor</tt></td><td align="center" valign="top"><tt>15</tt></td><td valign="top"><img src="images/cursor-whatsthis.png" /> An arrow with a question mark, typically used to indicate the presence of What's This? help for a widget.</td></tr>
 <tr><td valign="top"><tt>Qt::BusyCursor</tt></td><td align="center" valign="top"><tt>16</tt></td><td valign="top"><img src="images/cursor-wait.png" /> An hourglass or watch cursor, usually shown during operations that allow the user to interact with the application while they are performed in the background.</td></tr>
 <tr><td valign="top"><tt>Qt::BitmapCursor</tt></td><td align="center" valign="top"><tt>24</tt></td><td valign="top">&nbsp;</td></tr>
 </table></p>
@@ -463,7 +463,7 @@
 <h3 class="fn"><a name="DateFormat-enum"></a>enum Qt::DateFormat</h3>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>Qt::TextDate</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The default Qt format.</td></tr>
+<tr><td valign="top"><tt>Qt::TextDate</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The default Qt format. The day and month names will be localized names. See <a href="qdate.html#toString">QDate::toString</a>() for more information.</td></tr>
 <tr><td valign="top"><tt>Qt::ISODate</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">ISO 8601 extended format: either <tt>YYYY-MM-DD</tt> for dates or <tt>YYYY-MM-DDTHH:MM:SS</tt> for combined dates and times.</td></tr>
 <tr><td valign="top"><tt>Qt::SystemLocaleShortDate</tt></td><td align="center" valign="top">?</td><td valign="top">The <a href="qlocale.html#FormatType-enum">short format</a> used by the <a href="qlocale.html#system">operating system</a>.</td></tr>
 <tr><td valign="top"><tt>Qt::SystemLocaleLongDate</tt></td><td align="center" valign="top">?</td><td valign="top">The <a href="qlocale.html#FormatType-enum">long format</a> used by the <a href="qlocale.html#system">operating system</a>.</td></tr>
@@ -544,23 +544,23 @@
 <tr><td valign="top"><tt>Qt::LowEventPriority</tt></td><td align="center" valign="top"><tt>-1</tt></td><td valign="top">Events with this priority are sent after events with HighEventPriority or NormalEventPriority.</td></tr>
 </table></p>
 <p>Note that these values are provided purely for convenience, since event priorities can be any value between <tt>INT_MAX</tt> and <tt>INT_MIN</tt>, inclusive. For example, you can define custom priorities as being relative to each other:</p>
-<pre>     enum CustomEventPriority
-     {
-         // An important event
-         ImportantEventPriority = Qt::HighEventPriority,
+<pre> enum CustomEventPriority
+ {
+     // An important event
+     ImportantEventPriority = Qt::HighEventPriority,
 
-         // A more important event
-         MoreImportantEventPriority = ImportantEventPriority + 1,
+     // A more important event
+     MoreImportantEventPriority = ImportantEventPriority + 1,
 
-         // A critical event
-         CriticalEventPriority = 100 * MoreImportantEventPriority,
+     // A critical event
+     CriticalEventPriority = 100 * MoreImportantEventPriority,
 
-         // Not that important
-         StatusEventPriority = Qt::LowEventPriority,
+     // Not that important
+     StatusEventPriority = Qt::LowEventPriority,
 
-         // These are less important than Status events
-         IdleProcessingDoneEventPriority = StatusEventPriority - 1
-     };</pre>
+     // These are less important than Status events
+     IdleProcessingDoneEventPriority = StatusEventPriority - 1
+ };</pre>
 <p>See also <a href="qcoreapplication.html#postEvent">QCoreApplication::postEvent</a>().</p>
 <a name="//apple_ref/cpp/tag/Qt/FillRule" />
 <a name="//apple_ref/cpp/econst/Qt/OddEvenFill" />
@@ -1764,7 +1764,7 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::WidgetShortcut</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The shortcut is active when its parent widget has focus.</td></tr>
-<tr><td valign="top"><tt>Qt::WidgetWithChildrenShortcut</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The shortcut is active when its parent widget, or any of it's children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.</td></tr>
+<tr><td valign="top"><tt>Qt::WidgetWithChildrenShortcut</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">The shortcut is active when its parent widget, or any of its children has focus. Children which are top-level widgets, except pop-ups, are not affected by this shortcut context.</td></tr>
 <tr><td valign="top"><tt>Qt::WindowShortcut</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The shortcut is active when its parent widget is a logical subwidget of the active top-level window.</td></tr>
 <tr><td valign="top"><tt>Qt::ApplicationShortcut</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The shortcut is active when one of the applications windows are active.</td></tr>
 </table></p>
@@ -1873,9 +1873,9 @@
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
 <tr><td valign="top"><tt>Qt::PlainText</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The text string is interpreted as a plain text string.</td></tr>
-<tr><td valign="top"><tt>Qt::RichText</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The text string is interpreted as a rich text string using the current <a href="q3stylesheet.html#defaultSheet">Q3StyleSheet::defaultSheet</a>().</td></tr>
+<tr><td valign="top"><tt>Qt::RichText</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The text string is interpreted as a rich text string.</td></tr>
 <tr><td valign="top"><tt>Qt::AutoText</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The text string is interpreted as for Qt::RichText if <a href="qt.html#mightBeRichText">Qt::mightBeRichText</a>() returns true, otherwise as Qt::PlainText.</td></tr>
-<tr><td valign="top"><tt>Qt::LogText</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A special, limited text format which is only used by <a href="qtextedit.html">QTextEdit</a> in an optimized mode.</td></tr>
+<tr><td valign="top"><tt>Qt::LogText</tt></td><td align="center" valign="top"><tt>3</tt></td><td valign="top">A special, limited text format which is only used by <a href="q3textedit.html">Q3TextEdit</a> in an optimized mode.</td></tr>
 </table></p>
 <a name="//apple_ref/cpp/tag/Qt/TextInteractionFlag" />
 <a name="//apple_ref/cpp/econst/Qt/NoTextInteraction" />
@@ -2404,9 +2404,9 @@
 <h3 class="fn"><a name="escape"></a><a href="qstring.html">QString</a> Qt::escape ( const <a href="qstring.html">QString</a> &amp; <i>plain</i> )</h3>
 <p>Converts the plain text string <i>plain</i> to a HTML string with HTML metacharacters <tt>&lt;</tt>, <tt>&gt;</tt>, and <tt>&amp;</tt> replaced by HTML entities.</p>
 <p>Example:</p>
-<pre>         QString plain = &quot;#include &lt;QtCore&gt;&quot;
-         QString html = Qt::escape(plain);
-         <span class="comment">// html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</span></pre>
+<pre> QString plain = &quot;#include &lt;QtCore&gt;&quot;
+ QString html = Qt::escape(plain);
+<span class="comment"> // html == &quot;#include &amp;lt;QtCore&amp;gt;&quot;</span></pre>
 <p>This function is defined in the <tt>&lt;QTextDocument&gt;</tt> header file.</p>
 <p>See also <a href="qt.html#convertFromPlainText">convertFromPlainText</a>() and <a href="qt.html#mightBeRichText">mightBeRichText</a>().</p>
 <a name="//apple_ref/cpp/instm/Qt/mightBeRichText" />
@@ -2416,8 +2416,8 @@
 <p>This function is defined in the <tt>&lt;QTextDocument&gt;</tt> header file.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

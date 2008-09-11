@@ -151,6 +151,7 @@ MainWindow::MainWindow(CmdLineParser *cmdLine, QWidget *parent)
     if (initHelpDB()) {
         setupFilterToolbar();
         setupAddressToolbar();
+        m_bookmarkManager->setupBookmarkModels();
 
         setWindowTitle(m_helpEngine->customValue(QLatin1String("WindowTitle"),
             defWindowTitle).toString());
@@ -716,6 +717,7 @@ void MainWindow::syncContents()
 {
     qApp->setOverrideCursor(QCursor(Qt::WaitCursor));
     const QUrl url = m_centralWidget->currentSource();
+    showContents();
     if (!m_contentWindow->syncToContent(url))
         statusBar()->showMessage(
             tr("Could not find the associated content item."), 3000);
@@ -768,11 +770,14 @@ void MainWindow::showAboutDialog()
     if (!contents.isEmpty()) {
         iconArray = m_helpEngine->customValue(QLatin1String("AboutIcon"),
             QByteArray()).toByteArray();
+        QByteArray resources = m_helpEngine->customValue(QLatin1String("AboutImages"),
+            QByteArray()).toByteArray();
         QPixmap pix;
         pix.loadFromData(iconArray);
-        aboutDia.setText(QString::fromLocal8Bit(contents));
+        aboutDia.setText(QString::fromUtf8(contents), resources);
         if (!pix.isNull())
             aboutDia.setPixmap(pix);
+        aboutDia.setWindowTitle(aboutDia.documentTitle());
     } else {
 #if QT_EDITION == QT_EDITION_OPENSOURCE
         QString edition = tr("Open Source Edition");
@@ -791,6 +796,7 @@ void MainWindow::showAboutDialog()
             "that came with this software distribution."));
 
 #endif
+        QByteArray resources;
         aboutDia.setText(QString::fromLatin1("<center>"
             "<h3>%1</h3>"
             "<p>Version %2 %3</p></center>"
@@ -800,10 +806,12 @@ void MainWindow::showAboutDialog()
             "<p>The program is provided AS IS with NO WARRANTY OF ANY KIND,"
             " INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A"
             " PARTICULAR PURPOSE.<p/>")
-            .arg(tr("Qt Assistant")).arg(QLatin1String(QT_VERSION_STR)).arg(edition).arg(info).arg(moreInfo));
+            .arg(tr("Qt Assistant")).arg(QLatin1String(QT_VERSION_STR))
+            .arg(edition).arg(info).arg(moreInfo), resources);
         aboutDia.setPixmap(QString::fromLatin1(":/trolltech/assistant/images/assistant-128.png"));
     }
-    aboutDia.setWindowTitle(tr("About %1").arg(windowTitle()));
+    if (aboutDia.windowTitle().isEmpty())
+        aboutDia.setWindowTitle(tr("About %1").arg(windowTitle()));
     aboutDia.exec();
 }
 

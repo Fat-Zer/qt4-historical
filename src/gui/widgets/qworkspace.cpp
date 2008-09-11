@@ -269,7 +269,9 @@ signals:
 
 protected:
     bool event(QEvent *);
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *);
+#endif
     void mousePressEvent(QMouseEvent *);
     void mouseDoubleClickEvent(QMouseEvent *);
     void mouseReleaseEvent(QMouseEvent *);
@@ -509,6 +511,7 @@ void QWorkspaceTitleBar::mousePressEvent(QMouseEvent *e)
     }
 }
 
+#ifndef QT_NO_CONTEXTMENU
 void QWorkspaceTitleBar::contextMenuEvent(QContextMenuEvent *e)
 {
     QStyleOptionTitleBar opt;
@@ -522,6 +525,7 @@ void QWorkspaceTitleBar::contextMenuEvent(QContextMenuEvent *e)
         e->ignore();
     }
 }
+#endif // QT_NO_CONTEXTMENU
 
 void QWorkspaceTitleBar::mouseReleaseEvent(QMouseEvent *e)
 {
@@ -850,7 +854,7 @@ QSize QWorkspaceTitleBar::sizeHint() const
     Workspaces can be placed in any layout, but are typically given
     as the central widget in a QMainWindow:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qworkspace.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qworkspace.cpp 0
 
     Child windows (MDI windows) are standard Qt widgets that are
     inserted into the workspace with addWindow(). As with top-level

@@ -163,7 +163,7 @@ public:
     addPermanentWidget() function. Use the removeWidget() function to
     remove such messages from the status bar.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qstatusbar.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qstatusbar.cpp 0
 
     By default QStatusBar provides a QSizeGrip in the lower-right
     corner. You can disable it using the setSizeGripEnabled()

@@ -428,7 +428,7 @@ namespace QPatternist
             Q_ASSERT_X(m_min != -1 && other.m_min != -1, Q_FUNC_INFO, "One of the cardinalities are invalid.");
 
             if(m_max < other.m_min) /* No intersection. */
-                return Cardinality(-1, 0);
+                return empty();
 
             const Count min = qMax(m_min, other.m_min);
 

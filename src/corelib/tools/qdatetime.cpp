@@ -178,12 +178,13 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
     \ingroup time
     \mainclass
 
-    A QDate object contains a calendar date, i.e. year, month, and
-    day numbers, in the Gregorian calendar (Julian calendar for dates
-    before 15 October 1582). It can read the current date from the
-    system clock. It provides functions for comparing dates, and for
-    manipulating dates. For example, it is possible to add and
-    subtract days, months, and years to dates.
+    A QDate object contains a calendar date, i.e. year, month, and day
+    numbers, in the Gregorian calendar. (see \l{QDate G and J} {Use of
+    Gregorian and Julian Calendars} for dates prior to 15 October
+    1582). It can read the current date from the system clock. It
+    provides functions for comparing dates, and for manipulating
+    dates. For example, it is possible to add and subtract days,
+    months, and years to dates.
 
     A QDate object is typically created either by giving the year,
     month, and day numbers explicitly. Note that QDate interprets two
@@ -210,13 +211,45 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
 
     The daysInMonth() and daysInYear() functions return how many days
     there are in this date's month and year, respectively. The
-    isLeapYear() function indicates whether this date is in a leap year.
+    isLeapYear() function indicates whether a date is in a leap year.
 
-    Note that the Gregorian calendar was introduced at different
-    dates in different countries and regions. QDate uses the
-    Gregorian calendar starting from 15 October 1582, and uses the
-    Julian calendar for dates up to 4 October 1582.
+    \section1
 
+    \target QDate G and J
+    \section2 Use of Gregorian and Julian Calendars
+
+    QDate uses the Gregorian calendar in all locales, beginning
+    on the date 15 October 1582. For dates up to and including 4
+    October 1582, the Julian calendar is used.  This means there is a
+    10-day gap in the internal calendar between the 4th and the 15th
+    of October 1582. When you use QDateTime for dates in that epoch,
+    the day after 4 October 1582 is 15 October 1582, and the dates in
+    the gap are invalid.
+
+    The Julian to Gregorian changeover date used here is the date when
+    the Gregorian calendar was first introduced, by Pope Gregory
+    XIII. That change was not universally accepted and some localities
+    only executed it at a later date (if at all).  QDateTime
+    doesn't take any of these historical facts into account. If an
+    application must support a locale-specific dating system, it must
+    do so on its own, remembering to convert the dates using the
+    Julian day.
+
+    \section2 No Year 0
+
+    There is no year 0. Dates in that year are considered invalid. The
+    year -1 is the year "1 before Christ" or "1 before current era."
+    The day before 0001-01-01 is December 31st, 1 BCE.
+
+    \section2 Range of Valid Dates
+    
+    The range of valid dates is from January 2nd, 4713 BCE, to
+    sometime in the year 11 million CE. The Julian Day returned by
+    QDate::toJulianDay() is a number in the contiguous range from 1 to
+    \e{overflow}, even across QDateTime's "date holes". It is suitable
+    for use in applications that must convert a QDateTime to a date in
+    another calendar system, e.g., Hebrew, Islamic or Chinese.
+    
     \sa QTime, QDateTime, QDateEdit, QDateTimeEdit, QCalendarWidget
 */
 
@@ -232,10 +265,10 @@ static QString fmtDateTime(const QString& f, const QTime* dt = 0, const QDate* d
     Constructs a date with year \a y, month \a m and day \a d.
 
     If the specified date is invalid, the date is not set and
-    isValid() returns false. Any date before 2 January 4713 B.C. is
+    isValid() returns false. A date before 2 January 4713 B.C. is
     considered invalid.
 
-    \warning Years 0 to 99 are interpreted as being in the 1900s. If
+    \warning Years 1 to 99 are interpreted as being in the 1900s. If
     you want to specify the year 2010, you must write 2010, not 10.
 
     \sa isValid()
@@ -339,7 +372,8 @@ int QDate::dayOfWeek() const
 }
 
 /*!
-    Returns the day of the year (1 to 365 or 366 on leap years) for this date.
+    Returns the day of the year (1 to 365 or 366 on leap years) for
+    this date.
 
     \sa day(), dayOfWeek()
 */
@@ -847,7 +881,7 @@ QDate QDate::addYears(int nyears) const
     negative if \a d is earlier than this date).
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 0
 
     \sa addDays()
 */
@@ -1061,7 +1095,7 @@ QDate QDate::fromString(const QString& s, Qt::DateFormat f)
     of characters that are enclosed in single quotes will also be
     treated as text and will not be used as an expression. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 1
 
     If the format is not satisfied, an invalid QDate is returned. The
     expressions that don't expect leading zeroes (d, M) will be
@@ -1071,7 +1105,7 @@ QDate QDate::fromString(const QString& s, Qt::DateFormat f)
     string could have meant January 30 but the M will grab two
     digits, resulting in an invalid date:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 2
 
     For any field that is not represented in the format the following
     defaults are used:
@@ -1085,7 +1119,7 @@ QDate QDate::fromString(const QString& s, Qt::DateFormat f)
 
     The following examples demonstrate the default values:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 3
 
     \sa QDateTime::fromString(), QTime::fromString(), QDate::toString(),
         QDateTime::toString(), QTime::toString()
@@ -1113,7 +1147,7 @@ QDate QDate::fromString(const QString &string, const QString &format)
     day) is valid; otherwise returns false.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 4
 
     \sa isNull(), setDate()
 */
@@ -1344,9 +1378,10 @@ int QTime::msec() const
 
     If \a format is Qt::ISODate, the string format corresponds to the
     ISO 8601 extended specification for representations of dates,
-    which is also HH:MM:SS. (However, unlike that ISO 8601 specifies,
-    dates before 1582 are handled as Julian dates, not Gregorian
-    dates. This might change in a future version of Qt.)
+    which is also HH:MM:SS. (However, contrary to ISO 8601, dates
+    before 15 October 1582 are handled as Julian dates, not Gregorian
+    dates. See \l{QDate G and J} {Use of Gregorian and Julian
+    Calendars}. This might change in a future version of Qt.)
 
     If the \a format is Qt::SystemLocaleShortDate or
     Qt::SystemLocaleLongDate, the string format depends on the locale
@@ -1475,7 +1510,7 @@ bool QTime::setHMS(int h, int m, int s, int ms)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 5
 
     \sa addMSecs(), secsTo(), QDateTime::addSecs()
 */
@@ -1716,7 +1751,7 @@ QTime QTime::fromString(const QString& s, Qt::DateFormat f)
     of characters that are enclosed in single quotes will also be
     treated as text and not be used as an expression.
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 6
 
     If the format is not satisfied an invalid QTime is returned.
     Expressions that do not expect leading zeroes to be given (h, m, s
@@ -1726,12 +1761,12 @@ QTime QTime::fromString(const QString& s, Qt::DateFormat f)
     could have meant 00:07:10, but the m will grab two digits, resulting
     in an invalid time:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 7
 
     Any field that is not represented in the format will be set to zero.
     For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 8
 
     \sa QDateTime::fromString() QDate::fromString() QDate::toString()
     QDateTime::toString() QTime::toString()
@@ -1765,7 +1800,7 @@ QTime QTime::fromString(const QString &string, const QString &format)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 9
 */
 
 bool QTime::isValid(int h, int m, int s, int ms)
@@ -1777,7 +1812,7 @@ bool QTime::isValid(int h, int m, int s, int ms)
 /*!
     Sets this time to the current time. This is practical for timing:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 10
 
     \sa restart(), elapsed(), currentTime()
 */
@@ -1892,6 +1927,81 @@ int QTime::elapsed() const
     UTC. You can also use timeSpec() to find out if a QDateTime
     object stores a UTC time or a local time. Operations such as
     addSecs() and secsTo() are aware of daylight saving time (DST).
+
+    \note QDateTime does not account for leap seconds.
+
+    \section1
+    
+    \target QDateTime G and J
+    \section2 Use of Gregorian and Julian Calendars
+
+    QDate uses the Gregorian calendar in all locales, beginning
+    on the date 15 October 1582. For dates up to and including 4
+    October 1582, the Julian calendar is used.  This means there is a
+    10-day gap in the internal calendar between the 4th and the 15th
+    of October 1582. When you use QDateTime for dates in that epoch,
+    the day after 4 October 1582 is 15 October 1582, and the dates in
+    the gap are invalid.
+
+    The Julian to Gregorian changeover date used here is the date when
+    the Gregorian calendar was first introduced, by Pope Gregory
+    XIII. That change was not universally accepted and some localities
+    only executed it at a later date (if at all).  QDateTime
+    doesn't take any of these historical facts into account. If an
+    application must support a locale-specific dating system, it must
+    do so on its own, remembering to convert the dates using the
+    Julian day.
+
+    \section2 No Year 0
+
+    There is no year 0. Dates in that year are considered invalid. The
+    year -1 is the year "1 before Christ" or "1 before current era."
+    The day before 0001-01-01 is December 31st, 1 BCE.
+
+    \section2 Range of Valid Dates
+    
+    The range of valid dates is from January 2nd, 4713 BCE, to
+    sometime in the year 11 million CE. The Julian Day returned by
+    QDate::toJulianDay() is a number in the contiguous range from 1 to
+    \e{overflow}, even across QDateTime's "date holes". It is suitable
+    for use in applications that must convert a QDateTime to a date in
+    another calendar system, e.g., Hebrew, Islamic or Chinese.
+
+    The Gregorian calendar was introduced in different places around
+    the world on different dates. QDateTime uses QDate to store the
+    date, so it uses the Gregorian calendar for all locales, beginning
+    on the date 15 October 1582. For dates up to and including 4
+    October 1582, QDateTime uses the Julian calendar.  This means
+    there is a 10-day gap in the QDateTime calendar between the 4th
+    and the 15th of October 1582. When you use QDateTime for dates in
+    that epoch, the day after 4 October 1582 is 15 October 1582, and
+    the dates in the gap are invalid.
+
+    \section2
+    Use of System Timezone
+
+    QDateTime uses the system's time zone information to determine the
+    offset of local time from UTC. If the system is not configured
+    correctly or not up-to-date, QDateTime will give wrong results as
+    well.
+
+    \section2 Daylight Savings Time (DST)
+
+    QDateTime takes into account the system's time zone information
+    when dealing with DST. On modern Unix systems, this means it
+    applies the correct historical DST data whenever possible. On
+    Windows and Windows CE, where the system doesn't support
+    historical DST data, historical accuracy is not maintained with
+    respect to DST.
+
+    The range of valid dates taking DST into account is 1970-01-01 to
+    the present, and rules are in place for handling DST correctly
+    until 2037-12-31, but these could change. For dates falling
+    outside that range, QDateTime makes a \e{best guess} using the
+    rules for year 1970 or 2037, but we can't guarantee accuracy. This
+    means QDateTime doesn't take into account changes in a locale's
+    time zone before 1970, even if the system's time zone database
+    supports that information.
 
     \sa QDate QTime QDateTimeEdit
 */
@@ -2104,7 +2214,7 @@ static uint toTime_tHelper(const QDate &utcDate, const QTime &utcTime)
     Returns the datetime as the number of seconds that have passed
     since 1970-01-01T00:00:00, Coordinated Universal Time (Qt::UTC).
 
-    On systems that do not support timezones, this function will
+    On systems that do not support time zones, this function will
     behave as if local time were Qt::UTC.
 
     \sa setTime_t()
@@ -2124,7 +2234,7 @@ uint QDateTime::toTime_t() const
 
     Sets the date and time given the number of \a seconds that have
     passed since 1970-01-01T00:00:00, Coordinated Universal Time
-    (Qt::UTC). On systems that do not support timezones this function
+    (Qt::UTC). On systems that do not support time zones this function
     will behave as if local time were Qt::UTC.
 
     \sa toTime_t()
@@ -2446,7 +2556,7 @@ int QDateTime::daysTo(const QDateTime &other) const
     datetimes has daylight saving time (DST) and the other doesn't.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 11
 
     \sa addSecs(), daysTo(), QTime::secsTo()
 */
@@ -2602,14 +2712,14 @@ QDateTime QDateTime::currentDateTime()
 }
 
 /*!
-    \since 4.2
+  \since 4.2
 
-    Returns a datetime whose date and time are the number of \a seconds
-    that have passed since 1970-01-01T00:00:00, Coordinated Universal Time
-    (Qt::UTC). On systems that do not support timezones, the time
-    will be set as if local time were Qt::UTC.
+  Returns a datetime whose date and time are the number of \a seconds
+  that have passed since 1970-01-01T00:00:00, Coordinated Universal
+  Time (Qt::UTC). On systems that do not support time zones, the time
+  will be set as if local time were Qt::UTC.
 
-    \sa toTime_t(), setTime_t()
+  \sa toTime_t(), setTime_t()
 */
 QDateTime QDateTime::fromTime_t(uint seconds)
 {
@@ -2622,15 +2732,15 @@ QDateTime QDateTime::fromTime_t(uint seconds)
  \since 4.4
  \internal
 
- Sets the offset from UTC to \a seconds, and also
- sets timeSpec() to Qt::OffsetFromUTC.
+ Sets the offset from UTC to \a seconds, and also sets timeSpec() to
+ Qt::OffsetFromUTC.
 
- The maximum and minimum offset is 14 positive or negative hours.
- If \a seconds is larger or smaller than that, the result is undefined.
+ The maximum and minimum offset is 14 positive or negative hours.  If
+ \a seconds is larger or smaller than that, the result is undefined.
 
- 0 as offset is identical to UTC. Therefore, if \a seconds is 0, the timeSpec()
- will be set to Qt::UTC. Hence the UTC offset always relates to UTC, and
- can never relate to local time.
+ 0 as offset is identical to UTC. Therefore, if \a seconds is 0, the
+ timeSpec() will be set to Qt::UTC. Hence the UTC offset always
+ relates to UTC, and can never relate to local time.
 
  \sa isValid(), utcOffset()
  */
@@ -2654,14 +2764,14 @@ void QDateTime::setUtcOffset(int seconds)
  \since 4.4
  \internal
 
- Returns the UTC offset in seconds. If the timeSpec()
- isn't Qt::OffsetFromUTC, 0 is returned. However, since 0 is a valid
- UTC offset the return value of this function cannot be used to
- determine whether a utcOffset() is used or is valid, timeSpec()
- must be checked.
+ Returns the UTC offset in seconds. If the timeSpec() isn't
+ Qt::OffsetFromUTC, 0 is returned. However, since 0 is a valid UTC
+ offset the return value of this function cannot be used to determine
+ whether a utcOffset() is used or is valid, timeSpec() must be
+ checked.
 
- Likewise, if this QDateTime() is invalid or if timeSpec()
- isn't Qt::OffsetFromUTC, 0 is returned.
+ Likewise, if this QDateTime() is invalid or if timeSpec() isn't
+ Qt::OffsetFromUTC, 0 is returned.
 
  The UTC offset only applies if the timeSpec() is Qt::OffsetFromUTC.
 
@@ -2840,6 +2950,10 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
     \row \i yyyy \i the year as four digit number
     \endtable
 
+    \note Unlike the other version of this function, day and month names must
+    be given in the user's local language. It is only possible to use the English
+    names if the user's language is English.
+
     These expressions may be used for the time part of the format string:
 
     \table
@@ -2868,7 +2982,7 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
     of characters that are enclosed in singlequotes will also be
     treated as text and not be used as an expression.
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 12
 
     If the format is not satisfied an invalid QDateTime is returned.
     The expressions that don't have leading zeroes (d, M, h, m, s, z) will be
@@ -2876,7 +2990,7 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
     put them outside the range and/or leave too few digits for other
     sections.
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 13
 
     This could have meant 1 January 00:30.00 but the M will grab
     two digits.
@@ -2896,7 +3010,7 @@ QDateTime QDateTime::fromString(const QString& s, Qt::DateFormat f)
 
     For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qdatetime.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qdatetime.cpp 14
 
     \sa QDate::fromString() QTime::fromString() QDate::toString()
     QDateTime::toString() QTime::toString()

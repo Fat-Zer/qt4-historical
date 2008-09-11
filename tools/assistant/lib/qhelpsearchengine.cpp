@@ -135,7 +135,8 @@ private:
 
         if (indexWriter) {
             indexWriter->cancelIndexing();
-            indexWriter->updateIndex(helpEngine->collectionFile(), reindex);
+            indexWriter->updateIndex(helpEngine->collectionFile(),
+                indexFilesFolder(), reindex);
         }
     }
 
@@ -162,7 +163,7 @@ private:
 
         if (indexReader) {
             indexReader->cancelSearching();
-            indexReader->search(helpEngine->collectionFile(), queryList);
+            indexReader->search(helpEngine->collectionFile(), indexFilesFolder(), queryList);
         }
     }
 
@@ -172,14 +173,16 @@ private:
             indexReader->cancelSearching();
     }
 
-    void setIndexFilesFolder(const QString &path)
+    QString indexFilesFolder() const
     {
-        if (helpEngine.isNull())
-            return;
-
-        QHelpEngineCore engine(helpEngine->collectionFile());
-        if (engine.setupData())
-            engine.setCustomValue(QLatin1String("indexFilesFolder"), path);
+        QString indexFilesFolder = QLatin1String(".fulltextsearch");
+        if (helpEngine && !helpEngine->collectionFile().isEmpty()) {
+            QFileInfo fi(helpEngine->collectionFile());
+            indexFilesFolder = fi.absolutePath() + QDir::separator()
+                + QLatin1Char('.')
+                + fi.fileName().left(fi.fileName().lastIndexOf(QLatin1String(".qhc")));
+        }
+        return indexFilesFolder;
     }
 
 private slots:
@@ -187,13 +190,7 @@ private slots:
     {
 #if defined(QT_CLUCENE_SUPPORT)
         if (indexWriter && !helpEngine.isNull()) {
-            QDir dir(helpEngine->customValue(QLatin1String("indexFilesFolder")).toString());
-            if (!dir.isAbsolute()) {
-                indexWriter->optimizeIndex(QFileInfo(helpEngine->collectionFile()).path() +
-                    dir.separator() + dir.path());
-            } else {
-                indexWriter->optimizeIndex(dir.path());
-            }
+            indexWriter->optimizeIndex();            
         }
 #endif
     }
@@ -332,15 +329,7 @@ QHelpSearchEngine::QHelpSearchEngine(QHelpEngineCore *helpEngine, QObject *paren
     : QObject(parent)
 {
     d = new QHelpSearchEnginePrivate(helpEngine);
-    QString indexFilesFolder = QLatin1String(".fulltextsearch");
-    if (helpEngine && !helpEngine->collectionFile().isEmpty()) {
-        QFileInfo fi(helpEngine->collectionFile());
-        indexFilesFolder = fi.absolutePath() + QDir::separator()
-            + QLatin1Char('.')
-            + fi.fileName().left(fi.fileName().lastIndexOf(QLatin1String(".qhc")));
-    }
-    setIndexFilesFolder(indexFilesFolder);
-
+    
     connect(helpEngine, SIGNAL(setupFinished()), this, SLOT(indexDocumentation()));
 
     connect(d, SIGNAL(indexingStarted()), this, SIGNAL(indexingStarted()));
@@ -441,11 +430,6 @@ void QHelpSearchEngine::search(const QList<QHelpSearchQuery> &queryList)
 void QHelpSearchEngine::indexDocumentation()
 {
     d->updateIndex();
-}
-
-void QHelpSearchEngine::setIndexFilesFolder(const QString &path)
-{
-    d->setIndexFilesFolder(path);
 }
 
 QT_END_NAMESPACE

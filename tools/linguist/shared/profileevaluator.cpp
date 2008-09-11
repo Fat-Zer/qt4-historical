@@ -213,7 +213,8 @@ bool ProFileEvaluator::visitProValue(ProValue *value)
             || varName == QByteArray("HEADERS")
             || varName == QByteArray("INTERFACES")
             || varName == QByteArray("FORMS")
-            || varName == QByteArray("FORMS3")) {
+            || varName == QByteArray("FORMS3")
+            || varName == QByteArray("RESOURCES")) {
         // matches only existent files, expand certain(?) patterns
         QStringList vv;
         for (int i = v.count(); --i >= 0; )

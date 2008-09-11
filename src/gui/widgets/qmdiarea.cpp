@@ -82,7 +82,7 @@
     The convenience function subWindowList() returns a list of all
     subwindows. This information could be used in a popup menu
     containing a list of windows, for example.
-    
+
     The subwindows are sorted by the the current
     \l{QMdiArea::}{WindowOrder}. This is used for the subWindowList()
     and for activateNextSubWindow() and acivatePreviousSubWindow().
@@ -284,7 +284,14 @@ static inline QString tabTextFor(QMdiSubWindow *subWindow)
     if (!subWindow)
         return QString();
 
-    const QString title = subWindow->windowTitle();
+    QString title = subWindow->windowTitle();
+    if (subWindow->isWindowModified()) {
+        title.replace(QLatin1String("[*]"), QLatin1String("*"));
+    } else {
+        extern QString qt_setWindowTitle_helperHelper(const QString&, const QWidget*);
+        title = qt_setWindowTitle_helperHelper(title, subWindow);
+    }
+
     return title.isEmpty() ? QMdiArea::tr("(Untitled)") : title;
 }
 
@@ -563,7 +570,9 @@ public:
 
 protected:
     void mousePressEvent(QMouseEvent *event);
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event);
+#endif
 
 private:
     QMdiSubWindow *subWindowFromIndex(int index) const;
@@ -588,6 +597,7 @@ void QMdiAreaTabBar::mousePressEvent(QMouseEvent *event)
     subWindow->close();
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \internal
 */
@@ -629,6 +639,7 @@ void QMdiAreaTabBar::contextMenuEvent(QContextMenuEvent *event)
     subWindowPrivate->updateActions();
 #endif // QT_NO_MENU
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \internal
@@ -1477,6 +1488,8 @@ void QMdiAreaPrivate::highlightNextSubWindow(int increaseFactor)
 #ifndef QT_NO_RUBBERBAND
     if (!rubberBand) {
         rubberBand = new QRubberBand(QRubberBand::Rectangle, viewport);
+        // For accessibility to identify this special widget.
+        rubberBand->setObjectName(QLatin1String("qt_rubberband"));
         rubberBand->setWindowFlags(rubberBand->windowFlags() | Qt::WindowStaysOnTopHint);
     }
 #endif
@@ -2505,6 +2518,7 @@ bool QMdiArea::eventFilter(QObject *object, QEvent *event)
 #endif
 #ifndef QT_NO_TABBAR
     case QEvent::WindowTitleChange:
+    case QEvent::ModifiedChange:
         if (d->tabBar)
             d->tabBar->setTabText(d->childWindows.indexOf(subWindow), tabTextFor(subWindow));
         break;

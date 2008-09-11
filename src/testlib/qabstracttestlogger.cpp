@@ -71,7 +71,7 @@ bool QAbstractTestLogger::isTtyOutput()
 {
     QTEST_ASSERT(QTest::stream);
 
-#ifdef Q_OS_WIN
+#if defined(Q_OS_WIN) || defined(Q_OS_INTEGRITY)
     return true;
 #else
     static bool ttyoutput = isatty(fileno(QTest::stream));

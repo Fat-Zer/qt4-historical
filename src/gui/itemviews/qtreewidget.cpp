@@ -2301,7 +2301,7 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
 
   In its simplest form, a tree widget can be constructed in the following way:
 
-  \snippet doc/src/snippets/code/src.gui.itemviews.qtreewidget.cpp 0
+  \snippet doc/src/snippets/code/src_gui_itemviews_qtreewidget.cpp 0
 
   Before items can be added to the tree widget, the number of columns must
   be set with setColumnCount(). This allows each item to have one or more
@@ -2337,6 +2337,8 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
 /*!
     \property QTreeWidget::columnCount
     \brief the number of columns displayed in the tree widget
+
+    By default, this property has a value of 1.
 */
 
 /*!
@@ -2368,9 +2370,9 @@ void QTreeWidgetPrivate::_q_dataChanged(const QModelIndex &topLeft,
 
     This signal is emitted when the user clicks inside the widget.
 
-    The specified \a item is the item that was clicked, or 0 if no
-    item was clicked. The \a column is the item's column that was
-    clicked. If no item was clicked, no signal will be emitted.
+    The specified \a item is the item that was clicked. The \a column is the
+    item's column that was clicked. If no item was clicked, no signal will be
+    emitted.
 */
 
 /*!
@@ -2545,8 +2547,11 @@ QTreeWidgetItem *QTreeWidget::topLevelItem(int index) const
     return d->model()->rootItem->child(index);
 }
 
-/*!\property QTreeWidget::topLevelItemCount
+/*!
+    \property QTreeWidget::topLevelItemCount
     \brief the number of top-level items
+
+    By default, this property has a value of 0.
 
     \sa columnCount(), currentItem()
 */

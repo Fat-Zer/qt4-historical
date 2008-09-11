@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/script/qscriptvalue.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/script/qscriptvalue.cpp -->
 <head>
   <title>Qt 4.4: QScriptValue Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QScriptValue Class Reference<br /><span class="small-subtitle">[<a href="qtscript.html">QtScript</a> module]</span>
 </h1>
 <p>The QScriptValue class acts as a container for the Qt Script data types. <a href="#details">More...</a></p>
@@ -108,14 +108,14 @@
 <p>For the object-based types (including Date and RegExp), use the newT() functions in <a href="qscriptengine.html">QScriptEngine</a> (e.g&#x2e; <a href="qscriptengine.html#newObject">QScriptEngine::newObject</a>()) to create a QScriptValue of the desired type. For the primitive types, use one of the QScriptValue constructor overloads.</p>
 <p>The methods named isT() (e.g&#x2e; <a href="qscriptvalue.html#isBoolean">isBoolean</a>(), <a href="qscriptvalue.html#isUndefined">isUndefined</a>()) can be used to test if a value is of a certain type. The methods named toT() (e.g&#x2e; <a href="qscriptvalue.html#toBoolean">toBoolean</a>(), <a href="qscriptvalue.html#toString">toString</a>()) can be used to convert a QScriptValue to another type. You can also use the generic <a href="qscriptvalue.html#qscriptvalue_cast">qscriptvalue_cast</a>() function.</p>
 <p>Object values have zero or more properties which are themselves QScriptValues. Use <a href="qscriptvalue.html#setProperty">setProperty</a>() to set a property of an object, and call <a href="qscriptvalue.html#property">property</a>() to retrieve the value of a property.</p>
-<pre>   QScriptEngine myEngine;
-   QScriptValue myObject = myEngine.newObject();
-   QScriptValue myOtherObject = myEngine.newObject();
-   myObject.setProperty(&quot;myChild&quot;, myOtherObject);
-   myObject.setProperty(&quot;name&quot;, QScriptValue(&amp;myEngine, &quot;John Doe&quot;));</pre>
+<pre> QScriptEngine myEngine;
+ QScriptValue myObject = myEngine.newObject();
+ QScriptValue myOtherObject = myEngine.newObject();
+ myObject.setProperty(&quot;myChild&quot;, myOtherObject);
+ myObject.setProperty(&quot;name&quot;, QScriptValue(&amp;myEngine, &quot;John Doe&quot;));</pre>
 <p>Each property can have a set of attributes; these are specified as the third (optional) argument to <a href="qscriptvalue.html#setProperty">setProperty</a>(). The attributes of a property can be queried by calling the <a href="qscriptvalue.html#propertyFlags">propertyFlags</a>() function. The following code snippet creates a property that cannot be modified by script code:</p>
-<pre>   QScriptValue val(&amp;myEngine, 123);
-   myObject.setProperty(&quot;myReadOnlyProperty&quot;, val, QScriptValue::ReadOnly);</pre>
+<pre> QScriptValue val(&amp;myEngine, 123);
+ myObject.setProperty(&quot;myReadOnlyProperty&quot;, val, QScriptValue::ReadOnly);</pre>
 <p>If you want to iterate over the properties of a script object, use the <a href="qscriptvalueiterator.html">QScriptValueIterator</a> class.</p>
 <p>Object values have an internal <tt>prototype</tt> property, which can be accessed with <a href="qscriptvalue.html#prototype">prototype</a>() and <a href="qscriptvalue.html#setPrototype">setPrototype</a>(). Properties added to a prototype are shared by all objects having that prototype; this is referred to as prototype-based inheritance. In practice, it means that (by default) the <a href="qscriptvalue.html#property">property</a>() function will automatically attempt to look up look the property in the <a href="qscriptvalue.html#prototype">prototype</a>() (and in the prototype of the <a href="qscriptvalue.html#prototype">prototype</a>(), and so on), if the object itself does not have the requested property. Note that this prototype-based lookup is not performed by <a href="qscriptvalue.html#setProperty">setProperty</a>(); <a href="qscriptvalue.html#setProperty">setProperty</a>() will always create the property in the script object itself. For more information, see the <a href="qtscript.html">QtScript</a> documentation.</p>
 <p>Function objects (objects for which <a href="qscriptvalue.html#isFunction">isFunction</a>() returns true) can be invoked by calling <a href="qscriptvalue.html#call">call</a>(). Constructor functions can be used to construct new objects by calling <a href="qscriptvalue.html#construct">construct</a>().</p>
@@ -206,20 +206,20 @@
 <p>If this <a href="qscriptvalue.html">QScriptValue</a> is not a function, call() does nothing and returns an invalid <a href="qscriptvalue.html">QScriptValue</a>.</p>
 <p>Note that if <i>thisObject</i> is not an object, the global object (see <a href="qscriptengine.html#globalObject">QScriptEngine::globalObject</a>()) will be used as the `this' object.</p>
 <p>Calling call() can cause an exception to occur in the script engine; in that case, call() returns the value that was thrown (typically an <tt>Error</tt> object). You can call <a href="qscriptengine.html#hasUncaughtException">QScriptEngine::hasUncaughtException</a>() to determine if an exception occurred.</p>
-<pre>   QScriptEngine engine;
-   engine.evaluate(&quot;function fullName() { return this.firstName + ' ' + this.lastName; }&quot;);
-   engine.evaluate(&quot;somePerson = { firstName: 'John', lastName: 'Doe' }&quot;);
+<pre> QScriptEngine engine;
+ engine.evaluate(&quot;function fullName() { return this.firstName + ' ' + this.lastName; }&quot;);
+ engine.evaluate(&quot;somePerson = { firstName: 'John', lastName: 'Doe' }&quot;);
 
-   QScriptValue global = engine.globalObject();
-   QScriptValue fullName = global.property(&quot;fullName&quot;);
-   QScriptValue who = global.property(&quot;somePerson&quot;);
-   qDebug() &lt;&lt; fullName.call(who).toString(); <span class="comment">// &quot;John Doe&quot;</span>
+ QScriptValue global = engine.globalObject();
+ QScriptValue fullName = global.property(&quot;fullName&quot;);
+ QScriptValue who = global.property(&quot;somePerson&quot;);
+ qDebug() &lt;&lt; fullName.call(who).toString(); <span class="comment">// &quot;John Doe&quot;</span>
 
-   engine.evaluate(&quot;function cube(x) { return x * x * x; }&quot;);
-   QScriptValue cube = global.property(&quot;cube&quot;);
-   QScriptValueList args;
-   args &lt;&lt; QScriptValue(&amp;engine, 3);
-   qDebug() &lt;&lt; cube.call(QScriptValue(), args).toNumber(); <span class="comment">// 27</span></pre>
+ engine.evaluate(&quot;function cube(x) { return x * x * x; }&quot;);
+ QScriptValue cube = global.property(&quot;cube&quot;);
+ QScriptValueList args;
+ args &lt;&lt; QScriptValue(&amp;engine, 3);
+ qDebug() &lt;&lt; cube.call(QScriptValue(), args).toNumber(); <span class="comment">// 27</span></pre>
 <p>See also <a href="qscriptvalue.html#construct">construct</a>().</p>
 <h3 class="fn"><a name="call-2"></a>QScriptValue QScriptValue::call ( const QScriptValue &amp; <i>thisObject</i>, const QScriptValue &amp; <i>arguments</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -228,11 +228,11 @@
 <p><i>arguments</i> can be an arguments object, an array, null or undefined; any other type will cause a TypeError to be thrown.</p>
 <p>Note that if <i>thisObject</i> is not an object, the global object (see <a href="qscriptengine.html#globalObject">QScriptEngine::globalObject</a>()) will be used as the `this' object.</p>
 <p>One common usage of this function is to forward native function calls to another function:</p>
-<pre>   QScriptValue myNativeFunction(QScriptContext *ctx, QScriptEngine *)
-   {
-       QScriptValue otherFunction = ...;
-       return otherFunction.call(ctx-&gt;thisObject(), ctx-&gt;argumentsObject());
-   }</pre>
+<pre> QScriptValue myNativeFunction(QScriptContext *ctx, QScriptEngine *)
+ {
+     QScriptValue otherFunction = ...;
+     return otherFunction.call(ctx-&gt;thisObject(), ctx-&gt;argumentsObject());
+ }</pre>
 <p>See also <a href="qscriptvalue.html#construct">construct</a>() and <a href="qscriptcontext.html#argumentsObject">QScriptContext::argumentsObject</a>().</p>
 <a name="//apple_ref/cpp/instm/QScriptValue/construct" />
 <h3 class="fn"><a name="construct"></a>QScriptValue QScriptValue::construct ( const QScriptValueList &amp; <i>args</i> = QScriptValueList() )</h3>
@@ -509,8 +509,8 @@
 <p>See also <a href="qscriptengine.html#qScriptRegisterMetaType">qScriptRegisterMetaType</a>() and <a href="qscriptengine.html#toScriptValue">QScriptEngine::toScriptValue</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

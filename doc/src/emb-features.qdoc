@@ -44,7 +44,7 @@
 /*!
     \if defined(qtce)
       \page qtce-features.html
-      \title Fine-Tuning Features in Qt/WinCE
+      \title Fine-Tuning Features in Qt for Windows CE
       \ingroup qtce
     \else
       \page qt-embedded-features.html
@@ -63,7 +63,7 @@
       with the set of required \c -D<feature> options. For example,
       you can use the \c -D option to define \c{QT_NO_THREAD}:
 
-      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 0
+      \snippet doc/src/snippets/code/doc_src_emb-features.qdoc 0
 
       The \c -D option only creates a Qt internal define. If you get linker
       errors you have to define \c QT_NO_THREAD also for your project.
@@ -76,7 +76,7 @@
       for Qt for Embedded Linux with the \c -no-feature-<feature> option.
       For example:
 
-      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 1
+      \snippet doc/src/snippets/code/doc_src_emb-features.qdoc 1
 
       The feature can easily be enabled again by running \c configure
       with the \c -feature-<feature> option.
@@ -96,7 +96,7 @@
     \note The \c qconfig tool is intended to be built against Qt on
     desktop platforms.
     \if defined(qtce)
-    The Qt/WinCE package contains a \c qconfig executable that you can run
+    The Qt for Windows CE package contains a \c qconfig executable that you can run
     on a Windows desktop to configure the build.
     \endif
 
@@ -124,9 +124,9 @@
     For example:
 
     \if defined(qtce)
-      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 2
+      \snippet doc/src/snippets/code/doc_src_emb-features.qdoc 2
     \else
-      \snippet doc/src/snippets/code/doc.src.emb-features.qdoc 3
+      \snippet doc/src/snippets/code/doc_src_emb-features.qdoc 3
     \endif
 
     Qt provides several ready-made custom configuration files,
@@ -135,7 +135,7 @@
     /src/corelib/global directory.
 
     \if defined(qtce)
-      \sa {Qt/WinCE Performance Tuning}{Performance Tuning}
+      \sa {Qt for Windows CE Performance Tuning}{Performance Tuning}
     \else
       \sa {Qt for Embedded Linux Performance Tuning}{Performance Tuning}
     \endif

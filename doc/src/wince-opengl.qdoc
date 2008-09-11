@@ -62,8 +62,8 @@
     Qt for Windows CE uses EGL 1.1 to embed OpenGL ES windows within the
     Windows CE window manager.
 
-    To use OpenGL ES enabled widgets in a Qt/WindowsCE application, you only
-    need to subclass QGLWidget and draw on instances of the subclass with
+    To use OpenGL ES enabled widgets in a Qt for Windows CE application, you
+    only need to subclass QGLWidget and draw on instances of the subclass with
     OpenGL ES functions.
 
     OpenGL ES includes profiles for floating-point and fixed-point arithmetic.
@@ -80,7 +80,7 @@
     To configure Qt for Windows Mobile 5.0 and OpenGL ES Common Lite support
     you can run \c{configure} like this:
 
-    \snippet doc/src/snippets/code/doc.src.wince-opengl.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_wince-opengl.qdoc 0
 
     The distinction between the Common and Common Lite profiles is important,
     because the Common Lite profile has less functionality and only supports a

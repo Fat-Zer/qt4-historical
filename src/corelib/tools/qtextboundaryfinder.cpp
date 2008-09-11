@@ -230,7 +230,7 @@ QTextBoundaryFinder::QTextBoundaryFinder(BoundaryType type, const QString &strin
 
   \a buffer is an optional working buffer of size \a bufferSize you can pass to
   the QTextBoundaryFinder. If the buffer is large enough to hold the working
-  data required, it will use this insetad of allocating it's own buffer.
+  data required, it will use this insetad of allocating its own buffer.
 
   \warning QTextBoundaryFinder does not create a copy of \a chars. It is the
   application programmer's responsability to ensure the array is allocated for

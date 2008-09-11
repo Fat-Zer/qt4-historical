@@ -2710,7 +2710,9 @@ QRect QCommonStyle::subElementRect(SubElement sr, const QStyleOption *opt,
         if (const QStyleOptionViewItemV4 *vopt = qstyleoption_cast<const QStyleOptionViewItemV4 *>(opt)) {
             if (!d->isViewItemCached(*vopt)) {
                 d->viewItemLayout(vopt, &d->checkRect, &d->decorationRect, &d->displayRect, false);
-                d->cachedOption = *vopt;
+                if (d->cachedOption)
+                    delete d->cachedOption;
+                d->cachedOption = new QStyleOptionViewItemV4(*vopt);
             }
             if (sr == SE_ViewItemCheckIndicator)
                 r = d->checkRect;
@@ -4985,8 +4987,10 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
 #ifndef QT_NO_IMAGEFORMAT_PNG
      case SP_FileDialogNewFolder:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/newdirectory-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/newdirectory-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/newdirectory-128.png"));
+#endif
         break;
     case SP_FileDialogBack:
         return standardIconImplementation(SP_ArrowBack, option, widget);
@@ -4994,78 +4998,108 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
         return standardIconImplementation(SP_ArrowUp, option, widget);
     case SP_FileDialogDetailedView:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewdetailed-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewdetailed-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewdetailed-128.png"));
+#endif
         break;
     case SP_FileDialogInfoView:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/fileinfo-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/fileinfo-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/fileinfo-128.png"));
+#endif
         break;
     case SP_FileDialogContentsView:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filecontents-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filecontents-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filecontents-128.png"));
+#endif
         break;
     case SP_FileDialogListView:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewlist-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewlist-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/viewlist-128.png"));
+#endif
         break;
     case SP_DialogOkButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-ok-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-ok-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-ok-128.png"));
+#endif
         break;
     case SP_DialogCancelButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-cancel-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-cancel-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-cancel-128.png"));
+#endif
         break;
     case SP_DialogHelpButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-help-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-help-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-help-128.png"));
+#endif
         break;
     case SP_DialogOpenButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-open-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-open-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-open-128.png"));
+#endif
         break;
     case SP_DialogSaveButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-save-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-save-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-save-128.png"));
+#endif
         break;
     case SP_DialogCloseButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-close-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-close-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-close-128.png"));
+#endif
         break;
     case SP_DialogApplyButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-apply-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-apply-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-apply-128.png"));
+#endif
         break;
     case SP_DialogResetButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-reset-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-reset-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-reset-128.png"));
+#endif
         break;
     case SP_DialogDiscardButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-discard-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-discard-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-discard-128.png"));
+#endif
         break;
     case SP_DialogYesButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-yes-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-yes-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-yes-128.png"));
+#endif
         break;
     case SP_DialogNoButton:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-no-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-no-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/standardbutton-no-128.png"));
+#endif
         break;
     case SP_ArrowForward:
         if (QApplication::layoutDirection() == Qt::RightToLeft)
@@ -5077,23 +5111,31 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
         return standardIconImplementation(SP_ArrowLeft, option, widget);
     case SP_ArrowLeft:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/left-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/left-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/left-128.png"));
+#endif
         break;
     case SP_ArrowRight:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/right-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/right-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/right-128.png"));
+#endif
         break;
     case SP_ArrowUp:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/up-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/up-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/up-128.png"));
+#endif
         break;
     case SP_ArrowDown:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/down-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/down-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/down-128.png"));
+#endif
         break;
    case SP_DirHomeIcon:
    case SP_DirIcon:
@@ -5101,6 +5143,7 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
                      QSize(), QIcon::Normal, QIcon::Off);
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/diropen-16.png"),
                      QSize(), QIcon::Normal, QIcon::On);
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/dirclosed-32.png"),
                      QSize(32, 32), QIcon::Normal, QIcon::Off);
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/diropen-32.png"),
@@ -5109,33 +5152,44 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
                      QSize(128, 128), QIcon::Normal, QIcon::Off);
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/diropen-128.png"),
                      QSize(128, 128), QIcon::Normal, QIcon::On);
+#endif
         break;
-#endif // QT_NO_IMAGEFORMAT_PNG
     case SP_DriveCDIcon:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/cdr-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/cdr-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/cdr-128.png"));
+#endif
         break;
     case SP_DriveDVDIcon:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/dvd-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/dvd-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/dvd-128.png"));
+#endif
         break;
     case SP_FileIcon:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/file-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/file-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/file-128.png"));
+#endif
         break;
     case SP_FileLinkIcon:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filelink-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filelink-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/filelink-128.png"));
+#endif
         break;
     case SP_TrashIcon:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/trash-16.png"));
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/trash-32.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/trash-128.png"));
+#endif
         break;
+#ifndef Q_OS_WINCE  // ### Qt 4.5 remove
     case SP_BrowserReload:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/refresh-24.png"));
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/refresh-32.png"));
@@ -5178,6 +5232,8 @@ QIcon QCommonStyle::standardIconImplementation(StandardPixmap standardIcon, cons
     case SP_MediaVolumeMuted:
         icon.addFile(QLatin1String(":/trolltech/styles/commonstyle/images/media-volume-muted-16.png"));
         break;
+#endif // !Q_OS_WINCE
+#endif // QT_NO_IMAGEFORMAT_PNG
     default:
         icon.addPixmap(standardPixmap(standardIcon, option, widget));
         break;

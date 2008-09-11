@@ -32,6 +32,7 @@ SUBDIRS         = brush \
 #                  pointer \
                   polygon \
                   process \
+                  qdbusextratypes \
                   qcalendarwidget \
                   qdir-filepaths \
                   qdir-listfiles \

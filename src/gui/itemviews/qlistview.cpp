@@ -223,7 +223,9 @@ QListView::~QListView()
     Setting this property when the view is visible will cause the
     items to be laid out again.
 
-    \sa gridSize, viewMode
+    By default, this property is set to \l Static.
+
+    \sa gridSize, resizeMode, viewMode
 */
 void QListView::setMovement(Movement movement)
 {
@@ -258,6 +260,8 @@ QListView::Movement QListView::movement() const
     Setting this property when the view is visible will cause the
     items to be laid out again.
 
+    By default, this property is set to \l TopToBottom.
+
     \sa viewMode
 */
 void QListView::setFlow(Flow flow)
@@ -285,6 +289,8 @@ QListView::Flow QListView::flow() const
     Setting this property when the view is visible will cause the
     items to be laid out again.
 
+    By default, this property is false.
+
     \sa viewMode
 */
 void QListView::setWrapping(bool enable)
@@ -309,7 +315,9 @@ bool QListView::isWrapping() const
     when the view is resized. If the value is \l Fixed, the items will
     not be laid out when the view is resized.
 
-    \sa viewMode
+    By default, this property is set to \l Fixed.
+
+    \sa movement, gridSize, viewMode
 */
 void QListView::setResizeMode(ResizeMode mode)
 {
@@ -358,6 +366,8 @@ QListView::LayoutMode QListView::layoutMode() const
 
     Setting this property when the view is visible will cause the
     items to be laid out again.
+
+    By default, this property contains a value of 0.
 
     \sa viewMode
 */
@@ -1019,7 +1029,7 @@ void QListView::internalDrag(Qt::DropActions supportedActions)
         }
         QDrag *drag = new QDrag(this);
         drag->setMimeData(d->model->mimeData(indexes));
-        Qt::DropAction action = drag->exec(supportedActions);
+        Qt::DropAction action = drag->exec(supportedActions, Qt::CopyAction);
         d->dynamicListView->draggedItems.clear();
         if (action == Qt::MoveAction)
             d->clearOrRemove();
@@ -1787,6 +1797,9 @@ bool QListView::isIndexHidden(const QModelIndex &index) const
 /*!
     \property QListView::modelColumn
     \brief the column in the model that is visible
+
+    By default, this property contains 0, indicating that the first
+    column in the model will be shown.
 */
 void QListView::setModelColumn(int column)
 {
@@ -1810,7 +1823,9 @@ int QListView::modelColumn() const
 
     This property should only be set to true if it is guaranteed that all items
     in the view have the same size. This enables the view to do some
-    optimizations.
+    optimizations for performance purposes.
+
+    By default, this property is false.
 */
 void QListView::setUniformItemSizes(bool enable)
 {
@@ -1860,10 +1875,13 @@ bool QListView::wordWrap() const
 
     If this property is true then the selection rectangle is visible;
     otherwise it will be hidden.
-    Note that the selection rectangle will only be visible if the selection mode
-    is in a mode where more than one item can be selected, i.e. it will not draw
-    a selection rectangle if the selection mode is QAbstractItemView::SingleSelection.
 
+    \note The selection rectangle will only be visible if the selection mode
+    is in a mode where more than one item can be selected; i.e., it will not
+    draw a selection rectangle if the selection mode is
+    QAbstractItemView::SingleSelection.
+
+    By default, this property is false.
 */
 void QListView::setSelectionRectVisible(bool show)
 {
@@ -2223,6 +2241,8 @@ QListViewItem QStaticListViewBase::indexToListViewItem(const QModelIndex &index)
                      ? contentsSize.width()
                      : segmentPositions.at(segment + 1));
             size.setWidth(right - pos.x());
+        } else { // make the items as wide as the viewport
+            size.setWidth(qMax(size.width(), viewport()->width()));
         }
     }
 

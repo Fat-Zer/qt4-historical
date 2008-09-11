@@ -154,6 +154,8 @@ QStringList QPollingFileSystemWatcherEngine::addPaths(const QStringList &paths,
         if (fi.isDir()) {
             if (!directories->contains(path))
                 directories->append(path);
+            if (!path.endsWith(QLatin1Char('/')))
+                fi = QFileInfo(path + QLatin1Char('/'));
             this->directories.insert(path, fi);
         } else {
             if (!files->contains(path))
@@ -217,6 +219,8 @@ void QPollingFileSystemWatcherEngine::timeout()
         QHash<QString, FileInfo>::iterator x = dit.next();
         QString path = x.key();
         QFileInfo fi(path);
+        if (!path.endsWith(QLatin1Char('/')))
+            fi = QFileInfo(path + QLatin1Char('/'));
         if (!fi.exists()) {
             dit.remove();
             emit directoryChanged(path, true);
@@ -364,11 +368,24 @@ void QFileSystemWatcherPrivate::_q_directoryChanged(const QString &path, bool re
     Note that QFileSystemWatcher stops monitoring files and directories
     once they have been removed from disk.
 
-    \bold{Note:} On systems running a Linux kernel without inotify support,
+    \note On systems running a Linux kernel without inotify support,
     file systems that contain watched paths cannot be unmounted.
 
     \note Windows CE does not support directory monitoring by
     default as this depends on the file system driver installed.
+
+    \note The act of monitoring files and directories for
+    modifications consumes system resources. This implies there is a
+    limit to the number of files and directories your process can
+    monitor simultaneously. On Mac OS and all BSD variants, for
+    example, an open file descriptor is required for each monitored
+    file. The system limits the number of open file descriptors to 256
+    by default. This means that addPath() and addPaths() will fail if
+    your process tries to add more than 256 files or directories to
+    the file system monitor. Also note that your process may have
+    other file descriptors open in addition to the ones for files
+    being monitored, and these other open descriptors also count in
+    the total.
 
     \sa QFile, QDir
 */
@@ -421,14 +438,19 @@ QFileSystemWatcher::~QFileSystemWatcher()
 }
 
 /*!
-    Adds \a path to the file system watcher if \a path exists. The path is
-    not added if it does not exist, or if it is already being monitored by
-    the file system watcher.
+    Adds \a path to the file system watcher if \a path exists. The
+    path is not added if it does not exist, or if it is already being
+    monitored by the file system watcher.
 
     If \a path specifies a directory, the directoryChanged() signal
     will be emitted when \a path is modified or removed from disk;
     otherwise the fileChanged() signal is emitted when \a path is
     modified or removed.
+
+    \note There is a system dependent limit to the number of files and
+    directories that can be monitored simultaneously. If this limit
+    has been reached, \a path will not be added to the file system
+    watcher, and a warning message will be printed to \e{stderr}.
 
     \sa addPaths(), removePath()
 */
@@ -442,14 +464,20 @@ void QFileSystemWatcher::addPath(const QString &path)
 }
 
 /*!
-    Adds each path in \a paths to the file system watcher. Paths are not
-    added if they not exist, or if they are already being monitored by the
-    file system watcher.
+    Adds each path in \a paths to the file system watcher. Paths are
+    not added if they not exist, or if they are already being
+    monitored by the file system watcher.
 
-    If a path specifies a directory, the directoryChanged() signal will
-    be emitted when the path is modified or removed from disk; otherwise
-    the fileChanged() signal is emitted when the path is modified or
-    removed.
+    If a path specifies a directory, the directoryChanged() signal
+    will be emitted when the path is modified or removed from disk;
+    otherwise the fileChanged() signal is emitted when the path is
+    modified or removed.
+
+    \note There is a system dependent limit to the number of files and
+    directories that can be monitored simultaneously. If this limit
+    has been reached, the excess \a paths will not be added to the
+    file system watcher, and a warning message will be printed to
+    \e{stderr} for each path that could not be added.
 
     \sa addPath(), removePaths()
 */

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/styles.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/styles.qdoc -->
 <head>
   <title>Qt 4.4: Implementing Styles and Style Aware Widgets</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Implementing Styles and Style Aware Widgets<br /><span class="subtitle"></span>
 </h1>
 <ul><li><a href="#introduction">Introduction</a></li>
@@ -220,39 +220,39 @@
      QStyleOptionButton opt = d-&gt;getStyleOption();
      p.drawControl(QStyle::CE_CheckBox, opt);</pre>
 <p><a href="qcommonstyle.html">QCommonStyle</a> handles the CE_CheckBox element. The <a href="qcheckbox.html">QCheckBox</a> has two sub elements: SE_CheckBoxIndicator (the checked indicator) and SE_CheckBoxContents (the contents, which is used for the checkbox label). <a href="qcommonstyle.html">QCommonStyle</a> also implements these sub element bounding rectangles. We have a look at the <a href="qcommonstyle.html">QCommonStyle</a> code:</p>
-<pre>             QStyleOptionButton subopt = *btn;
-             subopt.rect = subElementRect(SE_CheckBoxIndicator, btn, widget);
-             drawPrimitive(PE_IndicatorCheckBox, &amp;subopt, p, widget);
-             subopt.rect = subElementRect(SE_CheckBoxContents, btn, widget);
-             drawControl(CE_CheckBoxLabel, &amp;subopt, p, widget);
+<pre>     QStyleOptionButton subopt = *btn;
+     subopt.rect = subElementRect(SE_CheckBoxIndicator, btn, widget);
+     drawPrimitive(PE_IndicatorCheckBox, &amp;subopt, p, widget);
+     subopt.rect = subElementRect(SE_CheckBoxContents, btn, widget);
+     drawControl(CE_CheckBoxLabel, &amp;subopt, p, widget);
 
-             if (btn-&gt;state &amp; State_HasFocus) {
-                 QStyleOptionFocusRect fropt;
-                 fropt.QStyleOption::operator=(*btn);
-                 fropt.rect = subElementRect(SE_CheckBoxFocusRect, btn, widget);
-                 drawPrimitive(PE_FrameFocusRect, &amp;fropt, p, widget);
-             }</pre>
+     if (btn-&gt;state &amp; State_HasFocus) {
+         QStyleOptionFocusRect fropt;
+         fropt.QStyleOption::operator=(*btn);
+         fropt.rect = subElementRect(SE_CheckBoxFocusRect, btn, widget);
+         drawPrimitive(PE_FrameFocusRect, &amp;fropt, p, widget);
+     }</pre>
 <p>As can be seen from the code extract, the common style gets the bounding rectangles of the two sub elements of CE_CheckBox, and then draws them. If the checkbox has focus, the focus frame is also drawn.</p>
 <p>The java style draws CE_CheckBoxIndicator, while <a href="qcommonstyle.html">QCommonStyle</a> handles CE_CheckboxLabel. We will examine each implementation and start with CE_CheckBoxLabel:</p>
-<pre>         const QStyleOptionButton *btn = qstyleoption_cast&lt;const QStyleOptionButton *&gt;(opt)
-             uint alignment = visualAlignment(btn-&gt;direction, Qt::AlignLeft | Qt::AlignVCenter);
+<pre>     const QStyleOptionButton *btn = qstyleoption_cast&lt;const QStyleOptionButton *&gt;(opt);
+     uint alignment = visualAlignment(btn-&gt;direction, Qt::AlignLeft | Qt::AlignVCenter);
 
-             if (!styleHint(SH_UnderlineShortcut, btn, widget))
-                 alignment |= Qt::TextHideMnemonic;
-             QPixmap pix;
-             QRect textRect = btn-&gt;rect;
-             if (!btn-&gt;icon.isNull()) {
-                 pix = btn-&gt;icon.pixmap(btn-&gt;iconSize, btn-&gt;state &amp; State_Enabled ? QIcon::Normal : QIcon::Disabled);
-                 drawItemPixmap(p, btn-&gt;rect, alignment, pix);
-                 if (btn-&gt;direction == Qt::RightToLeft)
-                     textRect.setRight(textRect.right() - btn-&gt;iconSize.width() - 4);
-                 else
-                     textRect.setLeft(textRect.left() + btn-&gt;iconSize.width() + 4);
-             }
-             if (!btn-&gt;text.isEmpty()){
-                 drawItemText(p, textRect, alignment | Qt::TextShowMnemonic,
-                     btn-&gt;palette, btn-&gt;state &amp; State_Enabled, btn-&gt;text, QPalette::WindowText);
-             }</pre>
+     if (!styleHint(SH_UnderlineShortcut, btn, widget))
+         alignment |= Qt::TextHideMnemonic;
+     QPixmap pix;
+     QRect textRect = btn-&gt;rect;
+     if (!btn-&gt;icon.isNull()) {
+         pix = btn-&gt;icon.pixmap(btn-&gt;iconSize, btn-&gt;state &amp; State_Enabled ? QIcon::Normal : QIcon::Disabled);
+         drawItemPixmap(p, btn-&gt;rect, alignment, pix);
+         if (btn-&gt;direction == Qt::RightToLeft)
+             textRect.setRight(textRect.right() - btn-&gt;iconSize.width() - 4);
+         else
+             textRect.setLeft(textRect.left() + btn-&gt;iconSize.width() + 4);
+     }
+     if (!btn-&gt;text.isEmpty()){
+         drawItemText(p, textRect, alignment | Qt::TextShowMnemonic,
+             btn-&gt;palette, btn-&gt;state &amp; State_Enabled, btn-&gt;text, QPalette::WindowText);
+     }</pre>
 <p><a href="qstyle.html#visualAlignment">visualAlignment()</a> adjusts the alignment of text according to the layout direction. We then draw an icon if it exists, and adjust the space left for the text. <a href="qstyle.html#drawItemText">drawItemText()</a> draws the text taking alignment, layout direction, and the mnemonic into account. It also uses the palette to draw the text in the right color.</p>
 <p>The drawing of labels often get somewhat involved. Luckily, it can usually be handled by the base class. The java style implements its own push button label since Java-contrary to windows-center button contents also when the button has an icon. You can examine that implementation if you need an example of reimplementing label drawing.</p>
 <p>We take a look at the java implementation of CE_CheckBoxIndicator in <tt>drawControl()</tt>:</p>
@@ -726,8 +726,8 @@
 <p>For the buttons, <a href="qstyleoptionbutton.html">QStyleOptionButton</a> is used (see <a href="#tool-buttons">Tool Buttons</a> for content description). The dock widget resize handle has a plain <a href="qstyleoption.html">QStyleOption</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

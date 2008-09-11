@@ -215,3 +215,8 @@
     \externalpage http://trolltech.com/products/qt/addons/catalog/4/Utilities/qtsharedmemory/
     \title QtSharedMemory
 */
+
+/*!
+    \externalpage http://doc.trolltech.com/qq/qq21-portingcanvas.html
+    \title Porting to Qt 4.2's Graphics View
+*/

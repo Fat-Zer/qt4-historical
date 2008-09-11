@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/sql/q3sqlform.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/sql/q3sqlform.cpp -->
 <head>
   <title>Qt 4.4: Q3SqlForm Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3SqlForm Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3SqlForm class creates and manages data entry forms tied to SQL databases. <a href="#details">More...</a></p>
@@ -84,30 +84,30 @@
 </ul>
 <p>Note that a Q3SqlForm does not access the database directly, but most often via QSqlFields which are part of a <a href="q3sqlcursor.html">Q3SqlCursor</a>. A <a href="q3sqlcursor.html#insert">Q3SqlCursor::insert</a>(), <a href="q3sqlcursor.html#update">Q3SqlCursor::update</a>() or <a href="q3sqlcursor.html#del">Q3SqlCursor::del</a>() call is needed to actually write values to the database.</p>
 <p>Some sample code to initialize a form successfully:</p>
-<pre>     QLineEdit  myEditor(this);
-     Q3SqlForm   myForm(this);
-     Q3SqlCursor myCursor(&quot;mytable&quot;);
+<pre> QLineEdit  myEditor(this);
+ Q3SqlForm   myForm(this);
+ Q3SqlCursor myCursor(&quot;mytable&quot;);
 
-     <span class="comment">// Execute a query to make the cursor valid</span>
-     myCursor.select();
-     <span class="comment">// Move the cursor to a valid record (the first record)</span>
-     myCursor.next();
-     <span class="comment">// Set the form's record pointer to the cursor's edit buffer (which</span>
-     <span class="comment">// contains the current record's values)</span>
-     myForm.setRecord(myCursor.primeUpdate());
+<span class="comment"> // Execute a query to make the cursor valid</span>
+ myCursor.select();
+<span class="comment"> // Move the cursor to a valid record (the first record)</span>
+ myCursor.next();
+<span class="comment"> // Set the form's record pointer to the cursor's edit buffer (which</span>
+<span class="comment"> // contains the current record's values)</span>
+ myForm.setRecord(myCursor.primeUpdate());
 
-     <span class="comment">// Insert a field into the form that uses myEditor to edit the</span>
-     <span class="comment">// field 'somefield' in 'mytable'</span>
-     myForm.insert(&amp;myEditor, &quot;somefield&quot;);
+<span class="comment"> // Insert a field into the form that uses myEditor to edit the</span>
+<span class="comment"> // field 'somefield' in 'mytable'</span>
+ myForm.insert(&amp;myEditor, &quot;somefield&quot;);
 
-     <span class="comment">// Update myEditor with the value from the mapped database field</span>
-     myForm.readFields();
-     ...
-     <span class="comment">// Let the user edit the form</span>
-     ...
-     <span class="comment">// Update the database</span>
-     myForm.writeFields();  <span class="comment">// Update the cursor's edit buffer from the form</span>
-     myCursor.update();        <span class="comment">// Update the database from the cursor's buffer</span></pre>
+<span class="comment"> // Update myEditor with the value from the mapped database field</span>
+ myForm.readFields();
+ ...
+<span class="comment"> // Let the user edit the form</span>
+ ...
+<span class="comment"> // Update the database</span>
+ myForm.writeFields();  <span class="comment">// Update the cursor's edit buffer from the form</span>
+ myCursor.update();        <span class="comment">// Update the database from the cursor's buffer</span></pre>
 <p>If you want to use custom editors for displaying and editing data fields, you must install a custom <a href="q3sqlpropertymap.html">Q3SqlPropertyMap</a>. The form uses this object to get or set the value of a widget.</p>
 <p>See also <a href="q3sqlform.html#installPropertyMap">installPropertyMap</a>() and <a href="q3sqlpropertymap.html">Q3SqlPropertyMap</a>.</p>
 <hr />
@@ -172,8 +172,8 @@
 <p>Updates the SQL fields with values from the widgets they are mapped to. To actually update the database with the contents of the record buffer, use <a href="q3sqlcursor.html#insert">Q3SqlCursor::insert</a>(), <a href="q3sqlcursor.html#update">Q3SqlCursor::update</a>() or <a href="q3sqlcursor.html#del">Q3SqlCursor::del</a>() as appropriate.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

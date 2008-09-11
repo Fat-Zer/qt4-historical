@@ -93,22 +93,29 @@ QT_BEGIN_NAMESPACE
     When the content is changed using any of these functions, any
     previous content is cleared.
 
-    The look of a QLabel can be tuned in several ways. All the
-    settings of QFrame are available for specifying a widget frame.
+    By default, labels display \l{alignment}{left-aligned, vertically-centered}
+    text and images, where any tabs in the text to be displayed are
+    \l{Qt::TextExpandTabs}{automatically expanded}. However, the look
+    of a QLabel can be adjusted and fine-tuned in several ways.
+
     The positioning of the content within the QLabel widget area can
     be tuned with setAlignment() and setIndent(). Text content can
-    also wrap lines along word bounderies with setWordWrap(). For
+    also wrap lines along word boundaries with setWordWrap(). For
     example, this code sets up a sunken panel with a two-line text in
     the bottom right corner (both lines being flush with the right
     side of the label):
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qlabel.cpp 0
+
+    The properties and functions QLabel inherits from QFrame can also
+    be used to specify the widget frame to be used for any given label.
 
     A QLabel is often used as a label for an interactive widget. For
     this use QLabel provides a useful mechanism for adding an
     mnemonic (see QKeySequence) that will set the keyboard focus to
     the other widget (called the QLabel's "buddy"). For example:
-    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 1
+
+    \snippet doc/src/snippets/code/src_gui_widgets_qlabel.cpp 1
 
     In this example, keyboard focus is transferred to the label's
     buddy (the QLineEdit) when the user presses Alt+P. If the buddy
@@ -475,6 +482,8 @@ void QLabel::setNum(double num)
     \property QLabel::alignment
     \brief the alignment of the label's contents
 
+    By default, the contents of the label are left-aligned and vertically-centered.
+
     \sa text
 */
 
@@ -517,6 +526,10 @@ Qt::Alignment QLabel::alignment() const
 
     If this property is true then label text is wrapped where
     necessary at word-breaks; otherwise it is not wrapped at all.
+
+    By default, word wrap is disabled.
+
+    \sa text
 */
 void QLabel::setWordWrap(bool on)
 {
@@ -549,6 +562,9 @@ bool QLabel::wordWrap() const
     the effective indent becomes 0. If frameWidth() is greater than 0,
     the effective indent becomes half the width of the "x" character
     of the widget's current font().
+
+    By default, the indent is -1, meaning that an effective indent is
+    calculating in the manner described above.
 
     \sa alignment, margin, frameWidth(), font()
 */
@@ -653,7 +669,9 @@ QSize QLabelPrivate::sizeForWidth(int w) const
             // restore state
             control->setTextWidth(oldTextWidth);
         } else {
-            int flags = align;
+            // Turn off center alignment in order to avoid rounding errors for centering,
+            // since centering involves a division by 2. At the end, all we want is the size.
+            int flags = align & ~(Qt::AlignVCenter | Qt::AlignHCenter);
             if (hasShortcut) {
                 flags |= Qt::TextShowMnemonic;
                 QStyleOption opt;
@@ -1080,15 +1098,15 @@ void QLabelPrivate::updateLabel()
     the keyboard focus is transferred to the label's buddy widget.
 
     The buddy mechanism is only available for QLabels that contain
-    text in which one character is prefixed with an ampersand,
-    '&'.  This character is set as the shortcut key. See the \l
-    QKeySequence::mnemonic documentation for details (to
-    display an actual ampersand, use '&&').
+    text in which one character is prefixed with an ampersand, '&'.
+    This character is set as the shortcut key. See the \l
+    QKeySequence::mnemonic() documentation for details (to display an
+    actual ampersand, use '&&').
 
     In a dialog, you might create two data entry widgets and a label
     for each, and set up the geometry layout so each label is just to
     the left of its data entry widget (its "buddy"), for example:
-    \snippet doc/src/snippets/code/src.gui.widgets.qlabel.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qlabel.cpp 2
 
     With the code above, the focus jumps to the Name field when the
     user presses Alt+N, and to the Phone field when the user presses
@@ -1434,8 +1452,7 @@ void QLabelPrivate::ensureTextLayouted() const
         QTextDocument *doc = control->document();
         QTextOption opt = doc->defaultTextOption();
 
-        Qt::Alignment align = QStyle::visualAlignment(q->layoutDirection(), QFlag(this->align));
-        opt.setAlignment(align);
+        opt.setAlignment(QFlag(this->align));
 
         if (this->align & Qt::TextWordWrap)
             opt.setWrapMode(QTextOption::WordWrap);

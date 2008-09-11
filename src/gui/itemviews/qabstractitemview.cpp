@@ -166,7 +166,7 @@ void QAbstractItemViewPrivate::init()
     setVerticalScrollMode(). To set the range of the scroll bars, you
     can, for example, reimplement the view's resizeEvent() function:
 
-    \snippet doc/src/snippets/code/src.gui.itemviews.qabstractitemview.cpp 0
+    \snippet doc/src/snippets/code/src_gui_itemviews_qabstractitemview.cpp 0
 
     Note that the range is not updated until the widget is shown.
 
@@ -1988,7 +1988,7 @@ void QAbstractItemView::keyPressEvent(QKeyEvent *event)
     if (event == QKeySequence::Copy) {
         QVariant variant;
         if (d->model)
-            d->model->data(currentIndex(), Qt::DisplayRole);
+            variant = d->model->data(currentIndex(), Qt::DisplayRole);
         if (variant.type() == QVariant::String)
             QApplication::clipboard()->setText(variant.toString());
         event->accept();

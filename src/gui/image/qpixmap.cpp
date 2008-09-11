@@ -76,9 +76,7 @@
 # include <private/qpixmap_x11_p.h>
 #endif
 
-#if defined(Q_OS_WIN) && !defined(QT_NO_DIRECT3D)
-# include "qpixmap_raster_p.h"
-#endif
+#include "qpixmap_raster_p.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -154,10 +152,13 @@ QPixmap::QPixmap()
 /*!
     \fn QPixmap::QPixmap(int width, int height)
 
-    Constructs a pixmap with the given \a width and \a height.
+    Constructs a pixmap with the given \a width and \a height. If
+    either \a width or \a height is zero, a null pixmap is
+    constructed.
 
-    The content of the pixmap is uninitialized.  If either \a width or
-    \a height is zero, a null pixmap is constructed.
+    \warning This will create a QPixmap with uninitialized data. Call
+    fill() to fill the pixmap with an appropriate color before drawing
+    onto it with QPainter.
 
     \sa isNull()
 */
@@ -175,6 +176,10 @@ QPixmap::QPixmap(int w, int h)
     \overload
 
     Constructs a pixmap of the given \a size.
+
+    \warning This will create a QPixmap with uninitialized data. Call
+    fill() to fill the pixmap with an appropriate color before drawing
+    onto it with QPainter.
 */
 
 QPixmap::QPixmap(const QSize &size)
@@ -287,7 +292,7 @@ QPixmap::QPixmap(const QPixmap &pixmap)
     Note that it's possible to squeeze the XPM variable a little bit
     by using an unusual declaration:
 
-    \snippet doc/src/snippets/code/src.gui.image.qpixmap.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qpixmap.cpp 0
 
     The extra \c const makes the entire definition read-only, which is
     slightly more efficient (for example, when the code is in a shared
@@ -574,9 +579,8 @@ void QPixmap::resize_helper(const QSize &s)
     if (size() == s)
         return;
 
-    int d = data->depth();
     // Create new pixmap
-    QPixmap pm(QSize(w, h), d == 1 ? QPixmapData::BitmapType : QPixmapData::PixmapType);
+    QPixmap pm(QSize(w, h), data->type);
     bool uninit = false;
 #if defined(Q_WS_X11)
     QX11PixmapData *x11Data = static_cast<QX11PixmapData*>(data);
@@ -693,7 +697,7 @@ void QPixmap::setMask(const QBitmap &mask)
     The mask may not be perfect but it should be reasonable, so you
     can do things such as the following:
 
-    \snippet doc/src/snippets/code/src.gui.image.qpixmap.cpp 1
+    \snippet doc/src/snippets/code/src_gui_image_qpixmap.cpp 1
 
     This function is slow because it involves converting to/from a
     QImage, and non-trivial computations.
@@ -1808,12 +1812,16 @@ extern _qt_pixmap_cleanup_hook_64 qt_pixmap_cleanup_hook_64;
 */
 void QPixmap::detach()
 {
+    if (data->classId() == QPixmapData::RasterClass) {
+        QRasterPixmapData *rasterData = static_cast<QRasterPixmapData*>(data);
+        rasterData->image.detach();
 #if defined(Q_WS_WIN) && !defined(QT_NO_DIRECT3D)
-    QRasterPixmapData *rasterData = static_cast<QRasterPixmapData*>(data);
-    if (rasterData->texture)
-        rasterData->texture->Release();
-    rasterData->texture = 0;
+        if (rasterData->texture) {
+            rasterData->texture->Release();
+            rasterData->texture = 0;
+        }
 #endif
+    }
 
     if (qt_pixmap_cleanup_hook_64 && data->ref == 1)
         qt_pixmap_cleanup_hook_64(cacheKey());

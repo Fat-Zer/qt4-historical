@@ -127,7 +127,7 @@ void MainWindow::findItems()
     QTreeWidgetItemIterator it(treeWidget);
     while (*it) {
         if ((*it)->text(0) == itemText)
-            treeWidget->setItemSelected(*it, true);
+            (*it)->setSelected(true);
         ++it;
     }
 //! [0]

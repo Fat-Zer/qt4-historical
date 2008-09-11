@@ -869,14 +869,18 @@ Qt::DropActions QTableModel::supportedDropActions() const
 /*!
     \class QTableWidgetSelectionRange
 
-    \brief The QTableWidgetSelectionRange class provides a container for
-    storing a selection range in a QTableWidget.
+    \brief The QTableWidgetSelectionRange class provides a way to interact with
+    selection in a model without using model indexes and a selection model.
 
     \ingroup model-view
 
     The QTableWidgetSelectionRange class stores the top left and bottom
     right rows and columns of a selection range in a table. The
     selections in the table may consist of several selection ranges.
+
+    \note If the item within the selection range is marked as not selectable,
+    e.g., \c{itemFlags() & Qt::ItemIsSelectable == 0} then it will not appear
+    in the selection range.
 
     \sa QTableWidget
 */
@@ -1157,7 +1161,9 @@ void QTableWidgetItem::setFlags(Qt::ItemFlags aflags)
 /*!
     \fn void QTableWidgetItem::setStatusTip(const QString &statusTip)
 
-    Sets the item's status tip to the string specified by \a statusTip.
+    Sets the status tip for the table item to the text specified by
+    \a statusTip. QTableWidget mouse tracking needs to be enabled for this
+    feature to work.
 
     \sa statusTip() setToolTip() setWhatsThis()
 */
@@ -1560,11 +1566,17 @@ QTableWidgetItem &QTableWidgetItem::operator=(const QTableWidgetItem &other)
 /*!
     \property QTableWidget::rowCount
     \brief the number of rows in the table
+
+    By default, for a table constructed without row and column counts,
+    this property contains a value of 0.
 */
 
 /*!
     \property QTableWidget::columnCount
     \brief the number of columns in the table
+
+    By default, for a table constructed without row and column counts,
+    this property contains a value of 0.
 */
 
 void QTableWidgetPrivate::setup()
@@ -1960,8 +1972,12 @@ void QTableWidget::setItem(int row, int column, QTableWidgetItem *item)
 {
     Q_D(QTableWidget);
     if (item) {
-        item->view = this;
-        d->model()->setItem(row, column, item);
+        if (item->view != 0) {
+            qWarning("QTableWidget: cannot insert an item that is already owned by another QTableWidget");
+        } else {
+            item->view = this;
+            d->model()->setItem(row, column, item);
+        }
     } else {
         delete takeItem(row, column);
     }

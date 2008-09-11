@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qstandarditemmodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/itemviews/qstandarditemmodel.cpp -->
 <head>
   <title>Qt 4.4: QStandardItemModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QStandardItemModel Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QStandardItemModel class provides a generic model for storing custom data. <a href="#details">More...</a></p>
@@ -101,34 +101,34 @@
 <p>You can search for items in the model with <a href="qstandarditemmodel.html#findItems">findItems</a>(), and sort the model by calling <a href="qabstractitemmodel.html#sort">sort</a>().</p>
 <p>Call <a href="qstandarditemmodel.html#clear">clear</a>() to remove all items from the model.</p>
 <p>An example usage of QStandardItemModel to create a table:</p>
-<pre>             QStandardItemModel model(4, 4);
-             for (int row = 0; row &lt; 4; ++row) {
-                 for (int column = 0; column &lt; 4; ++column) {
-                     QStandardItem *item = new QStandardItem(QString(&quot;row %0, column %1&quot;).arg(row).arg(column));
-                     model.setItem(row, column, item);
-                 }
-             }</pre>
+<pre> QStandardItemModel model(4, 4);
+ for (int row = 0; row &lt; 4; ++row) {
+     for (int column = 0; column &lt; 4; ++column) {
+         QStandardItem *item = new QStandardItem(QString(&quot;row %0, column %1&quot;).arg(row).arg(column));
+         model.setItem(row, column, item);
+     }
+ }</pre>
 <p>An example usage of QStandardItemModel to create a tree:</p>
-<pre>             QStandardItemModel model;
-             QStandardItem *parentItem = model.invisibleRootItem();
-             for (int i = 0; i &lt; 4; ++i) {
-                 QStandardItem *item = new QStandardItem(QString(&quot;item %0&quot;).arg(i));
-                 parentItem-&gt;appendRow(item);
-                 parentItem = item;
-             }</pre>
+<pre> QStandardItemModel model;
+ QStandardItem *parentItem = model.invisibleRootItem();
+ for (int i = 0; i &lt; 4; ++i) {
+     QStandardItem *item = new QStandardItem(QString(&quot;item %0&quot;).arg(i));
+     parentItem-&gt;appendRow(item);
+     parentItem = item;
+ }</pre>
 <p>After setting the model on a view, you typically want to react to user actions, such as an item being clicked. Since a <a href="qabstractitemview.html">QAbstractItemView</a> provides <a href="qmodelindex.html">QModelIndex</a>-based signals and functions, you need a way to obtain the <a href="qstandarditem.html">QStandardItem</a> that corresponds to a given <a href="qmodelindex.html">QModelIndex</a>, and vice versa. <a href="qstandarditemmodel.html#itemFromIndex">itemFromIndex</a>() and <a href="qstandarditemmodel.html#indexFromItem">indexFromItem</a>() provide this mapping. Typical usage of <a href="qstandarditemmodel.html#itemFromIndex">itemFromIndex</a>() includes obtaining the item at the current index in a view, and obtaining the item that corresponds to an index carried by a <a href="qabstractitemview.html">QAbstractItemView</a> signal, such as <a href="qabstractitemview.html#clicked">QAbstractItemView::clicked</a>(). First you connect the view's signal to a slot in your class:</p>
-<pre>         QTreeView *treeView = new QTreeView(this);
-         treeView-&gt;setModel(myStandardItemModel);
-         connect(treeView, SIGNAL(clicked(QModelIndex)),
-                 this, SLOT(clicked(QModelIndex)));</pre>
+<pre> QTreeView *treeView = new QTreeView(this);
+ treeView-&gt;setModel(myStandardItemModel);
+ connect(treeView, SIGNAL(clicked(QModelIndex)),
+         this, SLOT(clicked(QModelIndex)));</pre>
 <p>When you receive the signal, you call <a href="qstandarditemmodel.html#itemFromIndex">itemFromIndex</a>() on the given model index to get a pointer to the item:</p>
-<pre>         void MyWidget::clicked(const QModelIndex &amp;index)
-         {
-             QStandardItem *item = myStandardItemModel-&gt;itemFromIndex(index);
-             <span class="comment">// Do stuff with the item ...</span>
-         }</pre>
+<pre> void MyWidget::clicked(const QModelIndex &amp;index)
+ {
+     QStandardItem *item = myStandardItemModel-&gt;itemFromIndex(index);
+     <span class="comment">// Do stuff with the item ...</span>
+ }</pre>
 <p>Conversely, you must obtain the <a href="qmodelindex.html">QModelIndex</a> of an item when you want to invoke a model/view function that takes an index as argument. You can obtain the index either by using the model's <a href="qstandarditemmodel.html#indexFromItem">indexFromItem</a>() function, or, equivalently, by calling <a href="qstandarditem.html#index">QStandardItem::index</a>():</p>
-<pre>         treeView-&gt;scrollTo(item-&gt;index());</pre>
+<pre> treeView-&gt;scrollTo(item-&gt;index());</pre>
 <p>You are, of course, not required to use the item-based approach; you could instead rely entirely on the <a href="qabstractitemmodel.html">QAbstractItemModel</a> interface when working with the model, or use a combination of the two as appropriate.</p>
 <p>See also <a href="qstandarditem.html">QStandardItem</a>, <a href="model-view-programming.html">Model/View Programming</a>, <a href="qabstractitemmodel.html">QAbstractItemModel</a>, <a href="itemviews-simpletreemodel.html">Simple Tree Model example</a>, and <a href="model-view-convenience.html">Item View Convenience Classes</a>.</p>
 <hr />
@@ -314,8 +314,8 @@
 <p>See also <a href="qstandarditemmodel.html#setVerticalHeaderItem">setVerticalHeaderItem</a>() and <a href="qstandarditemmodel.html#horizontalHeaderItem">horizontalHeaderItem</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

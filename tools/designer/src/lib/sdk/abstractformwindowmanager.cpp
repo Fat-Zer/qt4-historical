@@ -63,7 +63,7 @@ QT_BEGIN_NAMESPACE
     the QDesignerFormEditorInterface::formWindowManager()
     function. For example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindowmanager.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractformwindowmanager.cpp 0
 
     When implementing a custom widget plugin, a pointer to \QD's
     current QDesignerFormEditorInterface object (\c formEditor in the

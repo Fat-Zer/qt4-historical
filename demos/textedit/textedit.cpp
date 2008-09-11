@@ -474,7 +474,9 @@ void TextEdit::filePrintPreview()
 
 void TextEdit::printPreview(QPrinter *printer)
 {
-#ifndef QT_NO_PRINTER
+#ifdef QT_NO_PRINTER
+    Q_UNUSED(printer);
+#else
     textEdit->print(printer);
 #endif
 }

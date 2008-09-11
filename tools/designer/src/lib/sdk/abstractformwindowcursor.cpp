@@ -70,7 +70,7 @@ QT_BEGIN_NAMESPACE
     QDesignerFormWindowInterface::findFormWindow() functions. For
     example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindowcursor.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractformwindowcursor.cpp 0
 
     You can retrieve any of \QD's current form windows through
     \QD's \l {QDesignerFormWindowManagerInterface}{form window

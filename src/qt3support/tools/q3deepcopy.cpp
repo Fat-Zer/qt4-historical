@@ -59,16 +59,16 @@ QT_BEGIN_NAMESPACE
     use and for maximum speed. In the example below, \c s1, \c s2, \c
     s3, \c s4 and \c s5 share data.
 
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3deepcopy.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3deepcopy.cpp 0
 
     Q3DeepCopy can be used several ways to ensure that an object
     references unique, unshared data. In the example below, \c s1, \c
     s2 and \c s5 share data, while neither \c s3 nor \c s4 share data.
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3deepcopy.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3deepcopy.cpp 1
 
     In the example below, \c s1, \c s2 and \c s5 share data, and \c s3
     and \c s4 share data.
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3deepcopy.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3deepcopy.cpp 2
 
     Q3DeepCopy can also provide safety in multithreaded applications
     that use shared classes. In the example below, the variable \c
@@ -77,7 +77,7 @@ QT_BEGIN_NAMESPACE
     get a unique copy of the data, and that any assignments to \c
     global_string will result in a deep copy.
 
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3deepcopy.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3deepcopy.cpp 3
 
     \warning It is the application developer's responsibility to
     protect the object shared across multiple threads.

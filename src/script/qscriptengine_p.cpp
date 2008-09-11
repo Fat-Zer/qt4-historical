@@ -1065,7 +1065,7 @@ QString QScriptEnginePrivate::toString_helper(qsreal d)
 
         else if (result[0] >= '0' && result[0] <= '9') {
             if (length > 1)
-                buf.insert(1, '.');
+                buf.insert(1 + sign, '.');
 
             buf += 'e';
             buf += (decpt >= 0) ? '+' : '-';
@@ -1791,7 +1791,7 @@ static QScriptValueImpl __setupPackage__(QScriptContextPrivate *ctx,
 
 QScriptValueImpl QScriptEnginePrivate::importExtension(const QString &extension)
 {
-#if defined(QT_NO_QOBJECT) || defined(QT_NO_LIBRARY)
+#if defined(QT_NO_QOBJECT) || defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     Q_UNUSED(extension);
 #else
     Q_Q(QScriptEngine);
@@ -1946,7 +1946,7 @@ QScriptValueImpl QScriptEnginePrivate::importExtension(const QString &extension)
 
 QStringList QScriptEnginePrivate::availableExtensions() const
 {
-#if defined(QT_NO_QOBJECT) || defined(QT_NO_LIBRARY)
+#if defined(QT_NO_QOBJECT) || defined(QT_NO_LIBRARY) || defined(QT_NO_SETTINGS)
     return QStringList();
 #else
     QCoreApplication *app = QCoreApplication::instance();

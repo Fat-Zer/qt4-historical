@@ -103,7 +103,7 @@ public:
     by preceding the preferred character with an ampersand. For
     example:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qcheckbox.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qcheckbox.cpp 0
 
     In this example the shortcut is \e{Alt+A}. See the \l
     {QShortcut#mnemonic}{QShortcut} documentation for details (to

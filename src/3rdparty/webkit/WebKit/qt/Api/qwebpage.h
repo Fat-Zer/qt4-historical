@@ -175,7 +175,9 @@ public:
     QWidget *view() const;
 
     bool isModified() const;
+#ifndef QT_NO_UNDOSTACK
     QUndoStack *undoStack() const;
+#endif
 
 #if QT_VERSION < 0x040400 && !defined(qdoc)
     void setNetworkInterface(QWebNetworkInterface *interface);
@@ -222,7 +224,9 @@ public:
     void setPalette(const QPalette &palette);
     QPalette palette() const;
 
+#ifndef QT_NO_CONTEXTMENU
     bool swallowContextMenuEvent(QContextMenuEvent *event);
+#endif
     void updatePositionDependentActions(const QPoint &pos);
 
     enum Extension {
@@ -285,6 +289,7 @@ private:
 
     friend class QWebFrame;
     friend class QWebPagePrivate;
+    friend class QWebView;
     friend class WebCore::ChromeClientQt;
     friend class WebCore::EditorClientQt;
     friend class WebCore::FrameLoaderClientQt;

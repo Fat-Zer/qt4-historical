@@ -1773,7 +1773,7 @@ void QtToolBarListWidget::dropEvent(QDropEvent *event)
     All you need to do to use QtToolBarDialog is to specify an
     QtToolBarManager instance and call the QDialog::exec() slot:
 
-    \snippet doc/src/snippets/code/tools.shared.qttoolbardialog.qttoolbardialog.cpp 0
+    \snippet doc/src/snippets/code/tools_shared_qttoolbardialog_qttoolbardialog.cpp 0
 
     \sa QtToolBarManager
 */

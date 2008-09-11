@@ -69,10 +69,12 @@ AtomicValue::Ptr Decimal::fromLexical(const QString &strNumeric)
     const QString strNumericTrimmed(strNumeric.trimmed());
 
     /* Block these out, as QString::toDouble() supports them. */
-    if(strNumericTrimmed.compare(QLatin1String("-INF"), Qt::CaseInsensitive) == 0   ||
-       strNumericTrimmed.compare(QLatin1String("INF"), Qt::CaseInsensitive)  == 0   ||
-       strNumericTrimmed.compare(QLatin1String("+INF"), Qt::CaseInsensitive)  == 0   ||
-       strNumericTrimmed.compare(QLatin1String("nan"), Qt::CaseInsensitive)  == 0)
+    if(strNumericTrimmed.compare(QLatin1String("-INF"), Qt::CaseInsensitive) == 0
+       || strNumericTrimmed.compare(QLatin1String("INF"), Qt::CaseInsensitive)  == 0
+       || strNumericTrimmed.compare(QLatin1String("+INF"), Qt::CaseInsensitive)  == 0
+       || strNumericTrimmed.compare(QLatin1String("nan"), Qt::CaseInsensitive)  == 0
+       || strNumericTrimmed.contains(QLatin1Char('e'))
+       || strNumericTrimmed.contains(QLatin1Char('E')))
     {
         return ValidationError::createError();
     }

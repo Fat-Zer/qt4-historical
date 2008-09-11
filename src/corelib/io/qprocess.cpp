@@ -841,7 +841,7 @@ QProcess::ProcessChannelMode QProcess::processChannelMode() const
     error channels to the \a mode specified.
     This mode will be used the next time start() is called. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 0
 
     \sa readChannelMode(), ProcessChannelMode, setReadChannel()
 */
@@ -918,7 +918,7 @@ void QProcess::closeReadChannel(ProcessChannel channel)
     Unix and Windows. But it will not display the text data until
     QProcess's write channel has been closed. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 1
 
     The write channel is implicitly opened when start() is called.
 
@@ -1020,10 +1020,10 @@ void QProcess::setStandardErrorFile(const QString &fileName, OpenMode mode)
     destination process' standard input.
 
     The following shell command:
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 2
 
     Can be accomplished with QProcesses with the following code:
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 3
 */
 void QProcess::setStandardOutputProcess(QProcess *destination)
 {
@@ -1327,7 +1327,7 @@ void QProcess::setProcessState(ProcessState state)
     \e execve()). Reimplement this function to do last minute initialization
     of the child process. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 4
 
     \warning This function is called by QProcess on Unix and Mac OS X
     only. On Windows, it is not called.
@@ -1563,19 +1563,19 @@ static QStringList parseCombinedArgString(const QString &program)
     arguments. The arguments are separated by one or more
     spaces. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 5
 
     The \a program string can also contain quotes, to ensure that arguments
     containing spaces are correctly supplied to the new process. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 6
 
     Note that, on Windows, quotes need to be both escaped and quoted.
     For example, the above code would be specified in the following
     way to ensure that \c{"My Documents"} is used as the argument to
     the \c dir executable:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 7
 
     The OpenMode is set to \a mode.
 */
@@ -1768,7 +1768,7 @@ QT_END_INCLUDE_NAMESPACE
     Returns the environment of the calling process as a list of
     key=value pairs. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qprocess.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_io_qprocess.cpp 8
 
     \sa environment(), setEnvironment()
 */

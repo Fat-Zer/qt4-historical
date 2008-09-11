@@ -170,7 +170,7 @@
     file, if present. The file defines additional fonts available to the
     application, and has the following format:
 
-    \snippet doc/src/snippets/code/doc.src.emb-fonts.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_emb-fonts.qdoc 0
 
     \table 100%
     \header \o Field \o Description

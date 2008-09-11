@@ -1,4 +1,4 @@
-QT += sql xml
+QT += sql xml network
 TEMPLATE = lib
 TARGET = QtHelp
 DEFINES += QHELP_LIB QT_CLUCENE_SUPPORT

@@ -43,7 +43,7 @@
 
 /****************************************************************************
 **
-** Qt/Mac documentation
+** Qt for Mac OS X documentation
 **
 ** Copyright (C) 2002-2008 Trolltech ASA. All rights reserved.
 **
@@ -88,19 +88,19 @@
 
 /*!
     \page qtmac-as-native.html
-    \title Qt/Mac is Mac OS X Native
-    \brief An explanation of Qt/Mac's native features on Mac OS X.
+    \title Qt is Mac OS X Native
+    \brief An explanation of Qt's native features on Mac OS X.
     \ingroup platform-notes
 
     This document explains what makes an application native on Mac OS X.
-    It shows the areas where Qt/Mac is compliant, and the grey areas where
+    It shows the areas where Qt is compliant, and the grey areas where
     compliance is more questionable. (See also the document 
-    \l{mac-differences.html}{Qt/Mac-Specific Issues}.)
+    \l{mac-differences.html}{Qt for Mac OS X - Specific Issues}.)
 
     Normally when referring to a native Mac application, one really means an
     application that talks directly to the underlying window system, rather
     than one that uses some intermediary (for example Apple's X11 server, or a
-    web browser). Qt/Mac applications run as first class citizens, just like
+    web browser). Qt applications run as first class citizens, just like
     Cocoa, and Carbon applications. In fact, we use Carbon and HIView
     internally to communicate with OS X.
 
@@ -111,14 +111,14 @@
 
     \section1 The Global Menu Bar
 
-    Qt/Mac does this via the QMenuBar abstraction. Mac users expect to
-    have a menu bar at the top of the screen and Qt/Mac honors this.
+    Qt does this via the QMenuBar abstraction. Mac users expect to
+    have a menu bar at the top of the screen and Qt honors this.
 
     Additionally, users expect certain conventions to be respected, for
     example the application menu should contain About, Preferences,
-    Quit, etc. Qt/Mac handles this automatically, although it does not
+    Quit, etc. Qt handles this automatically, although it does not
     provide a means of interacting directly with the application menu.
-    (By doing this automatically, Qt/Mac makes it easier to port Qt/Mac
+    (By doing this automatically, Qt makes it easier to port Qt
     applications to other platforms.)
 
     \section1 Aqua
@@ -131,15 +131,15 @@
     \list
     \i \e{Aqua look}
 
-      As with Cocoa/Carbon, Qt/Mac provides widgets that look like those
-      described in the Human Interface Descriptions. Qt/Mac's widgets use
+      As with Cocoa/Carbon, Qt provides widgets that look like those
+      described in the Human Interface Descriptions. Qt's widgets use
       Appearance Manager on Mac OS X 10.2 and the new HIThemes on Mac OS X 10.3
       and higher to implement the look, in other words we use Apple's own API's
       for doing the rendering.
 
     \i \e{Aqua feel}
 
-      This is a bit more subjective, but certainly Qt/Mac strives to
+      This is a bit more subjective, but certainly Qt strives to
       provide the same feel as any Mac OS X application (and we
       consider situations where it doesn't achieve this to be bugs).
       Of course Qt has other concerns to bear in mind, especially
@@ -152,14 +152,14 @@
     \i \e{Aqua guides}
 
       This is the most subjective, but there are many suggestions and
-      guidelines in the Aqua style guidelines. This is the area where Qt/Mac is
+      guidelines in the Aqua style guidelines. This is the area where Qt is
       of least assistance. The decisions that must be made to conform (widget
       sizes, widget layouts with respect to other widgets, window margins,
       placement of OK and Cancel, etc) must be made based on the user
       experience demanded by your application. If your user base is small or
       mostly comes from the Windows or Unix worlds, these are minor issues much
-      less important than trying to make a mass market product. Qt/Mac is fully
-      API compatible with Qt/Windows and Qt/X11, but Mac OS X is a
+      less important than trying to make a mass market product. Qt for Mac OS X
+      is fully API compatible with Qt for Windows and X11, but Mac OS X is a
       significantly different platform to Windows and some special
       considerations must be made based on your audience.
 
@@ -181,18 +181,18 @@
     Although many users never use this, some users will only interact with your
     applications via assistive devices. With Qt the aim is to make this
     automatic in your application so that it conforms to accepted practice on
-    its platform. Qt/Mac uses Apple's accessibility framework to provide access
+    its platform. Qt uses Apple's accessibility framework to provide access
     to users with diabilities.
 
     \section1 Development Tools
 
     Mac OS X developers expect a certain level of interopability
     between their development toolkit and the platform's developer
-    tools (for example Visual Studio, gmake, etc). Qt/Mac supports both Unix
+    tools (for example Visual Studio, gmake, etc). Qt supports both Unix
     style Makefiles, and ProjectBuilder/Xcode project files by using
     the \l qmake tool. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtmac-as-native.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtmac-as-native.qdoc 0
 
     will generate an Xcode project file from project.pro. With \l qmake
     you do not have to worry about rules for Qt's preprocessors (\l moc

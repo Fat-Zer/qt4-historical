@@ -41,21 +41,72 @@
 **
 ****************************************************************************/
 
+#include <QtCore/QBuffer>
+
 #include <QtGui/QLabel>
 #include <QtGui/QPushButton>
 #include <QtGui/QLayout>
 #include <QtGui/QApplication>
 #include <QtGui/QDesktopWidget>
+#include <QtGui/QMessageBox>
+#include <QtGui/QDesktopServices>
 
 #include "aboutdialog.h"
 
 QT_BEGIN_NAMESPACE
 
+AboutLabel::AboutLabel(QWidget *parent)
+    : QTextBrowser(parent)
+{
+    setFrameStyle(QFrame::NoFrame);
+    QPalette p;
+    p.setColor(QPalette::Base, p.color(QPalette::Background));
+    setPalette(p);
+}
+
+void AboutLabel::setText(const QString &text, const QByteArray &resources)
+{
+    QDataStream in(resources);
+    in >> m_resourceMap;
+    
+    QTextBrowser::setText(text);
+}
+
+QSize AboutLabel::minimumSizeHint() const
+{
+    QTextDocument *doc = document();
+    doc->adjustSize();
+    return QSize(int(doc->size().width()), int(doc->size().height()));
+}
+
+QVariant AboutLabel::loadResource(int type, const QUrl &name)
+{
+    if (type == 2 || type == 3) {
+        if (m_resourceMap.contains(name.toString())) {
+            return m_resourceMap.value(name.toString());
+        }
+    }
+    return QVariant();
+}
+
+void AboutLabel::setSource(const QUrl &url)
+{
+    if (url.isValid() 
+        && (url.scheme() == QLatin1String("http") || url.scheme() == QLatin1String("ftp") 
+            || url.scheme() == QLatin1String("mailto") || url.path().endsWith(QLatin1String("pdf")))) {
+        if (!QDesktopServices::openUrl(url)) {
+            QMessageBox::warning(this, tr("Warning"),
+                         tr("Unable to launch external application.\n"),
+                         tr("OK"));
+        }
+    }
+}
+
 AboutDialog::AboutDialog(QWidget *parent)
     : QDialog(parent, Qt::MSWindowsFixedSizeDialogHint|Qt::WindowTitleHint|Qt::WindowSystemMenuHint)
 {
     m_pixmapLabel = 0;
-    m_textLabel = new QLabel();
+    m_aboutLabel = new AboutLabel();
     
     m_closeButton = new QPushButton();
     m_closeButton->setText(tr("&Close"));
@@ -63,16 +114,16 @@ AboutDialog::AboutDialog(QWidget *parent)
         this, SLOT(close()));
 
     m_layout = new QGridLayout(this);
-    m_layout->addWidget(m_textLabel, 1, 0, 1, -1);
+    m_layout->addWidget(m_aboutLabel, 1, 0, 1, -1);
     m_layout->addItem(new QSpacerItem(20, 10, QSizePolicy::Minimum, QSizePolicy::Fixed), 2, 1, 1, 1);
     m_layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), 3, 0, 1, 1);
     m_layout->addWidget(m_closeButton, 3, 1, 1, 1);
     m_layout->addItem(new QSpacerItem(20, 20, QSizePolicy::Expanding), 3, 2, 1, 1);    
 }
 
-void AboutDialog::setText(const QString &text)
+void AboutDialog::setText(const QString &text, const QByteArray &resources)
 {
-    m_textLabel->setText(text);
+    m_aboutLabel->setText(text, resources);
     updateSize();
 }
 
@@ -86,6 +137,11 @@ void AboutDialog::setPixmap(const QPixmap &pixmap)
     updateSize();
 }
 
+QString AboutDialog::documentTitle() const
+{
+    return m_aboutLabel->documentTitle();
+}
+
 void AboutDialog::updateSize()
 {
     QSize screenSize = QApplication::desktop()->availableGeometry(QCursor::pos()).size();
@@ -95,14 +151,11 @@ void AboutDialog::updateSize()
     limit = qMin(screenSize.width()/2, 420);
 #endif
 
-    m_textLabel->setWordWrap(false);
     layout()->activate();
     int width = layout()->totalMinimumSize().width();
 
-    if (width > limit) {
-        m_textLabel->setWordWrap(true);
+    if (width > limit)
         width = limit;
-    }
     
     QFontMetrics fm(qApp->font("QWorkspaceTitleBar"));
     int windowTitleWidth = qMin(fm.width(windowTitle()) + 50, limit);

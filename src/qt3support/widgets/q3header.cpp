@@ -1412,7 +1412,7 @@ void Q3Header::setCellSize(int section, int s)
     is set for all existing sections and will be applied to any new
     sections that are added.
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3header.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3header.cpp 0
 
     If the user resizes a section, a sizeChange() signal is emitted.
 

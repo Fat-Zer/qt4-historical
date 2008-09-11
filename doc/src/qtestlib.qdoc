@@ -134,7 +134,7 @@
     testfunction.
 
     Example:
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 0
 
     For more examples, refer to the \l{QTestLib Tutorial}.
 
@@ -143,7 +143,7 @@
     If you are using \c qmake as your build tool, just add the
     following to your project file:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 1
 
     If you are using other buildtools, make sure that you add the location
     of the QTestLib header files to your include path (usually \c{include/QtTest}
@@ -160,7 +160,7 @@
 
     The syntax to execute an autotest takes the following simple form:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 2
 
     Substitute \c testname with the name of your executable. \c
     testfunctions can contain names of test functions to be
@@ -170,18 +170,18 @@
 
     For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 3
 
     Runs the test function called \c toUpper with all available test data.
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 4
 
     Runs the \c toUpper test function with all available test data,
     and the \c toInt test function with the testdata called \c
     zero (if the specified test data doesn't exist, the associated test
     will fail).
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 5
 
     Runs the testMyWidget function test, outputs every signal
     emission and waits 500 milliseconds after each simulated
@@ -246,7 +246,7 @@
     \section3 Syntax
     The syntax to execute an autotest takes the following simple form:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 6
 
     \section3 Options
     \c cetest provides the same options as those for unit-testing on non cross-compiled
@@ -284,12 +284,12 @@
     host computer and the device. Thus header files and libraries are needed to compile
     cetest and QtRemote successfully.
 
-    Prior to \l{Installing Qt/Windows CE}{installation} of Qt, you need to set your
+    Prior to \l{Installing Qt on Windows CE}{installation} of Qt, you need to set your
     \c INCLUDE and \c LIB environment variables properly.
 
     A default installation of Windows Mobile 5 for Pocket PC can be obtained by:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 7
 
     Note that Qt will remember the path, so you do not need to set it again
     after switching the environments for cross-compilation.
@@ -344,7 +344,7 @@
     Then you need to implement the test function itself. The
     implementation could look like this:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 8
 
     The \l QVERIFY() macro evaluates the expression passed as its
     argument. If the expression evaluates to true, the execution of
@@ -379,7 +379,7 @@
     empty directory: we build the test using qmake to create a project
     and generate a makefile.
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 9
 
     \bold {Note:}If you're using windows, replace \c make with \c
     nmake or whatever build tool you use.
@@ -387,7 +387,7 @@
     Running the resulting executable should give you the following
     output:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 10
 
     Congratulations! You just wrote and executed your first unit test
     using the QTestLib framework.
@@ -409,7 +409,7 @@
     test function. If we add more test data, the function might look like
     this:
 
-    \snippet doc/src/snippets/code/doc.src.qtestlib.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 11
 
     To prevent that the function ends up being cluttered by repetitive
     code, QTestLib supports adding test data to a test function. All

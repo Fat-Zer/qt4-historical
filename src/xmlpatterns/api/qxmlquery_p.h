@@ -110,6 +110,11 @@ public:
     {
     }
 
+    ~QReferenceCountedValue()
+    {
+        delete value;
+    }
+
     T value;
 private:
     /*!
@@ -175,7 +180,7 @@ public:
         {
             m_resourceLoader = (new QPatternist::AccelTreeResourceLoader(namePool.d,
                                                                          networkManager(),
-                                                                         QPatternist::ReportContext::Ptr(genericStaticContext)));
+                                                                         genericStaticContext.data()));
         }
 
         genericStaticContext->setResourceLoader(m_resourceLoader);
@@ -199,7 +204,7 @@ public:
                                                                                                   statContext->sourceLocations()));
 
         QPatternist::AutoPtr<QPatternist::NodeBuilder> nodeBuilder(new QPatternist::AccelTreeBuilder<false>(QUrl(), QUrl(), namePool.d,
-                                                                                                            QPatternist::ReportContext::Ptr(dynContext)));
+                                                                                                            dynContext.data()));
         dynContext->setNodeBuilder(nodeBuilder);
 
         dynContext->setResourceLoader(statContext->resourceLoader());
@@ -353,8 +358,6 @@ private:
     QPointer<QNetworkAccessManager>             m_networkManager;
     QPatternist::SequenceType::Ptr              m_requiredType;
 };
-
-//Q_DECLARE_OPERATORS_FOR_FLAGS(QXmlQueryPrivate::ComponentsForUpdate)
 
 QT_END_NAMESPACE
 

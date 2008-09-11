@@ -61,10 +61,10 @@ QT_BEGIN_NAMESPACE
     argument.
 
     It can be used in the following manner:
-    \snippet doc/src/snippets/code/src.qdbus.qdbusreply.cpp 0
+    \snippet doc/src/snippets/code/src_qdbus_qdbusreply.cpp 0
 
     If the remote method call cannot fail, you can skip the error checking:
-    \snippet doc/src/snippets/code/src.qdbus.qdbusreply.cpp 1
+    \snippet doc/src/snippets/code/src_qdbus_qdbusreply.cpp 1
 
     However, if it does fail under those conditions, the value returned by QDBusReply::value() is
     a default-constructed value. It may be indistinguishable from a valid return value.
@@ -164,32 +164,48 @@ void qDBusReplyFill(const QDBusMessage &reply, QDBusError &error, QVariant &data
         return;
     }
 
-    const char *expectedSignature = 0;
+    const char *expectedSignature = QDBusMetaType::typeToSignature(data.userType());
+    const char *receivedType = 0;
     QByteArray receivedSignature;
 
-    if (reply.arguments().count() >= 1 &&
-        reply.arguments().at(0).userType() == QDBusMetaTypeId::argument) {
-        // compare signatures instead
-        QDBusArgument arg = qvariant_cast<QDBusArgument>(reply.arguments().at(0));
-        expectedSignature = QDBusMetaType::typeToSignature(data.userType());
-        receivedSignature = arg.currentSignature().toLatin1();
-        if (receivedSignature == expectedSignature) {
-            // matched. Demarshall it
-            QDBusMetaType::demarshall(arg, data.userType(), data.data());
-            return;
+    if (reply.arguments().count() >= 1) {
+        if (reply.arguments().at(0).userType() == QDBusMetaTypeId::argument) {
+            // compare signatures instead
+            QDBusArgument arg = qvariant_cast<QDBusArgument>(reply.arguments().at(0));
+            receivedSignature = arg.currentSignature().toLatin1();
+            if (receivedSignature == expectedSignature) {
+                // matched. Demarshall it
+                QDBusMetaType::demarshall(arg, data.userType(), data.data());
+                return;
+            }
+        } else {
+            // not an argument and doesn't match?
+            int type = reply.arguments().at(0).userType();
+            receivedType = QVariant::typeToName(QVariant::Type(type));
+            receivedSignature = QDBusMetaType::typeToSignature(type);
         }
     }
 
     // error
-    QString errorMsg = QLatin1String("Unexpected reply signature: got \"%1\", "
-                                     "expected \"%2\" (%3)");
     if (receivedSignature.isEmpty())
         receivedSignature = "no signature";
-    error = QDBusError(QDBusError::InvalidSignature,
-                      errorMsg.arg(QLatin1String(receivedSignature),
-                                   QLatin1String(expectedSignature),
-                                   QLatin1String(data.typeName())));
+    QString errorMsg;
+    if (receivedType) {
+        errorMsg = QString::fromLatin1("Unexpected reply signature: got \"%1\" (%4), "
+                                         "expected \"%2\" (%3)")
+                   .arg(QLatin1String(receivedSignature),
+                        QLatin1String(expectedSignature),
+                        QLatin1String(data.typeName()),
+                        QLatin1String(receivedType));
+    } else {
+        errorMsg = QString::fromLatin1("Unexpected reply signature: got \"%1\", "
+                                         "expected \"%2\" (%3)")
+                   .arg(QLatin1String(receivedSignature),
+                        QLatin1String(expectedSignature),
+                        QLatin1String(data.typeName()));
+    }
 
+    error = QDBusError(QDBusError::InvalidSignature, errorMsg);
     data = QVariant();      // clear it
 }
 

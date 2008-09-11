@@ -55,6 +55,9 @@
 #include <QtCore/QTextCodec>
 #include <QtCore/QTextStream>
 
+#include <QtNetwork/QLocalSocket>
+#include <QtNetwork/QLocalServer>
+
 QT_BEGIN_NAMESPACE
 
 namespace qt {
@@ -68,26 +71,26 @@ public:
         : fileName(fileName) , data(readData(data)) {}
     ~DocumentHelper() {}
 
-    bool addFieldsToDocument(QCLuceneDocument *document, const QString &namespaceName,
-        const QString &attributes = QString())
+    bool addFieldsToDocument(QCLuceneDocument *document,
+        const QString &namespaceName, const QString &attributes = QString())
     {
         if (!document)
             return false;
 
         if(!data.isEmpty()) {
             QString parsedData = parseData();
-            QString parsedTitle = documentTitle(data);	        
+            QString parsedTitle = QHelpGlobal::documentTitle(data);
 
             if(!parsedData.isEmpty()) {
-                document->add(new QCLuceneField(QLatin1String("content"), parsedData, 
-                    QCLuceneField::INDEX_TOKENIZED));
-                document->add(new QCLuceneField(QLatin1String("path"), fileName, 
+                document->add(new QCLuceneField(QLatin1String("content"),
+                    parsedData,QCLuceneField::INDEX_TOKENIZED));
+                document->add(new QCLuceneField(QLatin1String("path"), fileName,
                     QCLuceneField::STORE_YES | QCLuceneField::INDEX_UNTOKENIZED));
-                document->add(new QCLuceneField(QLatin1String("title"), parsedTitle, 
+                document->add(new QCLuceneField(QLatin1String("title"), parsedTitle,
                     QCLuceneField::STORE_YES | QCLuceneField::INDEX_UNTOKENIZED));
-                document->add(new QCLuceneField(QLatin1String("titleTokenized"), parsedTitle, 
+                document->add(new QCLuceneField(QLatin1String("titleTokenized"), parsedTitle,
                     QCLuceneField::STORE_YES | QCLuceneField::INDEX_TOKENIZED));
-                document->add(new QCLuceneField(QLatin1String("namespace"), namespaceName, 
+                document->add(new QCLuceneField(QLatin1String("namespace"), namespaceName,
                     QCLuceneField::STORE_YES | QCLuceneField::INDEX_UNTOKENIZED));
                 document->add(new QCLuceneField(QLatin1String("attribute"), attributes,
                     QCLuceneField::STORE_YES | QCLuceneField::INDEX_TOKENIZED));
@@ -102,7 +105,7 @@ private:
     QString readData(const QByteArray &data)
     {
         QTextStream textStream(data);
-        QString charSet = charsetFromData(data);
+        QString charSet = QHelpGlobal::charsetFromData(data);
         textStream.setCodec(QTextCodec::codecForName(charSet.toLatin1().constData()));
 
         QString stream = textStream.readAll();
@@ -120,7 +123,7 @@ private:
 
         QChar str[64];
         QChar c = buf[0];
-        bool valid = true;     
+        bool valid = true;
         int j = 0, i = 0;
 
         while (j < length) {
@@ -153,7 +156,7 @@ private:
             }
             c = buf[++j];
         }
-        
+
         if ( i > 1 )
             parsedContent += QLatin1String(" ") + QString(str,i);
 
@@ -169,7 +172,6 @@ private:
 QHelpSearchIndexWriter::QHelpSearchIndexWriter()
     : QThread(0)
     , m_cancel(false)
-    , m_collectionFile(QString())
 {
     // nothing todo
 }
@@ -191,25 +193,28 @@ void QHelpSearchIndexWriter::cancelIndexing()
     mutex.unlock();
 }
 
-void QHelpSearchIndexWriter::updateIndex(const QString &collectionFile, bool reindex)
+void QHelpSearchIndexWriter::updateIndex(const QString &collectionFile,
+                                         const QString &indexFilesFolder,
+                                         bool reindex)
 {
     QMutexLocker locker(&mutex);
 
     this->m_cancel = false;
     this->m_reindex = reindex;
     this->m_collectionFile = collectionFile;
+    this->m_indexFilesFolder = indexFilesFolder;
 
     start(QThread::NormalPriority);
 }
 
-void QHelpSearchIndexWriter::optimizeIndex(const QString &indexFilesPath)
+void QHelpSearchIndexWriter::optimizeIndex()
 {
-    if (QCLuceneIndexReader::indexExists(indexFilesPath)) {
-        if (QCLuceneIndexReader::isLocked(indexFilesPath))
-            QCLuceneIndexReader::unlock(indexFilesPath);
+    if (QCLuceneIndexReader::indexExists(m_indexFilesFolder)) {
+        if (QCLuceneIndexReader::isLocked(m_indexFilesFolder))
+            return;
 
         QCLuceneStandardAnalyzer analyzer;
-        QCLuceneIndexWriter writer(indexFilesPath, analyzer, false);
+        QCLuceneIndexWriter writer(m_indexFilesFolder, analyzer, false);
         writer.optimize();
         writer.close();
     }
@@ -217,49 +222,109 @@ void QHelpSearchIndexWriter::optimizeIndex(const QString &indexFilesPath)
 
 void QHelpSearchIndexWriter::run()
 {
-    mutex.lock();
+    QMutexLocker mutexLocker(&mutex);
 
-    if (m_cancel) {
-        mutex.unlock();
+    if (m_cancel)
         return;
-    }
-    
+
     const bool reindex = this->m_reindex;
-    const QLatin1String key("CluceneSearchNamespaces");
     const QString collectionFile(this->m_collectionFile);
-    
-    mutex.unlock();
+
+    mutexLocker.unlock();
 
     QHelpEngineCore engine(collectionFile, 0);
     if (!engine.setupData())
         return;
 
+    const QLatin1String key("CluceneIndexedNamespaces");
     if (reindex)
         engine.setCustomValue(key, QLatin1String(""));
 
-    const QStringList indexedNamespaces = engine.customValue(key).toString().
-        split(QLatin1String("|"), QString::SkipEmptyParts);
+    QMap<QString, QDateTime> indexMap;
+    const QLatin1String oldKey("CluceneSearchNamespaces");
+    if (!engine.customValue(oldKey, QString()).isNull()) {
+        // old style qhc file < 4.4.2, need to convert...
+        const QStringList indexedNamespaces = engine.customValue(oldKey).
+            toString().split(QLatin1String("|"), QString::SkipEmptyParts);
+        foreach (const QString& nameSpace, indexedNamespaces)
+            indexMap.insert(nameSpace, QDateTime());
+        engine.removeCustomValue(oldKey);
+    } else {
+        QDataStream dataStream(engine.customValue(key).toByteArray());
+        dataStream >> indexMap;
+    }
+
+    QString indexPath = m_indexFilesFolder;
+    
+    QFileInfo fInfo(indexPath);
+    if (fInfo.exists() && !fInfo.isWritable()) {
+        qWarning("Full Text Search, could not create index (missing permissions).");
+        return;
+    }
+
+    emit indexingStarted();
 
     QCLuceneIndexWriter *writer = 0;
     QCLuceneStandardAnalyzer analyzer;
-    QString indexPath;
+    const QStringList registeredDocs = engine.registeredDocumentations();
+
+    QLocalSocket localSocket;
+    localSocket.connectToServer(QString(QLatin1String("QtAssistant%1"))
+        .arg(QLatin1String(QT_VERSION_STR)));
+
+    QLocalServer localServer;
+    bool otherInstancesRunning = true;
+    if (!localSocket.waitForConnected()) {
+        otherInstancesRunning = false;
+        localServer.listen(QString(QLatin1String("QtAssistant%1"))
+            .arg(QLatin1String(QT_VERSION_STR)));
+    }
 
 #if !defined(QT_NO_EXCEPTIONS)
     try {
 #endif
-        indexPath = engine.customValue(QLatin1String("indexFilesFolder")).toString();
-        QDir dir(indexPath);
-        if (!dir.isAbsolute()) {
-            indexPath = QFileInfo(engine.collectionFile()).path() +
-                dir.separator() + dir.path();
+        // check if it's locked, and if the other instance is running
+        if (!otherInstancesRunning && QCLuceneIndexReader::isLocked(indexPath))
+            QCLuceneIndexReader::unlock(indexPath);
+        
+        if (QCLuceneIndexReader::isLocked(indexPath)) {
+            // poll unless indexing finished to fake progress
+            while (QCLuceneIndexReader::isLocked(indexPath)) {
+                mutexLocker.relock();
+                if (m_cancel)
+                    break;
+                mutexLocker.unlock();
+                this->sleep(1);
+            }
+            emit indexingFinished();
+            return;
         }
 
         if (QCLuceneIndexReader::indexExists(indexPath) && !reindex) {
-            if (QCLuceneIndexReader::isLocked(indexPath))
-                QCLuceneIndexReader::unlock(indexPath);
+            foreach(const QString& namespaceName, registeredDocs) {
+                mutexLocker.relock();
+                if (m_cancel) {
+                    emit indexingFinished();
+                    return;
+                }
+                mutexLocker.unlock();
+
+                if (!indexMap.contains(namespaceName)) {
+                    // make sure we remove some partly indexed stuff
+                    removeDocuments(indexPath, namespaceName);
+                } else {
+                    QString path = engine.documentationFileName(namespaceName);
+                    if (indexMap.value(namespaceName) < QFileInfo(path).lastModified()) {
+                        // make sure we remove some outdated indexed stuff
+                        indexMap.remove(namespaceName);
+                        removeDocuments(indexPath, namespaceName);
+                    }
+                }
+            }
             writer = new QCLuceneIndexWriter(indexPath, analyzer, false);
-        } else
+        } else {
             writer = new QCLuceneIndexWriter(indexPath, analyzer, true);
+        }
 #if !defined(QT_NO_EXCEPTIONS)
     } catch (...) {
         qWarning("Full Text Search, could not create index writer.");
@@ -270,81 +335,73 @@ void QHelpSearchIndexWriter::run()
     writer->setMaxFieldLength(QCLuceneIndexWriter::DEFAULT_MAX_FIELD_LENGTH);
 
     QStringList namespaces;
-    const QStringList registeredDocs = engine.registeredDocumentations();
-
-    emit indexingStarted();
-
-    foreach(const QString namespaceName, registeredDocs) {
-        mutex.lock();
+    foreach(const QString& namespaceName, registeredDocs) {
+        mutexLocker.relock();
         if (m_cancel) {
-            mutex.unlock();
-            break;
+            writer->close();
+            delete writer;
+            emit indexingFinished();
+            return;
         }
-        mutex.unlock();
+        mutexLocker.unlock();
 
         namespaces.append(namespaceName);
-        if (indexedNamespaces.contains(namespaceName))
+        if (indexMap.contains(namespaceName))
             continue;
 
-        // make sure we remove some partly indexed stuff
-        removeDocuments(indexPath, namespaceName);
-        
-        const QList<QStringList> attributeSets = 
+        const QList<QStringList> attributeSets =
             engine.filterAttributeSets(namespaceName);
 
         if (attributeSets.isEmpty()) {
-            const QList<QUrl> docFiles = 
-                engine.files(namespaceName, QStringList(), QLatin1String("html"));
-            
+            const QList<QUrl> docFiles = indexableFiles(&engine, namespaceName,
+                QStringList());
             if (!addDocuments(docFiles, engine, QStringList(), namespaceName,
                 writer, analyzer))
                 break;
         } else {
+            bool bail = false;
             foreach (const QStringList attributes, attributeSets) {
-                const QList<QUrl> docFiles = 
-                    engine.files(namespaceName, attributes, QLatin1String("html"));
-
+                const QList<QUrl> docFiles = indexableFiles(&engine, namespaceName,
+                    attributes);
                 if (!addDocuments(docFiles, engine, attributes, namespaceName,
-                    writer, analyzer))
+                    writer, analyzer)) {
+                    bail = true;
                     break;
+                }
             }
+            if (bail)
+                break;
         }
-        mutex.lock();
+        mutexLocker.relock();
         if (!m_cancel) {
-            engine.setCustomValue(key, addNamespace(
-                engine.customValue(key).toString(), namespaceName));
+            QString path(engine.documentationFileName(namespaceName));
+            indexMap.insert(namespaceName, QFileInfo(path).lastModified());
+            writeIndexMap(engine, indexMap);
         }
-        mutex.unlock();
+        mutexLocker.unlock();
     }
 
     writer->close();
     delete writer;
 
-    mutex.lock();
-    if (m_cancel) {
-        mutex.unlock();
-        emit indexingFinished();
-        return;
-    }
-    mutex.unlock();
+    mutexLocker.relock();
+    if (!m_cancel) {
+        mutexLocker.unlock();
+    
+        QStringList indexedNamespaces = indexMap.keys();
+        foreach(const QString& namespaceName, indexedNamespaces) {
+            mutexLocker.relock();
+            if (m_cancel)
+                break;
+            mutexLocker.unlock();
 
-    QStringListIterator qsli(indexedNamespaces);
-    while (qsli.hasNext()) {
-        mutex.lock();
-        if (m_cancel) {
-            mutex.unlock();
-            break;
+            if (!namespaces.contains(namespaceName)) {
+                indexMap.remove(namespaceName);
+                writeIndexMap(engine, indexMap);
+                removeDocuments(indexPath, namespaceName);
+            }
         }
-        mutex.unlock();
-
-        const QString namespaceName = qsli.next();
-        if (namespaces.contains(namespaceName))
-            continue;
-
-        engine.setCustomValue(key, removeNamespace(
-            engine.customValue(key).toString(), namespaceName));
     }
-
     emit indexingFinished();
 }
 
@@ -355,7 +412,7 @@ bool QHelpSearchIndexWriter::addDocuments(const QList<QUrl> docFiles,
                                           QCLuceneIndexWriter *writer,
                                           QCLuceneAnalyzer &analyzer)
 {
-    foreach(const QUrl url, docFiles) {
+    foreach(const QUrl& url, docFiles) {
         mutex.lock();
         if (m_cancel) {
             mutex.unlock();
@@ -377,37 +434,38 @@ bool QHelpSearchIndexWriter::addDocuments(const QList<QUrl> docFiles,
 void QHelpSearchIndexWriter::removeDocuments(const QString &indexPath,
                                              const QString &namespaceName)
 {
-    if (!QCLuceneIndexReader::indexExists(indexPath) || namespaceName.isEmpty())
+    if (namespaceName.isEmpty() || QCLuceneIndexReader::isLocked(indexPath))
         return;
 
-    if (QCLuceneIndexReader::isLocked(indexPath))
-        QCLuceneIndexReader::unlock(indexPath);
-
     QCLuceneIndexReader reader = QCLuceneIndexReader::open(indexPath);
-    reader.deleteDocuments(QCLuceneTerm(QLatin1String("namespace"), namespaceName));
+    reader.deleteDocuments(QCLuceneTerm(QLatin1String("namespace"),
+        namespaceName));
 
     reader.close();
 }
 
-QString QHelpSearchIndexWriter::addNamespace(const QString namespaces, 
-                                             const QString &namespaceName)
+bool QHelpSearchIndexWriter::writeIndexMap(QHelpEngineCore& engine,
+                                    const QMap<QString, QDateTime>& indexMap)
 {
-    QString value = namespaces;
-    if (!value.contains(namespaceName))
-        value.append(namespaceName).append(QLatin1String("|"));
-
-    return value;
+    QByteArray bArray;
+    QDataStream data(&bArray, QIODevice::ReadWrite);
+    
+    data << indexMap;
+    return engine.setCustomValue(QLatin1String("CluceneIndexedNamespaces")
+        , bArray);
 }
 
-QString QHelpSearchIndexWriter::removeNamespace(const QString namespaces, 
-                                                 const QString &namespaceName)
+QList<QUrl> QHelpSearchIndexWriter::indexableFiles(QHelpEngineCore *helpEngine,
+                                                   const QString &namespaceName,
+                                                   const QStringList &attributes) const
 {
-    QString value = namespaces;
-    if (value.contains(namespaceName))
-        value.remove(namespaceName + QLatin1String("|"));
-
-    return value;
+    QList<QUrl> docFiles =
+                helpEngine->files(namespaceName, attributes, QLatin1String("html"));
+    docFiles += helpEngine->files(namespaceName, attributes, QLatin1String("htm"));
+    docFiles += helpEngine->files(namespaceName, attributes, QLatin1String("txt"));
+    return docFiles;
 }
+
 
         }   // namespace clucene
     }   // namespace fulltextsearch

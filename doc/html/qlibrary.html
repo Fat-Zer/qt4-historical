@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/plugin/qlibrary.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/plugin/qlibrary.cpp -->
 <head>
   <title>Qt 4.4: QLibrary Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLibrary Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QLibrary class loads shared libraries at runtime. <a href="#details">More...</a></p>
@@ -85,17 +85,17 @@
 <p>The most important functions are <a href="qlibrary.html#load">load</a>() to dynamically load the library file, <a href="qlibrary.html#isLoaded">isLoaded</a>() to check whether loading was successful, and <a href="qlibrary.html#resolve">resolve</a>() to resolve a symbol in the library. The <a href="qlibrary.html#resolve">resolve</a>() function implicitly tries to load the library if it has not been loaded yet. Multiple instances of QLibrary can be used to access the same physical library. Once loaded, libraries remain in memory until the application terminates. You can attempt to unload a library using <a href="qlibrary.html#unload">unload</a>(), but if other instances of QLibrary are using the same library, the call will fail, and unloading will only happen when every instance has called <a href="qlibrary.html#unload">unload</a>().</p>
 <p>A typical use of QLibrary is to resolve an exported symbol in a library, and to call the C function that this symbol represents. This is called &quot;explicit linking&quot; in contrast to &quot;implicit linking&quot;, which is done by the link step in the build process when linking an executable against a library.</p>
 <p>The following code snippet loads a library, resolves the symbol &quot;mysymbol&quot;, and calls the function if everything succeeded. If something goes wrong, e.g&#x2e; the library file does not exist or the symbol is not defined, the function pointer will be 0 and won't be called.</p>
-<pre>         QLibrary myLib(&quot;mylib&quot;);
-         typedef void (*MyPrototype)();
-         MyPrototype myFunction = (MyPrototype) myLib.resolve(&quot;mysymbol&quot;);
-         if (myFunction)
-             myFunction();</pre>
+<pre> QLibrary myLib(&quot;mylib&quot;);
+ typedef void (*MyPrototype)();
+ MyPrototype myFunction = (MyPrototype) myLib.resolve(&quot;mysymbol&quot;);
+ if (myFunction)
+     myFunction();</pre>
 <p>The symbol must be exported as a C function from the library for <a href="qlibrary.html#resolve">resolve</a>() to work. This means that the function must be wrapped in an <tt>extern &quot;C&quot;</tt> block if the library is compiled with a C++ compiler. On Windows, this also requires the use of a <tt>dllexport</tt> macro; see <a href="qlibrary.html#resolve">resolve</a>() for the details of how this is done. For convenience, there is a static <a href="qlibrary.html#resolve">resolve</a>() function which you can use if you just want to call a function in a library without explicitly loading the library first:</p>
-<pre>         typedef void (*MyPrototype)();
-         MyPrototype myFunction =
-                 (MyPrototype) QLibrary::resolve(&quot;mylib&quot;, &quot;mysymbol&quot;);
-         if (myFunction)
-             myFunction();</pre>
+<pre> typedef void (*MyPrototype)();
+ MyPrototype myFunction =
+         (MyPrototype) QLibrary::resolve(&quot;mylib&quot;, &quot;mysymbol&quot;);
+ if (myFunction)
+     myFunction();</pre>
 <p>See also <a href="qpluginloader.html">QPluginLoader</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -189,24 +189,24 @@
 <h3 class="fn"><a name="resolve"></a>void * QLibrary::resolve ( const char * <i>symbol</i> )</h3>
 <p>Returns the address of the exported symbol <i>symbol</i>. The library is loaded if necessary. The function returns 0 if the symbol could not be resolved or if the library could not be loaded.</p>
 <p>Example:</p>
-<pre>         typedef int (*AvgFunction)(int, int);
+<pre> typedef int (*AvgFunction)(int, int);
 
-         AvgFunction avg = (AvgFunction) library-&gt;resolve(&quot;avg&quot;);
-         if (avg)
-             return avg(5, 8);
-         else
-             return -1;</pre>
+ AvgFunction avg = (AvgFunction) library-&gt;resolve(&quot;avg&quot;);
+ if (avg)
+     return avg(5, 8);
+ else
+     return -1;</pre>
 <p>The symbol must be exported as a C function from the library. This means that the function must be wrapped in an <tt>extern &quot;C&quot;</tt> if the library is compiled with a C++ compiler. On Windows you must also explicitly export the function from the DLL using the <tt>__declspec(dllexport)</tt> compiler directive, for example:</p>
-<pre>         extern &quot;C&quot; MY_EXPORT int avg(int a, int b)
-         {
-             return (a + b) / 2;
-         }</pre>
+<pre> extern &quot;C&quot; MY_EXPORT int avg(int a, int b)
+ {
+     return (a + b) / 2;
+ }</pre>
 <p>with <tt>MY_EXPORT</tt> defined as</p>
-<pre>         #ifdef Q_WS_WIN
-         #define MY_EXPORT __declspec(dllexport)
-         #else
-         #define MY_EXPORT
-         #endif</pre>
+<pre> #ifdef Q_WS_WIN
+ #define MY_EXPORT __declspec(dllexport)
+ #else
+ #define MY_EXPORT
+ #endif</pre>
 <h3 class="fn"><a name="resolve-2"></a>void * QLibrary::resolve ( const <a href="qstring.html">QString</a> &amp; <i>fileName</i>, const char * <i>symbol</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Loads the library <i>fileName</i> and returns the address of the exported symbol <i>symbol</i>. Note that <i>fileName</i> should not include the platform-specific file suffix; (see <a href="qlibrary.html#fileName-prop">fileName</a>). The library remains loaded until the application exits.</p>
@@ -241,8 +241,8 @@
 <p>See also <a href="qlibrary.html#resolve">resolve</a>() and <a href="qlibrary.html#load">load</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

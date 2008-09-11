@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qt4-accessibility.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qt4-accessibility.qdoc -->
 <head>
   <title>Qt 4.4: Cross-Platform Accessibility Support in Qt 4</title>
   <link rel="prev" href="qt4-designer.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qt4-designer.html">The New Qt Designer</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -34,53 +34,53 @@
 <a name="example-code"></a>
 <h2>Example Code</h2>
 <p>The first example illustrates how to provide accessibility information for a custom widget. We can use <a href="qaccessiblewidget.html">QAccessibleWidget</a> as a base class and reimplement various functions:</p>
-<pre>         class MyWidgetInterface : public QAccessibleWidget
-         {
-         public:
-             MyWidgetInterface(QWidget *widget, Role role);
+<pre> class MyWidgetInterface : public QAccessibleWidget
+ {
+ public:
+     MyWidgetInterface(QWidget *widget, Role role);
 
-             QString text(Text text, int child) const;
-             State state(int child) const;
-             QString actionText(int action, Text text, int child) const;
-             bool doAction(int action, int child, const QVariantList &amp;params);
-             ...
-         };</pre>
+     QString text(Text text, int child) const;
+     State state(int child) const;
+     QString actionText(int action, Text text, int child) const;
+     bool doAction(int action, int child, const QVariantList &amp;params);
+     ...
+ };</pre>
 <p>Here's how we would implement the <a href="qaccessibleinterface.html#doAction">doAction()</a> function to call a function named click() on the wrapped MyWidget object when the user invokes the object's default action or &quot;presses&quot; it.</p>
-<pre>         bool MyWidgetInterface::doAction(int action, int child,
-                                          const QVariantList &amp;params)
-         {
-             if (child || !widget()-&gt;isEnabled())
-                 return false;
+<pre> bool MyWidgetInterface::doAction(int action, int child,
+                                  const QVariantList &amp;params)
+ {
+     if (child || !widget()-&gt;isEnabled())
+         return false;
 
-             switch (action) {
-             case DefaultAction:
-             case Press:
-                 {
-                     MyWidget *widget = qobject_cast&lt;MyWidget *&gt;(object());
-                     if (widget)
-                         widget-&gt;click();
-                 }
-                 return true;
-             }
-             return QAccessibleWidget::doAction(action, child, params);
-         }</pre>
+     switch (action) {
+     case DefaultAction:
+     case Press:
+         {
+             MyWidget *widget = qobject_cast&lt;MyWidget *&gt;(object());
+             if (widget)
+                 widget-&gt;click();
+         }
+         return true;
+     }
+     return QAccessibleWidget::doAction(action, child, params);
+ }</pre>
 <p>To export the widget interface as a plugin, we must subclass QAccessibleFactory:</p>
-<pre>         QStringList MyFactory::keys() const
-         {
-             return QStringList() &lt;&lt; &quot;MyWidget&quot; &lt;&lt; &quot;MyOtherWidget&quot;;
-         }
+<pre> QStringList MyFactory::keys() const
+ {
+     return QStringList() &lt;&lt; &quot;MyWidget&quot; &lt;&lt; &quot;MyOtherWidget&quot;;
+ }
 
-         QAccessibleInterface *MyFactory::create(const QString &amp;className,
-                                                 QObject *object)
-         {
-             if (classname == &quot;MyWidget&quot;)
-                 return new MyWidgetInterface(object);
-             if (classname == &quot;MyOtherWidget&quot;)
-                 return new MyOtherWidgetInterface(object);
-             return 0;
-         }
+ QAccessibleInterface *MyFactory::create(const QString &amp;className,
+                                         QObject *object)
+ {
+     if (classname == &quot;MyWidget&quot;)
+         return new MyWidgetInterface(object);
+     if (classname == &quot;MyOtherWidget&quot;)
+         return new MyOtherWidgetInterface(object);
+     return 0;
+ }
 
-         Q_EXPORT_PLUGIN2(myfactory, MyFactory)</pre>
+ Q_EXPORT_PLUGIN2(myfactory, MyFactory)</pre>
 <p>
 [Previous: <a href="qt4-designer.html">The New Qt Designer</a>]
 [<a href="qt4-intro.html">Home</a>]
@@ -88,8 +88,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

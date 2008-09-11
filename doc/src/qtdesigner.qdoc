@@ -59,12 +59,12 @@
     To include the definitions of the module's classes, use the
     following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 0
 
     To link against the module, add this line to your \c qmake .pro
     file:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 1
 
     \tableofcontents
 
@@ -180,7 +180,7 @@
     manipulate the member functions' appearance in \QD's signals and
     slots editing mode. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 2
 
     When implementing a custom widget plugin, a pointer to \QD's
     current QDesignerFormEditorInterface object (\c formEditor in the
@@ -209,7 +209,7 @@
     made known to the meta object system using the Q_INTERFACES()
     macro:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 3
 
     This enables \QD to use qobject_cast() to query for
     supported interfaces using nothing but a QObject pointer.
@@ -241,13 +241,13 @@
     QExtensionFactory and reimplement the
     QExtensionFactory::createExtension() function. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 4
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a member sheet extension as well. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 5
 
     For a complete example using an extension class, see \l
     {designer/taskmenuextension}{Task Menu Extension example}. The
@@ -536,7 +536,7 @@
     To create a container extension, your extension class must inherit
     from both QObject and QDesignerContainerExtension. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 6
 
     Since we are implementing an interface, we must ensure that it's
     made known to the meta object system using the Q_INTERFACES()
@@ -580,13 +580,13 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 7
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a container extension as well. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 8
 
     For a complete example using the QDesignerContainerExtension
     class, see the \l {designer/containerextension}{Container
@@ -692,7 +692,7 @@
     inherit from both QObject and QDesignerTaskMenuExtension. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 9
 
     Since we are implementing an interface, we must ensure that it
     is made known to the meta-object system using the Q_INTERFACES()
@@ -735,13 +735,13 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 10
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a task menu extension as well. For example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 11
 
     For a complete example using the QDesignerTaskMenuExtension class,
     see the \l {designer/taskmenuextension}{Task Menu Extension
@@ -800,13 +800,13 @@
     several custom widgets \c CustomWidgetOne, \c CustomWidgetTwo and
     \c CustomWidgetThree, the class definition may look like this:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 12
 
     In the class constructor you add the interfaces to your custom
     widgets to the list which you return in the customWidgets()
     function:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 13
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 13
 
     Note that instead of exporting each custom widget plugin using the
     Q_EXPORT_PLUGIN2() macro, you export the entire collection. The
@@ -881,7 +881,7 @@
     class called \c MyCustomWidget, we can export it by adding the
     following line to the file containing the plugin implementation:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 14
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 14
 
     This macro ensures that \QD can access and construct the custom widget.
     Without this macro, there is no way for \QD to use it.
@@ -1236,7 +1236,7 @@
     manipulate the properties' appearance in the property editor. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 15
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 15
 
     Note that if you change the value of a property using the
     QDesignerPropertySheetExtension::setProperty() function, the undo
@@ -1275,7 +1275,7 @@
     an interface, we must ensure that it's made known to the meta
     object system using the Q_INTERFACES() macro:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 16
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 16
 
     This enables \QD to use qobject_cast() to query for supported
     interfaces using nothing but a QObject pointer.
@@ -1307,14 +1307,14 @@
     reimplement the QExtensionFactory::createExtension() function. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 17
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 17
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create a property sheet extension extension as well. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.qtdesigner.qdoc 18
+    \snippet doc/src/snippets/code/doc_src_qtdesigner.qdoc 18
 
     For a complete example using an extension class, see the \l
     {designer/taskmenuextension}{Task Menu Extension example}. The

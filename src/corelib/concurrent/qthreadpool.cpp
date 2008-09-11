@@ -334,7 +334,7 @@ bool QThreadPoolPrivate::startFrontRunnable()
     the run() virtual function. Then create an object of that class and pass
     it to QThreadPool::start().
 
-    \snippet doc/src/snippets/code/src.corelib.concurrent.qthreadpool.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_concurrent_qthreadpool.cpp 0
 
     QThreadPool deletes the QRunnable automatically by default. Use 
     QRunnable::setAutoDelete() to change the auto-deletion flag.

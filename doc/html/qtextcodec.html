@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/codecs/qtextcodec.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/codecs/qtextcodec.cpp -->
 <head>
   <title>Qt 4.4: QTextCodec Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QTextCodec Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QTextCodec class provides conversions between text encodings. <a href="#details">More...</a></p>
@@ -110,24 +110,24 @@
 <li>WINSAMI2</li>
 </ul>
 <p>QTextCodecs can be used as follows to convert some locally encoded string to Unicode. Suppose you have some string encoded in Russian KOI8-R encoding, and want to convert it to Unicode. The simple way to do it is like this:</p>
-<pre>         QByteArray encodedString = &quot;...&quot;;
-         QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
-         QString string = codec-&gt;toUnicode(encodedString);</pre>
+<pre> QByteArray encodedString = &quot;...&quot;;
+ QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
+ QString string = codec-&gt;toUnicode(encodedString);</pre>
 <p>After this, <tt>string</tt> holds the text converted to Unicode. Converting a string from Unicode to the local encoding is just as easy:</p>
-<pre>         QString string = &quot;...&quot;;
-         QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
-         QByteArray encodedString = codec-&gt;fromUnicode(string);</pre>
+<pre> QString string = &quot;...&quot;;
+ QTextCodec *codec = QTextCodec::codecForName(&quot;KOI8-R&quot;);
+ QByteArray encodedString = codec-&gt;fromUnicode(string);</pre>
 <p>To read or write files in various encodings, use <a href="qtextstream.html">QTextStream</a> and its <a href="qtextstream.html#setCodec">setCodec()</a> function. See the <a href="tools-codecs.html">Codecs</a> example for an application of QTextCodec to file I/O.</p>
 <p>Some care must be taken when trying to convert the data in chunks, for example, when receiving it over a network. In such cases it is possible that a multi-byte character will be split over two chunks. At best this might result in the loss of a character and at worst cause the entire conversion to fail.</p>
 <p>The approach to use in these situations is to create a <a href="qtextdecoder.html">QTextDecoder</a> object for the codec and use this <a href="qtextdecoder.html">QTextDecoder</a> for the whole decoding process, as shown below:</p>
-<pre>         QTextCodec *codec = QTextCodec::codecForName(&quot;Shift-JIS&quot;);
-         QTextDecoder *decoder = codec-&gt;makeDecoder();
+<pre> QTextCodec *codec = QTextCodec::codecForName(&quot;Shift-JIS&quot;);
+ QTextDecoder *decoder = codec-&gt;makeDecoder();
 
-         QString string;
-         while (new_data_available()) {
-             QByteArray chunk = get_new_data();
-             string += decoder-&gt;toUnicode(chunk);
-         }</pre>
+ QString string;
+ while (new_data_available()) {
+     QByteArray chunk = get_new_data();
+     string += decoder-&gt;toUnicode(chunk);
+ }</pre>
 <p>The <a href="qtextdecoder.html">QTextDecoder</a> object maintains state between chunks and therefore works correctly even if a multi-byte character is split between chunks.</p>
 <a name="creating-your-own-codec-class"></a>
 <h3>Creating Your Own Codec Class</h3>
@@ -265,12 +265,12 @@
 <h3 class="fn"><a name="setCodecForTr"></a>void QTextCodec::setCodecForTr ( QTextCodec * <i>c</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Sets the codec used by <a href="qobject.html#tr">QObject::tr</a>() on its argument to <i>c</i>. If <i>c</i> is 0 (the default), tr() assumes Latin-1.</p>
 <p>If the literal quoted text in the program is not in the Latin-1 encoding, this function can be used to set the appropriate encoding. For example, software developed by Korean programmers might use eucKR for all the text in the program, in which case the main() function might look like this:</p>
-<pre>         int main(int argc, char *argv[])
-         {
-             QApplication app(argc, argv);
-             QTextCodec::setCodecForTr(QTextCodec::codecForName(&quot;eucKR&quot;));
-             ...
-         }</pre>
+<pre> int main(int argc, char *argv[])
+ {
+     QApplication app(argc, argv);
+     QTextCodec::setCodecForTr(QTextCodec::codecForName(&quot;eucKR&quot;));
+     ...
+ }</pre>
 <p>Note that this is not the way to select the encoding that the <i>user</i> has chosen. For example, to convert an application containing literal English strings to Korean, all that is needed is for the English strings to be passed through tr() and for translation files to be loaded. For details of internationalization, see <a href="i18n.html">Internationalization with Qt</a>.</p>
 <p><b>Warning:</b> This function is not <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>See also <a href="qtextcodec.html#codecForTr">codecForTr</a>() and <a href="qtextcodec.html#setCodecForCStrings">setCodecForCStrings</a>().</p>
@@ -286,8 +286,8 @@
 <p><i>chars</i> contains the source characters.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

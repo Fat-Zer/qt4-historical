@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/text/q3textedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/text/q3textedit.cpp -->
 <head>
   <title>Qt 4.4: Q3TextEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3TextEdit Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3TextEdit widget provides a powerful single-page rich text editor. <a href="#details">More...</a></p>
@@ -290,18 +290,18 @@
 <p>Q3TextEdit can display a large HTML subset, including tables and images.</p>
 <p>The text is set or replaced using <a href="q3textedit.html#text-prop">setText</a>() which deletes any existing text and replaces it with the text passed in the <a href="q3textedit.html#text-prop">setText</a>() call. If you call <a href="q3textedit.html#text-prop">setText</a>() with legacy HTML (with setTextFormat(<a href="qt.html#TextFormat-enum">Qt::RichText</a>) in force), and then call <a href="q3textedit.html#text-prop">text</a>(), the text that is returned may have different markup, but will render the same. Text can be inserted with <a href="q3textedit.html#insert">insert</a>(), <a href="q3textedit.html#paste">paste</a>(), <a href="q3textedit.html#pasteSubType">pasteSubType</a>() and <a href="q3textedit.html#append">append</a>(). Text that is appended does not go into the undo history; this makes <a href="q3textedit.html#append">append</a>() faster and consumes less memory. Text can also be <a href="q3textedit.html#cut">cut</a>(). The entire text is deleted with <a href="q3textedit.html#clear">clear</a>() and the selected text is deleted with <a href="q3textedit.html#removeSelectedText">removeSelectedText</a>(). Selected (marked) text can also be deleted with <a href="q3textedit.html#del">del</a>() (which will delete the character to the right of the cursor if no text is selected).</p>
 <p>Loading and saving text is achieved using <a href="q3textedit.html#text-prop">setText</a>() and <a href="q3textedit.html#text-prop">text</a>(), for example:</p>
-<pre>     QFile file(fileName); <span class="comment">// Read the text from a file</span>
-     if (file.open(IO_ReadOnly)) {
-         QTextStream stream(&amp;file);
-         textEdit-&gt;setText(stream.read());
-     }
+<pre> QFile file(fileName); <span class="comment">// Read the text from a file</span>
+ if (file.open(IO_ReadOnly)) {
+     QTextStream stream(&amp;file);
+     textEdit-&gt;setText(stream.read());
+ }
 
-     QFile file(fileName); <span class="comment">// Write the text to a file</span>
-     if (file.open(IO_WriteOnly)) {
-         QTextStream stream(&amp;file);
-         stream &lt;&lt; textEdit-&gt;text();
-         textEdit-&gt;setModified(false);
-     }</pre>
+ QFile file(fileName); <span class="comment">// Write the text to a file</span>
+ if (file.open(IO_WriteOnly)) {
+     QTextStream stream(&amp;file);
+     stream &lt;&lt; textEdit-&gt;text();
+     textEdit-&gt;setModified(false);
+ }</pre>
 <p>By default the text edit wraps words at whitespace to fit within the text edit widget. The <a href="q3textedit.html#wordWrap-prop">setWordWrap</a>() function is used to specify the kind of word wrap you want, or <tt>NoWrap</tt> if you don't want any wrapping. Call <a href="q3textedit.html#wordWrap-prop">setWordWrap</a>() to set a fixed pixel width <tt>FixedPixelWidth</tt>, or character column (e.g&#x2e; 80 column) <tt>FixedColumnWidth</tt> with the pixels or columns specified with <a href="q3textedit.html#wrapColumnOrWidth-prop">setWrapColumnOrWidth</a>(). If you use word wrap to the widget's width <tt>WidgetWidth</tt>, you can specify whether to break on whitespace or anywhere with <a href="q3textedit.html#wrapPolicy-prop">setWrapPolicy</a>().</p>
 <p>The background color is set differently than other widgets, using <a href="q3textedit.html#paper-prop">setPaper</a>(). You specify a brush style which could be a plain color or a complex pixmap.</p>
 <p>Hypertext links are automatically underlined; this can be changed with <a href="q3textedit.html#linkUnderline-prop">setLinkUnderline</a>(). The tab stop width is set with <a href="q3textedit.html#tabStopWidth-prop">setTabStopWidth</a>().</p>
@@ -314,10 +314,10 @@
 <p>When Q3TextEdit is used read-only the key-bindings are limited to navigation, and text may only be selected with the mouse:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Keypresses</th><th>Action</th></tr></thead>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Move one line up</td></tr>
-<tr valign="top" class="even"><td><a href="qt.html#ArrowType-enum">Qt::DownArrow</a></td><td>Move one line down</td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::LeftArrow</a></td><td>Move one character left</td></tr>
-<tr valign="top" class="even"><td><a href="qt.html#ArrowType-enum">Qt::RightArrow</a></td><td>Move one character right</td></tr>
+<tr valign="top" class="odd"><td>Up</td><td>Move one line up</td></tr>
+<tr valign="top" class="even"><td>Down</td><td>Move one line down</td></tr>
+<tr valign="top" class="odd"><td>Left</td><td>Move one character left</td></tr>
+<tr valign="top" class="even"><td>Right</td><td>Move one character right</td></tr>
 <tr valign="top" class="odd"><td>PageUp</td><td>Move one (viewport) page up</td></tr>
 <tr valign="top" class="even"><td>PageDown</td><td>Move one (viewport) page down</td></tr>
 <tr valign="top" class="odd"><td>Home</td><td>Move to the beginning of the text</td></tr>
@@ -331,16 +331,16 @@
 <h4>Using Q3TextEdit in Qt::LogText Mode</h4>
 <p>Setting the text format to <a href="qt.html#TextFormat-enum">Qt::LogText</a> puts the widget in a special mode which is optimized for very large texts. In this mode editing and rich text support are disabled (the widget is explicitly set to read-only mode). This allows the text to be stored in a different, more memory efficient manner. However, a certain degree of text formatting is supported through the use of formatting tags. A tag is delimited by <tt>&lt;</tt> and <tt>&gt;</tt>. The characters <tt>&lt;</tt>, <tt>&gt;</tt> and <tt>&amp;</tt> are escaped by using <tt>&amp;lt;</tt>, <tt>&amp;gt;</tt> and <tt>&amp;amp;</tt>. A tag pair consists of a left and a right tag (or open/close tags). Left-tags mark the starting point for formatting, while right-tags mark the ending point. A right-tag always start with a <tt>/</tt> before the tag keyword. For example <tt>&lt;b&gt;</tt> and <tt>&lt;/b&gt;</tt> are a tag pair. Tags can be nested, but they have to be closed in the same order as they are opened. For example, <tt>&lt;b&gt;&lt;u&gt;&lt;/u&gt;&lt;/b&gt;</tt> is valid, while <tt>&lt;b&gt;&lt;u&gt;&lt;/b&gt;&lt;/u&gt;</tt> will output an error message.</p>
 <p>By using tags it is possible to change the color, bold, italic and underline settings for a piece of text. A color can be specified by using the HTML font tag <tt>&lt;font color=colorname&gt;</tt>. The color name can be one of the color names from the X11 color database, or a RGB hex value (e.g <tt>#00ff00</tt>). Example of valid color tags: <tt>&lt;font color=red&gt;</tt>, <tt>&lt;font color=&quot;light blue&quot;&gt;</tt>,<tt>&lt;font color=&quot;#223344&quot;&gt;</tt>. Bold, italic and underline settings can be specified by the tags <tt>&lt;b&gt;</tt>, <tt>&lt;i&gt;</tt> and <tt>&lt;u&gt;</tt>. Note that a tag does not necessarily have to be closed. A valid example:</p>
-<pre>     This is &lt;font color=red&gt;red&lt;/font&gt; while &lt;b&gt;this&lt;/b&gt; is &lt;font color=blue&gt;blue&lt;/font&gt;.
-     &lt;font color=green&gt;&lt;font color=yellow&gt;Yellow,&lt;/font&gt; and &lt;u&gt;green&lt;/u&gt;.</pre>
+<pre> This is &lt;font color=red&gt;red&lt;/font&gt; while &lt;b&gt;this&lt;/b&gt; is &lt;font color=blue&gt;blue&lt;/font&gt;.
+ &lt;font color=green&gt;&lt;font color=yellow&gt;Yellow,&lt;/font&gt; and &lt;u&gt;green&lt;/u&gt;.</pre>
 <p>Stylesheets can also be used in <a href="qt.html#TextFormat-enum">Qt::LogText</a> mode. To create and use a custom tag, you could do the following:</p>
-<pre>     Q3TextEdit * log = new Q3TextEdit(this);
-     log-&gt;setTextFormat(Qt::LogText);
-     Q3StyleSheetItem * item = new Q3StyleSheetItem(log-&gt;styleSheet(), &quot;mytag&quot;);
-     item-&gt;setColor(&quot;red&quot;);
-     item-&gt;setFontWeight(QFont::Bold);
-     item-&gt;setFontUnderline(true);
-     log-&gt;append(&quot;This is a &lt;mytag&gt;custom tag&lt;/mytag&gt;!&quot;);</pre>
+<pre> Q3TextEdit * log = new Q3TextEdit(this);
+ log-&gt;setTextFormat(Qt::LogText);
+ Q3StyleSheetItem * item = new Q3StyleSheetItem(log-&gt;styleSheet(), &quot;mytag&quot;);
+ item-&gt;setColor(&quot;red&quot;);
+ item-&gt;setFontWeight(QFont::Bold);
+ item-&gt;setFontUnderline(true);
+ log-&gt;append(&quot;This is a &lt;mytag&gt;custom tag&lt;/mytag&gt;!&quot;);</pre>
 <p>Note that only the color, bold, underline and italic attributes of a <a href="q3stylesheetitem.html">Q3StyleSheetItem</a> is used in <a href="qt.html#TextFormat-enum">Qt::LogText</a> mode.</p>
 <p>Note that you can use setMaxLogLines() to limit the number of lines the widget can hold in <a href="qt.html#TextFormat-enum">Qt::LogText</a> mode.</p>
 <p>There are a few things that you need to be aware of when the widget is in this mode:</p>
@@ -377,14 +377,14 @@
 <tr valign="top" class="even"><td>Ctrl+X</td><td>Cut the marked text, copy to clipboard (also Shift+Delete under Windows)</td></tr>
 <tr valign="top" class="odd"><td>Ctrl+Z</td><td>Undo the last operation</td></tr>
 <tr valign="top" class="even"><td>Ctrl+Y</td><td>Redo the last operation</td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::LeftArrow</a></td><td>Move the cursor one character left</td></tr>
-<tr valign="top" class="even"><td>Ctrl+<a href="qt.html#ArrowType-enum">Qt::LeftArrow</a></td><td>Move the cursor one word left</td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::RightArrow</a></td><td>Move the cursor one character right</td></tr>
-<tr valign="top" class="even"><td>Ctrl+<a href="qt.html#ArrowType-enum">Qt::RightArrow</a></td><td>Move the cursor one word right</td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Move the cursor one line up</td></tr>
-<tr valign="top" class="even"><td>Ctrl+<a href="qt.html#ArrowType-enum">Qt::UpArrow</a></td><td>Move the cursor one word up</td></tr>
-<tr valign="top" class="odd"><td><a href="qt.html#ArrowType-enum">Qt::DownArrow</a></td><td>Move the cursor one line down</td></tr>
-<tr valign="top" class="even"><td>Ctrl+Down Arrow</td><td>Move the cursor one word down</td></tr>
+<tr valign="top" class="odd"><td>Left</td><td>Move the cursor one character left</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Left</td><td>Move the cursor one word left</td></tr>
+<tr valign="top" class="odd"><td>Right</td><td>Move the cursor one character right</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Right</td><td>Move the cursor one word right</td></tr>
+<tr valign="top" class="odd"><td>Up</td><td>Move the cursor one line up</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Qt::Up</td><td>Move the cursor one word up</td></tr>
+<tr valign="top" class="odd"><td>DownArrow</td><td>Move the cursor one line down</td></tr>
+<tr valign="top" class="even"><td>Ctrl+Down</td><td>Move the cursor one word down</td></tr>
 <tr valign="top" class="odd"><td>PageUp</td><td>Move the cursor one page up</td></tr>
 <tr valign="top" class="even"><td>PageDown</td><td>Move the cursor one page down</td></tr>
 <tr valign="top" class="odd"><td>Home</td><td>Move the cursor to the beginning of the line</td></tr>
@@ -394,7 +394,7 @@
 <tr valign="top" class="odd"><td>Shift+Wheel</td><td>Scroll the page horizontally (the Wheel is the mouse wheel)</td></tr>
 <tr valign="top" class="even"><td>Ctrl+Wheel</td><td>Zoom the text</td></tr>
 </table></p>
-<p>To select (mark) text hold down the Shift key whilst pressing one of the movement keystrokes, for example, <i>Shift+Right Arrow</i> will select the character to the right, and <i>Shift+Ctrl+Right Arrow</i> will select the word to the right, etc.</p>
+<p>To select (mark) text hold down the Shift key whilst pressing one of the movement keystrokes, for example, <i>Shift+Right</i> will select the character to the right, and <i>Shift+Ctrl+Right</i> will select the word to the right, etc.</p>
 <p>By default the text edit widget operates in insert mode so all text that the user enters is inserted into the text edit and any text to the right of the cursor is moved out of the way. The mode can be changed to overwrite, where new text overwrites any text to the right of the cursor, using <a href="q3textedit.html#overwriteMode-prop">setOverwriteMode</a>().</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -1099,8 +1099,8 @@
 <p>Zooms the text by making the base font size <i>size</i> points and recalculating all font sizes to be the new size. This does not change the size of any images.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

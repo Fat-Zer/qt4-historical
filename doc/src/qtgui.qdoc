@@ -54,7 +54,7 @@
     To include the definitions of both modules' classes, use the
     following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtgui.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtgui.qdoc 0
 
     The QtGui module is part of the \l{Qt Desktop Light Edition},
     the \l{Qt Desktop Edition}, and the \l{Qt Open Source Edition}.

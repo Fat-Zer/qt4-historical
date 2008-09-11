@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/opengl/qgl.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/opengl/qgl.cpp -->
 <head>
   <title>Qt 4.4: QGLWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGLWidget Class Reference<br /><span class="small-subtitle">[<a href="qtopengl.html">QtOpenGL</a> module]</span>
 </h1>
 <p>The QGLWidget class is a widget for rendering OpenGL graphics. <a href="#details">More...</a></p>
@@ -122,49 +122,49 @@
 <li><a href="qglwidget.html#initializeGL">initializeGL</a>() - Sets up the OpenGL rendering context, defines display lists, etc. Gets called once before the first time <a href="qglwidget.html#resizeGL">resizeGL</a>() or <a href="qglwidget.html#paintGL">paintGL</a>() is called.</li>
 </ul>
 <p>Here is a rough outline of how a QGLWidget subclass might look:</p>
-<pre>     class MyGLDrawer : public QGLWidget
+<pre> class MyGLDrawer : public QGLWidget
+ {
+     Q_OBJECT        <span class="comment">// must include this if you use Qt signals/slots</span>
+
+ public:
+     MyGLDrawer(QWidget *parent)
+         : QGLWidget(parent) {}
+
+ protected:
+
+     void initializeGL()
      {
-         Q_OBJECT        <span class="comment">// must include this if you use Qt signals/slots</span>
+         <span class="comment">// Set up the rendering context, define display lists etc.:</span>
+         ...
+         glClearColor(0.0, 0.0, 0.0, 0.0);
+         glEnable(GL_DEPTH_TEST);
+         ...
+     }
 
-     public:
-         MyGLDrawer(QWidget *parent)
-             : QGLWidget(parent) {}
+     void resizeGL(int w, int h)
+     {
+         <span class="comment">// setup viewport, projection etc.:</span>
+         glViewport(0, 0, (GLint)w, (GLint)h);
+         ...
+         glFrustum(...);
+         ...
+     }
 
-     protected:
+     void paintGL()
+     {
+         <span class="comment">// draw the scene:</span>
+         ...
+         glRotatef(...);
+         glMaterialfv(...);
+         glBegin(GL_QUADS);
+         glVertex3f(...);
+         glVertex3f(...);
+         ...
+         glEnd();
+         ...
+     }
 
-         void initializeGL()
-         {
-             <span class="comment">// Set up the rendering context, define display lists etc.:</span>
-             ...
-             glClearColor(0.0, 0.0, 0.0, 0.0);
-             glEnable(GL_DEPTH_TEST);
-             ...
-         }
-
-         void resizeGL(int w, int h)
-         {
-             <span class="comment">// setup viewport, projection etc.:</span>
-             glViewport(0, 0, (GLint)w, (GLint)h);
-             ...
-             glFrustum(...);
-             ...
-         }
-
-         void paintGL()
-         {
-             <span class="comment">// draw the scene:</span>
-             ...
-             glRotatef(...);
-             glMaterialfv(...);
-             glBegin(GL_QUADS);
-             glVertex3f(...);
-             glVertex3f(...);
-             ...
-             glEnd();
-             ...
-         }
-
-     };</pre>
+ };</pre>
 <p>If you need to trigger a repaint from places other than <a href="qglwidget.html#paintGL">paintGL</a>() (a typical example is when using <a href="qtimer.html">timers</a> to animate scenes), you should call the widget's <a href="qglwidget.html#updateGL">updateGL</a>() function.</p>
 <p>Your widget's OpenGL rendering context is made current when <a href="qglwidget.html#paintGL">paintGL</a>(), <a href="qglwidget.html#resizeGL">resizeGL</a>(), or <a href="qglwidget.html#initializeGL">initializeGL</a>() is called. If you need to call the standard OpenGL API functions from other places (e.g&#x2e; in your widget's constructor or in your own paint functions), you must call <a href="qglwidget.html#makeCurrent">makeCurrent</a>() first.</p>
 <p>QGLWidget provides functions for requesting a new display <a href="qglformat.html">format</a> and you can also create widgets with customized rendering <a href="qglcontext.html">contexts</a>.</p>
@@ -402,8 +402,8 @@
 <p>The widget's rendering context will become the current context and <a href="qglwidget.html#initializeGL">initializeGL</a>() will be called if it hasn't already been called.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

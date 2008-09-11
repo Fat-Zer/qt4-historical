@@ -97,7 +97,7 @@ QT_BEGIN_NAMESPACE
 
   START_OF_FRAME: one char format, and a blockFormat (for the next
   block). The format associated with the objectIndex() of the
-  charFormat decides whether this is a frame or table and it's
+  charFormat decides whether this is a frame or table and its
   properties
 
   END_OF_FRAME: one charFormat and a blockFormat (for the next

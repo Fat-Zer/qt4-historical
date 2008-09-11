@@ -352,6 +352,18 @@ void QX11PixmapData::fromImage(const QImage &img,
     h = img.height();
     d = img.depth();
 
+    if (defaultScreen >= 0 && defaultScreen != xinfo.screen()) {
+        QX11InfoData* xd = xinfo.getX11Data(true);
+        xd->screen = defaultScreen;
+        xd->depth = QX11Info::appDepth(xd->screen);
+        xd->cells = QX11Info::appCells(xd->screen);
+        xd->colormap = QX11Info::appColormap(xd->screen);
+        xd->defaultColormap = QX11Info::appDefaultColormap(xd->screen);
+        xd->visual = (Visual *)QX11Info::appVisual(xd->screen);
+        xd->defaultVisual = QX11Info::appDefaultVisual(xd->screen);
+        xinfo.setX11Data(xd);
+    }
+
     if (pixelType() == BitmapType) {
         bitmapFromImage(img);
         return;
@@ -362,7 +374,9 @@ void QX11PixmapData::fromImage(const QImage &img,
         return;
     }
 
-    const int dd = X11->use_xrender && img.hasAlphaChannel() ? 32 : xinfo.depth();
+    int dd = X11->use_xrender && img.hasAlphaChannel() ? 32 : xinfo.depth();
+    if (qt_x11_preferred_pixmap_depth)
+        dd = qt_x11_preferred_pixmap_depth;
 
     QImage image = img;
 
@@ -1674,6 +1688,11 @@ QImage QX11PixmapData::toImage() const
 QPixmap QX11PixmapData::transformed(const QTransform &transform,
                                     Qt::TransformationMode mode ) const
 {
+    if (mode == Qt::SmoothTransformation || transform.type() >= QTransform::TxProject) {
+        QImage image = toImage();
+        return QPixmap::fromImage(image.transformed(transform, mode));
+    }
+
     uint   w = 0;
     uint   h = 0;                               // size of target pixmap
     uint   ws, hs;                              // size of source pixmap
@@ -1695,23 +1714,22 @@ QPixmap QX11PixmapData::transformed(const QTransform &transform,
     qreal scaledWidth;
     qreal scaledHeight;
 
-    if (mat.m12() == 0.0F && mat.m21() == 0.0F) {
+    if (mat.type() <= QTransform::TxScale) {
         scaledHeight = qAbs(mat.m22()) * hs + 0.9999;
         scaledWidth = qAbs(mat.m11()) * ws + 0.9999;
         h = qAbs(int(scaledHeight));
         w = qAbs(int(scaledWidth));
     } else {                                        // rotation or shearing
-        QPolygonF a(QRectF(0, 0, ws+1, hs+1));
+        QPolygonF a(QRectF(0, 0, ws, hs));
         a = mat.map(a);
-        QRectF r = a.boundingRect().normalized();
-        w = int(r.width() + 0.9999);
-        h = int(r.height() + 0.9999);
+        QRect r = a.boundingRect().toAlignedRect();
+        w = r.width();
+        h = r.height();
         scaledWidth = w;
         scaledHeight = h;
         complex_xform = true;
     }
     mat = QPixmap::trueMatrix(mat, ws, hs); // true matrix
-
 
     bool invertible;
     mat = mat.inverted(&invertible);  // invert matrix
@@ -1720,11 +1738,6 @@ QPixmap QX11PixmapData::transformed(const QTransform &transform,
         || qAbs(scaledWidth) >= 32768 || qAbs(scaledHeight) >= 32768 )
 	// error, return null pixmap
         return QPixmap();
-
-    if (mode == Qt::SmoothTransformation) {
-        QImage image = toImage();
-        return QPixmap::fromImage(image.transformed(transform, mode));
-    }
 
 #if defined(QT_MITSHM)
     static bool try_once = true;
@@ -1907,7 +1920,7 @@ void QPixmap::x11SetScreen(int screen)
         return;
     }
 #if 0
-    qDebug("QPixmap::x11SetScreen for %p from %d to %d. Size is %d/%d", data, data->xinfo.screen(), screen, width(), height());
+    qDebug("QPixmap::x11SetScreen for %p from %d to %d. Size is %d/%d", x11Data, x11Data->xinfo.screen(), screen, width(), height());
 #endif
 
     QImage img = toImage();

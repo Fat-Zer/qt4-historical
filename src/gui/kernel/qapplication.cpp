@@ -584,8 +584,7 @@ void QApplicationPrivate::process_cmdline()
   etc.).
 
   Note that \a argc and \a argv might be changed. Qt removes command
-  line arguments that it recognizes. The original \a argc and \a argv
-  can be accessed later with arguments().
+  line arguments that it recognizes.
 
   Qt debugging options (not available if Qt was compiled without the
   QT_DEBUG flag defined):
@@ -689,7 +688,7 @@ QApplication::QApplication(int &argc, char **argv, int _internal)
     The following example shows how to create an application that
     uses a graphical interface when available.
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 0
 */
 
 QApplication::QApplication(int &argc, char **argv, bool GUIenabled )
@@ -1077,8 +1076,8 @@ QWidget *QApplication::widgetAt(const QPoint &p)
 
     if (window->testAttribute(Qt::WA_TransparentForMouseEvents)) {
         //shoot a hole in the widget and try once again,
-        //suboptimal on Qt/E where we do know the stacking order
-        //of the toplevels.
+        //suboptimal on Qt for Embedded Linux where we do
+        //know the stacking order of the toplevels.
         int x = p.x();
         int y = p.y();
         QRegion oldmask = window->mask();
@@ -1162,6 +1161,9 @@ bool QApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventLis
     \brief the application style sheet
     \since 4.2
 
+    By default, this property returns an empty string unless the user specifies
+    the \c{-stylesheet} option on the command line when running the application.
+
     \sa QWidget::setStyle(), {Qt Style Sheets}
 */
 
@@ -1171,21 +1173,20 @@ bool QApplication::compressEvent(QEvent *event, QObject *receiver, QPostEventLis
     \brief defines a threshold for auto maximizing widgets
 
     The auto maximize threshold is only available
-    on Windows CE.
+    as part of Qt for Windows CE.
 
-    This property defines a threshold for the size of a widget in percent 
-    of the screen size.
-    If the minimum size of a widget exceeds the threshold, show() maximizes
-    the widget automatically.
+    This property defines a threshold for the size of a window as a percentage
+    of the screen size. If the minimum size hint of a window exceeds the threshold,
+    calling show() will then cause the window to be maximized automatically.
 
-    A value of 100 or bigger means maximize always. A value of 50 means that the
-    widget is maximized if the vertical minimum size hint is at least 50% of the
-    vertical screen size.
+    Setting the threshold to be 100 or greater means that it will cause it to always
+    be maximized. Setting it to be 50 means that the widget is maximized if the vertical
+    minimum size hint is at least 50% of the vertical screen size.
 
-    A Value of -1 disables this feature.
+    If -1 is specified then this will disable the feature.
 
-    For Windows CE the default is -1.
-    For Windows Mobile the default is 40.
+    On Windows CE the default is -1 (i.e. it is disabled).
+    On Windows Mobile the default is 40.
 */
 
 #ifdef Q_OS_WINCE
@@ -1317,7 +1318,7 @@ QStyle *QApplication::style()
     the old style is still the parent of the application object.
 
     Example usage:
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 1
 
     When switching application styles, the color palette is set back to
     the initial colors or the system defaults. This is necessary since
@@ -1514,7 +1515,7 @@ int QApplication::colorSpec()
 
   Example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 2
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 2
 
     \sa colorSpec()
 */
@@ -1532,14 +1533,16 @@ void QApplication::setColorSpec(int spec)
     \brief the minimum size that any GUI element that the user can interact
            with should have
 
-    For example no button should be resized to be smaller than the
+    For example, no button should be resized to be smaller than the
     global strut size. The strut size should be considered when
     reimplementing GUI controls that may be used on touch-screens or
     similar I/O devices.
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 3
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 3
+
+    By default, this property contains a QSize object with zero width and height.
 */
 QSize QApplication::globalStrut()
 {
@@ -1671,6 +1674,10 @@ void QApplicationPrivate::setPalette_helper(const QPalette &palette, const char*
   When using style sheets, the palette of a widget can be customized using the "color",
   "background-color", "selection-color", "selection-background-color" and
   "alternate-background-color".
+
+    Note that some styles do not use the palette for all drawing,
+    for instance, if they make use of native theme engines. This is
+    the case for the Windows XP, Windows Vista, and Mac OS X styles.
 
   \sa QWidget::setPalette(), palette(), QStyle::polish()
 */
@@ -1886,7 +1893,7 @@ void QApplication::setWindowIcon(const QIcon &icon)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 4
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 4
 
     \sa allWidgets(), QWidget::isWindow(), QWidget::isHidden()
 */
@@ -1911,7 +1918,7 @@ QWidgetList QApplication::topLevelWidgets()
     Note that some of the widgets may be hidden.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 5
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 5
 
     \sa topLevelWidgets(), QWidget::isVisible()
 */
@@ -2858,7 +2865,7 @@ QClipboard *QApplication::clipboard()
     This function must be called before creating the QApplication
     object, like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 6
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 6
 
     \sa desktopSettingsAware()
 */
@@ -3171,7 +3178,7 @@ void QApplication::setStartDragDistance(int l)
     \c currentPos, you can find out if a drag should be started with code
     like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 7
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 7
 
     Qt uses this value internally, e.g. in QFileDialog.
 
@@ -3455,7 +3462,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
 
                        note that we don't have to reset pw while
                        propagating (because the original receiver will
-                       be destroyed if one of it's ancestors is)
+                       be destroyed if one of its ancestors is)
                     */
                     || !pw
                     || w->isWindow() || !w->parentWidget()) {
@@ -3600,6 +3607,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
         }
         break;
 #endif
+#ifndef QT_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         {
             QWidget* w = static_cast<QWidget *>(receiver);
@@ -3623,6 +3631,7 @@ bool QApplication::notify(QObject *receiver, QEvent *e)
             context->setAccepted(eventAccepted);
         }
         break;
+#endif // QT_NO_CONTEXTMENU
 #ifndef QT_NO_TABLETEVENT
     case QEvent::TabletMove:
     case QEvent::TabletPress:
@@ -3931,7 +3940,7 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
   Here's an example of how an application's QApplication::commitData()
   might be implemented:
 
-  \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 8
+  \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 8
 
   If an error occurred within the application while saving its data,
   you may want to try allowsErrorInteraction() instead.
@@ -4005,7 +4014,7 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
   execute \a command in order to restore the application. The command
   defaults to
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 9
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 9
 
   The \c -session option is mandatory; otherwise QApplication cannot
   tell whether it has been restored or what the current session
@@ -4031,7 +4040,7 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
     To iterate over the list, you can use the \l foreach
     pseudo-keyword:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 10
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 10
 
     \sa setRestartCommand(), restartHint()
 */
@@ -4053,7 +4062,7 @@ bool QApplicationPrivate::notify_helper(QObject *receiver, QEvent * e)
     To iterate over the list, you can use the \l foreach
     pseudo-keyword:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 11
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 11
 
     \sa setDiscardCommand(), restartCommand(), setRestartCommand()
 */
@@ -4350,7 +4359,7 @@ void QSessionManager::requestPhase2()
     Use the two-argument widgetAt() overload to get the child widget.
     To get the top-level widget do this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 12
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 12
 */
 
 /*!
@@ -4359,7 +4368,7 @@ void QSessionManager::requestPhase2()
     Use the single-argument widgetAt() overload to get the child widget.
     To get the top-level widget do this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication.cpp 13
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication.cpp 13
 */
 
 #ifdef QT3_SUPPORT
@@ -4531,6 +4540,8 @@ bool QApplication::keypadNavigationEnabled()
     one \e line can mean \l{QAbstractItemView::ScrollPerItem} {scroll
     one item} or \l{QAbstractItemView::ScrollPerPixel} {scroll one
     pixel}.
+
+    By default, this property has a value of 3.
 */
 
 /*!
@@ -4617,7 +4628,7 @@ bool QApplication::keypadNavigationEnabled()
     otherwise the stack will never be emptied.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qapplication_x11.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qapplication_x11.cpp 0
 
     \sa overrideCursor() restoreOverrideCursor() changeOverrideCursor() QWidget::setCursor()
 */

@@ -51,12 +51,12 @@
     The C++ language doesn't support variable-length arrays on the stack.
     For example, the following code won't compile:
 
-    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qvarlengtharray.qdoc 0
 
     The alternative is to allocate the array on the heap (with
     \c{new}):
 
-    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qvarlengtharray.qdoc 1
 
     However, if myfunc() is called very frequently from the
     application's inner loop, heap allocation can be a major source
@@ -69,7 +69,7 @@
     it is much faster than heap allocation.
 
     Example:
-    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qvarlengtharray.qdoc 2
 
     In the example above, QVarLengthArray will preallocate 1024
     elements on the stack and use them unless \c{n + 1} is greater
@@ -227,7 +227,7 @@
     be used to access and modify the items in the array.
 
     Example:
-    \snippet doc/src/snippets/code/doc.src.qvarlengtharray.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_qvarlengtharray.qdoc 3
 
     The pointer remains valid as long as the array isn't reallocated.
 

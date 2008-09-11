@@ -172,6 +172,7 @@ public:
 #if MYSQL_VERSION_ID >= 40108
         , stmt(0), meta(0), inBinds(0), outBinds(0)
 #endif
+        , precisionPolicy(QSql::HighPrecision)
         {}
 
     MYSQL_RES *result;
@@ -206,6 +207,7 @@ public:
     MYSQL_BIND *inBinds;
     MYSQL_BIND *outBinds;
 #endif
+    QSql::NumericalPrecisionPolicy precisionPolicy;
 };
 
 #ifndef QT_NO_TEXTCODEC
@@ -468,8 +470,14 @@ bool QMYSQLResult::fetch(int i)
 #if MYSQL_VERSION_ID >= 40108
         mysql_stmt_data_seek(d->stmt, i);
 
-        if (mysql_stmt_fetch(d->stmt)) {
-            setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
+        int nRC = mysql_stmt_fetch(d->stmt);
+        if (nRC) {
+#ifdef MYSQL_DATA_TRUNCATED
+            if (nRC == 1 || nRC == MYSQL_DATA_TRUNCATED)
+#else
+            if (nRC == 1)
+#endif
+                setLastError(qMakeStmtError(QCoreApplication::translate("QMYSQLResult",
                          "Unable to fetch data"), QSqlError::StatementError, d->stmt));
             return false;
         }
@@ -576,8 +584,26 @@ QVariant QMYSQLResult::data(int field)
         return QVariant(val.toInt());
     case QVariant::UInt:
         return QVariant(val.toUInt());
-    case QVariant::Double:
-        return QVariant(val.toDouble());
+    case QVariant::Double: {
+        QVariant v;
+        bool ok=false;
+        switch(d->precisionPolicy) {
+            case QSql::LowPrecisionInt32:
+                v=val.toInt(&ok);
+            case QSql::LowPrecisionInt64:
+                v = val.toLongLong(&ok);
+            case QSql::LowPrecisionDouble:
+                v = val.toDouble(&ok);
+            case QSql::HighPrecision:
+            default:
+                v = val;
+                ok = true;
+        }
+        if(ok)
+            return v;
+        else
+            return QVariant();
+    }
     case QVariant::Date:
         return qDateFromString(val);
     case QVariant::Time:
@@ -760,11 +786,18 @@ bool QMYSQLResult::nextResult()
 
 void QMYSQLResult::virtual_hook(int id, void *data)
 {
-    if (id == NextResult) {
+    switch (id) {
+    case QSqlResult::NextResult:
+        Q_ASSERT(data);
         *static_cast<bool*>(data) = nextResult();
-        return;
+        break;
+    case QSqlResult::SetNumericalPrecision:
+        Q_ASSERT(data);
+        d->precisionPolicy = *reinterpret_cast<QSql::NumericalPrecisionPolicy *>(data);
+        break;
+    default:
+        QSqlResult::virtual_hook(id, data);
     }
-    QSqlResult::virtual_hook(id, data);
 }
 
 

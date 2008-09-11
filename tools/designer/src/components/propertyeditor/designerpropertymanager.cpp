@@ -1654,6 +1654,8 @@ void DesignerPropertyManager::initializeProperty(QtProperty *property)
         m_propertyToAntialiasing[property] = antialiasing;
         m_antialiasingToProperty[antialiasing] = property;
         m_createdFontProperty = 0;
+    } else if (type == QVariant::Double) {
+        setAttribute(property, QLatin1String("decimals"), 6);
     }
 }
 
@@ -1966,6 +1968,7 @@ QWidget *DesignerEditorFactory::createEditor(QtVariantPropertyManager *manager, 
             ed->setRichTextDefaultFont(qvariant_cast<QFont>(richTextDefaultFont));
         m_stringPropertyToEditors[property].append(ed);
         m_editorToStringProperty[ed] = property;
+        connect(ed, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
         connect(ed, SIGNAL(textChanged(QString)), this, SLOT(slotStringTextChanged(QString)));
         editor = ed;
     }
@@ -2018,6 +2021,7 @@ QWidget *DesignerEditorFactory::createEditor(QtVariantPropertyManager *manager, 
         ed->setUpdateMode(TextPropertyEditor::UpdateOnFinished);
         m_urlPropertyToEditors[property].append(ed);
         m_editorToUrlProperty[ed] = property;
+        connect(ed, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
         connect(ed, SIGNAL(textChanged(QString)), this, SLOT(slotUrlChanged(QString)));
         editor = ed;
     }
@@ -2026,6 +2030,7 @@ QWidget *DesignerEditorFactory::createEditor(QtVariantPropertyManager *manager, 
         TextEditor *ed = createTextEditor(parent, ValidationMultiLine, QString::fromUtf8(manager->value(property).toByteArray()));
         m_byteArrayPropertyToEditors[property].append(ed);
         m_editorToByteArrayProperty[ed] = property;
+        connect(ed, SIGNAL(destroyed(QObject*)), this, SLOT(slotEditorDestroyed(QObject*)));
         connect(ed, SIGNAL(textChanged(QString)), this, SLOT(slotByteArrayChanged(QString)));
         editor = ed;
     }

@@ -308,7 +308,7 @@ QImageWriter::~QImageWriter()
     Sets the format QImageWriter will use when writing images, to \a
     format. \a format is a case insensitive text string. Example:
 
-    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qimagewriter.cpp 0
 
     You can call supportedImageFormats() for the full list of formats
     QImageWriter supports.
@@ -507,7 +507,7 @@ QString QImageWriter::description() const
     \a text. This is useful for storing copyright information
     or other information about the image. Example:
 
-    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 1
+    \snippet doc/src/snippets/code/src_gui_image_qimagewriter.cpp 1
 
     If you want to store a single block of data
     (e.g., a comment), you can pass an empty key, or use
@@ -529,7 +529,7 @@ void QImageWriter::setText(const QString &key, const QString &text)
 }
 
 /*!
-    Returns true if QImageWriter can write the image (i.e., the image
+    Returns true if QImageWriter can write the image; i.e., the image
     format is supported and the assigned device is open for reading.
 
     \sa write(), setDevice(), setFormat()
@@ -614,7 +614,7 @@ QString QImageWriter::errorString() const
     example, the PNG format allows you to embed text into the image's metadata
     (see text()).
 
-    \snippet doc/src/snippets/code/src.gui.image.qimagewriter.cpp 2
+    \snippet doc/src/snippets/code/src_gui_image_qimagewriter.cpp 2
 
     Options can be tested after the writer has been associated with a format.
 

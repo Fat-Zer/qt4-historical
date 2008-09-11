@@ -82,7 +82,7 @@ QT_BEGIN_NAMESPACE
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsproxywidget.cpp 0
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsproxywidget.cpp 0
 
     QGraphicsProxyWidget takes care of automatically embedding popup children
     of embedded widgets through creating a child proxy for each popup. This
@@ -100,7 +100,7 @@ QT_BEGIN_NAMESPACE
 
     For example, in the code snippet below, we embed a group box into the proxy:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsproxywidget.cpp 1
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsproxywidget.cpp 1
 
     The image below is the output obtained with its contents margin and
     contents rect labeled.
@@ -127,7 +127,7 @@ QT_BEGIN_NAMESPACE
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsproxywidget.cpp 2
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsproxywidget.cpp 2
 
     QGraphicsProxyWidget maintains symmetry for the following states:
 
@@ -375,7 +375,7 @@ QWidget *QGraphicsProxyWidgetPrivate::findFocusChild(QWidget *child, bool next) 
 {
     if (!widget)
         return 0;
-    
+
     // Run around the focus chain until we find a widget that can take tab focus.
     if (!child) {
 	child = next ? (QWidget *)widget : widget->d_func()->focus_prev;
@@ -644,7 +644,7 @@ void QGraphicsProxyWidgetPrivate::setWidget_helper(QWidget *newWidget, bool auto
     newWidget->getContentsMargins(&left, &top, &right, &bottom);
     q->setContentsMargins(left, top, right, bottom);
     q->setWindowTitle(newWidget->windowTitle());
-    
+
     // size policies and constraints..
     q->setSizePolicy(newWidget->sizePolicy());
     QSize sz = newWidget->minimumSize();
@@ -885,6 +885,7 @@ void QGraphicsProxyWidget::hideEvent(QHideEvent *event)
     Q_UNUSED(event);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -909,6 +910,7 @@ void QGraphicsProxyWidget::contextMenuEvent(QGraphicsSceneContextMenuEvent *even
 
     event->setAccepted(contextMenuEvent.isAccepted());
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \reimp
@@ -1101,7 +1103,7 @@ void QGraphicsProxyWidget::focusInEvent(QFocusEvent *event)
         // filter on FocusIn instead?
         return;
     }
-    
+
     switch (event->reason()) {
     case Qt::TabFocusReason: {
 	if (QWidget *focusChild = d->findFocusChild(0, true))
@@ -1247,5 +1249,5 @@ int QGraphicsProxyWidget::type() const
 QT_END_NAMESPACE
 
 #include "moc_qgraphicsproxywidget.cpp"
-        
+
 #endif //QT_NO_GRAPHICSVIEW

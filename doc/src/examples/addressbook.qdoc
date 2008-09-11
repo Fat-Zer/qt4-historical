@@ -120,7 +120,7 @@
     \snippet itemviews/addressbook/tablemodel.cpp 0
 
     The \c rowCount() and \c columnCount() functions return the
-    dimensions of the model. Where \c rowCount()'s value will vary
+    dimensions of the model. Whereas, \c rowCount()'s value will vary
     depending on the number of contacts added to the address book,
     \c columnCount()'s value is always 2 because we only need space
     for the \bold Name and \bold Address columns.

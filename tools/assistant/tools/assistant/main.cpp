@@ -117,27 +117,68 @@ int main(int argc, char *argv[])
             he.customValue(QLatin1String("CacheDirectory"), QString()).toString());
 
         QFileInfo fi(dir + QDir::separator() + fileName);
-        if (!fi.exists()
-            && !he.copyCollectionFile(fi.absoluteFilePath())) {
-            cmd.showMessage(he.error(), true);                
-            return -1;
+        bool copyCollectionFile = false;
+        if (!fi.exists()) {
+            copyCollectionFile = true;
+            if (!he.copyCollectionFile(fi.absoluteFilePath())) {
+                cmd.showMessage(he.error(), true);                
+                return -1;
+            }
         }
 
-        if (he.customValue(QLatin1String("DocUpdate"), false).toBool()) {
-            QStringList registeredDocs = he.registeredDocumentations();
+        if (!copyCollectionFile) {
             QHelpEngineCore userHelpEngine(fi.absoluteFilePath());
             if (userHelpEngine.setupData()) {
-                QStringList userDocs = userHelpEngine.registeredDocumentations();
-                foreach (const QString &doc, registeredDocs) {
-                    if (!userDocs.contains(doc))
-                        userHelpEngine.registerDocumentation(he.documentationFileName(doc));
+                bool docUpdate = he.customValue(QLatin1String("DocUpdate"), false).toBool();
+                if (userHelpEngine.customValue(QLatin1String("CreationTime"), 0).toUInt()
+                    != he.customValue(QLatin1String("CreationTime"), 0).toUInt()) {
+                    userHelpEngine.setCustomValue(QLatin1String("CreationTime"),
+                        he.customValue(QLatin1String("CreationTime")));
+                    userHelpEngine.setCustomValue(QLatin1String("WindowTitle"),
+                        he.customValue(QLatin1String("WindowTitle")));
+                    userHelpEngine.setCustomValue(QLatin1String("LastShownPages"),
+                        he.customValue(QLatin1String("LastShownPages")));
+                    userHelpEngine.setCustomValue(QLatin1String("CurrentFilter"),
+                        he.customValue(QLatin1String("CurrentFilter")));
+                    userHelpEngine.setCustomValue(QLatin1String("CacheDirectory"),
+                        he.customValue(QLatin1String("CacheDirectory")));
+                    userHelpEngine.setCustomValue(QLatin1String("EnableFilterFunctionality"),
+                        he.customValue(QLatin1String("EnableFilterFunctionality")));
+                    userHelpEngine.setCustomValue(QLatin1String("HideFilterFunctionality"),
+                        he.customValue(QLatin1String("HideFilterFunctionality")));
+                    userHelpEngine.setCustomValue(QLatin1String("EnableDocumentationManager"),
+                        he.customValue(QLatin1String("EnableDocumentationManager")));
+                    userHelpEngine.setCustomValue(QLatin1String("EnableAddressBar"),
+                        he.customValue(QLatin1String("EnableAddressBar")));
+                    userHelpEngine.setCustomValue(QLatin1String("HideAddressBar"),
+                        he.customValue(QLatin1String("HideAddressBar")));
+                    userHelpEngine.setCustomValue(QLatin1String("ApplicationIcon"),
+                        he.customValue(QLatin1String("ApplicationIcon")));
+                    userHelpEngine.setCustomValue(QLatin1String("AboutMenuTexts"),
+                        he.customValue(QLatin1String("AboutMenuTexts")));
+                    userHelpEngine.setCustomValue(QLatin1String("AboutIcon"),
+                        he.customValue(QLatin1String("AboutIcon")));
+                    userHelpEngine.setCustomValue(QLatin1String("AboutTexts"),
+                        he.customValue(QLatin1String("AboutTexts")));
+                    userHelpEngine.setCustomValue(QLatin1String("AboutImages"),
+                        he.customValue(QLatin1String("AboutImages")));
+                    docUpdate = true;
                 }
-                foreach (const QString &doc, userDocs) {
-                    if (!registeredDocs.contains(doc)
-                        && !doc.startsWith(QLatin1String("com.trolltech.com.assistantinternal_")))
-                        userHelpEngine.unregisterDocumentation(doc);
+
+                if (docUpdate) {
+                    QStringList registeredDocs = he.registeredDocumentations();
+                    QStringList userDocs = userHelpEngine.registeredDocumentations();
+                    foreach (const QString &doc, registeredDocs) {
+                        if (!userDocs.contains(doc))
+                            userHelpEngine.registerDocumentation(he.documentationFileName(doc));
+                    }
+                    foreach (const QString &doc, userDocs) {
+                        if (!registeredDocs.contains(doc)
+                            && !doc.startsWith(QLatin1String("com.trolltech.com.assistantinternal_")))
+                            userHelpEngine.unregisterDocumentation(doc);
+                    }
+                    he.removeCustomValue(QLatin1String("DocUpdate"));
                 }
-                he.removeCustomValue(QLatin1String("DocUpdate"));
             }
         }
         cmd.setCollectionFile(fi.absoluteFilePath());

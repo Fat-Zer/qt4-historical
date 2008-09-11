@@ -130,7 +130,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *mouseEvent);
     void mouseMoveEvent(QMouseEvent *mouseEvent);
     void keyPressEvent(QKeyEvent *keyEvent);
-#ifndef QT_NO_MENU
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *contextMenuEvent);
 #endif
     void focusInEvent(QFocusEvent *focusInEvent);

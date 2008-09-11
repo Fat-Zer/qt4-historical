@@ -55,7 +55,7 @@
     QGraphicsWidget::setLayout(). QGraphicsGridLayout automatically computes
     the dimensions of the grid as you add items.
 
-    \snippet doc/src/snippets/code/src.gui.graphicsview.qgraphicsgridlayout.cpp 0
+    \snippet doc/src/snippets/code/src_gui_graphicsview_qgraphicsgridlayout.cpp 0
 
     \sa QGraphicsLinearLayout, QGraphicsWidget
 */

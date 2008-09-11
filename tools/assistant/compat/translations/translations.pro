@@ -17,7 +17,7 @@ SOURCES += ../main.cpp \
            ../tabbedbrowser.cpp \
            ../fontsettingsdialog.cpp
 
-SOURCES += ../../shared/fontpanel/fontpanel.cpp
+SOURCES += ../../../shared/fontpanel/fontpanel.cpp
 
 HEADERS += ../helpwindow.h \
            ../topicchooser.h \

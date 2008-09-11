@@ -645,10 +645,11 @@ QAction *QMenu::menuAction() const
 
 /*!
   \property QMenu::title
-
   \brief The title of the menu
 
   This is equivalent to the QAction::text property of the menuAction().
+
+  By default, this property contains an empty string.
 */
 QString QMenu::title() const
 {
@@ -666,6 +667,8 @@ void QMenu::setTitle(const QString &text)
   \brief The icon of the menu
 
   This is equivalent to the QAction::icon property of the menuAction().
+
+  By default, if no icon is explicitly set, this property contains a null icon.
 */
 QIcon QMenu::icon() const
 {
@@ -1246,7 +1249,7 @@ void QMenu::initStyleOption(QStyleOptionMenuItem *option, const QAction *action)
     some users may not be familiar with it. Consider using a QToolBar
     instead.
 
-    \section1 QMenu on Qt/CE
+    \section1 QMenu on Qt for Windows CE
 
     If a menu is integrated into the native menubar on Windows Mobile we
     do not support the signals: aboutToHide (), aboutToShow () and hovered ().
@@ -1516,11 +1519,14 @@ QAction *QMenu::defaultAction() const
     \property QMenu::tearOffEnabled
     \brief whether the menu supports being torn off
 
-    When true, QMenu has a special menu item (often shown as a dashed
-    line at the top of the menu) that creates a copy of the menu when
-    the tear-off menu item is triggered. This "torn-off" copy lives in
-    a separate window. It contains the same menu items as the original
-    menu, with the exception of the tear-off handle.
+    When true, the menu contains a special tear-off item (often shown as a dashed
+    line at the top of the menu) that creates a copy of the menu when it is
+    triggered.
+
+    This "torn-off" copy lives in a separate window. It contains the same menu
+    items as the original menu, with the exception of the tear-off handle.
+
+    By default, this property is false.
 */
 void QMenu::setTearOffEnabled(bool b)
 {
@@ -1879,11 +1885,11 @@ void QMenu::popup(const QPoint &p, QAction *atAction)
 
     In most situations you'll want to specify the position yourself,
     for example, the current mouse position:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 0
     or aligned to a widget:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 1
     or in reaction to a QMouseEvent *e:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 2
 */
 QAction *QMenu::exec()
 {
@@ -1911,11 +1917,11 @@ QAction *QMenu::exec()
 
     Common usage is to position the menu at the current mouse
     position:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 3
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 3
     or aligned to a widget:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 4
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 4
     or in reaction to a QMouseEvent *e:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 5
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 5
 
     When positioning a menu with exec() or popup(), bear in mind that
     you cannot rely on the menu's current size(). For performance
@@ -1960,7 +1966,7 @@ QAction *QMenu::exec(const QPoint &p, QAction *action)
     (normally because the user pressed Esc).
 
     This is equivalent to:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenu.cpp 6
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenu.cpp 6
 
     \sa popup(), QWidget::mapToGlobal()
 */
@@ -2733,6 +2739,14 @@ void QMenu::actionEvent(QActionEvent *e)
             QWidget *widget = d->widgetItems.take(wa);
             if (widget)
                 wa->releaseWidget(widget);
+        } else {
+            // If this is called from the QAction destructor, the
+            // previous call to qobject_cast will fail because the
+            // QWidgetAction has been destroyed already. We need to
+            // remove it from the hash anyway or it might crash later
+            // the widget itself has been already destroyed in
+            // ~QWidgetAction
+            d->widgetItems.remove(e->action());
         }
     }
 
@@ -2747,7 +2761,7 @@ void QMenu::actionEvent(QActionEvent *e)
     }
 #endif
 
-#ifdef Q_OS_WINCE
+#if defined(Q_OS_WINCE) && !defined(QT_NO_MENUBAR)
     if (!d->wce_menu)
         d->wce_menu = new QMenuPrivate::QWceMenuPrivate;
     if (e->type() == QEvent::ActionAdded)
@@ -2920,6 +2934,8 @@ void QMenu::setNoReplayFor(QWidget *noReplayFor)
   This property specifies whether consecutive separators in the menu
   should be visually collapsed to a single one. Separators at the
   beginning or the end of the menu are also hidden.
+
+  By default, this property is true.
 */
 bool QMenu::separatorsCollapsible() const
 {

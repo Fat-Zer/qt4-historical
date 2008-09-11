@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/text/qtextcursor.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/text/qtextcursor.cpp -->
 <head>
   <title>Qt 4.4: QTextCursor Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QTextCursor Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QTextCursor class offers an API to access and modify QTextDocuments. <a href="#details">More...</a></p>
@@ -240,13 +240,13 @@
 <h3 class="fn"><a name="beginEditBlock"></a>void QTextCursor::beginEditBlock ()</h3>
 <p>Indicates the start of a block of editing operations on the document that should appear as a single operation from an undo/redo point of view.</p>
 <p>For example:</p>
-<pre>     QTextCursor cursor(textDocument);
-     cursor.beginEditBlock();
-     cursor.insertText(&quot;Hello&quot;);
-     cursor.insertText(&quot;World&quot;);
-     cursor.endEditBlock();
+<pre> QTextCursor cursor(textDocument);
+ cursor.beginEditBlock();
+ cursor.insertText(&quot;Hello&quot;);
+ cursor.insertText(&quot;World&quot;);
+ cursor.endEditBlock();
 
-     textDocument-&gt;undo();</pre>
+ textDocument-&gt;undo();</pre>
 <p>The call to undo() will cause both insertions to be undone, causing both &quot;World&quot; and &quot;Hello&quot; to be removed.</p>
 <p>It is possible to nest calls to beginEditBlock and endEditBlock. The top-most pair will determine the scope of the undo/redo operation.</p>
 <p>See also <a href="qtextcursor.html#endEditBlock">endEditBlock</a>().</p>
@@ -356,9 +356,9 @@
 <h3 class="fn"><a name="insertImage-3"></a>void QTextCursor::insertImage ( const <a href="qstring.html">QString</a> &amp; <i>name</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Convenience method for inserting the image with the given <i>name</i> at the current <a href="qtextcursor.html#position">position</a>().</p>
-<pre>     QImage img = ...
-     textDocument-&gt;addResource(QTextDocument::ImageResource, QUrl(&quot;myimage&quot;), img);
-     cursor.insertImage(&quot;myimage&quot;);</pre>
+<pre> QImage img = ...
+ textDocument-&gt;addResource(QTextDocument::ImageResource, QUrl(&quot;myimage&quot;), img);
+ cursor.insertImage(&quot;myimage&quot;);</pre>
 <a name="//apple_ref/cpp/instm/QTextCursor/insertList" />
 <h3 class="fn"><a name="insertList"></a><a href="qtextlist.html">QTextList</a> * QTextCursor::insertList ( const <a href="qtextlistformat.html">QTextListFormat</a> &amp; <i>format</i> )</h3>
 <p>Inserts a new block at the current position and makes it the first list item of a newly created list with the given <i>format</i>. Returns the created list.</p>
@@ -381,9 +381,9 @@
 <h3 class="fn"><a name="insertText"></a>void QTextCursor::insertText ( const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Inserts <i>text</i> at the current position, using the current character format.</p>
 <p>If there is a selection, the selection is deleted and replaced by <i>text</i>, for example:</p>
-<pre>     cursor.clearSelection();
-     cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
-     cursor.insertText(&quot;Hello World&quot;);</pre>
+<pre> cursor.clearSelection();
+ cursor.movePosition(QTextCursor::NextWord, QTextCursor::KeepAnchor);
+ cursor.insertText(&quot;Hello World&quot;);</pre>
 <p>This clears any existing selection, selects the word at the cursor (i.e&#x2e; from <a href="qtextcursor.html#position">position</a>() forward), and replaces the selection with the phrase &quot;Hello World&quot;.</p>
 <p>Any ASCII linefeed characters (\n) in the inserted text are transformed into unicode block separators, corresponding to <a href="qtextcursor.html#insertBlock">insertBlock</a>() calls.</p>
 <p>See also <a href="qtextcursor.html#charFormat">charFormat</a>() and <a href="qtextcursor.html#hasSelection">hasSelection</a>().</p>
@@ -401,19 +401,19 @@
 <h3 class="fn"><a name="joinPreviousEditBlock"></a>void QTextCursor::joinPreviousEditBlock ()</h3>
 <p>Like <a href="qtextcursor.html#beginEditBlock">beginEditBlock</a>() indicates the start of a block of editing operations that should appear as a single operation for undo/redo. However unlike <a href="qtextcursor.html#beginEditBlock">beginEditBlock</a>() it does not start a new block but reverses the previous call to <a href="qtextcursor.html#endEditBlock">endEditBlock</a>() and therefore makes following operations part of the previous edit block created.</p>
 <p>For example:</p>
-<pre>     QTextCursor cursor(textDocument);
-     cursor.beginEditBlock();
-     cursor.insertText(&quot;Hello&quot;);
-     cursor.insertText(&quot;World&quot;);
-     cursor.endEditBlock();
+<pre> QTextCursor cursor(textDocument);
+ cursor.beginEditBlock();
+ cursor.insertText(&quot;Hello&quot;);
+ cursor.insertText(&quot;World&quot;);
+ cursor.endEditBlock();
 
-     ...
+ ...
 
-     cursor.joinPreviousEditBlock();
-     cursor.insertText(&quot;Hey&quot;);
-     cursor.endEditBlock();
+ cursor.joinPreviousEditBlock();
+ cursor.insertText(&quot;Hey&quot;);
+ cursor.endEditBlock();
 
-     textDocument-&gt;undo();</pre>
+ textDocument-&gt;undo();</pre>
 <p>The call to undo() will cause all three insertions to be undone.</p>
 <p>See also <a href="qtextcursor.html#beginEditBlock">beginEditBlock</a>() and <a href="qtextcursor.html#endEditBlock">endEditBlock</a>().</p>
 <a name="//apple_ref/cpp/instm/QTextCursor/mergeBlockCharFormat" />
@@ -517,8 +517,8 @@
 <p>Returns true if the <i>other</i> cursor is positioned earlier or at the same position in the document as this cursor; otherwise returns false.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

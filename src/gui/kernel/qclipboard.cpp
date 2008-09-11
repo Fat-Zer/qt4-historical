@@ -74,7 +74,7 @@ QT_BEGIN_NAMESPACE
     as QApplication::clipboard().
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qclipboard.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qclipboard.cpp 0
 
     QClipboard features some convenience functions to access common
     data types: setText() allows the exchange of Unicode text and
@@ -363,7 +363,7 @@ QImage QClipboard::image(Mode mode) const
 
     This is shorthand for:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qclipboard.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qclipboard.cpp 1
 
     \sa image(), setPixmap() setMimeData()
 */

@@ -84,10 +84,15 @@ public:
               fileName(copy.fileName), cache_enabled(copy.cache_enabled)
         { clear(); }
         inline ~Data() { delete fileEngine; }
-        inline void clear() {
-            fileNames.clear();
+        inline void clearFlags() {
             fileFlags = 0;
             cachedFlags = 0;
+            if (fileEngine)
+                (void)fileEngine->fileFlags(QFSFileEngine::Refresh);
+        }
+        inline void clear() {
+            fileNames.clear();
+            clearFlags();
         }
         mutable QAtomicInt ref;
 
@@ -255,6 +260,8 @@ QFileInfoPrivate::getFileFlags(QAbstractFileEngine::FileFlags request) const
 QDateTime
 &QFileInfoPrivate::getFileTime(QAbstractFileEngine::FileTime request) const
 {
+    if (!data->cache_enabled)
+        data->clearFlags();
     if(request == QAbstractFileEngine::CreationTime) {
         if(data->getCachedFlag(CachedCTime))
             return data->fileTimes[request];
@@ -317,14 +324,14 @@ QDateTime
     transparently; similarly, opening a symlink using QFile
     effectively opens the link's target. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 0
 
     On Windows, symlinks (shortcuts) are \c .lnk files. The reported
     size() is that of the symlink (not the link's target), and
     opening a symlink using QFile opens the \c .lnk file. For
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 1
 
     Elements of the file's name can be extracted with path() and
     fileName(). The fileName()'s parts can be extracted with
@@ -526,7 +533,7 @@ QFileInfo &QFileInfo::operator=(const QFileInfo &fileinfo)
     path relative to the current directory.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 2
 
     \sa isRelative(), QDir::setCurrent(), QDir::isRelativePath()
 */
@@ -630,6 +637,9 @@ QFileInfo::canonicalFilePath() const
 /*!
     Returns the file's path absolute path. This doesn't include the
     file name.
+
+    \warning If the QFileInfo object was created with an empty QString,
+              the behavior of this function is undefined.
 
     \sa dir(), filePath(), fileName(), isRelative(), path()
 */
@@ -774,7 +784,7 @@ QFileInfo::filePath() const
     Returns the name of the file, excluding the path.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 3
 
     \sa isRelative(), filePath(), baseName(), extension()
 */
@@ -796,7 +806,7 @@ QFileInfo::fileName() const
     path isBundle(). On all other platforms an empty QString is returned.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 4
 
     \sa isBundle(), filePath(), baseName(), extension()
 */
@@ -817,7 +827,7 @@ QFileInfo::bundleName() const
     not including) the \e first '.' character.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 5
 
 
     The base name of a file is computed equally on all platforms, independent
@@ -843,7 +853,7 @@ QFileInfo::baseName() const
     to (but not including) the \e last '.' character.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 6
 
     \sa fileName(), suffix(), completeSuffix(), baseName()
 */
@@ -866,7 +876,7 @@ QFileInfo::completeBaseName() const
     (but not including) the first '.'.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 7
 
     \sa fileName(), suffix(), baseName(), completeBaseName()
 */
@@ -891,7 +901,7 @@ QFileInfo::completeSuffix() const
     including) the last '.'.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 8
 
     The suffix of a file is computed equally on all platforms, independent of
     file naming conventions (e.g., ".bashrc" on Unix has an empty base name,
@@ -1087,7 +1097,7 @@ QFileInfo::isBundle() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 9
 
     \sa isFile(), isDir(), symLinkTarget()
 */
@@ -1230,7 +1240,7 @@ QFileInfo::groupId() const
     always returns true.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.io.qfileinfo.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_io_qfileinfo.cpp 10
 
     \sa isReadable(), isWritable(), isExecutable()
 */
@@ -1401,7 +1411,7 @@ QFileInfo::setCaching(bool enable)
 /*!
     \fn QString QFileInfo::dirPath(bool absPath) const
 
-    Use absoluteFilePath() if the absolute path is wanted (\a absPath
+    Use absolutePath() if the absolute path is wanted (\a absPath
     is true) or path() if it's not necessary (\a absPath is false).
 */
 

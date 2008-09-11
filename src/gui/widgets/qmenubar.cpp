@@ -574,7 +574,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     menu items with addMenu(). For example, asuming that \c menubar
     is a pointer to a QMenuBar and \c fileMenu is a pointer to a
     QMenu, the following statement inserts the menu into the menu bar:
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenubar.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenubar.cpp 0
 
     The ampersand in the menu item's text sets Alt+F as a shortcut for
     this menu. (You can use "\&\&" to get a real ampersand in the menu
@@ -604,7 +604,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     pressed.
 
     \table
-    
+
     \row \o \inlineimage plastique-menubar.png A menu bar shown in the
     Plastique widget style.
 
@@ -620,18 +620,18 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
 
     \endtable
 
-    \section1 QMenuBar on Qt/Mac
+    \section1 QMenuBar on Mac OS X
 
-    QMenuBar on Qt/Mac is a wrapper for using the system-wide menu bar.
+    QMenuBar on Mac OS X is a wrapper for using the system-wide menu bar.
     If you have multiple menu bars in one dialog the outermost menu bar
     (normally inside a widget with widget flag Qt::Window) will
     be used for the system-wide menu bar.
 
-    Qt/Mac also provides a menu bar merging feature to make QMenuBar
-    conform more closely to accepted Mac OS X menu bar layout. The
-    merging functionality is based on string matching the title of a
-    QMenu entry. These strings are translated (using QObject::tr()) in
-    the "QMenuBar" context. If an entry is moved its slots will still
+    Qt for Mac OS X also provides a menu bar merging feature to make
+    QMenuBar conform more closely to accepted Mac OS X menu bar layout.
+    The merging functionality is based on string matching the title of
+    a QMenu entry. These strings are translated (using QObject::tr())
+    in the "QMenuBar" context. If an entry is moved its slots will still
     fire as if it was in the original place. The table below outlines
     the strings looked for and where the entry is placed if matched:
 
@@ -657,7 +657,7 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     bar, you must create a menu bar that does not have a parent.
     Create a parent-less menu bar this way:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenubar.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenubar.cpp 1
 
     \bold{Note:} Do \e{not} call QMainWindow::menuBar() to create the
     shared menu bar, because that menu bar will have the QMainWindow
@@ -667,11 +667,11 @@ void QMenuBar::initStyleOption(QStyleOptionMenuItem *option, const QAction *acti
     \bold{Note:} The text used for the application name in the menu
     bar is obtained from the value set in the \c{Info.plist} file in
     the application's bundle. See \l{Deploying an Application on
-    Qt/Mac} for more information.
+    Mac OS X} for more information.
 
-    \section1 QMenuBar on Qt/CE
+    \section1 QMenuBar on Windows CE
 
-    QMenuBar on Qt/CE is a wrapper for using the system-wide menu bar,
+    QMenuBar on Windows CE is a wrapper for using the system-wide menu bar,
     similar to the Mac.  This feature is activated for Windows Mobile
     and integrates QMenuBar with the native soft keys. The left soft
     key can be controlled with QMenuBar::setDefaultAction() and the
@@ -768,7 +768,7 @@ QMenuBar::~QMenuBar()
     The function adds the newly created action to the menu's
     list of actions, and returns it.
 
-    \sa QWidget::addAction()
+    \sa QWidget::addAction(), QWidget::actions()
 */
 QAction *QMenuBar::addAction(const QString &text)
 {
@@ -785,7 +785,7 @@ QAction *QMenuBar::addAction(const QString &text)
     receiver's \a member slot. The function adds the newly created
     action to the menu's list of actions and returns it.
 
-    \sa QWidget::addAction()
+    \sa QWidget::addAction(), QWidget::actions()
 */
 QAction *QMenuBar::addAction(const QString &text, const QObject *receiver, const char* member)
 {
@@ -823,9 +823,12 @@ QMenu *QMenuBar::addMenu(const QIcon &icon, const QString &title)
 }
 
 /*!
-  Appends \a menu to the menu bar. Returns the menu's menuAction().
+    Appends \a menu to the menu bar. Returns the menu's menuAction().
 
-  \sa QWidget::addAction() QMenu::menuAction()
+    \note The returned QAction object can be used to hide the corresponding
+    menu.
+
+    \sa QWidget::addAction() QMenu::menuAction()
 */
 QAction *QMenuBar::addMenu(QMenu *menu)
 {
@@ -1976,7 +1979,7 @@ int QMenuBar::findIdForAction(QAction *act) const
 
     Appends the action \a action to the menu bar's list of actions.
 
-    \sa QMenu::addAction(), QWidget::addAction()
+    \sa QMenu::addAction(), QWidget::addAction(), QWidget::actions()
 */
 
 /*!

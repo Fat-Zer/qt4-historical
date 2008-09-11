@@ -49,12 +49,13 @@
 
     This example demonstrates how you can use OpenGL for Embedded
     Systems (ES) in your own screen driver and \l{add your graphics
-    driver to Qt for Embedded Linux}. In \l{Qt for Embedded Linux}, painting is done in
-    software, normally performed in two steps: First, each client
-    renders its windows onto its window surface in memory using a
-    paint engine. Then the server uses the screen driver to compose
-    the window surface images and copy the composition to the screen.
-    (See the \l{Qt for Embedded Linux Architecture} documentation for details.)
+    driver to Qt for Embedded Linux}. In \l{Qt for Embedded Linux},
+    painting is done in software, normally performed in two steps:
+    First, each client renders its windows onto its window surface in
+    memory using a paint engine. Then the server uses the screen
+    driver to compose the window surface images and copy the
+    composition to the screen.  (See the \l{Qt for Embedded Linux
+    Architecture} documentation for details.)
 
     This example is not for the novice. It assumes the reader is
     familiar with both OpenGL and the screen driver framework
@@ -86,7 +87,7 @@
     application, or just start the application with the \c -display
     switch, as follows:
 
-    \snippet doc/src/snippets/code/doc.src.examples.ahigl.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_ahigl.qdoc 0
 
     The example driver also implements an animated transition effect
     for use when showing new windows or reshowing windows that have
@@ -234,7 +235,7 @@
     environment variable QWS_DISPLAY, or by running your application
     with a command line like the following.
 
-    \snippet doc/src/snippets/code/doc.src.examples.ahigl.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_examples_ahigl.qdoc 1
 
     The server calls \l {QScreenDriverPlugin::} {keys()}, which
     returns a \l {QStringList} containing the singleton "ahigl"
@@ -270,7 +271,7 @@
     the server after the screen driver is constructed. It initializes
     the QScreen data members to hardcoded values that describe the ATI
     screen. A better implementation would query the hardware for the
-    corresponding values in it's current state and use those. It asks
+    corresponding values in its current state and use those. It asks
     whether the screen driver was started with the \c effects option
     and sets the \c doEffects flag accordingly.
 

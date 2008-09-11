@@ -863,17 +863,20 @@ void DocParser::parse( const QString& source, DocPrivate *docPrivate,
                         }
                         break;
                     case CMD_QUOTEFILE:
+                    {
                         leavePara();
-                        quoteFromFile();
+                        QString fileName = getArgument();
+                        Doc::quoteFromFile(location(), quoter, fileName);
                         if (!quoting) {
                             append( Atom::Code,
                                     quoter.quoteTo(location(), commandStr, "") );
                             quoter.reset();
                         } else {
                             append(Atom::CodeQuoteCommand, commandStr);
-                            append(Atom::CodeQuoteArgument, getArgument());
+                            append(Atom::CodeQuoteArgument, fileName);
                         }
                         break;
+                    }
                     case CMD_QUOTEFROMFILE:
                         leavePara();
                         if (!quoting)

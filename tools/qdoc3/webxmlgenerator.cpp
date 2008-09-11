@@ -100,6 +100,12 @@ QString WebXMLGenerator::fileExtension(const Node * /* node */)
 void WebXMLGenerator::generateTree(const Tree *tree, CodeMarker *marker)
 {
     tre = tree;
+    moduleClassMap.clear();
+    moduleNamespaceMap.clear();
+    serviceClasses.clear();
+    findAllClasses(tree->root());
+    findAllNamespaces(tree->root());
+
     PageGenerator::generateTree(tree, marker);
 
     if (generateIndex)
@@ -180,6 +186,40 @@ void WebXMLGenerator::generateIndexSections(QXmlStreamWriter &writer,
         writer.writeAttribute("path", node->doc().location().filePath());
         writer.writeAttribute("line", QString::number(node->doc().location().lineNo()));
         writer.writeAttribute("column", QString::number(node->doc().location().columnNo()));
+
+        if (node->type() == Node::Fake) {
+
+            const FakeNode *fake = static_cast<const FakeNode *>(node);
+
+            generateRelations(writer, node, marker);
+
+            if (fake->subType() == FakeNode::Module) {
+                writer.writeStartElement("generatedlist");
+                writer.writeAttribute("contents", "classesbymodule");
+
+                if (moduleNamespaceMap.contains(fake->name())) {
+                    writer.writeStartElement("section");
+                    writer.writeStartElement("heading");
+                    writer.writeAttribute("level", "1");
+                    writer.writeCharacters("Namespaces");
+                    writer.writeEndElement(); // heading
+                    generateAnnotatedList(writer, fake, marker, moduleNamespaceMap[fake->name()]);
+                    writer.writeEndElement(); // section
+                }
+                if (moduleClassMap.contains(fake->name())) {
+                    writer.writeStartElement("section");
+                    writer.writeStartElement("heading");
+                    writer.writeAttribute("level", "1");
+                    writer.writeCharacters("Classes");
+                    writer.writeEndElement(); // heading
+                    generateAnnotatedList(writer, fake, marker, moduleClassMap[fake->name()]);
+                    writer.writeEndElement(); // section
+                }
+
+                writer.writeEndElement(); // generatedlist
+            }
+        }
+
         startText(node, marker);
 
         const Atom *atom = node->doc().body().firstAtom();
@@ -704,7 +744,7 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
     case Atom::TableOfContents:
         writer.writeStartElement("tableofcontents");
         writer.writeAttribute("details", atom->string());
-/*        {
+        {
             int numColumns = 1;
             const Node *node = relative;
 
@@ -716,18 +756,22 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
                 columnText = pieces.at(0);
                 pieces.pop_front();
                 QString path = pieces.join(" ").trimmed();
-                node = findNodeForTarget(path, relative, marker, atom);
+                node = findNode(path, relative, marker);
+                if (node)
+                    writer.writeAttribute("href", fileName(node));
             }
 
             if (params.size() == 2) {
                 numColumns = qMax(columnText.toInt(), numColumns);
                 sectioningUnit = (Doc::SectioningUnit)params.at(1).toInt();
+                writer.writeAttribute("columns", QString::number(numColumns));
+                writer.writeAttribute("unit", QString::number(sectioningUnit));
             }
 
             if (node)
-                generateTableOfContents(node, marker, sectioningUnit, numColumns,
+                generateTableOfContents(writer, node, sectioningUnit, numColumns,
                                         relative);
-        }*/
+        }
         writer.writeEndElement(); // tableofcontents
         break;
 
@@ -762,23 +806,28 @@ const Atom *WebXMLGenerator::addAtomElements(QXmlStreamWriter &writer,
 */
 const Node *WebXMLGenerator::findNode(const Atom *atom, const Node *relative, CodeMarker *marker)
 {
+    return findNode(atom->string(), relative, marker);
+}
+
+const Node *WebXMLGenerator::findNode(const QString &title, const Node *relative, CodeMarker *marker)
+{
     QString link;
-    if (atom->string().contains(":") &&
-            (atom->string().startsWith("file:")
-             || atom->string().startsWith("http:")
-             || atom->string().startsWith("https:")
-             || atom->string().startsWith("ftp:")
-             || atom->string().startsWith("mailto:"))) {
+    if (title.contains(":") &&
+            (title.startsWith("file:")
+             || title.startsWith("http:")
+             || title.startsWith("https:")
+             || title.startsWith("ftp:")
+             || title.startsWith("mailto:"))) {
 
         return 0;
-    } else if (atom->string().count('@') == 1) {
+    } else if (title.count('@') == 1) {
         return 0;
     } else {
         QStringList path;
-        if (atom->string().contains('#')) {
-            path = atom->string().split('#');
+        if (title.contains('#')) {
+            path = title.split('#');
         } else {
-            path.append(atom->string());
+            path.append(title);
         }
 
         const Node *node = 0;
@@ -803,7 +852,7 @@ const Node *WebXMLGenerator::findNode(const Atom *atom, const Node *relative, Co
             else
                 path.removeFirst();
         } else {
-            node = relative;
+            return 0;
         }
 
         while (!path.isEmpty()) {
@@ -893,6 +942,242 @@ QString WebXMLGenerator::targetType(const Node *node)
             return "";
     }
     return "";
+}
+
+void WebXMLGenerator::generateRelations(QXmlStreamWriter &writer, const Node *node, CodeMarker *marker)
+{
+    if (node && !node->links().empty()) {
+        QPair<QString,QString> linkPair;
+        QPair<QString,QString> anchorPair;
+        const Node *linkNode;
+
+        foreach (Node::LinkType relation, node->links().keys()) {
+
+            linkPair = node->links()[relation];
+            linkNode = findNode(linkPair.first, node, marker);
+            if (!linkNode || linkNode == node)
+                anchorPair = linkPair;
+            else
+                anchorPair = anchorForNode(linkNode);
+
+            writer.writeStartElement("relation");
+            writer.writeAttribute("href", anchorPair.first);
+            writer.writeAttribute("type", targetType(linkNode));
+            
+            switch (relation) {
+            case Node::StartLink:
+                writer.writeAttribute("meta", "start");
+                break;
+            case Node::NextLink:
+                writer.writeAttribute("meta", "next");
+                break;
+            case Node::PreviousLink:
+                writer.writeAttribute("meta", "previous");
+                break;
+            case Node::ContentsLink: 
+                writer.writeAttribute("meta", "contents");
+                break;
+            case Node::IndexLink:
+                writer.writeAttribute("meta", "index");
+                break;
+            default:
+                writer.writeAttribute("meta", "");
+            }
+            writer.writeAttribute("description", anchorPair.second);
+            writer.writeEndElement(); // link
+        }
+    }
+}
+
+// Classes adapted from HtmlGenerator.
+
+void WebXMLGenerator::generateTableOfContents(QXmlStreamWriter &writer, const Node *node,
+                                              Doc::SectioningUnit sectioningUnit,
+                                              int numColumns, const Node *relative)
+
+{
+    if (!node->doc().hasTableOfContents())
+        return;
+    QList<Atom *> toc = node->doc().tableOfContents();
+    if (toc.isEmpty())
+        return;
+
+    QString nodeName = "";
+    if (node != relative)
+        nodeName = node->name();
+
+    QStringList sectionNumber;
+    int columnSize = 0;
+
+    if (numColumns > 1) {
+        writer.writeStartElement("table");
+        writer.writeAttribute("width", "100%");
+        writer.writeStartElement("row");
+        writer.writeStartElement("item");
+        writer.writeAttribute("width", QString::number((100 + numColumns - 1) / numColumns) + "%");
+    }
+
+    // disable nested links in table of contents
+    inContents = true;
+    inLink = true;
+
+    for (int i = 0; i < toc.size(); ++i) {
+        Atom *atom = toc.at(i);
+
+        int nextLevel = atom->string().toInt();
+        if (nextLevel > (int)sectioningUnit)
+            continue;
+
+        if (sectionNumber.size() < nextLevel) {
+            do {
+                writer.writeStartElement("list");
+                sectionNumber.append("1");
+            } while (sectionNumber.size() < nextLevel);
+        } else {
+            while (sectionNumber.size() > nextLevel) {
+                writer.writeEndElement();
+                sectionNumber.removeLast();
+            }
+            sectionNumber.last() = QString::number(sectionNumber.last().toInt() + 1);
+        }
+        Text headingText = Text::sectionHeading(atom);
+
+        if (sectionNumber.size() == 1 && columnSize > toc.size() / numColumns) {
+            writer.writeEndElement(); // list
+            writer.writeEndElement(); // item
+            writer.writeStartElement("item");
+            writer.writeAttribute("width", QString::number((100 + numColumns - 1) / numColumns) + "%");
+            writer.writeStartElement("list");
+            columnSize = 0;
+        }
+
+        writer.writeStartElement("item");
+        writer.writeStartElement("para");
+        writer.writeStartElement("link");
+        writer.writeAttribute("href", nodeName + "#" + Doc::canonicalTitle(headingText.toString()));
+        writer.writeAttribute("type", "page");
+        writer.writeCharacters(headingText.toString());
+        writer.writeEndElement(); // link
+        writer.writeEndElement(); // para
+        writer.writeEndElement(); // item
+
+        ++columnSize;
+    }
+    while (!sectionNumber.isEmpty()) {
+        writer.writeEndElement(); // list
+        sectionNumber.removeLast();
+    }
+
+    if (numColumns > 1) {
+        writer.writeEndElement(); // item
+        writer.writeEndElement(); // row
+        writer.writeEndElement(); // table
+    }
+
+    inContents = false;
+    inLink = false;
+}
+
+void WebXMLGenerator::generateAnnotatedList(QXmlStreamWriter &writer,
+    const Node *relative, CodeMarker *marker, const QMap<QString, const Node *> &nodeMap)
+{
+    writer.writeStartElement("table");
+    writer.writeAttribute("width", "100%");
+
+    foreach (QString name, nodeMap.keys()) {
+        const Node *node = nodeMap[name];
+
+        writer.writeStartElement("row");
+        writer.writeStartElement("heading");
+        generateFullName(writer, node, relative, marker);
+        writer.writeEndElement(); // heading
+
+        writer.writeStartElement("item");
+        writer.writeCharacters(node->doc().briefText().toString());
+        writer.writeEndElement(); // item
+        writer.writeEndElement(); // row
+    }
+    writer.writeEndElement(); // table
+}
+
+void WebXMLGenerator::generateFullName(QXmlStreamWriter &writer,
+    const Node *apparentNode, const Node *relative, CodeMarker *marker,
+    const Node *actualNode)
+{
+    if ( actualNode == 0 )
+        actualNode = apparentNode;
+    writer.writeStartElement("link");
+    writer.writeAttribute("href", tre->fullDocumentLocation(actualNode));
+    writer.writeAttribute("type", targetType(actualNode));
+    writer.writeCharacters(fullName(apparentNode, relative, marker));
+    writer.writeEndElement(); // link
+}
+
+// Classes copied (and slightly adapted) from the HtmlGenerator. These need
+// refactoring into a common ancestor class.
+
+void WebXMLGenerator::findAllClasses(const InnerNode *node)
+{
+    NodeList::const_iterator c = node->childNodes().constBegin();
+    while (c != node->childNodes().constEnd()) {
+        if ((*c)->access() != Node::Private && (*c)->url().isEmpty()) {
+            if ((*c)->type() == Node::Class && !(*c)->doc().isEmpty()) {
+                QString className = (*c)->name();
+                if ((*c)->parent() && (*c)->parent()->type() == Node::Namespace &&
+                    !(*c)->parent()->name().isEmpty())
+                    className = (*c)->parent()->name()+"::"+className;
+
+                QString moduleName = (*c)->moduleName();
+                if (!moduleName.isEmpty())
+                    moduleClassMap[moduleName].insert((*c)->name(), *c);
+
+                QString serviceName =
+                    (static_cast<const ClassNode *>(*c))->serviceName();
+                if (!serviceName.isEmpty())
+                    serviceClasses.insert(serviceName, *c);
+            } else if ((*c)->isInnerNode()) {
+                findAllClasses(static_cast<InnerNode *>(*c));
+            }
+        }
+        ++c;
+    }
+}
+
+void WebXMLGenerator::findAllNamespaces(const InnerNode *node)
+{
+    NodeList::ConstIterator c = node->childNodes().begin();
+    while (c != node->childNodes().end()) {
+        if ((*c)->access() != Node::Private) {
+            if ((*c)->isInnerNode() && (*c)->url().isEmpty()) {
+                findAllNamespaces(static_cast<const InnerNode *>(*c));
+                if ((*c)->type() == Node::Namespace) {
+                    const NamespaceNode *nspace = static_cast<const NamespaceNode *>(*c);
+                    // Ensure that the namespace's name is not empty (the root
+                    // namespace has no name).
+                    if (!nspace->name().isEmpty()) {
+                        namespaceIndex.insert(nspace->name(), *c);
+                        QString moduleName = (*c)->moduleName();
+                        if (!moduleName.isEmpty())
+                            moduleNamespaceMap[moduleName].insert((*c)->name(), *c);
+                    }
+                }
+            }
+        }
+        ++c;
+    }
+}
+
+const QPair<QString,QString> WebXMLGenerator::anchorForNode(const Node *node)
+{
+    QPair<QString,QString> anchorPair;
+
+    anchorPair.first = PageGenerator::fileName(node);
+    if (node->type() == Node::Fake) {
+        const FakeNode *fakeNode = static_cast<const FakeNode*>(node);
+        anchorPair.second = fakeNode->title();
+    }
+
+    return anchorPair;
 }
 
 QT_END_NAMESPACE

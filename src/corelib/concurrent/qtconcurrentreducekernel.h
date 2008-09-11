@@ -228,7 +228,7 @@ struct SequenceHolder2 : public Base
                     Functor1 functor1,
                     Functor2 functor2,
                     ReduceOptions reduceOptions)
-        : Base(_sequence.constBegin(), _sequence.constEnd(), functor1, functor2, reduceOptions),
+        : Base(_sequence.begin(), _sequence.end(), functor1, functor2, reduceOptions),
           sequence(_sequence)
     { }
 

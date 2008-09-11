@@ -252,12 +252,12 @@ void QValidator::fixup(QString &) const
 
     Example of use:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qvalidator.cpp 0
 
     Below we present some examples of validators. In practice they would
     normally be associated with a widget as in the example above.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qvalidator.cpp 1
 
     The minimum and maximum values are set in one call with setRange(),
     or individually with setBottom() and setTop().
@@ -355,7 +355,7 @@ QIntValidator::~QIntValidator()
     the user might be just about to type the minus (especially for right-to-left
     languages).
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qvalidator.cpp 2
 
     By default, the \a pos parameter is not used by this validator.
 */
@@ -429,6 +429,9 @@ void QIntValidator::setRange(int bottom, int top)
     \property QIntValidator::bottom
     \brief the validator's lowest acceptable value
 
+    By default, this property's value is derived from the lowest signed
+    integer available (typically -2147483647).
+
     \sa setRange()
 */
 void QIntValidator::setBottom(int bottom)
@@ -439,6 +442,9 @@ void QIntValidator::setBottom(int bottom)
 /*!
     \property QIntValidator::top
     \brief the validator's highest acceptable value
+
+    By default, this property's value is derived from the highest signed
+    integer available (typically 2147483647).
 
     \sa setRange()
 */
@@ -690,6 +696,8 @@ void QDoubleValidator::setRange(double minimum, double maximum, int decimals)
     \property QDoubleValidator::bottom
     \brief the validator's minimum acceptable value
 
+    By default, this property contains a value of -infinity.
+
     \sa setRange()
 */
 
@@ -703,6 +711,8 @@ void QDoubleValidator::setBottom(double bottom)
     \property QDoubleValidator::top
     \brief the validator's maximum acceptable value
 
+    By default, this property contains a value of infinity.
+
     \sa setRange()
 */
 
@@ -714,6 +724,8 @@ void QDoubleValidator::setTop(double top)
 /*!
     \property QDoubleValidator::decimals
     \brief the validator's maximum number of digits after the decimal point
+
+    By default, this property contains a value of 1000.
 
     \sa setRange()
 */
@@ -727,6 +739,8 @@ void QDoubleValidator::setDecimals(int decimals)
     \property QDoubleValidator::notation
     \since 4.3
     \brief the notation of how a string can describe a number
+
+    By default, this property is set to ScientificNotation.
 
     \sa Notation
 */
@@ -768,12 +782,12 @@ QDoubleValidator::Notation QDoubleValidator::notation() const
     For a brief introduction to Qt's regexp engine, see \l QRegExp.
 
     Example of use:
-    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 3
+    \snippet doc/src/snippets/code/src_gui_widgets_qvalidator.cpp 3
 
     Below we present some examples of validators. In practice they would
     normally be associated with a widget as in the example above.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qvalidator.cpp 4
+    \snippet doc/src/snippets/code/src_gui_widgets_qvalidator.cpp 4
 
     \sa QRegExp, QIntValidator, QDoubleValidator, {Settings Editor Example}
 */
@@ -873,6 +887,9 @@ QValidator::State QRegExpValidator::validate(QString &input, int& pos) const
 /*!
     \property QRegExpValidator::regExp
     \brief the regular expression used for validation
+
+    By default, this property contains a regular expression with the pattern \c{.*}
+    that matches any string.
 */
 
 void QRegExpValidator::setRegExp(const QRegExp& rx)

@@ -387,12 +387,12 @@ qint64 QStringBuffer::writeData( const char *p, qint64 len )
     this setting is ignored for text streams that operate on QString.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textstream.cpp 0
 
     Writing data to the text stream will modify the contents of the
     string. The string will be expanded when data is written beyond
     the end of the string. Note that the string will not be truncated:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textstream.cpp 1
 
     Note that because QString is Unicode, you should not use
     readRawBytes() or writeRawBytes() on such a stream.
@@ -434,14 +434,14 @@ Q3TextStream::Q3TextStream( QString& str, int filemode )
     to the device's open() function; see \l{QIODevice::mode()}.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textstream.cpp 2
 
     Writing data to the text stream will modify the contents of the
     array. The array will be expanded when data is written beyond the
     end of the string.
 
     Same example, using a QBuffer:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textstream.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textstream.cpp 3
 */
 
 Q3TextStream::Q3TextStream( QByteArray &a, int mode )

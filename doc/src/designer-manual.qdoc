@@ -389,7 +389,7 @@ form. This is achieved by dragging each \gui Label from the \gui
 section.
 
 Widgets can be moved around on the form by dragging them, or by using
-the cursort keys. A widget can be resized by dragging the resize handles
+the cursor keys. A widget can be resized by dragging the resize handles
 that appear when it is selected - click the left mouse button over the
 widget to select it. It can be helpful to resize \gui Label widgets so
 that all of their text is displayed, but this is not necessary as they
@@ -2129,7 +2129,7 @@ QtUiTools module. This is done by including the following
 declaration in a qmake project file, ensuring that the application is
 compiled and linked appropriately.
 
-\snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 0
+\snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 0
 
 The QUiLoader class provides a form loader object to construct the user
 interface. This user interface can be retrieved from any QIODevice
@@ -2139,7 +2139,7 @@ the user interface description contained in the file.
 
 The QtUiTools module classes can be included using the following directive:
 
-\snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 1
+\snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 1
 
 The QUiLoader::load() function is invoked as shown in this code from the
 \l{Text Finder Example}{Text Finder} example:
@@ -2212,7 +2212,7 @@ code in the dialog's \c setupUi() function to do this, so we only need
 to declare and implement a slot with a name that follows a standard
 convention:
 
-\snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 2
+\snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 2
 
 Using this convention, we can define and implement a slot that responds
 to mouse clicks on the \gui OK button:
@@ -2402,7 +2402,7 @@ without having to write code themselves.
     plugins are also built in release mode. To do this, include the following
     declaration in the plugin's project file:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 3
 
     If plugins are built in a mode that is incompatible with \QD, they won't be
     loaded and installed. For more information about plugins, see the
@@ -2411,7 +2411,7 @@ without having to write code themselves.
     It is also necessary to ensure that the plugin is installed alongside the other
     \QD widget plugins:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 4
 
     The \c $[QT_INSTALL_PLUGINS] variable is a placeholder to the location of the
     installed Qt plugins. You can configure \QD to look for plugins in other
@@ -2448,7 +2448,7 @@ without having to write code themselves.
     If scripts are present in an \c {uic}-generated form, the application
     must be configured with Qt Script support.
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 5
 
     For security reasons, the execution of scripts is disabled
     by default in QUiLoader. You can enable it by
@@ -2476,7 +2476,7 @@ without having to write code themselves.
             option of the form's context menu
          \o Fast prototyping. To get an idea,
             drag a QLineEdit onto the form, enter the script
-            \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 6
+            \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 6
             and preview the form.
     \endtable
     \endomit
@@ -2592,7 +2592,7 @@ without having to write code themselves.
     made known to the meta object system using the Q_INTERFACES()
     macro in the extension class's definition. For example:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 7
 
     This enables \QD to use the qobject_cast() function
     to query for supported interfaces using nothing but a QObject
@@ -2629,13 +2629,13 @@ without having to write code themselves.
     You can either create a new QExtensionFactory and
     reimplement the QExtensionFactory::createExtension() function:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 8
 
     or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to enable the factory
     to create your custom extension as well:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 9
 
     \section2 Accessing Qt Designer's Extension Manager
 
@@ -2646,7 +2646,7 @@ without having to write code themselves.
     extension factory is typically made in the
     QDesignerCustomWidgetInterface::initialize() function:
 
-    \snippet doc/src/snippets/code/doc.src.designer-manual.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_designer-manual.qdoc 10
 
     The \c formEditor parameter in the
     QDesignerCustomWidgetInterface::initialize() function is a pointer to

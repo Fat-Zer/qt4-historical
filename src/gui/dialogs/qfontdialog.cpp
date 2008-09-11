@@ -120,10 +120,10 @@ QFontListView::QFontListView(QWidget *parent)
 
   Examples:
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 0
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfontdialog.cpp 0
 
     The dialog can also be used to set a widget's font directly:
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 1
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfontdialog.cpp 1
   If the user clicks OK the font they chose will be used for myWidget,
   and if they click Cancel the original font is used.
 
@@ -391,10 +391,10 @@ QFontDialog::~QFontDialog()
   set to false if the user clicks \gui Cancel.
 
   Examples:
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 2
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfontdialog.cpp 2
 
     The dialog can also be used to set a widget's font directly:
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 3
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfontdialog.cpp 3
   In this example, if the user clicks OK the font they chose will be
   used, and if they click Cancel the original font is used.
 */
@@ -427,7 +427,7 @@ QFont QFontDialog::getFont(bool *ok, const QFont &initial,
   \gui Cancel.
 
   Example:
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfontdialog.cpp 4
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfontdialog.cpp 4
 
 */
 QFont QFontDialog::getFont(bool *ok, QWidget *parent)

@@ -372,9 +372,12 @@ QDataStream &operator>>(QDataStream &stream, QLine &line)
     \value NoIntersection Indicates that the lines do not intersect;
     i.e. they are parallel.
 
-    \value UnboundedIntersection The two lines intersect,
-    but not within the range defined by their lengths. This will be
-    the case if the lines are not parallel.
+    \value UnboundedIntersection The two lines intersect, but not
+    within the range defined by their lengths. This will be the case
+    if the lines are not parallel. 
+
+    intersect() will also return this value if the intersect point is
+    within the start and end point of only one of the lines.
 
     \value BoundedIntersection The two lines intersect with each other
     within the start and end points of each line.
@@ -498,9 +501,11 @@ bool QLineF::isNull() const
 /*!
     \fn QLineF::setLength(qreal length)
 
-    Sets the length of the line to the given \a length. If the line is a
-    null line, the length will remain zero regardless of the length
-    specified.
+    Sets the length of the line to the given \a length. QLineF will
+    move the end point - p2() - of the line to give the line its new length.
+    
+    If the line is a null line, the length will remain zero regardless
+    of the length specified. 
 
     \sa length(), isNull()
 */

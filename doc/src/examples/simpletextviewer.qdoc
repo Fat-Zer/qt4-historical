@@ -120,7 +120,7 @@
     contains the table of contents, indices and a complete list of
     all documentation files, and can have any number of filter attributes
     assigned to it. A filter attribute is an ordinary string which can
-    be freely choosen. Later in \QA, users can then define a custom
+    be freely chosen. Later in \QA, users can then define a custom
     filter referencing those attributes. If the attributes of a filter
     section match the attributes of the custom filter the documentation
     will be shown, otherwise \QA will hide the documentation.

@@ -100,7 +100,7 @@ public:
 #ifdef Q_WS_MAC
                       ,mac_menu(0)
 #endif
-#ifdef Q_OS_WINCE
+#if defined(Q_OS_WINCE) && !defined(QT_NO_MENUBAR)
                       ,wce_menu(0)
 #endif
 #ifdef QT3_SUPPORT
@@ -113,7 +113,7 @@ public:
 #ifdef Q_WS_MAC
         delete mac_menu;
 #endif
-#ifdef Q_OS_WINCE
+#if defined(Q_OS_WINCE) && !defined(QT_NO_MENUBAR)
         delete wce_menu;
 #endif
     }
@@ -256,8 +256,8 @@ public:
     bool emitHighlighted;
 #endif
 
-#ifdef Q_OS_WINCE
-        struct QWceMenuPrivate {
+#if defined(Q_OS_WINCE) && !defined(QT_NO_MENUBAR)
+    struct QWceMenuPrivate {
         QList<QWceMenuAction*> actionItems;
         HMENU menuHandle;
         QWceMenuPrivate();

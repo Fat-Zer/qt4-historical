@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/script/qscriptengineagent.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/script/qscriptengineagent.cpp -->
 <head>
   <title>Qt 4.4: QScriptEngineAgent Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QScriptEngineAgent Class Reference<br /><span class="small-subtitle">[<a href="qtscript.html">QtScript</a> module]</span>
 </h1>
 <p>The QScriptEngineAgent class provides an interface to report events pertaining to <a href="qscriptengine.html">QScriptEngine</a> execution. <a href="#details">More...</a></p>
@@ -51,13 +51,13 @@
 <p>To process script loading and unloading events, reimplement the <a href="qscriptengineagent.html#scriptLoad">scriptLoad</a>() and <a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() functions. <a href="qscriptengineagent.html#scriptLoad">scriptLoad</a>() is called after the input to <a href="qscriptengine.html#evaluate">QScriptEngine::evaluate</a>() has been parsed, right before the given script is executed. The engine assigns each script an ID, which is available as one of the arguments to <a href="qscriptengineagent.html#scriptLoad">scriptLoad</a>(); subsequently, other event handlers can use the ID to identify a particular script. One common usage of <a href="qscriptengineagent.html#scriptLoad">scriptLoad</a>() is to retain the script text, filename and base line number (the original input to <a href="qscriptengine.html#evaluate">QScriptEngine::evaluate</a>()), so that other event handlers can e.g&#x2e; map a line number to the corresponding line of text.</p>
 <p><a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() is called when the <a href="qscriptengine.html">QScriptEngine</a> has no further use for a script; the QScriptEngineAgent may at this point safely discard any resources associated with the script (such as the script text). Note that after <a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() has been called, the <a href="qscriptengine.html">QScriptEngine</a> may reuse the relevant script ID for new scripts (i.e&#x2e; as argument to a subsequent call to <a href="qscriptengineagent.html#scriptLoad">scriptLoad</a>()).</p>
 <p>Evaluating the following script will result in <a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() being called immediately after evaluation has completed:</p>
-<pre>       var a = Math.random() + 2;</pre>
+<pre> var a = Math.random() + 2;</pre>
 <p>Evaluating the following script will \b{not} result in a call to <a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() when evaluation has completed:</p>
-<pre>       function cube(a) {
-           return a * a * a;
-       }
+<pre> function cube(a) {
+     return a * a * a;
+ }
 
-       var a = cube(3);</pre>
+ var a = cube(3);</pre>
 <p>The script isn't unloaded because it defines a function (<tt>cube</tt>) that remains in the script environment after evaluation has completed. If a subsequent script removed the <tt>cube</tt> function (e.g&#x2e; by setting it to <tt>null</tt>), <a href="qscriptengineagent.html#scriptUnload">scriptUnload</a>() would be called when the function is garbage collected. In general terms, a script isn't unloaded until the engine has determined that none of its contents is referenced.</p>
 <p>To process script function calls and returns, reimplement the <a href="qscriptengineagent.html#functionEntry">functionEntry</a>() and <a href="qscriptengineagent.html#functionExit">functionExit</a>() functions. <a href="qscriptengineagent.html#functionEntry">functionEntry</a>() is called when a script function is about to be executed; <a href="qscriptengineagent.html#functionExit">functionExit</a>() is called when a script function is about to return, either normally or due to an exception.</p>
 <p>To process individual script statements, reimplement <a href="qscriptengineagent.html#positionChange">positionChange</a>(). <a href="qscriptengineagent.html#positionChange">positionChange</a>() is called each time the engine is about to execute a new statement of a script, and thus offers the finest level of script monitoring.</p>
@@ -150,8 +150,8 @@
 <p>See also <a href="qscriptengineagent.html#extension">extension</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

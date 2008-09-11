@@ -55,7 +55,7 @@
 #include "qdnd_p.h"
 
 QT_BEGIN_NAMESPACE
-                
+
 #if defined(Q_OS_WINCE)
 QT_BEGIN_INCLUDE_NAMESPACE
 #include "qguifunctions_wince.h"
@@ -64,12 +64,12 @@ QT_END_INCLUDE_NAMESPACE
 HRESULT QtCeGetClipboard(IDataObject** obj);
 HRESULT QtCeSetClipboard(IDataObject* obj);
 void QtCeFlushClipboard();
-        
+
 #define OleGetClipboard QtCeGetClipboard
 #define OleSetClipboard QtCeSetClipboard
 #define OleFlushClipboard QtCeFlushClipboard
 
-#endif        
+#endif
 
 
 class QClipboardWatcher : public QInternalMimeData {
@@ -227,11 +227,7 @@ HRESULT QtCeSetClipboard(IDataObject* obj)
         EmptyClipboard();
         CloseClipboard();
     } else {
-        QOleDataObject* qobj = dynamic_cast<QOleDataObject*>(obj);
-        if (qobj == 0) {
-            CloseClipboard();
-            return !S_OK;
-        }
+        QOleDataObject* qobj = static_cast<QOleDataObject*>(obj);
 
         const QMimeData* data = qobj->mimeData();
         if (data->hasText()) {

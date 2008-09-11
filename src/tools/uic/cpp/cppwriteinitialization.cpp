@@ -183,6 +183,7 @@ namespace {
     const char *toolTipDefineC = "QT_NO_TOOLTIP";
     const char *whatsThisDefineC = "QT_NO_WHATSTHIS";
     const char *statusTipDefineC = "QT_NO_STATUSTIP";
+    const char *shortcutDefineC = "QT_NO_SHORTCUT";
 }
 
 namespace CPP {
@@ -403,7 +404,7 @@ void WriteInitialization::LayoutDefaultHandler::writeProperty(int p, const QStri
         // the default value, layout properties were always written
         const bool useLayoutFunctionPre43 = !suppressDefault && (m_state[p] == (HasDefaultFunction|HasDefaultValue)) && value == m_defaultValues[p];
         if (!useLayoutFunctionPre43) {
-            bool ifndefMac = (!(m_state[p] & (HasDefaultFunction|HasDefaultValue)) 
+            bool ifndefMac = (!(m_state[p] & (HasDefaultFunction|HasDefaultValue))
                              && value == defaultStyleValue);
             if (ifndefMac)
                 str << "#ifndef Q_OS_MAC\n";
@@ -504,6 +505,8 @@ void WriteInitialization::acceptUI(DomUI *node)
 
     acceptWidget(node->elementWidget());
 
+    if (m_buddies.size() > 0)
+        openIfndef(m_output, QLatin1String(shortcutDefineC));
     for (int i=0; i<m_buddies.size(); ++i) {
         const Buddy &b = m_buddies.at(i);
 
@@ -517,6 +520,8 @@ void WriteInitialization::acceptUI(DomUI *node)
 
         m_output << m_option.indent << b.objName << "->setBuddy(" << b.buddy << ");\n";
     }
+    if (m_buddies.size() > 0)
+        closeIfdef(m_output, QLatin1String(shortcutDefineC));
 
     if (node->elementTabStops())
         acceptTabStops(node->elementTabStops());
@@ -800,7 +805,7 @@ void WriteInitialization::acceptLayout(DomLayout *node)
             if (oldLayoutProperties)
                 marginType = m_layoutMarginType;
 
-            m_LayoutDefaultHandler.writeProperties(m_option.indent, 
+            m_LayoutDefaultHandler.writeProperties(m_option.indent,
                                     objectName, properties, marginType, false, m_output);
         }
     }
@@ -1366,7 +1371,7 @@ void WriteInitialization::writeProperties(const QString &varName,
             const bool needsTranslation = p->kind() == DomProperty::String && (!p->elementString()->hasAttributeNotr() || !toBool(p->elementString()->attributeNotr()));
             if (propertyName == QLatin1String("accessibleName") || propertyName == QLatin1String("accessibleDescription"))
                 defineC = accessibilityDefineC;
-        
+
             QTextStream &o = needsTranslation ? m_refreshOut : m_output;
 
             if (defineC)

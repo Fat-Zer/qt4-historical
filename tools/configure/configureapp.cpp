@@ -192,7 +192,8 @@ Configure::Configure( int& argc, char** argv )
                 QTextStream stream(&syncqt_bat);
                 stream << "@echo off" << endl
                        << "set QTDIR=" << QDir::toNativeSeparators(sourcePath) << endl
-                       << fixSeparators(sourcePath) << fixSeparators("/bin/syncqt.bat -outdir \"") << fixSeparators(buildPath) << "\"" << endl;
+                       << "call " << fixSeparators(sourcePath) << fixSeparators("/bin/syncqt.bat -outdir \"") << fixSeparators(buildPath) << "\"" << endl
+                       << "set QTDIR=" << QDir::toNativeSeparators(buildPath) << endl;
                 syncqt_bat.close();
             }
         }
@@ -247,7 +248,7 @@ Configure::Configure( int& argc, char** argv )
     dictionary[ "PHONON" ]          = "auto";
     dictionary[ "WEBKIT" ]          = "auto";
     dictionary[ "ASSISTANT_WEBKIT" ] = "no";
-    dictionary[ "PLUGIN_MANIFESTS" ] = "no";
+    dictionary[ "PLUGIN_MANIFESTS" ] = "yes";
 
     QString version;
     QFile qglobal_h(sourcePath + "/src/corelib/global/qglobal.h");
@@ -1474,7 +1475,7 @@ bool Configure::displayHelp()
 
 #endif
         // Qt\Windows only options go below here --------------------------------------------------------------------------------
-        desc("Qt/Windows only:\n\n");
+        desc("Qt for Windows only:\n\n");
 
         desc("DSPFILES", "no",  "-no-dsp",              "Do not generate VC++ .dsp files.");
         desc("DSPFILES", "yes", "-dsp",                 "Generate VC++ .dsp files, only if spec \"win32-msvc\".\n");
@@ -1548,9 +1549,9 @@ bool Configure::displayHelp()
         desc(                   "-redo",                "Run configure with the same parameters as last time.\n");
 
         // Qt\Windows CE only options go below here -----------------------------------------------------------------------------
-        desc("Qt/WinCE only:\n\n");
+        desc("Qt for Windows CE only:\n\n");
         desc("IWMMXT", "no",       "-no-iwmmxt",           "Do not compile with use of IWMMXT instructions");
-        desc("IWMMXT", "yes",      "-iwmmxt",              "Do compile with use of IWMMXT instructions (Qt/WinCE on Arm only)");
+        desc("IWMMXT", "yes",      "-iwmmxt",              "Do compile with use of IWMMXT instructions (Qt for Windows CE on Arm only)");
         desc("CE_CRT", "no",       "-no-crt" ,             "Do not add the C runtime to default deployment rules");
         desc("CE_CRT", "yes",      "-qt-crt",              "Qt identifies C runtime during project generation");
         desc(                      "-crt <path>",          "Specify path to C runtime used for project generation.");
@@ -2430,7 +2431,7 @@ void Configure::generateCachefile()
                      << "QT_MINOR_VERSION = " << dictionary["VERSION_MINOR"] << endl
                      << "QT_PATCH_VERSION = " << dictionary["VERSION_PATCH"] << endl;
 
-        configStream << "#Qt/WinCE c-runtime deployment" << endl
+        configStream << "#Qt for Windows CE c-runtime deployment" << endl
                      << "QT_CE_C_RUNTIME = " << fixSeparators(dictionary[ "CE_CRT" ]) << endl;
 
         if(dictionary["CE_SIGNATURE"] != QLatin1String("no"))
@@ -3347,7 +3348,7 @@ void Configure::readLicense()
 {
     dictionary[ "PLATFORM NAME" ]   = (QFile::exists(dictionary["QT_SOURCE_TREE"] + "/src/corelib/kernel/qfunctions_wince.h")
                                       && (dictionary.value("QMAKESPEC").startsWith("wince") || dictionary.value("XQMAKESPEC").startsWith("wince")))
-                                        ? "Qt/WinCE" : "Qt/Windows";
+                                        ? "Qt for Windows CE" : "Qt for Windows";
 
     dictionary["LICENSE FILE"] = sourcePath + "/LICENSE.GPL";
     if (QFile::exists(dictionary["LICENSE FILE"] + "2") || QFile::exists(dictionary["LICENSE FILE"] + "3")) {

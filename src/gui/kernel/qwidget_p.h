@@ -120,6 +120,7 @@ struct QTLWExtra {
     uint sizeAdjusted : 1;
     uint inRenderWithPainter : 1;
     uint inTopLevelResize : 1;
+    uint inRepaint : 1;
 #ifndef Q_WS_MAC
     QWidgetBackingStore *backingStore;
 #endif
@@ -192,6 +193,7 @@ struct QWExtra {
     uint compress_events : 1;
 #endif
     uint explicitMinSize : 2;
+    uint explicitMaxSize : 2;
     uint autoFillBackground : 1;
     uint nativeChildrenForced : 1;
 

@@ -426,6 +426,8 @@ void QToolBoxPrivate::_q_buttonClicked()
 /*!
     \property QToolBox::count
     \brief The number of items contained in the toolbox.
+
+    By default, this property has a value of 0.
 */
 
 int QToolBox::count() const
@@ -511,7 +513,9 @@ void QToolBox::removeItem(int index)
 
 /*!
     \property QToolBox::currentIndex
-    \brief The index of the current item, or -1 if the toolbox is empty.
+    \brief the index of the current item
+
+    By default, for an empty toolbox, this property has a value of -1.
 
     \sa indexOf(), widget()
 */

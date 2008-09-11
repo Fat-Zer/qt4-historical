@@ -4797,7 +4797,7 @@ QStyleHintReturnVariant::QStyleHintReturnVariant() : QStyleHintReturn(Version, T
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.styles.qstyleoption.cpp 0
+    \snippet doc/src/snippets/code/src_gui_styles_qstyleoption.cpp 0
 
     \sa QStyleHintReturn::type, QStyleHintReturn::version
 */

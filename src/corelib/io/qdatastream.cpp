@@ -81,11 +81,11 @@ QT_BEGIN_NAMESPACE
 
     Example (write binary data to a stream):
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 0
 
     Example (read binary data from a stream):
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 1
 
     Each item written to the stream is written in a predefined binary
     format that varies depending on the item's type. Supported Qt
@@ -120,7 +120,7 @@ QT_BEGIN_NAMESPACE
     compatibility, you can hardcode the version number in the
     application:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 2
 
     If you are producing a new binary data format, such as a file
     format for documents created by your application, you could use a
@@ -128,11 +128,11 @@ QT_BEGIN_NAMESPACE
     would write a brief header containing a magic string and a version
     number to give yourself room for future expansion. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 3
 
     Then read it in with:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 4
 
     You can select which byte order to use when serializing data. The
     default setting is big endian (MSB first). Changing it to little
@@ -513,6 +513,7 @@ void QDataStream::setByteOrder(ByteOrder bo)
 
     \table
     \header \i Qt Version       \i QDataStream Version
+    \row \i Qt 4.4                  \i 10
     \row \i Qt 4.3                  \i 9
     \row \i Qt 4.2                  \i 8
     \row \i Qt 4.0, 4.1            \i 7
@@ -527,7 +528,7 @@ void QDataStream::setByteOrder(ByteOrder bo)
     The \l Version enum provides symbolic constants for the different
     versions of Qt. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qdatastream.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qdatastream.cpp 5
 
     \sa version(), Version
 */

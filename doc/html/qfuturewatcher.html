@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qfuturewatcher.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/concurrent/qfuturewatcher.cpp -->
 <head>
   <title>Qt 4.4: QFutureWatcher Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFutureWatcher Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QFutureWatcher class allows monitoring a <a href="qfuture.html">QFuture</a> using signals and slots. <a href="#details">More...</a></p>
@@ -90,14 +90,14 @@
 <p>Status changes are reported via the <a href="qfuturewatcher.html#started">started</a>(), <a href="qfuturewatcher.html#finished">finished</a>(), <a href="qfuturewatcher.html#canceled">canceled</a>(), <a href="qfuturewatcher.html#paused">paused</a>(), <a href="qfuturewatcher.html#resumed">resumed</a>(), <a href="qfuturewatcher.html#resultReadyAt">resultReadyAt</a>(), and <a href="qfuturewatcher.html#resultsReadyAt">resultsReadyAt</a>() signals. Progress information is provided from the <a href="qfuturewatcher.html#progressRangeChanged">progressRangeChanged</a>(), void <a href="qfuturewatcher.html#progressValueChanged">progressValueChanged</a>(), and <a href="qfuturewatcher.html#progressTextChanged">progressTextChanged</a>() signals.</p>
 <p>Throttling control is provided by the <a href="qfuturewatcher.html#setPendingResultsLimit">setPendingResultsLimit</a>() function. When the number of pending <a href="qfuturewatcher.html#resultReadyAt">resultReadyAt</a>() or <a href="qfuturewatcher.html#resultsReadyAt">resultsReadyAt</a>() signals exceeds the limit, the computation represented by the future will be throttled automatically. The computation will resume once the number of pending signals drops below the limit.</p>
 <p>Example: Starting a computation and getting a slot callback when it's finished:</p>
-<pre>     <span class="comment">// Instantiate the objects and connect to the finished signal.</span>
-     MyClass myObject;
-     QFutureWatcher&lt;int&gt; watcher;
-     connect(&amp;watcher, SIGNAL(finished()), &amp;myObject, SLOT(handleFinished()));
+<pre><span class="comment"> // Instantiate the objects and connect to the finished signal.</span>
+ MyClass myObject;
+ QFutureWatcher&lt;int&gt; watcher;
+ connect(&amp;watcher, SIGNAL(finished()), &amp;myObject, SLOT(handleFinished()));
 
-     <span class="comment">// Start the computation.</span>
-     QFuture&lt;int&gt; future = QtConcurrent::run(...);
-     watcher.setFuture(future);</pre>
+<span class="comment"> // Start the computation.</span>
+ QFuture&lt;int&gt; future = QtConcurrent::run(...);
+ watcher.setFuture(future);</pre>
 <p>Be aware that not all asynchronous computations can be canceled or paused. For example, the future returned by <a href="qtconcurrentrun.html#run">QtConcurrent::run</a>() cannot be canceled; but the future returned by <a href="qtconcurrentmap.html#mappedReduced">QtConcurrent::mappedReduced</a>() can.</p>
 <p>QFutureWatcher&lt;void&gt; is specialized to not contain any of the result fetching functions. Any <a href="qfuture.html">QFuture</a>&lt;T&gt; can be watched by a QFutureWatcher&lt;void&gt; as well. This is useful if only status or progress information is needed; not the actual result data.</p>
 <p>See also <a href="qfuture.html">QFuture</a> and <a href="threads.html#qtconcurrent-intro">Qt Concurrent</a>.</p>
@@ -221,8 +221,8 @@
 <p>Waits for the asynchronous computation to finish (including <a href="qfuturewatcher.html#cancel">cancel</a>()ed computations).</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qpainterpath.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qpainterpath.cpp -->
 <head>
   <title>Qt 4.4: QPainterPath Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QPainterPath Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QPainterPath class provides a container for painting operations, enabling graphical shapes to be constructed and reused. <a href="#details">More...</a></p>
@@ -96,8 +96,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-lt-lt-88">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-gt-gt-45">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-lt-lt-97">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qpainterpath.html#operator-gt-gt-59">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -119,20 +119,20 @@
 <p>In addition, a path can be added to the current path using the <a href="qpainterpath.html#connectPath">connectPath</a>() function. But note that this function will connect the last element of the current path to the first element of given one by adding a line.</p>
 <p>Below is a code snippet that shows how a QPainterPath object can be used:</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-construction.png" /></td><td><pre>         QPainterPath path;
-         path.addRect(20, 20, 60, 60);
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-construction.png" /></td><td><pre> QPainterPath path;
+ path.addRect(20, 20, 60, 60);
 
-         path.moveTo(0, 0);
-         path.cubicTo(99, 0,  50, 50,  99, 99);
-         path.cubicTo(0, 99,  50, 50,  0, 0);
+ path.moveTo(0, 0);
+ path.cubicTo(99, 0,  50, 50,  99, 99);
+ path.cubicTo(0, 99,  50, 50,  0, 0);
 
-         QPainter painter(this);
-         painter.fillRect(0, 0, 100, 100, Qt::white);
-         painter.setPen(QPen(QColor(79, 106, 25), 1, Qt::SolidLine,
-                             Qt::FlatCap, Qt::MiterJoin));
-         painter.setBrush(QColor(122, 163, 39));
+ QPainter painter(this);
+ painter.fillRect(0, 0, 100, 100, Qt::white);
+ painter.setPen(QPen(QColor(79, 106, 25), 1, Qt::SolidLine,
+                     Qt::FlatCap, Qt::MiterJoin));
+ painter.setBrush(QColor(122, 163, 39));
 
-         painter.drawPath(path);</pre>
+ painter.drawPath(path);</pre>
 </td></tr>
 </table></p>
 <p>The painter path is initially empty when constructed. We first add a rectangle, which is a closed subpath. Then we add two bezier curves which together form a closed subpath even though they are not closed individually. Finally we draw the entire path. The path is filled using the default fill rule, <a href="qt.html#FillRule-enum">Qt::OddEvenFill</a>. Qt provides two methods for filling paths:</p>
@@ -197,17 +197,17 @@
 <p>Creates an ellipse within the the specified <i>boundingRectangle</i> and adds it to the painter path as a closed subpath.</p>
 <p>The ellipse is composed of a clockwise curve, starting and finishing at zero degrees (the 3 o'clock position).</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-addellipse.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
-         QRectF boundingRectangle;
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-addellipse.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
+ QRectF boundingRectangle;
 
-         QPainterPath myPath;
-         myPath.addEllipse(boundingRectangle);
+ QPainterPath myPath;
+ myPath.addEllipse(boundingRectangle);
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainterpath.html#arcTo">arcTo</a>(), <a href="qpainter.html#drawEllipse">QPainter::drawEllipse</a>(), and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -227,17 +227,17 @@
 <p>Adds the given <i>polygon</i> to the path as an (unclosed) subpath.</p>
 <p>Note that the current position after the polygon has been added, is the last point in <i>polygon</i>. To draw a line back to the first point, use the <a href="qpainterpath.html#closeSubpath">closeSubpath</a>() function.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-addpolygon.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
-         QPolygonF myPolygon;
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-addpolygon.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
+ QPolygonF myPolygon;
 
-         QPainterPath myPath;
-         myPath.addPolygon(myPolygon);
+ QPainterPath myPath;
+ myPath.addPolygon(myPolygon);
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainterpath.html#lineTo">lineTo</a>() and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -246,17 +246,17 @@
 <p>Adds the given <i>rectangle</i> to this path as a closed subpath.</p>
 <p>The <i>rectangle</i> is added as a clockwise set of lines. The painter path's current position after the <i>rectangle</i> has been added is at the top-left corner of the rectangle.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-addrectangle.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
-         QRectF myRectangle;
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-addrectangle.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
+ QRectF myRectangle;
 
-         QPainterPath myPath;
-         myPath.addRect(myRectangle);
+ QPainterPath myPath;
+ myPath.addRect(myRectangle);
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainterpath.html#addRegion">addRegion</a>(), <a href="qpainterpath.html#lineTo">lineTo</a>(), and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -281,18 +281,18 @@
 <h3 class="fn"><a name="addText"></a>void QPainterPath::addText ( const <a href="qpointf.html">QPointF</a> &amp; <i>point</i>, const <a href="qfont.html">QFont</a> &amp; <i>font</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Adds the given <i>text</i> to this path as a set of closed subpaths created from the <i>font</i> supplied. The subpaths are positioned so that the left end of the text's baseline lies at the specified <i>point</i>.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-addtext.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
-         QFont myFont;
-         QPointF baseline(x, y);
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-addtext.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
+ QFont myFont;
+ QPointF baseline(x, y);
 
-         QPainterPath myPath;
-         myPath.addText(baseline, myFont, tr(&quot;Qt&quot;));
+ QPainterPath myPath;
+ myPath.addText(baseline, myFont, tr(&quot;Qt&quot;));
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawText">QPainter::drawText</a>() and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -320,20 +320,20 @@
 <p>Angles are specified in degrees. Clockwise arcs can be specified using negative angles.</p>
 <p>Note that this function connects the starting point of the arc to the current position if they are not already connected. After the arc has been added, the current position is the last point in arc. To draw a line back to the first point, use the <a href="qpainterpath.html#closeSubpath">closeSubpath</a>() function.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-arcto.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-arcto.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
 
-         QPointF center, startPoint;
+ QPointF center, startPoint;
 
-         QPainterPath myPath;
-         myPath.moveTo(center);
-         myPath.arcTo(boundingRect, startAngle,
-                      sweepLength);
+ QPainterPath myPath;
+ myPath.moveTo(center);
+ myPath.arcTo(boundingRect, startAngle,
+              sweepLength);
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainterpath.html#arcMoveTo">arcMoveTo</a>(), <a href="qpainterpath.html#addEllipse">addEllipse</a>(), <a href="qpainter.html#drawArc">QPainter::drawArc</a>(), <a href="qpainter.html#drawPie">QPainter::drawPie</a>(), and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -375,16 +375,16 @@
 <p>Adds a cubic Bezier curve between the current position and the given <i>endPoint</i> using the control points specified by <i>c1</i>, and <i>c2</i>.</p>
 <p>After the curve is added, the current position is updated to be at the end point of the curve.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainterpath-cubicto.png" /></td><td><pre>         QLinearGradient myGradient;
-         QPen myPen;
+<tr valign="top" class="odd"><td><img src="images/qpainterpath-cubicto.png" /></td><td><pre> QLinearGradient myGradient;
+ QPen myPen;
 
-         QPainterPath myPath;
-         myPath.cubicto(c1, c2, endPoint);
+ QPainterPath myPath;
+ myPath.cubicTo(c1, c2, endPoint);
 
-         QPainter painter(this);
-         painter.setBrush(myGradient);
-         painter.setPen(myPen);
-         painter.drawPath(myPath);</pre>
+ QPainter painter(this);
+ painter.setBrush(myGradient);
+ painter.setPen(myPen);
+ painter.drawPath(myPath);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainterpath.html#quadTo">quadTo</a>() and <a href="qpainterpath.html#composing-a-qpainterpath">Composing a QPainterPath</a>.</p>
@@ -530,18 +530,18 @@
 <p>See also <a href="qpainterpath.html#operator-not-eq">operator!=</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-88"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-97"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPainterPath &amp; <i>path</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given painter <i>path</i> to the given <i>stream</i>, and returns a reference to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-45"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-59"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPainterPath &amp; <i>path</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a painter path from the given <i>stream</i> into the specified <i>path</i>, and returns a reference to the <i>stream</i>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -89,7 +89,7 @@ QT_BEGIN_NAMESPACE
  values are well-defined, and they can be spectated with count(),
  has(), value() and values().
 
- \snippet doc/src/snippets/code/tools.patternist.qapplicationargumentparser.cpp 0
+ \snippet doc/src/snippets/code/tools_patternist_qapplicationargumentparser.cpp 0
 
  For arguments without a name(such as filename passed to the \c ls utility on Linux) add a
  QApplicationArgument that does not have a name. The minimum and maximum occurrences will be

@@ -931,6 +931,7 @@ static void heuristicSetGlyphAttributes(const QChar *uc, int length, QGlyphLayou
 {
     // ### zeroWidth and justification are missing here!!!!!
 
+    Q_UNUSED(num_glyphs);
     Q_ASSERT(num_glyphs <= length);
 
 //     qDebug("QScriptEngine::heuristicSetGlyphAttributes, num_glyphs=%d", item->num_glyphs);

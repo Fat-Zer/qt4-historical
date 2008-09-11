@@ -110,7 +110,9 @@ protected:
 #ifndef QT_NO_WHEELEVENT
     void wheelEvent(QWheelEvent *);
 #endif
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *);
+#endif
 #ifndef QT_NO_DRAGANDDROP
     void dragEnterEvent(QDragEnterEvent *);
     void dragMoveEvent(QDragMoveEvent *);

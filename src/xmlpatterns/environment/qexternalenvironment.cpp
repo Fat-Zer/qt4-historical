@@ -53,7 +53,7 @@ using namespace QPatternist;
 /* The goal is to support serialization, backwards compatibility, import feature
  * and full axis featur, but not schema awareness. */
 
-const xsDecimal ExternalEnvironment::XSLVersion                        (1.20);
+const xsDecimal ExternalEnvironment::XSLVersion                        (xsDecimal(1.20));
 const QString   ExternalEnvironment::Vendor                            (QLatin1String("The Patternist Team"));
 const QUrl      ExternalEnvironment::VendorURL                         (QLatin1String("http://svg.kde.org/"));
 const QString   ExternalEnvironment::ProductName                       (QLatin1String("Patternist"));

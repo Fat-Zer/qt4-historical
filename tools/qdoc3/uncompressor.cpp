@@ -51,18 +51,48 @@ QT_BEGIN_NAMESPACE
 
 QList<Uncompressor *> Uncompressor::uncompressors;
 
+
+/*!
+  \class Uncompressor
+  
+  \brief The Uncompressor class is a base class for classes that
+  know how to uncompress a certain kind of compressed file.
+
+  The uncompressor contains a list of the filename extensions
+  of the file types that the uncompressor knows how to uncompress.
+
+  It maintains a static list of all the instances of Uncompressor
+  that have been created. It also has a static function for searching
+  that list to find the uncompressor to use for uncompressing a file
+  with a certain extension.
+ */
+
+/*!
+  The constructor takes a list of filename extensions, which it
+  copies and saves internally. This uncompressor is prepended
+  to the stack list.
+ */
 Uncompressor::Uncompressor( const QStringList& extensions )
     : fileExts( extensions )
 {
     uncompressors.prepend( this );
 }
 
+/*!
+  The destructor deletes all the filename extensions.
+ */
 Uncompressor::~Uncompressor()
 {
     uncompressors.removeAll( this );
 }
 
-Uncompressor *Uncompressor::uncompressorForFileName( const QString& fileName )
+/*!
+  This function searches the static list of uncompressors to find the
+  first one that can handle \a fileName. If it finds an acceptable
+  uncompressor, it returns a pointer to it. Otherwise it returns null.
+*/
+Uncompressor*
+Uncompressor::uncompressorForFileName( const QString& fileName )
 {
     int dot = -1;
     while ( (dot = fileName.indexOf(".", dot + 1)) != -1 ) {

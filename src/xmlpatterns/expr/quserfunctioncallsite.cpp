@@ -123,16 +123,23 @@ SequenceType::List UserFunctionCallsite::expectedOperandTypes() const
 Expression::Ptr UserFunctionCallsite::typeCheck(const StaticContext::Ptr &context,
                                                 const SequenceType::Ptr &reqType)
 {
-    /* Update, such that we use a recent version of the body that has typeCheck()
-     * and compress() rewrites included. */
-    m_body = m_functionDeclaration->body();
+    /* The parser calls TypeChecker::applyFunctionConversion() on user function
+     * bodies, possibly indirectly, before all function call sites have been
+     * resolved. Hence it's possible that we're called before before the usual
+     * typeCheck() pass, and hence before we have been resolved/checked and
+     * subsequently m_functionDeclaration set. Therefore, encounter for that below.
+     */
 
     /* Ensure that the return value of the function is properly
      * converted/does match from where it is called(which is here). */
-    if(m_isRecursive)
+    if(m_isRecursive || !m_functionDeclaration)
         return UnlimitedContainer::typeCheck(context, reqType);
     else
     {
+        /* Update, such that we use a recent version of the body that has typeCheck()
+         * and compress() rewrites included. */
+        m_body = m_functionDeclaration->body();
+
         /* Note, we can't assign to m_functionDeclaration->body() because UserFunction can apply
          * to several different callsites. Hence we need our own version. */
         m_body = m_body->typeCheck(context, reqType);

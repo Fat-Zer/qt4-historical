@@ -43,7 +43,7 @@
 
 #include "qdnd_p.h"
 
-#ifndef QT_NO_DRAGANDDROP
+#if !(defined(QT_NO_DRAGANDDROP) && defined(QT_NO_CLIPBOARD))
 
 #if defined(Q_OS_WINCE)
 #include "qguifunctions_wince.h"
@@ -172,7 +172,7 @@ QOleEnumFmtEtc::Next(ULONG celt, LPFORMATETC rgelt, ULONG FAR* pceltFetched)
     if (i != celt)
         return ResultFromScode(S_FALSE);
 
-    return NOERROR;    
+    return NOERROR;
 }
 
 STDMETHODIMP
@@ -253,4 +253,4 @@ bool QOleEnumFmtEtc::copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const
 }
 
 QT_END_NAMESPACE
-#endif //QT_NO_DRAGANDDROP
+#endif // QT_NO_DRAGANDDROP && QT_NO_CLIPBOARD

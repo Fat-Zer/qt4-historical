@@ -390,10 +390,10 @@ void QWidget::setEditFocus(bool on)
     \brief whether the widget background is filled automatically
     \since 4.1
 
-    If enabled, this will cause Qt to fill the background
-    using the widget's background role before invoking
-    the paint event. The background role is defined by the widget's
-    \l{palette}.
+    If enabled, this will cause Qt to fill the background of the
+    widget before invoking the paint event. The color used is defined
+    by the QPalette::Window color role from the widget's
+    \l{QPalette}{palette}. 
 
     In addition, Windows are always filled with QPalette::Window,
     unless the WA_OpaquePaintEvent or WA_NoSystemBackground
@@ -404,7 +404,10 @@ void QWidget::setEditFocus(bool on)
     background or a border-image, this property is automatically
     disabled.
 
-    \sa Qt::WA_OpaquePaintEvent, Qt::WA_NoSystemBackground
+    By default, this property is false.
+
+    \sa Qt::WA_OpaquePaintEvent, Qt::WA_NoSystemBackground,
+        {QWidget#Transparency and Double Buffering}{Transparency and Double Buffering}
 */
 bool QWidget::autoFillBackground() const
 {
@@ -1387,6 +1390,7 @@ void QWidgetPrivate::createTLExtra()
         x->sizeAdjusted = false;
         x->inRenderWithPainter = false;
         x->inTopLevelResize = false;
+        x->inRepaint = false;
         x->icon = 0;
         x->iconPixmap = 0;
         x->frameStrut.setCoords(0, 0, 0, 0);
@@ -1430,6 +1434,7 @@ void QWidgetPrivate::createExtra()
         extra->minw = extra->minh = 0;
         extra->maxw = extra->maxh = QWIDGETSIZE_MAX;
         extra->explicitMinSize = 0;
+        extra->explicitMaxSize = 0;
         extra->autoFillBackground = 0;
         extra->nativeChildrenForced = 0;
 #ifndef QT_NO_CURSOR
@@ -1544,7 +1549,7 @@ bool QWidgetPrivate::isOverlapped(const QRect &rect) const
                 above = (sibling == w);
                 continue;
             }
-            if (sibling->data->crect.intersects(r))
+            if (qRectIntersects(sibling->data->crect, r))
                 return true;
         }
         w = w->parentWidget();
@@ -1647,7 +1652,7 @@ QRegion QWidgetPrivate::clipRegion() const
                 if(sibling->isVisible() && !sibling->isWindow()) {
                     QRect siblingRect(ox+sibling->x(), oy+sibling->y(),
                                       sibling->width(), sibling->height());
-                    if(siblingRect.intersects(q->rect()))
+                    if (qRectIntersects(siblingRect, q->rect()))
                         r -= QRegion(siblingRect);
                 }
             }
@@ -1739,6 +1744,7 @@ QRegion QWidgetPrivate::getOpaqueSiblings(const QRegion &clipRegion) const
     const QRegion parentClip = clipRegion.translated(myOffset);
 
     QRegion opaqueSiblings = pd->getOpaqueSiblings(parentClip);
+    const QRect parentClipBoundingRect = parentClip.boundingRect();
 
     const int startIdx = pd->children.indexOf(const_cast<QWidget*>(q)) + 1;
     for (int i = startIdx; i < pd->children.size(); ++i) {
@@ -1747,7 +1753,7 @@ QRegion QWidgetPrivate::getOpaqueSiblings(const QRegion &clipRegion) const
             continue;
 
         const QRect rect = sibling->geometry();
-        if (!parentClip.boundingRect().intersects(rect))
+        if (!qRectIntersects(parentClipBoundingRect, rect))
             continue;
 
         opaqueSiblings += parentClip & sibling->d_func()->getOpaqueRegion().translated(rect.topLeft());
@@ -2301,6 +2307,8 @@ QStyle* QWidget::setStyle(const QString &style)
     This property only makes sense for windows. A modal widget
     prevents widgets in all other windows from getting any input.
 
+    By default, this property is false.
+
     \sa isWindow(), windowModality, QDialog
 */
 
@@ -2350,6 +2358,8 @@ void QWidget::setWindowModality(Qt::WindowModality windowModality)
 
     This property is only relevant for windows.
 
+    By default, this property is false.
+
     \sa showMinimized(), visible, show(), hide(), showNormal(), maximized
 */
 bool QWidget::isMinimized() const
@@ -2386,11 +2396,13 @@ void QWidget::showMinimized()
 
     This property is only relevant for windows.
 
-    Note that due to limitations in some window-systems, this does not
-    always report the expected results (e.g. if the user on X11
-    maximizes the window via the window manager, Qt has no way of
-    distinguishing this from any other resize). This is expected to
-    improve as window manager protocols evolve.
+    \note Due to limitations on some window systems, this does not always
+    report the expected results (e.g., if the user on X11 maximizes the
+    window via the window manager, Qt has no way of distinguishing this
+    from any other resize). This is expected to improve as window manager
+    protocols evolve.
+
+    By default, this property is false.
 
     \sa windowState(), showMaximized(), visible, show(), hide(), showNormal(), minimized
 */
@@ -2437,12 +2449,12 @@ void QWidget::overrideWindowState(Qt::WindowStates newstate)
     windows, the change is immediate. For example, to toggle between
     full-screen and normal mode, use the following code:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 0
 
     In order to restore and activate a minimized window (while
     preserving its maximized and/or full-screen state), use the following:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 1
 
     Calling this function will hide the widget. You must call show() to make
     the widget visible again.
@@ -2458,7 +2470,12 @@ void QWidget::overrideWindowState(Qt::WindowStates newstate)
 
 /*!
     \property QWidget::fullScreen
-    \brief whether the widget is full screen
+    \brief whether the widget is shown in full screen mode
+
+    A widget in full screen mode occupies the whole screen area and does not
+    display window decorations, such as a title bar.
+
+    By default, this property is false.
 
     \sa windowState(), minimized, maximized
 */
@@ -2586,7 +2603,8 @@ bool QWidget::isEnabledTo(QWidget* ancestor) const
     the QAction list (as returned by actions()) is to create a context
     QMenu.
 
-    A QWidget should only have one of each action.
+    A QWidget should only have one of each action and adding an action
+    it already has will not cause the same action to be in the widget twice.
 
     \sa removeAction(), insertAction(), actions(), QMenu
 */
@@ -2701,8 +2719,6 @@ QList<QAction*> QWidget::actions() const
     An enabled widget handles keyboard and mouse events; a disabled
     widget does not.
 
-
-
     Some widgets display themselves differently when they are
     disabled. For example a button might draw its label grayed out. If
     your widget needs to know when it becomes enabled or disabled, you
@@ -2711,6 +2727,8 @@ QList<QAction*> QWidget::actions() const
     Disabling a widget implicitly disables all its children. Enabling
     respectively enables all child widgets unless they have been
     explicitly disabled.
+
+    By default, this property is true.
 
     \sa isEnabledTo(), QKeyEvent, QMouseEvent, changeEvent()
 */
@@ -2772,12 +2790,15 @@ void QWidgetPrivate::setEnabled_helper(bool enable)
     Setting this property to true announces to the system that this
     widget \e may be able to accept drop events.
 
-    If the widget is the desktop (QWidget::(windowType() == Qt::Desktop)), this may
+    If the widget is the desktop (windowType() == Qt::Desktop), this may
     fail if another application is using the desktop; you can call
     acceptDrops() to test if this occurs.
 
-    \warning
-    Do not modify this property in a Drag&Drop event handler.
+    \warning Do not modify this property in a drag and drop event handler.
+
+    By default, this property is false.
+
+    \sa {Drag and Drop}
 */
 bool QWidget::acceptDrops() const
 {
@@ -2852,6 +2873,9 @@ void QWidget::setDisabled(bool disable)
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of geometry issues with windows.
 
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
+
     \sa geometry() x() y() pos()
 */
 QRect QWidget::frameGeometry() const
@@ -2876,6 +2900,8 @@ QRect QWidget::frameGeometry() const
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
 
+    By default, this property has a value of 0.
+
     \sa frameGeometry, y, pos
 */
 int QWidget::x() const
@@ -2893,6 +2919,8 @@ int QWidget::x() const
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
+
+    By default, this property has a value of 0.
 
     \sa frameGeometry, x, pos
 */
@@ -2915,6 +2943,9 @@ int QWidget::y() const
     move event (moveEvent()) immediately. If the widget is not
     currently visible, it is guaranteed to receive an event before it
     is shown.
+
+    By default, this property contains a position that refers to the
+    origin.
 
     \warning Calling move() or setGeometry() inside moveEvent() can
     lead to infinite recursion.
@@ -2953,6 +2984,9 @@ QPoint QWidget::pos() const
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
 
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
+
     \sa frameGeometry(), rect(), move(), resize(), moveEvent(),
         resizeEvent(), minimumSize(), maximumSize()
 */
@@ -2961,9 +2995,11 @@ QPoint QWidget::pos() const
     \property QWidget::normalGeometry
 
     \brief the geometry of the widget as it will appear when shown as
-    a normal (not maximized or fullscreen) toplevel widget
+    a normal (not maximized or full screen) top-level widget
 
-    For child widgets this property always holds an empty rect.
+    For child widgets this property always holds an empty rectangle.
+
+    By default, this property contains an empty rectangle.
 
     \sa QWidget::windowState(), QWidget::geometry
 */
@@ -2979,10 +3015,13 @@ QPoint QWidget::pos() const
     The size is adjusted if it lies outside the range defined by
     minimumSize() and maximumSize().
 
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
+
     \warning Calling resize() or setGeometry() inside resizeEvent() can
     lead to infinite recursion.
 
-    Note that setting size to QSize(0, 0) will cause the widget to not
+    \note Setting the size to \c{QSize(0, 0)} will cause the widget to not
     appear on screen. This also applies to windows.
 
     \sa pos, geometry, minimumSize, maximumSize, resizeEvent()
@@ -2995,6 +3034,13 @@ QPoint QWidget::pos() const
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
 
+    \note Do not use this function to find the width of a screen on
+    a \l{QDesktopWidget}{multiple screen desktop}. Read
+    \l{multiple screens note}{this note} for details.
+
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
+
     \sa geometry, height, size
 */
 
@@ -3004,6 +3050,13 @@ QPoint QWidget::pos() const
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
+
+    \note Do not use this function to find the height of a screen
+    on a \l {QDesktopWidget} {multiple screen desktop}. Read
+    \l {multiple screens note} {this note} for details.
+
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
 
     \sa geometry, width, size
 */
@@ -3017,6 +3070,9 @@ QPoint QWidget::pos() const
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of window geometry.
+
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
 
     \sa size
 */
@@ -3041,6 +3097,9 @@ QRect QWidget::normalGeometry() const
 
     Hidden children are excluded.
 
+    By default, for a widget with no children, this property contains a
+    rectangle with zero width and height located at the origin.
+
     \sa childrenRegion() geometry()
 */
 
@@ -3061,6 +3120,9 @@ QRect QWidget::childrenRect() const
     \brief the combined region occupied by the widget's children
 
     Hidden children are excluded.
+
+    By default, for a widget with no children, this property contains an
+    empty region.
 
     \sa childrenRect() geometry() mask()
 */
@@ -3091,8 +3153,11 @@ QRegion QWidget::childrenRegion() const
     widget size. The widget's size is forced to the minimum size if
     the current size is smaller.
 
-    The minimum size set by this function will override the minimum size defined by QLayout.
-    In order to unset the minimum size, use QSize(0, 0).
+    The minimum size set by this function will override the minimum size
+    defined by QLayout. In order to unset the minimum size, use a
+    value of \c{QSize(0, 0)}.
+
+    By default, this property contains a size with zero width and height.
 
     \sa minimumWidth, minimumHeight, maximumSize, sizeIncrement
 */
@@ -3105,13 +3170,16 @@ QSize QWidget::minimumSize() const
 
 /*!
     \property QWidget::maximumSize
-    \brief the widget's maximum size
+    \brief the widget's maximum size in pixels
 
     The widget cannot be resized to a larger size than the maximum
     widget size.
 
-    The property is limited by the QWIDGETSIZE_MAX macro, i.e. the
-    largest allowed size is QSize(16777215, 16777215).
+    By default, this property contains a size in which both width and height
+    have values of 16777215.
+
+    \note The definition of the \c QWIDGETSIZE_MAX macro limits the maximum size
+    of widgets.
 
     \sa maximumWidth, maximumHeight, minimumSize, sizeIncrement
 */
@@ -3126,40 +3194,50 @@ QSize QWidget::maximumSize() const
 
 /*!
     \property QWidget::minimumWidth
-    \brief the widget's minimum width
+    \brief the widget's minimum width in pixels
 
-    This property corresponds to minimumSize().width().
+    This property corresponds to the width held by the \l minimumSize property.
+
+    By default, this property has a value of 0.
 
     \sa minimumSize, minimumHeight
 */
 
 /*!
     \property QWidget::minimumHeight
-    \brief the widget's minimum height
+    \brief the widget's minimum height in pixels
 
-    This property corresponds to minimumSize().height().
+    This property corresponds to the height held by the \l minimumSize property.
+
+    By default, this property has a value of 0.
 
     \sa minimumSize, minimumWidth
 */
 
 /*!
     \property QWidget::maximumWidth
-    \brief the widget's maximum width
+    \brief the widget's maximum width in pixels
 
-    This property corresponds to maximumSize().width(). It is limited
-    by the QWIDGETSIZE_MAX macro, i.e. the largest allowed width is
-    16777215.
+    This property corresponds to the width held by the \l maximumSize property.
+
+    By default, this property contains a value of 16777215.
+
+    \note The definition of the \c QWIDGETSIZE_MAX macro limits the maximum size
+    of widgets.
 
     \sa maximumSize, maximumHeight
 */
 
 /*!
     \property QWidget::maximumHeight
-    \brief the widget's maximum height
+    \brief the widget's maximum height in pixels
 
-    This property corresponds to maximumSize().height(). It is limited
-    by the QWIDGETSIZE_MAX macro, i.e. the largest allowed height is
-    16777215.
+    This property corresponds to the height held by the \l maximumSize property.
+
+    By default, this property contains a value of 16777215.
+
+    \note The definition of the \c QWIDGETSIZE_MAX macro limits the maximum size
+    of widgets.
 
     \sa maximumSize, maximumWidth
 */
@@ -3173,13 +3251,15 @@ QSize QWidget::maximumSize() const
     sizeIncrement.height() pixels vertically, with baseSize() as the
     basis. Preferred widget sizes are for non-negative integers \e i
     and \e j:
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 2
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 2
 
     Note that while you can set the size increment for all widgets, it
     only affects windows.
 
+    By default, this property contains a size with zero width and height.
+
     \warning The size increment has no effect under Windows, and may
-    be disregarded by the window manager on X.
+    be disregarded by the window manager on X11.
 
     \sa size, minimumSize, maximumSize
 */
@@ -3197,6 +3277,9 @@ QSize QWidget::sizeIncrement() const
 
     The base size is used to calculate a proper widget size if the
     widget defines sizeIncrement().
+
+    By default, for a newly-created widget, this property contains a size with
+    zero width and height.
 
     \sa setSizeIncrement()
 */
@@ -3306,6 +3389,7 @@ bool QWidgetPrivate::setMaximumSize_helper(int &maxw, int &maxh)
         return false;
     extra->maxw = maxw;
     extra->maxh = maxh;
+    extra->explicitMaxSize = (maxw != QWIDGETSIZE_MAX ? Qt::Horizontal : 0) | (maxh != QWIDGETSIZE_MAX ? Qt::Vertical : 0);
     return true;
 }
 
@@ -3448,12 +3532,20 @@ void QWidget::setMinimumHeight(int h)
 
 void QWidget::setMaximumWidth(int w)
 {
+    Q_D(QWidget);
+    d->createExtra();
+    uint expl = d->extra->explicitMaxSize | (w == QWIDGETSIZE_MAX ? 0 : Qt::Horizontal);
     setMaximumSize(w, maximumSize().height());
+    d->extra->explicitMaxSize = expl;
 }
 
 void QWidget::setMaximumHeight(int h)
 {
+    Q_D(QWidget);
+    d->createExtra();
+    uint expl = d->extra->explicitMaxSize | (h == QWIDGETSIZE_MAX ? 0 : Qt::Vertical);
     setMaximumSize(maximumSize().width(), h);
+    d->extra->explicitMaxSize = expl;
 }
 
 /*!
@@ -3467,10 +3559,12 @@ void QWidget::setFixedWidth(int w)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMinSize | Qt::Horizontal;
+    uint explMin = d->extra->explicitMinSize | Qt::Horizontal;
+    uint explMax = d->extra->explicitMaxSize | Qt::Horizontal;
     setMinimumSize(w, minimumSize().height());
     setMaximumSize(w, maximumSize().height());
-    d->extra->explicitMinSize = expl;
+    d->extra->explicitMinSize = explMin;
+    d->extra->explicitMaxSize = explMax;
 }
 
 
@@ -3485,10 +3579,12 @@ void QWidget::setFixedHeight(int h)
 {
     Q_D(QWidget);
     d->createExtra();
-    uint expl = d->extra->explicitMinSize | Qt::Vertical;
+    uint explMin = d->extra->explicitMinSize | Qt::Vertical;
+    uint explMax = d->extra->explicitMaxSize | Qt::Vertical;
     setMinimumSize(minimumSize().width(), h);
     setMaximumSize(maximumSize().width(), h);
-    d->extra->explicitMinSize = expl;
+    d->extra->explicitMinSize = explMin;
+    d->extra->explicitMaxSize = explMax;
 }
 
 
@@ -3578,7 +3674,7 @@ QPoint QWidget::mapFromParent(const QPoint &pos) const
 
     Typical usage is changing the window title:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 3
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 3
 
     \sa isWindow()
 */
@@ -3862,19 +3958,30 @@ void QWidget::setForegroundRole(QPalette::ColorRole role)
     \property QWidget::palette
     \brief the widget's palette
 
-    As long as no special palette has been set, this is either a
-    special palette for the widget class, the parent's palette or (if
-    this widget is a top level widget), the default application
-    palette.
+    As long as no special palette has been set, this is either a special
+    palette for the widget class, the parent's palette, or (if this widget is
+    a top level widget), the default application palette.
 
-    \bold{Note:} The palette's background color will only have an effect on
-    the appearance of the widget if the \l autoFillBackground property is
-    set.
+    The palette's background color will only have an effect on the appearance
+    of the widget if the \l autoFillBackground property is set.
+
+    There are two types of styles in Qt:
+    \list
+        \o A color based one used to indicate the background, foreground, etc.,
+           and
+        \o A pixmap based one which usually relies on a theming engine on the
+           underlying platform.
+    \endlist
+
+    Changing this property on a widget with a pixmap based style will usually
+    not result in a visual change on that widget. Refer to our Knowledge Base
+    article \l{http://trolltech.com/developer/knowledgebase/22}{here} for more
+    information.
 
     \warning Do not use this function in conjunction with \l{Qt Style Sheets}.
-    When using style sheets, the palette of a widget can be customized using the "color",
-    "background-color", "selection-color", "selection-background-color" and
-    "alternate-background-color".
+    When using style sheets, the palette of a widget can be customized using
+    the "color", "background-color", "selection-color",
+    "selection-background-color" and "alternate-background-color".
 
     \sa QApplication::palette()
 */
@@ -3937,7 +4044,7 @@ void QWidgetPrivate::setPalette_helper(const QPalette &palette)
 
     This code fragment sets a 12 point helvetica bold font:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 4
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 4
 
     Note that when a child widget is given a different font to that of
     its parent widget, it will still inherit the parent's font \e
@@ -3946,7 +4053,7 @@ void QWidgetPrivate::setPalette_helper(const QPalette &palette)
     widget's font will be bold as well if not specified otherwise like
     this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 5
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 5
 
     In addition to setting the font, setFont() informs all children
     about the change.
@@ -4000,13 +4107,15 @@ void QWidgetPrivate::setFont_helper(const QFont &font)
     for (int i = 0; i < children.size(); ++i) {
         QWidget *w = qobject_cast<QWidget*>(children.at(i));
         if (w) {
+            if (0) {
 #ifndef QT_NO_STYLE_STYLESHEET
-            if (w->testAttribute(Qt::WA_StyleSheet))
-                cssStyle->updateStyleSheetFont(w);
-            else
+            } else if (w->testAttribute(Qt::WA_StyleSheet)) {
+                if (cssStyle)
+                    cssStyle->updateStyleSheetFont(w);
 #endif
-            if ((!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation)))
+            } else if ((!w->isWindow() || w->testAttribute(Qt::WA_WindowPropagation))) {
                 w->d_func()->resolveFont();
+            }
         }
     }
 
@@ -4052,6 +4161,8 @@ void QWidgetPrivate::resolveLayoutDirection()
     \property QWidget::layoutDirection
 
     \brief the layout direction for this widget
+
+    By default, this property is set to Qt::LeftToRight.
 
     \sa QApplication::layoutDirection
 */
@@ -4103,10 +4214,13 @@ void QWidget::unsetLayoutDirection()
     objects\endlink for a range of useful shapes.
 
     An editor widget might use an I-beam cursor:
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 6
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 6
 
     If no cursor has been set, or after a call to unsetCursor(), the
     parent's cursor is used.
+
+    By default, this property contains a cursor with the Qt::ArrowCursor
+    shape.
 
     \sa QApplication::setOverrideCursor()
 */
@@ -4184,7 +4298,7 @@ void QWidget::unsetCursor()
     using \a renderFlags to determine how to render. Rendering
     starts at \a targetOffset in the \a target. For example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 7
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 7
 
     If \a sourceRegion is a null region, this function will use QWidget::rect() as
     the region, i.e. the entire widget.
@@ -4192,7 +4306,7 @@ void QWidget::unsetCursor()
     \bold{Note:} Make sure to call QPainter::end() for the given \a target's
     active painter (if any) before rendering. For example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 8
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 8
 
     \since 4.3
 */
@@ -4580,10 +4694,11 @@ void QWidgetPrivate::paintSiblingsRecursive(QPaintDevice *pdev, const QObjectLis
     )
 {
     QWidget *w = 0;
+    const QRect boundingRect = rgn.boundingRect();
 
     do {
         QWidget *x =  qobject_cast<QWidget*>(siblings.at(index));
-        if (x && !x->isWindow() && !x->isHidden() && qRectIntersects(rgn.boundingRect(), x->geometry())) {
+        if (x && !x->isWindow() && !x->isHidden() && qRectIntersects(boundingRect, x->geometry())) {
 #ifdef Q_BACKINGSTORE_SUBSURFACES
             if (x->windowSurface() == currentSurface)
 #endif
@@ -4996,22 +5111,41 @@ QString QWidget::windowIconText() const
 /*!
     \property QWidget::windowFilePath
     \since 4.4
-    \brief the file path associated with a widget.
+    \brief the file path associated with a widget
 
     This property only makes sense for windows. It associates a file path with
-    a window. If you have set file path, but do not set the window title, Qt
-    set's the window title to:
+    a window. If you set the file path, but have not set the window title, Qt
+    sets the window title to contain a string created using the following
+    components.
 
-    QFileInfo::fileName()[*], on Mac OS X, as per the Apple Human Interface Guidelines.
-    QFileInfo::fileName()[*] \unicode 0x2014 QApplication::applicationName(), on Windows and X11 when QApplication::applicationName() is set.
+    On Mac OS X:
 
-    If the window title is set at any point, then the
-    window title takes precedence.
+    \list
+    \o The file name of the specified path, obtained using QFileInfo::fileName().
+    \o An optional \c{*} character, if the \l windowModified property is set,
+    as per the Apple Human Interface Guidelines.
+    \endlist
 
-    Additionally, on Mac OS X, this has an added benefit that it sets the \l {http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGWindows/chapter_17_section_3.html}{proxy icon} for the
-    window, assuming that the file path exists.
+    On Windows and X11:
 
-    If no file path is set, this function returns an empty string.
+    \list
+    \o The file name of the specified path, obtained using QFileInfo::fileName().
+    \o An optional \c{*} character, if the \l windowModified property is set.
+    \o The \c{0x2014} unicode character, padded either side by spaces.
+    \o The application name, obtained from the application's
+    \l{QCoreApplication::}{applicationName} property.
+    \endlist
+
+    If the window title is set at any point, then the window title takes precedence and
+    will be shown instead of the file path string.
+
+    Additionally, on Mac OS X, this has an added benefit that it sets the
+    \l{http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/XHIGWindows/chapter_17_section_3.html}{proxy icon}
+    for the window, assuming that the file path exists.
+
+    If no file path is set, this property contains an empty string.
+
+    By default, this property contains an empty string.
 
     \sa windowTitle, windowIcon
 */
@@ -5029,17 +5163,21 @@ void QWidget::setWindowFilePath(const QString &filePath)
 
     Q_D(QWidget);
 
-    QString finalPath = filePath;
-
     d->createTLExtra();
-    d->extra->topextra->filePath = finalPath;
-    d->setWindowFilePath_helper(finalPath);
+    d->extra->topextra->filePath = filePath;
+    d->setWindowFilePath_helper(filePath);
 }
 
 void QWidgetPrivate::setWindowFilePath_helper(const QString &filePath)
 {
     if (extra->topextra && extra->topextra->caption.isEmpty()) {
+#ifdef Q_WS_MAC
         setWindowTitle_helper(filePath);
+#else
+        Q_Q(QWidget);
+        Q_UNUSED(filePath);
+        setWindowTitle_helper(q->windowTitle());
+#endif
     }
 #ifdef Q_WS_MAC
     setWindowFilePath_sys(filePath);
@@ -5139,7 +5277,10 @@ QWidget * QWidget::focusProxy() const
     \brief whether this widget (or its focus proxy) has the keyboard
     input focus
 
-    Effectively equivalent to \c {QApplication::focusWidget() == this}.
+    By default, this property is false.
+
+    \note Obtaining the value of this property for a widget is effectively equivalent
+    to checking whether QApplication::focusWidget() refers to the widget.
 
     \sa setFocus(), clearFocus(), setFocusPolicy(), QApplication::focusWidget()
 */
@@ -5414,6 +5555,8 @@ QWidget *QWidget::nextInFocusChain() const
     When popup windows are visible, this property is true for both the
     active window \e and for the popup.
 
+    By default, this property is false.
+
     \sa activateWindow(), QApplication::activeWindow()
 */
 bool QWidget::isActiveWindow() const
@@ -5474,11 +5617,11 @@ bool QWidget::isActiveWindow() const
     Note that since the tab order of the \a second widget is changed,
     you should order a chain like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 9
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 9
 
     \e not like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 10
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 10
 
     If \a first or \a second has a focus proxy, setTabOrder()
     correctly substitutes the proxy.
@@ -5660,6 +5803,9 @@ QRect QWidgetPrivate::fromOrToLayoutItemRect(const QRect &rect, int sign) const
 /*!
     \property QWidget::frameSize
     \brief the size of the widget including any window frame
+
+    By default, this property contains a value that depends on the user's
+    platform and screen geometry.
 */
 QSize QWidget::frameSize() const
 {
@@ -5739,7 +5885,7 @@ void QWidget::setGeometry(const QRect &r)
     To save the geometry when the window closes, you can
     implement a close event like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 11
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 11
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of geometry issues with windows.
@@ -5778,7 +5924,7 @@ QByteArray QWidget::saveGeometry() const
     To restore geometry saved using QSettings, you can use code like
     this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 12
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 12
 
     See the \link geometry.html Window Geometry documentation\endlink
     for an overview of geometry issues with windows.
@@ -5865,13 +6011,13 @@ bool QWidget::restoreGeometry(const QByteArray &geometry)
     restoredNormalGeometry.moveTop(qMax(restoredNormalGeometry.top(), availableGeometry.top() + frameHeight));
 
     if (maximized || fullScreen) {
-        setGeometry(restoredNormalGeometry);
         Qt::WindowStates ws = windowState();
         if (maximized)
             ws |= Qt::WindowMaximized;
         if (fullScreen)
             ws |= Qt::WindowFullScreen;
-            setWindowState(ws);
+       setWindowState(ws);
+       d_func()->topData()->normalGeometry = restoredNormalGeometry;
     } else {
         QPoint offset;
 #ifdef Q_WS_X11
@@ -6042,6 +6188,8 @@ void QWidget::setFocusPolicy(Qt::FocusPolicy policy)
     calling update() and repaint() has no effect if updates are
     disabled.
 
+    By default, this property is true.
+
     setUpdatesEnabled() is normally used to disable updates for a
     short period of time, for instance to avoid screen flicker during
     large changes. In Qt, widgets normally do not generate screen
@@ -6050,7 +6198,7 @@ void QWidget::setFocusPolicy(Qt::FocusPolicy policy)
     widgets. Disabling updates solves this.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 13
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 13
 
     Disabling a widget implicitly disables all its children. Enabling
     respectively enables all child widgets unless they have been
@@ -7171,6 +7319,7 @@ bool QWidget::event(QEvent *event)
         closeEvent((QCloseEvent *)event);
         break;
 
+#ifndef QT_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         switch (data->context_menu_policy) {
         case Qt::DefaultContextMenu:
@@ -7193,6 +7342,7 @@ bool QWidget::event(QEvent *event)
             break;
         }
         break;
+#endif // QT_NO_CONTEXTMENU
 
 #ifndef QT_NO_DRAGANDDROP
     case QEvent::Drop:
@@ -7773,7 +7923,7 @@ void QWidget::leaveEvent(QEvent *)
     Note: Under X11 it is possible to toggle the global double
     buffering by calling \c qt_x11_set_global_double_buffer().
     Example usage:
-    \snippet doc/src/snippets/code/src.gui.kernel.qwidget.cpp 14
+    \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 14
 
     Note: In general, one should refrain from calling update() or repaint()
     \bold {inside} of paintEvent(). For example, calling update() or repaint() on
@@ -7866,7 +8016,7 @@ void QWidget::closeEvent(QCloseEvent *event)
     event->accept();
 }
 
-
+#ifndef QT_NO_CONTEXTMENU
 /*!
     This event handler, for event \a event, can be reimplemented in a
     subclass to receive widget context menu events.
@@ -7884,6 +8034,7 @@ void QWidget::contextMenuEvent(QContextMenuEvent *event)
 {
     event->ignore();
 }
+#endif // QT_NO_CONTEXTMENU
 
 
 /*!
@@ -8479,12 +8630,15 @@ void QWidget::setWindowFlags(Qt::WindowFlags flags)
     if ((data->window_flags | flags) & Qt::Window) {
         // the old type was a window and/or the new type is a window
         QPoint oldPos = pos();
+        bool visible = isVisible();
         setParent(parentWidget(), flags);
 
         // if both types are windows or neither of them are, we restore
         // the old position
-        if (!((data->window_flags ^ flags) & Qt::Window) && testAttribute(Qt::WA_Moved))
+        if (!((data->window_flags ^ flags) & Qt::Window)
+            && (visible || testAttribute(Qt::WA_Moved))) {
             move(oldPos);
+        }
     } else {
         data->window_flags = flags;
     }
@@ -9272,6 +9426,12 @@ void QWidget::setWindowOpacity(qreal opacity)
     Editor"). If the window isn't modified, the placeholder is simply
     removed.
 
+    Note that if a widget is set as modified, all its ancestors will
+    also be set as modified. However, if you call \c
+    {setWindowModified(false)} on a widget, this will not propagate to
+    its parent because other children of the parent might have been
+    modified.
+
     \sa windowTitle, {Application Example}, {SDI Example}, {MDI Example}
 */
 bool QWidget::isWindowModified() const
@@ -9313,6 +9473,8 @@ void QWidget::setWindowModified(bool mod)
   event() function and catch the QEvent::ToolTip event (e.g., if you
   want to customize the area for which the tooltip should be shown).
 
+  By default, this property contains an empty string.
+
   \sa QToolTip statusTip whatsThis
 */
 void QWidget::setToolTip(const QString &s)
@@ -9335,8 +9497,9 @@ QString QWidget::toolTip() const
 #ifndef QT_NO_STATUSTIP
 /*!
   \property QWidget::statusTip
-
   \brief the widget's status tip
+
+  By default, this property contains an empty string.
 
   \sa toolTip whatsThis
 */
@@ -9359,6 +9522,8 @@ QString QWidget::statusTip() const
 
   \brief the widget's What's This help text.
 
+  By default, this property contains an empty string.
+
   \sa QWhatsThis QWidget::toolTip QWidget::statusTip
 */
 void QWidget::setWhatsThis(const QString &s)
@@ -9380,8 +9545,10 @@ QString QWidget::whatsThis() const
 
   \brief the widget's name as seen by assistive technologies
 
-    It is be used by accessible clients to identify, find, or announce
-    the widget for accessible clients.
+  This property is used by accessible clients to identify, find, or announce
+  the widget for accessible clients.
+
+  By default, this property contains an empty string.
 
   \sa QAccessibleInterface::text()
 */
@@ -9401,6 +9568,8 @@ QString QWidget::accessibleName() const
   \property QWidget::accessibleDescription
 
   \brief the widget's description as seen by assistive technologies
+
+  By default, this property contains an empty string.
 
   \sa QAccessibleInterface::text()
 */
@@ -10185,7 +10354,7 @@ void QWidget::setWindowSurface(QWindowSurface *surface)
         return;
 
 #ifndef Q_WS_MAC
-    const QWindowSurface *oldSurface = topData->windowSurface;
+    QWindowSurface *oldSurface = topData->windowSurface;
 #endif
     delete topData->windowSurface;
     topData->windowSurface = surface;
@@ -10204,6 +10373,7 @@ void QWidget::setWindowSurface(QWindowSurface *surface)
     else {
         bs->subSurfaces.append(surface);
     }
+    bs->subSurfaces.removeOne(oldSurface);
 #endif
 #endif // Q_WS_MAC
 }

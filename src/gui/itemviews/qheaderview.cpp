@@ -296,6 +296,8 @@ QDataStream &operator>>(QDataStream &in, QHeaderViewPrivate::SectionSpan &span)
 /*!
     \property QHeaderView::highlightSections
     \brief whether the sections containing selected items are highlighted
+
+    By default, this property is false.
 */
 
 /*!
@@ -1194,6 +1196,8 @@ int QHeaderView::stretchSectionCount() const
   \property QHeaderView::showSortIndicator
   \brief whether the sort indicator is shown
 
+  By default, this property is false.
+
   \sa setClickable()
 */
 
@@ -1282,16 +1286,16 @@ Qt::SortOrder QHeaderView::sortIndicatorOrder() const
 
 /*!
     \property QHeaderView::stretchLastSection
-    \brief whether the last visible section in the header takes up all the available space
+    \brief whether the last visible section in the header takes up all the
+    available space
 
     The default value is false.
 
-    \bold{Note:} The horizontal headers provided by QTreeView are configured with
-    this property set to true, ensuring that the view does not waste any of the
-    space assigned to it for its header.
-
-    \bold{Also note:} If the value is set to true, this property will override the
-    resize mode set on the last section in the header.
+    \bold{Note:} The horizontal headers provided by QTreeView are configured
+    with this property set to true, ensuring that the view does not waste any
+    of the space assigned to it for its header. If this value is set to true,
+    this property will override the resize mode set on the last section in the
+    header.
 
     \sa setResizeMode()
 */
@@ -1761,7 +1765,7 @@ void QHeaderViewPrivate::_q_layoutChanged()
 {
     Q_Q(QHeaderView);
     viewport->update();
-    if (persistentHiddenSections.isEmpty()) {
+    if (persistentHiddenSections.isEmpty() || modelIsEmpty()) {
         if (modelSectionCount() != sectionCount)
             q->initializeSections();
         return;
@@ -1837,7 +1841,7 @@ void QHeaderView::initializeSections(int start, int end)
                     d->hiddenSectionSize.remove(i);
             } else {
                 QHash<int, int>::iterator it = d->hiddenSectionSize.begin();
-                while (it != d->hiddenSectionSize.constEnd()) {
+                while (it != d->hiddenSectionSize.end()) {
                     if (it.key() >= start && it.key() <= end)
                         it = d->hiddenSectionSize.erase(it);
                     else

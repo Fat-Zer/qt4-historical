@@ -74,7 +74,7 @@ QT_BEGIN_NAMESPACE
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_thread_qreadwritelock.cpp 0
 
     To ensure that writers aren't blocked forever by readers, readers
     attempting to obtain a lock will not succeed if there is a blocked
@@ -454,11 +454,11 @@ void QReadWriteLock::unlock()
     Here's an example that uses QReadLocker to lock and unlock a
     read-write lock for reading:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_thread_qreadwritelock.cpp 1
 
     It is equivalent to the following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_thread_qreadwritelock.cpp 2
 
     The QMutexLocker documentation shows examples where the use of a
     locker object greatly simplifies programming.
@@ -527,11 +527,11 @@ void QReadWriteLock::unlock()
     Here's an example that uses QWriteLocker to lock and unlock a
     read-write lock for writing:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_thread_qreadwritelock.cpp 3
 
     It is equivalent to the following code:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qreadwritelock.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_thread_qreadwritelock.cpp 4
 
     The QMutexLocker documentation shows examples where the use of a
     locker object greatly simplifies programming.

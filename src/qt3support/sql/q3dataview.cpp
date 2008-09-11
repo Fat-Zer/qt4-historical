@@ -193,7 +193,7 @@ void Q3DataView::writeFields()
     the default record for all subsequent calls to readFields() and
     writefields(). This slot is equivalant to calling:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3dataview.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3dataview.cpp 0
 
     \sa setRecord() readFields()
 */

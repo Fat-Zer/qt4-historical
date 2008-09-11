@@ -343,11 +343,12 @@ void Win32MakefileGenerator::fixTargetExt()
 
 void Win32MakefileGenerator::processRcFileVar()
 {
-    if ((!project->values("VERSION").isEmpty())
+    if (((!project->values("VERSION").isEmpty())
         && project->values("RC_FILE").isEmpty()
         && project->values("RES_FILE").isEmpty()
         && !project->isActiveConfig("no_generated_target_info")
-        && (project->isActiveConfig("shared") || !project->values("QMAKE_APP_FLAG").isEmpty())) {
+        && (project->isActiveConfig("shared") || !project->values("QMAKE_APP_FLAG").isEmpty()))
+        || !project->values("QMAKE_WRITE_DEFAULT_RC").isEmpty()){
 
         QByteArray rcString;
         QTextStream ts(&rcString, QFile::WriteOnly);
@@ -428,7 +429,8 @@ void Win32MakefileGenerator::processRcFileVar()
             rcFile.write(rcString);
             rcFile.close();
         }
-        project->values("RC_FILE").insert(0, rcFile.fileName());
+        if (project->values("QMAKE_WRITE_DEFAULT_RC").isEmpty())
+            project->values("RC_FILE").insert(0, rcFile.fileName());
     }
     if (!project->values("RC_FILE").isEmpty()) {
         if (!project->values("RES_FILE").isEmpty()) {
@@ -437,6 +439,13 @@ void Win32MakefileGenerator::processRcFileVar()
             exit(1);
         }
         QString resFile = project->values("RC_FILE").first();
+
+        // if this is a shadow build then use the absolute path of the rc file
+        if (Option::output_dir != qmake_getpwd()) {
+            QFileInfo fi(resFile);
+            project->values("RC_FILE").first() = fi.absoluteFilePath();
+        }
+
         resFile.replace(".rc", Option::res_ext);
         project->values("RES_FILE").prepend(fileInfo(resFile).fileName());
         if (!project->values("OBJECTS_DIR").isEmpty())

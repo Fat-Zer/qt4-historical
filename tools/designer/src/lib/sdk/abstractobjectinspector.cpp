@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
     current form window selection. For example, when implementing a
     custom widget plugin:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractobjectinspector.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractobjectinspector.cpp 0
 
     The QDesignerObjectInspectorInterface class is not intended to be
     instantiated directly. You can retrieve an interface to \QD's

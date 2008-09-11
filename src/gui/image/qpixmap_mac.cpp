@@ -233,7 +233,9 @@ void QMacPixmapData::fromImage(const QImage &img,
 
     const QImage::Format sfmt = image.format();
     const unsigned short sbpr = image.bytesPerLine();
-    uchar *sptr = image.bits(), *srow;
+
+    // use const_cast to prevent a detach
+    const uchar *sptr = const_cast<const QImage &>(image).bits(), *srow;
 
     for (int y = 0; y < h; ++y) {
         drow = dptr + (y * (dbpr / 4));

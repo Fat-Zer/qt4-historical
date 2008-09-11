@@ -79,11 +79,11 @@ QT_BEGIN_NAMESPACE
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpen.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qpen.cpp 0
 
     which is equivalent to
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpen.cpp 1
+    \snippet doc/src/snippets/code/src_gui_painting_qpen.cpp 1
 
     The default pen is a solid black brush with 0 width, square
     cap style (Qt::SquareCap), and  bevel join style (Qt::BevelJoin).
@@ -135,7 +135,7 @@ QT_BEGIN_NAMESPACE
     spaces. For example, the custom pattern shown above is created
     using the following code:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qpen.cpp 2
+    \snippet doc/src/snippets/code/src_gui_painting_qpen.cpp 2
 
     Note that the dash pattern is specified in units of the pens
     width, e.g. a dash of length 5 in width 10 is 50 pixels long.
@@ -489,7 +489,7 @@ QVector<qreal> QPen::dashPattern() const
     \row
     \o \inlineimage qpen-custom.png
     \o
-    \snippet doc/src/snippets/code/src.gui.painting.qpen.cpp 3
+    \snippet doc/src/snippets/code/src_gui_painting_qpen.cpp 3
     \endtable
 
     The dash pattern is specified in units of the pens width; e.g. a

@@ -523,6 +523,8 @@ enum SpecialProperty getSpecialProperty(const QString& propertyName)
         return SP_Alignment;
     if (propertyName == QLatin1String("autoDefault"))
         return SP_AutoDefault;
+    if (propertyName == QLatin1String("shortcut"))
+        return SP_Shortcut;
     return SP_None;
 }
 
@@ -657,7 +659,8 @@ void PropertyHelper::updateObject(QDesignerFormWindowInterface *fw, const QVaria
     } break;
     case OT_AssociatedAction:
     case OT_FreeAction:
-        if (m_specialProperty == SP_ObjectName)
+        // SP_Shortcut is a fake property, so, QAction::changed does not trigger.
+        if (m_specialProperty == SP_ObjectName || m_specialProperty == SP_Shortcut)
             triggerActionChanged(qobject_cast<QAction *>(m_object));
         break;
     default:

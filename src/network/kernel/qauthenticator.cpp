@@ -181,16 +181,11 @@ void QAuthenticator::detach()
 {
     if (!d) {
         d = new QAuthenticatorPrivate;
-        d->ref.ref();
+        d->ref = 1;
         return;
     }
 
-    if (d->ref.ref() != 1) {
-        QAuthenticatorPrivate *x = new QAuthenticatorPrivate(*d);
-        if (!d->ref.deref())
-            delete d;
-        d = x;
-    }
+    qAtomicDetach(d);
     d->phase = QAuthenticatorPrivate::Start;
 }
 

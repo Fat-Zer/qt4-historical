@@ -818,8 +818,14 @@ void QSortFilterProxyModelPrivate::updateChildrenMapping(const QModelIndex &sour
 
     // reinsert moved, mapped indexes
     QVector<QPair<QModelIndex, Mapping*> >::iterator it = moved_source_index_mappings.begin();
-    for (; it != moved_source_index_mappings.end(); ++it)
+    for (; it != moved_source_index_mappings.end(); ++it) {
+#ifdef QT_STRICT_ITERATORS
+        source_index_mapping.insert((*it).first, (*it).second);
+        (*it).second->map_iter = source_index_mapping.constFind((*it).first);
+#else
         (*it).second->map_iter = source_index_mapping.insert((*it).first, (*it).second);
+#endif
+    }
 }
 
 /*!
@@ -2141,6 +2147,8 @@ void QSortFilterProxyModel::invalidateFilter()
     By default, the Qt::DisplayRole associated with the
     \l{QModelIndex}es is used for comparisons. This can be changed by
     setting the \l sortRole property.
+
+    \note The indices passed in correspond to the source model.
 
     \sa sortRole, sortCaseSensitivity, dynamicSortFilter
 */

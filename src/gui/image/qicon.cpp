@@ -450,11 +450,11 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loaderV2,
   resource, and then use it, allowing Qt to work out all the required
   icon styles and sizes. For example:
 
-  \snippet doc/src/snippets/code/src.gui.image.qicon.cpp 0
+  \snippet doc/src/snippets/code/src_gui_image_qicon.cpp 0
 
   To undo a QIcon, simply set a null icon in its place:
 
-  \snippet doc/src/snippets/code/src.gui.image.qicon.cpp 1
+  \snippet doc/src/snippets/code/src_gui_image_qicon.cpp 1
 
   Use the QImageReader::supportedImageFormats() and
   QImageWriter::supportedImageFormats() functions to retrieve a
@@ -483,7 +483,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QFactoryLoader, loaderV2,
   Provide a method to set a QIcon, and when you draw the icon, choose
   whichever pixmap is appropriate for the current state of your widget.
   For example:
-  \snippet doc/src/snippets/code/src.gui.image.qicon.cpp 2
+  \snippet doc/src/snippets/code/src_gui_image_qicon.cpp 2
 
   You might also make use of the \c Active mode, perhaps making your
   widget \c Active when the mouse is over the widget (see \l

@@ -89,7 +89,7 @@ static void initializeDb()
     if(!db || db->count)
         return;
 
-#if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
+#if ((defined (USE_COOA) || 0) && MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5)
 if (QSysInfo::MacintoshVersion >= QSysInfo::MV_10_5) {
     QCFType<CTFontCollectionRef> collection = CTFontCollectionCreateFromAvailableFonts(0);
     if(!collection)
@@ -283,7 +283,7 @@ void QFontDatabase::load(const QFontPrivate *d, int script)
     // append the substitute list for each family in family_list
     {
 	    QStringList subs_list;
-	    for(QStringList::ConstIterator it = family_list.begin(); it != family_list.end(); ++it)
+	    for(QStringList::ConstIterator it = family_list.constBegin(); it != family_list.constEnd(); ++it)
 		    subs_list += QFont::substitutes(*it);
 	    family_list += subs_list;
     }
@@ -422,7 +422,7 @@ static void registerFont(QFontDatabasePrivate::ApplicationFont *fnt)
                 if(qt_mac_create_fsref(fnt->fileName, &ref) != noErr)
                     return;
 
-                ATSFontActivateFromFileReference(&ref, kATSFontContextLocal, kATSFontFormatUnspecified, 0, kATSOptionFlagsDefault, &handle);
+               e = ATSFontActivateFromFileReference(&ref, kATSFontContextLocal, kATSFontFormatUnspecified, 0, kATSOptionFlagsDefault, &handle);
         } else
 #endif
         {

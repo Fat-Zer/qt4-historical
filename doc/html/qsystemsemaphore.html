@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qsystemsemaphore.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/kernel/qsystemsemaphore.cpp -->
 <head>
   <title>Qt 4.4: QSystemSemaphore Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSystemSemaphore Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QSystemSemaphore class provides a general counting system semaphore. <a href="#details">More...</a></p>
@@ -55,13 +55,13 @@
 <p><a href="qsystemsemaphore.html#release">release</a>() releases one resource so it can be acquired by another process. The function can also be called with a parameter n &gt; 1, which releases n resources.</p>
 <p>A system semaphore is created with a string key that other processes can use to use the same semaphore.</p>
 <p>Example: Create a system semaphore</p>
-<pre>     QSystemSemaphore sem(&quot;market&quot;, 3, QSystemSemaphore::Create);
-                                  <span class="comment">// resources available == 3</span>
-     sem.acquire();               <span class="comment">// resources available == 2</span>
-     sem.acquire();               <span class="comment">// resources available == 1</span>
-     sem.acquire();               <span class="comment">// resources available == 0</span>
-     sem.release();               <span class="comment">// resources available == 1</span>
-     sem.release(2);              <span class="comment">// resources available == 3</span></pre>
+<pre> QSystemSemaphore sem(&quot;market&quot;, 3, QSystemSemaphore::Create);
+                              <span class="comment">// resources available == 3</span>
+ sem.acquire();               <span class="comment">// resources available == 2</span>
+ sem.acquire();               <span class="comment">// resources available == 1</span>
+ sem.acquire();               <span class="comment">// resources available == 0</span>
+ sem.release();               <span class="comment">// resources available == 1</span>
+ sem.release(2);              <span class="comment">// resources available == 3</span></pre>
 <p>A typical application of system semaphores is for controlling access to a circular buffer shared by a producer process and a consumer processes.</p>
 <p>See also <a href="qsharedmemory.html">QSharedMemory</a>, <a href="qsemaphore.html">QSemaphore</a></p>
 <hr />
@@ -130,11 +130,11 @@
 <h3 class="fn"><a name="release"></a>bool QSystemSemaphore::release ( int <i>n</i> = 1 )</h3>
 <p>Releases <i>n</i> resources guarded by the semaphore. Returns true unless there is a system error.</p>
 <p>Example: Create a system semaphore having five resources; acquire them all and then release them all.</p>
-<pre>   QSystemSemaphore sem(&quot;market&quot;, 5, QSystemSemaphore::Create);
-   sem.acquire(5);           <span class="comment">// acquire all 5 resources</span>
-   sem.release(5);           <span class="comment">// release the 5 resources</span></pre>
+<pre> QSystemSemaphore sem(&quot;market&quot;, 5, QSystemSemaphore::Create);
+ sem.acquire(5);           <span class="comment">// acquire all 5 resources</span>
+ sem.release(5);           <span class="comment">// release the 5 resources</span></pre>
 <p>This function can also &quot;create&quot; resources. For example, immediately following the sequence of statements above, suppose we add the statement:</p>
-<pre>   sem.release(10);          <span class="comment">// &quot;create&quot; 10 new resources</span></pre>
+<pre> sem.release(10);          <span class="comment">// &quot;create&quot; 10 new resources</span></pre>
 <p>Ten new resources are now guarded by the semaphore, in addition to the five that already existed. You would not normally use this function to create more resources.</p>
 <p>See also <a href="qsystemsemaphore.html#acquire">acquire</a>().</p>
 <a name="//apple_ref/cpp/instm/QSystemSemaphore/setKey" />
@@ -143,8 +143,8 @@
 <p>See also <a href="qsystemsemaphore.html#QSystemSemaphore">QSystemSemaphore</a>() and <a href="qsystemsemaphore.html#key">key</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

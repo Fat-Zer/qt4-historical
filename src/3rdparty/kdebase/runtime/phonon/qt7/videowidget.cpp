@@ -43,18 +43,18 @@ public:
     VideoFrame m_currentFrame;
     QRect m_drawFrameRect;
 
-    VideoRenderWidgetOpenGL::VideoRenderWidgetOpenGL(QWidget *parent, const QGLFormat &format)
+    VideoRenderWidgetOpenGL(QWidget *parent, const QGLFormat &format)
         : QGLWidget(format, parent, PhononSharedQGLWidget())
     {
         setAutoFillBackground(false);        
     }
     
-    void VideoRenderWidgetOpenGL::initializeGL()
+    void initializeGL()
     {
         glClearColor(0.0f, 0.0f, 0.0f, 0.0f);
     }
     
-    void VideoRenderWidgetOpenGL::resizeGL(int w, int h)
+    void resizeGL(int w, int h)
     {
         glMatrixMode(GL_MODELVIEW);
         glLoadIdentity();
@@ -65,13 +65,13 @@ public:
         updateGL();
     }
 
-    void VideoRenderWidgetOpenGL::paintGL()
+    void paintGL()
     {
         glClear(GL_COLOR_BUFFER_BIT);
         m_currentFrame.drawFrame(m_drawFrameRect);
     }
 
-    void VideoRenderWidgetOpenGL::setVideoFrame(VideoFrame &frame)
+    void setVideoFrame(VideoFrame &frame)
     {
         m_currentFrame = frame;
         if (isVisible()){
@@ -81,7 +81,7 @@ public:
         }
     }
     
-    void VideoRenderWidgetOpenGL::setDrawFrameRect(const QRect &rect)
+    void setDrawFrameRect(const QRect &rect)
     {
         m_drawFrameRect = rect;
     }
@@ -107,7 +107,7 @@ public:
     qreal m_saturation;
     qreal m_opacity;
 
-    VideoRenderWidget::VideoRenderWidget() : QWidget(0),
+    VideoRenderWidget() : QWidget(0),
         m_scaleMode(Phonon::VideoWidget::FitInView), m_aspect(Phonon::VideoWidget::AspectRatioAuto)
     {
         m_brightness = 0;
@@ -147,18 +147,18 @@ public:
         }
     }
     
-    QSize VideoRenderWidget::sizeHint() const
+    QSize sizeHint() const
     {
         return m_movieFrameRect.size();
     }
 
-    void VideoRenderWidget::resizeEvent(QResizeEvent */*event*/)
+    void resizeEvent(QResizeEvent */*event*/)
     {
         updateDrawFrameRect();
         m_glWidget->resize(size());
     }     
 
-    bool VideoRenderWidget::event(QEvent *event)
+    bool event(QEvent *event)
     {
         switch (event->type()){
             // Try to detect if one of this objects
@@ -188,7 +188,7 @@ public:
         return QWidget::event(event);
     }
 
-    void VideoRenderWidget::setVideoFrame(VideoFrame &frame)
+    void setVideoFrame(VideoFrame &frame)
     {
         m_currentFrame = frame;
         m_currentFrame.setColors(m_brightness, m_contrast, m_hue, m_saturation);
@@ -199,12 +199,12 @@ public:
             update();
     }
     
-    void VideoRenderWidget::updateVideoFrame()
+    void updateVideoFrame()
     {
         setVideoFrame(m_currentFrame);
     }
     
-    void VideoRenderWidget::setMovieRect(const QRect &mrect)
+    void setMovieRect(const QRect &mrect)
     {
         if (mrect == m_movieFrameRect)
             return;
@@ -214,7 +214,7 @@ public:
         qApp->processEvents();        
     }
     
-    void VideoRenderWidget::setScaleMode(Phonon::VideoWidget::ScaleMode scaleMode)
+    void setScaleMode(Phonon::VideoWidget::ScaleMode scaleMode)
     {
         m_scaleMode = scaleMode;
         updateDrawFrameRect();
@@ -222,7 +222,7 @@ public:
         repaint();
     }
 
-    void VideoRenderWidget::setAspectRatio(Phonon::VideoWidget::AspectRatio aspect)
+    void setAspectRatio(Phonon::VideoWidget::AspectRatio aspect)
     {
         m_aspect = aspect;
         updateDrawFrameRect();
@@ -230,7 +230,7 @@ public:
         repaint();
     }
 
-    void VideoRenderWidget::updateDrawFrameRect()
+    void updateDrawFrameRect()
     {
         if (!m_movieFrameRect.isValid())
             m_movieFrameRect = QRect(0, 0, 640, 480);
@@ -281,7 +281,7 @@ public:
         m_glWidget->setDrawFrameRect(m_drawFrameRect);
     }
     
-    QRect VideoRenderWidget::scaleToAspect(QRect srcRect, int w, int h)
+    QRect scaleToAspect(QRect srcRect, int w, int h)
     {
         int width = srcRect.width();
         int height = srcRect.width() * (float(h) / float(w));

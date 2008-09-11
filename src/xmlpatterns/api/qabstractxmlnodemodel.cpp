@@ -99,40 +99,41 @@ bool QAbstractXmlNodeModel::isIgnorableInDeepEqual(const QXmlNodeModelIndex &n)
   of the non-XML data to be queried and the well-defined structure of
   XML data understood by QXmlQuery.
 
-  Consider a chemistry application that reads a \e chemistryData file
-  containing non-XML data representing a chemical structure of
-  molecules and atoms. The application will query this chemistry data
-  with an XQuery it reads from a \e queryFile. We write a custom
-  subclass of QAbstractXmlNodeModel (\e ChemistryNodeModel) that reads
-  the \e chemistryData file and builds a data structure, perhaps
-  composed of objects of our own classes \e molecule and \e atom.
-  Clearly, this data structure is not XML. Our custom subclass will
-  know how to traverse this non-XML structure and present it through
-  the \l {http://www.w3.org/TR/xpath-datamodel/}{XPath Data Model interface}.
+  Consider a chemistry application that reads the file \c
+  chemistryData, which contains non-XML data that represents a
+  chemical structure composed of molecules and atoms. The application
+  will query this chemistry data with an XQuery it reads from file \c
+  queryFile. We write a custom subclass of QAbstractXmlNodeModel (\c
+  ChemistryNodeModel) that reads \c chemistryData and builds a data
+  structure, perhaps composed of objects of our own classes \c
+  molecule and \c atom.  Clearly, this data structure is not XML. Our
+  custom subclass will know how to traverse this non-XML structure and
+  present it through the \l
+  {http://www.w3.org/TR/xpath-datamodel/}{XPath Data Model interface}.
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstractxmlnodemodel.cpp 1
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qabstractxmlnodemodel.cpp 1
 
   The application first creates an instance of QXmlQuery and calls \l
-  {QXmlQuery::setQuery()}{setQuery()} to read the \e queryFile
-  containing the XQuery we want to run. Then it creates an instance of
-  our custom node model class, \e ChemistryNodeModel, which is a
-  subclass of QAbstractXmlNodeModel. Its constructor is called with
-  the \l {QXmlNamePool} {name pool} obtained from our QXmlQuery, and
-  with the \e chemistryFile containing the structure of \e molecules
-  and \e atoms to be queried. The \l {QXmlNamePool} {name pool} is
-  required because our custom node model has the member function \l
+  {QXmlQuery::setQuery()}{setQuery()} to read \c queryFile containing
+  the XQuery we want to run. Then it creates an instance of our custom
+  node model class, \c ChemistryNodeModel, which is a subclass of
+  QAbstractXmlNodeModel. Its constructor is called with the \l
+  {QXmlNamePool} {name pool} obtained from our QXmlQuery, and with the
+  \c chemistryFile containing the structure of molecules and atoms to
+  be queried. The \l {QXmlNamePool} {name pool} is required because
+  our custom node model has the member function \l
   {QAbstractXmlNodeModel::name()} {name()}, which returns the \l
   {QXmlName} {name} of any node in the model. The \l {QXmlQuery}
   {query} and the custom node model must use the same name pool for
   constructing these \l {QXmlName} {names}. The constructor would then
-  read the \e chemistryFile and build the custom node model structure.
+  read \c chemistryFile and build the custom node model structure.
 
-  To connect the \e query to the custom node model, we must bind a
+  To connect the \c query to the custom node model, we must bind a
   variable name used in the query to a node in the model. The variable
   can then be used in the query as a starting node. First, an \l
   {QXmlNodeModelIndex} {index} for the desired starting node is
   retrieved by calling QAbstractXmlNodeModel::createIndex(). Then the
-  index is bound to a variable name, in this case \e queryRoot, by
+  index is bound to a variable name, in this case \c queryRoot, by
   passing the name and the index to QXmlQuery::bindVariable(). The
   query can then use a variable reference \c $queryRoot to refer to
   the starting node. Note that if the \l {QXmlQuery} {query} uses
@@ -140,13 +141,14 @@ bool QAbstractXmlNodeModel::isIgnorableInDeepEqual(const QXmlNodeModelIndex &n)
   is required to bind each different variable name to a node in the
   model.
 
-  The query is executed when the application calls one of the QXmlQuery
-  evaluation functions. The application uses
-  QXmlQuery::evaluateTo(QAbstractXmlReceiver *), because it then uses a \l
-  {QXmlSerializer} {serializer} to out the query result as XML to \e stdout. We
-  could have used QXmlQuery::evaluateTo(QXmlResultItems *) to get a list of
-  result items, or QXmlQuery::evaluateTo(QStringList *) if the query evaluated
-  to a sequence of \e {xs:string} values.
+  The query is executed when the application calls one of the
+  QXmlQuery evaluation functions. The application uses
+  QXmlQuery::evaluateTo(QAbstractXmlReceiver *), because it then uses
+  a \l {QXmlSerializer} {serializer} to out the query result as XML to
+  \c stdout. We could have used QXmlQuery::evaluateTo(QXmlResultItems
+  *) to get a list of result items, or
+  QXmlQuery::evaluateTo(QStringList *) if the query evaluated to a
+  sequence of \c {xs:string} values.
 
   During query execution, the engine iterates over the node model
   using nextFromSimpleAxis() to get the \l {QXmlNodeModelIndex}
@@ -170,7 +172,7 @@ bool QAbstractXmlNodeModel::isIgnorableInDeepEqual(const QXmlNodeModelIndex &n)
     the QXmlQuery should start the query;
 
     \o Use QXmlQuery::bindVariable() to bind the QXmlNodeModelIndex
-    to \e {$variable name};
+    to \c {$variable name};
 
     \o Call one of the QXmlQuery evaluation functions to run the
     query.
@@ -252,7 +254,7 @@ bool QAbstractXmlNodeModel::isIgnorableInDeepEqual(const QXmlNodeModelIndex &n)
    \value AxisDescendant           The \c descendant axis.
 
    \value AxisAttribute            The \c attribute axis. Note: There
-                                   is a node kind named \e{Attribute}.
+                                   is a node kind named \c{Attribute}.
 
    \value AxisSelf                 The \c self axis.
 
@@ -419,6 +421,8 @@ QAbstractXmlNodeModel::~QAbstractXmlNodeModel()
   If \a ni1 precedes \a ni2 in document order, QXmlNodeModelIndex::Precedes
   is returned. If \a ni1 follows \a ni2 in document order,
   QXmlNodeModelIndex::Follows is returned.
+
+  \sa {http://www.w3.org/TR/xpath-datamodel/#document-order}{XQuery 1.0 and XPath 2.0 Data Model (XDM), 2.4 Document Order}
  */
 
 /*!
@@ -1179,7 +1183,7 @@ bool QPatternist::NodeIndexStorage::operator!=(const NodeIndexStorage &other) co
 }
 
 /*!
-  Assigns \a other to \e this.
+  Assigns \a other to \c this.
  */
 QXmlItem &QXmlItem::operator=(const QXmlItem &other)
 {
@@ -1306,7 +1310,7 @@ bool QXmlItem::isNull() const
   that populates a QStringList, which you can send directly to your
   widget.
 
-  QXmlNodeModelIndex doesn't impose any restrictions on the \e data
+  QXmlNodeModelIndex doesn't impose any restrictions on the \c data
   value an QXmlNodeModelIndex should contain. The meaning of the data
   left to the associated \l {QAbstractXmlNodeModel} {node model}.
   Because QXmlNodeModelIndex depends on a particular subclass of
@@ -1457,7 +1461,7 @@ bool QXmlNodeModelIndex::operator!=(const QXmlNodeModelIndex &other) const
  Resets this QXmlNodeModelIndex to be null. It is equivalent to
  writing:
 
- \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstractxmlnodemodel.cpp 0
+ \snippet doc/src/snippets/code/src_xmlpatterns_api_qabstractxmlnodemodel.cpp 0
  */
 
 /*!
@@ -1538,8 +1542,8 @@ bool QXmlNodeModelIndex::operator!=(const QXmlNodeModelIndex &other) const
  \c id. Its value type must also be \c ID. However, the reserved name
  \c xml:id is sufficient.
 
- In \a id, the \e{namespace URI} and the \e{prefix} are undefined, and
- the \e{local name} is the ID that should be looked up.
+ In \a id, the \c{namespace URI} and the \c{prefix} are undefined, and
+ the \c{local name} is the ID that should be looked up.
 
  \sa {http://www.w3.org/TR/xpath-functions/#func-id}{XQuery 1.0 and XPath 2.0 Functions and Operators, 15.5.2 fn:id}
  */
@@ -1558,8 +1562,8 @@ bool QXmlNodeModelIndex::operator!=(const QXmlNodeModelIndex &other) const
  \c xs:IDREF or \c xs:IDREFS, or, in the case of attributes, as \c
  IDREF or \c IDREFS in the schema.
 
- In \a idref, the \e{namespace URI} and the \e{prefix} are undefined,
- and the \e{local name} is the ID that should be looked up.
+ In \a idref, the \c{namespace URI} and the \c{prefix} are undefined,
+ and the \c{local name} is the ID that should be looked up.
 
  \sa {http://www.w3.org/TR/xpath-functions/#func-idref}{XQuery 1.0 and XPath 2.0 Functions and Operators, 15.5.3 fn:idref}
  */

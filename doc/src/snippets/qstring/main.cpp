@@ -530,6 +530,12 @@ void Widget::replaceFunction()
     t.replace(QRegExp("<i>([^<]*)</i>"), "\\emph{\\1}");
     // t == "A \\emph{bon mot}."
 //! [43]
+
+//! [86]
+    QString equis = "xxxxxx";
+    equis.replace("xx", "x");
+    // equis == "xxx"    
+//! [86]
 }
 
 void Widget::reserveFunction()

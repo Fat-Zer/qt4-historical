@@ -349,6 +349,8 @@ extern Q_OPENGL_EXPORT QGLShareRegister* qgl_share_reg();
 #ifdef Q_WS_QWS
 class QOpenGLPaintEngine;
 extern QOpenGLPaintEngine* qt_qgl_paint_engine();
+
+extern EGLDisplay qt_qgl_egl_display();
 #endif
 
 QT_END_NAMESPACE

@@ -353,14 +353,13 @@ QVariant HelpViewer::loadResource(int type, const QUrl &name)
 {
     QByteArray ba;
     if (type < 4) {
-        ba = helpEngine->fileData(name);
-    }
-    
-    if (name.toString().endsWith(QLatin1String(".svg"))) {
-        QImage image;
-        image.loadFromData(ba, "svg");
-        if (!image.isNull())
-            return image;
+        ba = helpEngine->fileData(name);    
+        if (name.toString().endsWith(QLatin1String(".svg"), Qt::CaseInsensitive)) {
+            QImage image;
+            image.loadFromData(ba, "svg");
+            if (!image.isNull())
+                return image;
+        }
     }
     return ba;
 }

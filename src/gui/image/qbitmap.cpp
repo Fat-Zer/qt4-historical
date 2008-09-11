@@ -289,8 +289,8 @@ QBitmap QBitmap::fromData(const QSize &size, const uchar *bits, QImage::Format m
     Q_ASSERT(monoFormat == QImage::Format_Mono || monoFormat == QImage::Format_MonoLSB);
 
     QImage image(size, monoFormat);
-    image.setColor(0, Qt::color0);
-    image.setColor(1, Qt::color1);
+    image.setColor(0, QColor(Qt::color0).rgb());
+    image.setColor(1, QColor(Qt::color1).rgb());
 
     // Need to memcpy each line separatly since QImage is 32bit aligned and
     // this data is only byte aligned...
@@ -371,7 +371,7 @@ QBitmap QBitmap::transformed(const QMatrix &matrix) const
     QImage, the data has to be byte aligned.
 
     Example (creates an arrow bitmap):
-    \snippet doc/src/snippets/code/src.gui.image.qbitmap.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qbitmap.cpp 0
     \endomit
 */
 

@@ -536,7 +536,7 @@ bool qt_write_dib(QDataStream &s, QImage image)
         nbits = 24;
 #ifdef Q_WS_QWS
     } else if (image.depth() == 1 || image.depth() == 8) {
-        // Qt/E doesn't word align.
+        // Qt for Embedded Linux doesn't word align.
         bpl_bmp = ((image.width()*image.depth()+31)/32)*4;
         nbits = image.depth();
 #endif
@@ -586,7 +586,7 @@ bool qt_write_dib(QDataStream &s, QImage image)
 
     if (nbits == 1 || nbits == 8) {                // direct output
 #ifdef Q_WS_QWS
-        // Qt/E doesn't word align.
+        // Qt for Embedded Linux doesn't word align.
         int pad = bpl_bmp - bpl;
         char padding[4];
 #endif

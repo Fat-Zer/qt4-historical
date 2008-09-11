@@ -100,12 +100,12 @@ private:
 
         struct File {
             File() : ownerId(0u), groupId(0u), permissions(0u) { }
-            File(const File &o) : name(o.name),
+            File(const File &o) : path(o.path),
                                   ownerId(o.ownerId),
                                   groupId(o.groupId),
                                   permissions(o.permissions),
                                   lastWrite(o.lastWrite) {}
-            QString name;
+            QString path;
 
             bool updateInfo();
 

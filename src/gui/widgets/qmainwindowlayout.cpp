@@ -571,7 +571,9 @@ QLayoutItem *QMainWindowLayoutState::unplug(QList<int> path, QMainWindowLayoutSt
 {
     int i = path.takeFirst();
 
-#ifndef QT_NO_TOOLBAR
+#ifdef QT_NO_TOOLBAR
+    Q_UNUSED(other);
+#else
     if (i == 0)
         return toolBarAreaLayout.unplug(path, other ? &other->toolBarAreaLayout : 0);
 #endif
@@ -612,6 +614,9 @@ static QList<T> findChildrenHelper(const QObject *o)
 //pre4.3 tests the format that was used before 4.3
 bool QMainWindowLayoutState::checkFormat(QDataStream &stream, bool pre43)
 {
+#ifdef QT_NO_TOOLBAR
+    Q_UNUSED(pre43);
+#endif
     while (!stream.atEnd()) {
         uchar marker;
         stream >> marker;
@@ -1864,9 +1869,10 @@ void QMainWindowLayout::animationFinished(QWidget *widget)
 #ifndef QT_NO_DOCKWIDGET
 #ifndef QT_NO_TABBAR
     if (qobject_cast<QDockWidget*>(widget) != 0) {
-        QDockAreaLayoutInfo *info = layoutState.dockAreaLayout.info(widget);
-        Q_ASSERT(info != 0);
-        info->setCurrentTab(widget);
+        // info() might return null if the widget is destroyed while
+        // animating but before the animationFinished signal is received.
+        if (QDockAreaLayoutInfo *info = layoutState.dockAreaLayout.info(widget))
+            info->setCurrentTab(widget);
     }
 #endif
 #endif
@@ -1904,6 +1910,9 @@ QMainWindowLayout::QMainWindowLayout(QMainWindow *mainwindow)
 
 #ifndef QT_NO_RUBBERBAND
     gapIndicator = new QRubberBand(QRubberBand::Rectangle, mainwindow);
+    // For accessibility to identify this special widget.
+    gapIndicator->setObjectName(QLatin1String("qt_rubberband"));
+
     gapIndicator->hide();
 #endif
     pluggingWidget = 0;

@@ -779,7 +779,13 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
             windowSurface->setGeometry(QRect());
             // the old window surface is deleted in setWindowSurface, which is
             // called from QWindowSurface constructor
-            windowSurface = qt_default_window_surface(tlw);
+            windowSurface = qt_default_window_surface(currWidget);
+
+            // qt_default_window_surface() will set topdata->windowSurface on the 
+            // widget to zero. However, if this is a sub-surface, it should point
+            // to the widget's sub windowSurface, so we set that here:
+            if (!currWidget->isWindow())
+                currWidget->d_func()->topData()->windowSurface = windowSurface;
         }
 #endif
         if (windowSurface->geometry() != tlwRect) {
@@ -916,7 +922,8 @@ void QWidgetBackingStore::cleanRegion(const QRegion &rgn, QWidget *widget, bool 
     QTLWExtra *tlwExtra = tlw->d_func()->extra->topextra;
 #ifdef Q_WS_X11
     // Delay the sync until we get the Expose event.
-    if (tlwExtra->waitingForMapNotify)
+    // However, we must repaint immediately regardless of the state if someone calls repaint().
+    if (tlwExtra->waitingForMapNotify && !tlwExtra->inRepaint)
         return;
 #endif
 
@@ -1128,13 +1135,16 @@ void QWidget::repaint(const QRegion& rgn)
     Q_ASSERT(testAttribute(Qt::WA_WState_Created));
 //    qDebug() << "repaint" << this << rgn;
     if (!d->paintOnScreen()) {
-        if (QWidgetBackingStore *bs = d->maybeBackingStore()) {
+        QTLWExtra *tlwExtra = window()->d_func()->maybeTopData();
+        if (tlwExtra && tlwExtra->backingStore) {
+            tlwExtra->inRepaint = true;
             QRegion wrgn(rgn);
             d->subtractOpaqueSiblings(wrgn, QPoint());
             d->subtractOpaqueChildren(wrgn, rect(), QPoint());
             // Update immediately, i.e. use QApplication::sendEvent instead of
             // QApplication::postEvent in QWidgetPrivate::dirtyWidget_sys.
-            bs->dirtyRegion(wrgn, this, true);
+            tlwExtra->backingStore->dirtyRegion(wrgn, this, true);
+            tlwExtra->inRepaint = false;
         }
     }
 #ifndef Q_WS_QWS

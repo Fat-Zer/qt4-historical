@@ -157,7 +157,7 @@ public:
 
     QPoint coordinateOffset() const;
 
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
     virtual void drawColorSpans(const QSpan *spans, int count, uint color);
     virtual void drawBufferSpan(const uint *buffer, int bufsize,
                                 int x, int y, int length, uint const_alpha);
@@ -167,6 +167,10 @@ protected:
     QRasterPaintEngine(QRasterPaintEnginePrivate &d);
 private:
     void init();
+#ifdef Q_WS_QWS
+    friend class QDirectFBPaintEnginePrivate; // hw: XXX workaround for in 4.4
+    bool prepare(QPaintDevice*);
+#endif
 
 #if defined(Q_WS_WIN)
     bool drawTextInFontBuffer(const QRect &devRect, int xmin, int ymin, int xmax,

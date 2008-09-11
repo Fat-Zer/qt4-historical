@@ -217,21 +217,21 @@ void QMapData::dump()
     \endlist
 
     Here's an example QMap with QString keys and \c int values:
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 0
 
     To insert a (key, value) pair into the map, you can use operator[]():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 1
 
     This inserts the following three (key, value) pairs into the
     QMap: ("one", 1), ("three", 3), and ("seven", 7). Another way to
     insert items into the map is to use insert():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 2
 
     To look up a value, use operator[]() or value():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 3
 
     If there is no item with the specified key in the map, these
     functions return a \l{default-constructed value}.
@@ -239,12 +239,12 @@ void QMapData::dump()
     If you want to check whether the map contains a certain key, use
     contains():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 4
 
     There is also a value() overload that uses its second argument as
     a default value if there is no item with the specified key:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 5
 
     In general, we recommend that you use contains() and value()
     rather than operator[]() for looking up a key in a map. The
@@ -253,7 +253,7 @@ void QMapData::dump()
     const). For example, the following code snippet will create 1000
     items in memory:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 6
 
     To avoid this problem, replace \c map[i] with \c map.value(i)
     in the code above.
@@ -265,11 +265,11 @@ void QMapData::dump()
     QMap::iterator). Here's how to iterate over a QMap<QString, int>
     using a Java-style iterator:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 7
 
     Here's the same code, but using an STL-style iterator this time:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 8
 
     The items are traversed in ascending key order.
 
@@ -277,7 +277,7 @@ void QMapData::dump()
     insert() with a key that already exists in the QMap, the
     previous value will be erased. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 9
 
     However, you can store multiple values per key by using
     insertMulti() instead of insert() (or using the convenience
@@ -285,19 +285,19 @@ void QMapData::dump()
     single key, you can use values(const Key &key), which returns a
     QList<T>:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 10
 
     The items that share the same key are available from most
     recently to least recently inserted. Another approach is to call
     find() to get the STL-style iterator for the first item with a
     key and iterate from there:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 11
 
     If you only need to extract the values from a map (not the keys),
     you can also use \l{foreach}:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 12
 
     Items can be removed from the map in several ways. One way is to
     call remove(); this will remove any item with the given key.
@@ -313,7 +313,7 @@ void QMapData::dump()
     < y} nor \c{y < x} is true.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 13
 
     In the example, we start by comparing the employees' names. If
     they're equal, we compare their dates of birth to break the tie.
@@ -690,7 +690,7 @@ void QMapData::dump()
     the iterator. For example, here's some code that iterates over all
     the items with the same key:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 14
 
     \sa constFind(), value(), values(), lowerBound(), upperBound(), QMultiMap::find()
 */
@@ -720,7 +720,7 @@ void QMapData::dump()
     key.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 15
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 15
 
     If the map contains multiple items with key \a key, this
     function returns an iterator that points to the most recently
@@ -728,7 +728,7 @@ void QMapData::dump()
     the iterator. For example, here's some code that iterates over all
     the items with the same key:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 16
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 16
 
     \sa qLowerBound(), upperBound(), find()
 */
@@ -746,7 +746,7 @@ void QMapData::dump()
     nearest item with a greater key.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 17
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 17
 
     \sa qUpperBound(), lowerBound(), find()
 */
@@ -851,7 +851,7 @@ void QMapData::dump()
     start iterating. Here's a typical loop that prints all the (key,
     value) pairs stored in a map:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 18
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 18
 
     Unlike QHash, which stores its items in an arbitrary order, QMap
     stores its items ordered by key. Items that share the same key
@@ -864,22 +864,22 @@ void QMapData::dump()
     Here's an example that increments every value stored in the QMap
     by 2:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 19
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 19
 
     Here's an example that removes all the items whose key is a
     string that starts with an underscore character:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 20
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 20
 
     The call to QMap::erase() removes the item pointed to by the
     iterator from the map, and returns an iterator to the next item.
     Here's another way of removing an item while iterating:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 21
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 21
 
     It might be tempting to write code like this:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 22
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 22
 
     However, this will potentially crash in \c{++i}, because \c i is
     a dangling iterator after the call to erase().
@@ -956,7 +956,7 @@ void QMapData::dump()
     You can change the value of an item by using value() on
     the left side of an assignment, for example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 23
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 23
 
     \sa key(), operator*()
 */
@@ -1097,7 +1097,7 @@ void QMapData::dump()
     QMap::find() before you can start iterating. Here's a typical
     loop that prints all the (key, value) pairs stored in a map:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 24
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 24
 
     Unlike QHash, which stores its items in an arbitrary order, QMap
     stores its items ordered by key. Items that share the same key
@@ -1337,7 +1337,7 @@ void QMapData::dump()
     operator+=().
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 25
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 25
 
     Unlike QMap, QMultiMap provides no operator[]. Use value() or
     replace() if you want to access the most recently inserted item
@@ -1346,7 +1346,7 @@ void QMapData::dump()
     If you want to retrieve all the values for a single key, you can
     use values(const Key &key), which returns a QList<T>:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 26
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 26
 
     The items that share the same key are available from most
     recently to least recently inserted.
@@ -1355,7 +1355,7 @@ void QMapData::dump()
     the iterator for the first item with a key and iterate from
     there:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qmap.cpp 27
+    \snippet doc/src/snippets/code/src_corelib_tools_qmap.cpp 27
 
     QMultiMap's key and value data types must be \l{assignable data
     types}. This covers most data types you are likely to encounter,

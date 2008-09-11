@@ -82,7 +82,7 @@
     context: it is the context of the texts in the \c ArrowPad class. 
     The \c Q_OBJECT macro defines \c tr(x) in \c ArrowPad like this:
 
-    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_arrowpad.qdoc 0
 
     Knowing which class each source text appears in enables \e {Qt
     Linguist} to group texts that are logically related together, e.g.
@@ -204,17 +204,17 @@
 
     Type
 
-    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_examples_arrowpad.qdoc 1
 
     This should create both \c arrowpad_fr.qm and \c arrowpad_nl.qm. Set the \c
     LANG environment variable to \c fr. In Unix, one of the two following
     commands should work
 
-    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_examples_arrowpad.qdoc 2
 
     In Windows, either modify \c autoexec.bat or run
 
-    \snippet doc/src/snippets/code/doc.src.examples.arrowpad.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_examples_arrowpad.qdoc 3
 
     When you run the program, you should now see the French version:
 

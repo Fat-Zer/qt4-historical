@@ -111,7 +111,7 @@ public:
    for example, announcing connections established or modules loaded
    as the application starts up:
 
-   \snippet doc/src/snippets/code/src.gui.widgets.qsplashscreen.cpp 0
+   \snippet doc/src/snippets/code/src_gui_widgets_qsplashscreen.cpp 0
 
    QSplashScreen supports this with the showMessage() function. If you
    wish to do your own drawing you can get a pointer to the pixmap

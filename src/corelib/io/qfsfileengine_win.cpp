@@ -583,10 +583,7 @@ bool QFSFileEnginePrivate::nativeClose()
         ok = false;
     }
     fileHandle = INVALID_HANDLE_VALUE;
-
-    if (cachedFd != -1)
-        QT_CLOSE(cachedFd);
-    cachedFd = -1;
+    cachedFd = -1;              // gets closed by CloseHandle above
 
     return ok;
 }
@@ -1382,7 +1379,7 @@ bool QFSFileEnginePrivate::doStat() const
                 }
             }
 #else
-            DWORD tmpAttributes = GetFileAttributesW(QFSFileEnginePrivate::longFileName(fname).utf16());
+            DWORD tmpAttributes = GetFileAttributesW((TCHAR*)QFSFileEnginePrivate::longFileName(fname).utf16());
             if (tmpAttributes != -1) {
                 fileAttrib = tmpAttributes;
                 could_stat = true;

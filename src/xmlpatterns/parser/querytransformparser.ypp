@@ -551,6 +551,32 @@ static void variableUnavailable(const QXmlName &variableName,
                                     ReportContext::XPST0008, fromYYLTYPE(location, parseInfo));
 }
 
+/* Forward declaration. */
+static void checkCallsiteCircularity(FunctionSignature::List &signList,
+                                     Expression::Ptr expr,
+                                     const ParserContext *const parseInfo);
+
+/**
+ * Helper function for checkCallsiteCircularity(). If C++ allowed it,
+ * it would have been local to it.
+ */
+static void checkOperandsCircularity(FunctionSignature::List &signList,
+                                     Expression::Ptr expr,
+                                     const ParserContext *const parseInfo)
+{
+    /* Check the operands. */
+    const Expression::List ops(expr->operands());
+    const Expression::List::const_iterator end(ops.constEnd());
+    Expression::List::const_iterator it(ops.constBegin());
+
+    for(; it != end; ++it)
+        checkCallsiteCircularity(signList, *it, parseInfo);
+}
+
+/**
+ * Flags callsites to be aware of their recursion by calling
+ * UserFunctionCallsite::configureRecursion(), if that is the case.
+ */
 static void checkCallsiteCircularity(FunctionSignature::List &signList,
                                      Expression::Ptr expr,
                                      const ParserContext *const parseInfo)
@@ -569,8 +595,13 @@ static void checkCallsiteCircularity(FunctionSignature::List &signList,
             if(callsite->configureRecursion(*it))
             {
                 /* A callsite inside the function body to the function. This user function
-                 * is recursive in other words. */
-                return; /* We're done in this case. */
+                 * is recursive if it's to the same function, in other words. Which it was
+                 * if configureRecursion() returned true. */
+
+                /* Now we continue and check the operands of the callsite. That is, the arguments.
+                 * This catches for instance local:foo(local:foo(3)). */
+                checkOperandsCircularity(signList, expr, parseInfo);
+                return;
             }
         }
         /* Check the body of the function so this callsite isn't "indirectly" a
@@ -579,16 +610,8 @@ static void checkCallsiteCircularity(FunctionSignature::List &signList,
         signList.append(callsite->signature());
         checkCallsiteCircularity(signList, callsite->body(), parseInfo);
     }
-    else
-    {
-        /* Check the operands. */
-        const Expression::List ops(expr->operands());
-        const Expression::List::const_iterator end(ops.constEnd());
-        Expression::List::const_iterator it(ops.constBegin());
 
-        for(; it != end; ++it)
-            checkCallsiteCircularity(signList, *it, parseInfo);
-    }
+    checkOperandsCircularity(signList, expr, parseInfo); /* We're done in this case. */
 }
 
 /**

@@ -167,7 +167,7 @@ public:
     void storeMouseButtonsForMouseGrabber(QGraphicsSceneMouseEvent *event);
 
     QList<QGraphicsView *> views;
-    bool painterStateProtection(const QPainter *painter) const;
+    bool painterStateProtection;
 
     QMultiMap<QGraphicsItem *, QGraphicsItem *> sceneEventFilters;
     void installSceneEventFilter(QGraphicsItem *watched, QGraphicsItem *filter);
@@ -193,8 +193,9 @@ public:
     static void sortItems(QList<QGraphicsItem *> *itemList);
 
     static void drawItemHelper(QGraphicsItem *item, QPainter *painter,
-                               const QStyleOptionGraphicsItem *option, QWidget *widget);
-
+                               const QStyleOptionGraphicsItem *option, QWidget *widget,
+                               bool painterStateProtection);
+    
     QStyle *style;
     QFont font;
     QPalette palette;

@@ -1,10 +1,2 @@
-(<doc>
-    <p>
-        <span/>
-        <span/>
-    </p>
-    <p>
-        <span/>
-        <span/>
-    </p>
-</doc>/p/span)[1]
+let $doc := doc('doc.txt')
+return ($doc/doc/p/span)[1]

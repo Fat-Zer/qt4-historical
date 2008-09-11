@@ -123,7 +123,7 @@ public:
 
     \value Impossible  An attempt was made to do something which makes
     no sense. For example:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3socketdevice.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3socketdevice.cpp 0
     The libc ::close() closes the socket, but Q3SocketDevice is not aware
     of this. So when you call writeBlock(), the impossible happens.
 

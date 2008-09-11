@@ -166,7 +166,7 @@ QString qWhereClause(QSqlRecord* rec, const QString& prefix, const QString& sep,
 
     For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 0
 
     In the above example, a cursor is created specifying a table or
     view name in the database. Then, select() is called, which can be
@@ -190,7 +190,7 @@ QString qWhereClause(QSqlRecord* rec, const QString& prefix, const QString& sep,
 
     For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 1
 
     To edit an existing database record, first move to the record you
     wish to update. Call primeUpdate() to get the pointer to the
@@ -625,14 +625,14 @@ QSqlIndex Q3SqlCursor::index(const QString& fieldName) const
     row, use seek(), first(), last(), previous() or next().
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 2
 
     The filter will apply to any subsequent select() calls that do not
     explicitly specify another filter. Similarly the sort will apply
     to any subsequent select() calls that do not explicitly specify
     another sort.
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 3
 
 */
 
@@ -706,7 +706,7 @@ bool Q3SqlCursor::select(const QSqlIndex& sort)
     last(), previous() or next(). This function is useful, for example,
     for retrieving data based upon a table's primary index:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 4
 
     In this example the QSqlIndex, pk, is used for two different
     purposes. When used as the filter (first) argument, the field
@@ -726,7 +726,7 @@ bool Q3SqlCursor::select(const QSqlIndex & filter, const QSqlIndex & sort)
     combination of \l Q3SqlCursor::Mode values. The default mode for a
     cursor is Q3SqlCursor::Writable.
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 5
 */
 
 void Q3SqlCursor::setMode(int mode)
@@ -964,7 +964,7 @@ QString Q3SqlCursor::toString(const QSqlIndex& i, QSqlRecord* rec, const QString
     new select() call must be made before navigating to a valid
     record.
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 6
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 6
 
     In the above example, a cursor is created on the 'prices' table
     and a pointer to the insert buffer is acquired using primeInsert().
@@ -1132,7 +1132,7 @@ QSqlRecord* Q3SqlCursor::primeInsert()
     longer be navigated. A new select() call must be made before you
     can move to a valid record. For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 7
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 7
 
     In the above example, a cursor is created on the 'prices' table
     and is positioned on the record to be updated. Then a pointer to
@@ -1234,7 +1234,7 @@ int Q3SqlCursor::update(const QString & filter, bool invalidate)
     be navigated. A new select() call must be made before you can move
     to a valid record. For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlcursor.cpp 8
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlcursor.cpp 8
 
     In the above example, a cursor is created on the 'prices' table
     and positioned to the record to be deleted. First primeDelete() is

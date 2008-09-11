@@ -219,7 +219,8 @@ namespace qdesigner_internal {
         QWidget(parent),
         m_validationMode(ValidationSingleLine),
         m_updateMode(UpdateAsYouType),
-        m_lineEdit(new PropertyLineEdit(this))
+        m_lineEdit(new PropertyLineEdit(this)),
+        m_textEdited(false)
     {
         switch (embeddingMode) {
         case EmbeddingNone:
@@ -237,8 +238,9 @@ namespace qdesigner_internal {
         setFocusProxy(m_lineEdit);
 
         connect(m_lineEdit,SIGNAL(editingFinished()), this, SIGNAL(editingFinished()));
-        connect(m_lineEdit,SIGNAL(editingFinished()), this, SLOT(slotEditingFinished()));
+        connect(m_lineEdit,SIGNAL(returnPressed()), this, SLOT(slotEditingFinished()));
         connect(m_lineEdit,SIGNAL(textChanged(QString)), this, SLOT(slotTextChanged(QString)));
+        connect(m_lineEdit,SIGNAL(textEdited(QString)), this, SLOT(slotTextEdited()));
 
         setTextPropertyValidationMode(validationMode);
     }
@@ -325,6 +327,12 @@ namespace qdesigner_internal {
         m_cachedText = text;
         m_lineEdit->setText(stringToEditorString(text, m_validationMode));
         markIntermediateState();
+        m_textEdited = false;
+    }
+
+    void TextPropertyEditor::slotTextEdited()
+    {
+        m_textEdited = true;
     }
 
     void  TextPropertyEditor::slotTextChanged(const QString &text) {
@@ -336,8 +344,10 @@ namespace qdesigner_internal {
 
     void TextPropertyEditor::slotEditingFinished()
     {
-        if (m_updateMode == UpdateOnFinished)
+        if (m_updateMode == UpdateOnFinished && m_textEdited) {
             emit textChanged(m_cachedText);
+            m_textEdited = false;
+        }
     }
 
     void TextPropertyEditor::selectAll() {

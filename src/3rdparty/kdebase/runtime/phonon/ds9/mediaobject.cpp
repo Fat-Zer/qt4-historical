@@ -288,7 +288,6 @@ namespace Phonon
                 OAFilterState s;
                 //blocking call
                 HRESULT hr = mc->GetState(INFINITE, &s);
-
                 if (SUCCEEDED(hr)) {
                     if (s == State_Stopped) {
                         emit stateReady(w.graph, Phonon::StoppedState);
@@ -586,6 +585,10 @@ namespace Phonon
         void MediaObject::ensureStopped()
         {
             currentGraph()->ensureStopped();
+            if (m_state == Phonon::ErrorState) {
+                //we reset the state here
+                m_state = Phonon::StoppedState;
+            }
         }
 
         void MediaObject::play()

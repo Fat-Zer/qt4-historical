@@ -266,7 +266,9 @@ namespace WTF {
     {
         const bool canReplaceDeletedValue = !ValueTraits::needsDestruction || StorageTraits::needsDestruction;
         typedef HashSetTranslator<canReplaceDeletedValue, ValueType, ValueTraits, StorageTraits, HashFunctions> Translator;
-        return m_impl.template add<ValueType, ValueType, Translator>(value, value);
+
+        pair<typename HashTableType::iterator, bool> retval = m_impl.template add<ValueType, ValueType, Translator>(value, value);
+        return make_pair(iterator(retval.first), retval.second);
     }
 
     template<typename Value, typename HashFunctions, typename Traits>
@@ -276,7 +278,8 @@ namespace WTF {
     {
         const bool canReplaceDeletedValue = !ValueTraits::needsDestruction || StorageTraits::needsDestruction;
         typedef HashSetTranslatorAdapter<canReplaceDeletedValue, ValueType, StorageTraits, T, Translator> Adapter;
-        return m_impl.template add<T, T, Adapter>(value, value);
+        pair<typename HashTableType::iterator, bool> retval = m_impl.template add<T, T, Adapter>(value, value);
+        return make_pair(iterator(retval.first), retval.second);
     }
 
     template<typename T, typename U, typename V>

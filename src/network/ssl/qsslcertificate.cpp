@@ -503,7 +503,7 @@ QByteArray QSslCertificate::toDer() const
 
     Example:
     
-    \snippet doc/src/snippets/code/src.network.ssl.qsslcertificate.cpp 0
+    \snippet doc/src/snippets/code/src_network_ssl_qsslcertificate.cpp 0
 
     \sa fromData()
 */
@@ -694,6 +694,11 @@ QSslCertificate QSslCertificatePrivate::QSslCertificate_from_X509(X509 *x509)
 static bool matchLineFeed(const QByteArray &pem, int *offset)
 {
     char ch = pem.at(*offset);
+
+    // ignore extra whitespace at the end of the line
+    while (ch == ' ' && *offset < pem.size())
+        ch = pem.at(++*offset);
+
     if (ch == '\n') {
         *offset++;
         return true;

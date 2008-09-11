@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/itemviews/q3table.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/itemviews/q3table.cpp -->
 <head>
   <title>Qt 4.4: Q3Table Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Table Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3Table class provides a flexible editable table widget. <a href="#details">More...</a></p>
@@ -252,9 +252,9 @@
 <h2>Detailed Description</h2>
 <p>The Q3Table class provides a flexible editable table widget.</p>
 <p>Q3Table is easy to use, although it does have a large API because of the comprehensive functionality that it provides. Q3Table includes functions for manipulating <a href="#headers">headers</a>, <a href="#columnsrows">rows and columns</a>, <a href="#cells">cells</a> and <a href="#selections">selections</a>. Q3Table also provides in-place editing and drag and drop, as well as a useful set of <a href="#signals">signals</a>. Q3Table efficiently supports very large tables, for example, tables one million by one million cells are perfectly possible. Q3Table is economical with memory, using none for unused cells.</p>
-<pre>     Q3Table *table = new Q3Table(100, 250, this);
-     table-&gt;setPixmap(3, 2, pix);
-     table-&gt;setText(3, 2, &quot;A pixmap&quot;);</pre>
+<pre> Q3Table *table = new Q3Table(100, 250, this);
+ table-&gt;setPixmap(3, 2, pix);
+ table-&gt;setText(3, 2, &quot;A pixmap&quot;);</pre>
 <p>The first line constructs the table specifying its size in rows and columns. We then insert a pixmap and some text into the <i>same</i> <a href="#cells">cell</a>, with the pixmap appearing to the left of the text. Q3Table cells can be populated with <a href="q3tableitem.html">Q3TableItem</a>s, <a href="q3combotableitem.html">Q3ComboTableItem</a>s or by <a href="q3checktableitem.html">Q3CheckTableItem</a>s. By default a vertical header appears at the left of the table showing row numbers and a horizontal header appears at the top of the table showing column numbers. (The numbers displayed start at 1, although row and column numbers within Q3Table begin at 0.)</p>
 <p>If you want to use mouse tracking call setMouseTracking(true) on the <i>viewport</i>.</p>
 <p align="center"><img src="images/qtableitems.png" alt="Table Items" /></p><a name="headers"></a><a name="headers"></a>
@@ -552,12 +552,12 @@
 <p>The default functionality is as follows: if <i>initFromCell</i> is true or the cell has a <a href="q3tableitem.html">Q3TableItem</a> and the table item's <a href="q3tableitem.html#isReplaceable">Q3TableItem::isReplaceable</a>() is false then the cell is asked to create an appropriate editor (using <a href="q3tableitem.html#createEditor">Q3TableItem::createEditor</a>()). Otherwise a <a href="qlineedit.html">QLineEdit</a> is used as the editor.</p>
 <p>If you want to create your own editor for certain cells, implement a custom <a href="q3tableitem.html">Q3TableItem</a> subclass and reimplement <a href="q3tableitem.html#createEditor">Q3TableItem::createEditor</a>().</p>
 <p>If you are not using <a href="q3tableitem.html">Q3TableItem</a>s and you don't want to use a <a href="qlineedit.html">QLineEdit</a> as the default editor, subclass <a href="q3table.html">Q3Table</a> and reimplement this function with code like this:</p>
-<pre>     Q3TableItem *i = item(row, col);
-     if (initFromCell || (i &amp;&amp; !i-&gt;isReplaceable()))
-         <span class="comment">// If we had a Q3TableItem ask the base class to create the editor</span>
-         return Q3Table::createEditor(row, col, initFromCell);
-     else
-         return ...(create your own editor)</pre>
+<pre> Q3TableItem *i = item(row, col);
+ if (initFromCell || (i &amp;&amp; !i-&gt;isReplaceable()))
+     <span class="comment">// If we had a Q3TableItem ask the base class to create the editor</span>
+     return Q3Table::createEditor(row, col, initFromCell);
+ else
+     return ...(create your own editor)</pre>
 <p>Ownership of the editor widget is transferred to the caller.</p>
 <p>If you reimplement this function return 0 for read-only cells. You will need to reimplement <a href="q3table.html#setCellContentFromEditor">setCellContentFromEditor</a>() to retrieve the data the user entered.</p>
 <p>See also <a href="q3tableitem.html#createEditor">Q3TableItem::createEditor</a>().</p>
@@ -712,9 +712,9 @@
 <p>If you want to draw custom cell content, for example right-aligned text, you must either reimplement paintCell(), or subclass <a href="q3tableitem.html">Q3TableItem</a> and reimplement <a href="q3tableitem.html#paint">Q3TableItem::paint</a>() to do the custom drawing.</p>
 <p>If you're using a <a href="q3tableitem.html">Q3TableItem</a> subclass, for example, to store a data structure, then reimplementing <a href="q3tableitem.html#paint">Q3TableItem::paint</a>() may be the best approach. For data you want to draw immediately, e.g&#x2e; data retrieved from a database, it is probably best to reimplement paintCell(). Note that if you reimplement paintCell(), i.e&#x2e; don't use <a href="q3tableitem.html">Q3TableItem</a>s, you must reimplement other functions: see the notes on large tables.</p>
 <p>Note that the painter is not clipped by default in order to get maximum efficiency. If you want clipping, use code like this:</p>
-<pre>     p-&gt;setClipRect(cellRect(row, col), QPainter::CoordPainter);
-     <span class="comment">//... your drawing code</span>
-     p-&gt;setClipping(false);</pre>
+<pre> p-&gt;setClipRect(cellRect(row, col), QPainter::CoordPainter);
+<span class="comment"> //... your drawing code</span>
+ p-&gt;setClipping(false);</pre>
 <h3 class="fn"><a name="paintCell-2"></a>void Q3Table::paintCell ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>row</i>, int <i>col</i>, const <a href="qrect.html">QRect</a> &amp; <i>cr</i>, bool <i>selected</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Use the other <a href="q3table.html#paintCell">paintCell</a>() function. This function is only included for backwards compatibility.</p>
@@ -957,8 +957,8 @@
 <p>See also <a href="q3table.html#horizontalHeader">horizontalHeader</a>(), <a href="q3table.html#setLeftMargin">setLeftMargin</a>(), and <a href="q3header.html">Q3Header</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -69,6 +69,7 @@ class QResizeEvent;
 class Q3ComboBox;
 class QCheckBox;
 class Q3DragObject;
+class QColorGroup;
 
 struct Q3TablePrivate;
 struct Q3TableHeaderPrivate;

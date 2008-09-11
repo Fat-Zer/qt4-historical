@@ -64,7 +64,6 @@ namespace qt {
 QHelpSearchIndexReader::QHelpSearchIndexReader()
     : QThread()
     , m_cancel(false)
-    , m_collectionFile(QString())
 {
     // nothing todo
 }
@@ -87,6 +86,7 @@ void QHelpSearchIndexReader::cancelSearching()
 }
 
 void QHelpSearchIndexReader::search(const QString &collectionFile, 
+                                    const QString &indexFilesFolder,
                                     const QList<QHelpSearchQuery> &queryList)
 {
     QMutexLocker lock(&mutex);
@@ -95,6 +95,7 @@ void QHelpSearchIndexReader::search(const QString &collectionFile,
     this->m_cancel = false;
     this->m_query = queryList;
     this->m_collectionFile = collectionFile;
+    this->m_indexFilesFolder = indexFilesFolder;
 
     start(QThread::NormalPriority);
 }
@@ -120,6 +121,7 @@ void QHelpSearchIndexReader::run()
 
     const QString collectionFile(this->m_collectionFile);
     const QList<QHelpSearchQuery> &queryList = this->m_query;
+    const QString indexPath(m_indexFilesFolder);
 
     mutex.unlock();
 
@@ -127,13 +129,12 @@ void QHelpSearchIndexReader::run()
     if (!engine.setupData())
         return;
 
-    QString indexPath = engine.customValue(QLatin1String("indexFilesFolder")).toString();
-    QDir dir(indexPath);
-    if (!dir.isAbsolute()) {
-        indexPath = QFileInfo(engine.collectionFile()).path() +
-            dir.separator() + dir.path();
+    QFileInfo fInfo(indexPath);
+    if (fInfo.exists() && !fInfo.isWritable()) {
+        qWarning("Full Text Search, could not read index (missing permissions).");
+        return;
     }
-    
+
     if(QCLuceneIndexReader::indexExists(indexPath)) {
         mutex.lock();
         if (m_cancel) {

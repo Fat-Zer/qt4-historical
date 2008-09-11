@@ -240,7 +240,7 @@ void QHttpNormalRequest::start(QHttp *http)
 
     if (is_ba) {
         http->d_func()->buffer = *data.ba;
-        if (http->d_func()->buffer.size() > 0)
+        if (http->d_func()->buffer.size() >= 0)
             http->d_func()->header.setContentLength(http->d_func()->buffer.size());
 
         http->d_func()->postDevice = 0;
@@ -249,7 +249,7 @@ void QHttpNormalRequest::start(QHttp *http)
 
         if (data.dev && (data.dev->isOpen() || data.dev->open(QIODevice::ReadOnly))) {
             http->d_func()->postDevice = data.dev;
-            if (http->d_func()->postDevice->size() > 0)
+            if (http->d_func()->postDevice->size() >= 0)
                 http->d_func()->header.setContentLength(http->d_func()->postDevice->size());
         } else {
             http->d_func()->postDevice = 0;
@@ -522,12 +522,12 @@ public:
     consists of a name followed by a colon, a single space, and the
     field value. (See RFC 1945.) Field names are case-insensitive. A
     typical header field looks like this:
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 0
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 0
 
     In the API the header field name is called the "key" and the
     content is called the "value". You can get and set a header
     field's value by using its key with value() and setValue(), e.g.
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 1
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 1
 
     Some fields are so common that getters and setters are provided
     for them as a convenient alternative to using \l value() and
@@ -1419,7 +1419,9 @@ QString QHttpRequestHeader::toString() const
 
     This class provides a direct interface to HTTP that allows you to
     have more control over the requests and that allows you to access
-    the response header fields.
+    the response header fields. However, for new applications, it is
+    recommended to use QNetworkAccessManager and QNetworkReply, as
+    those classes possess a simpler, yet more powerful API.
 
     The class works asynchronously, so there are no blocking
     functions. If an operation cannot be executed immediately, the
@@ -1444,7 +1446,7 @@ QString QHttpRequestHeader::toString() const
     from the Trolltech home page (i.e., the URL
     \c http://www.trolltech.com/index.html):
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 2
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 2
 
     For the common HTTP requests \c GET, \c POST and \c HEAD, QHttp
     provides the convenience functions get(), post() and head(). They
@@ -1452,12 +1454,12 @@ QString QHttpRequestHeader::toString() const
     special header fields, they are easier to use. The above example
     can also be written as:
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 3
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 3
 
     For this example the following sequence of signals is emitted
     (with small variations, depending on network traffic, etc.):
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 4
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 4
 
     The dataSendProgress() and dataReadProgress() signals in the above
     example are useful if you want to show a \link QProgressBar
@@ -1482,13 +1484,13 @@ QString QHttpRequestHeader::toString() const
 
     For example, if you have the following sequence of requests
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 5
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 5
 
     and the get() request fails because the host lookup fails, then
     the post() request is never executed and the signals would look
     like this:
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 6
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 6
 
     You can then get details about the error with the error() and
     errorString() functions. Note that only unexpected behavior, like
@@ -1504,7 +1506,8 @@ QString QHttpRequestHeader::toString() const
     The functions hasPendingRequests() and clearPendingRequests()
     allow you to query and clear the list of pending requests.
 
-    \sa QFtp, {HTTP Example}, {Torrent Example}
+    \sa QFtp, QNetworkAccessManager, QNetworkRequest, QNetworkReply,
+        {HTTP Example}, {Torrent Example}
 */
 
 /*!
@@ -2105,7 +2108,7 @@ int QHttp::setUser(const QString &userName, const QString &password)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.network.access.qhttp.cpp 7
+    \snippet doc/src/snippets/code/src_network_access_qhttp.cpp 7
 
     QHttp supports non-transparent web proxy servers only, such as the Squid
     Web proxy cache server (from \l http://www.squid.org/). For transparent
@@ -2397,8 +2400,6 @@ void QHttpPrivate::_q_slotSendRequest()
     QString connectionHost = hostName;
     int connectionPort = port;
     bool sslInUse = false;
-    bool cachingProxyInUse = false;
-    bool transparentProxyInUse = false;
 
 #ifndef QT_NO_OPENSSL
     QSslSocket *sslSocket = qobject_cast<QSslSocket *>(socket);
@@ -2407,6 +2408,8 @@ void QHttpPrivate::_q_slotSendRequest()
 #endif
 
 #ifndef QT_NO_NETWORKPROXY
+    bool cachingProxyInUse = false;
+    bool transparentProxyInUse = false;
     if (proxy.type() == QNetworkProxy::DefaultProxy)
         proxy = QNetworkProxy::applicationProxy();
 
@@ -2563,6 +2566,7 @@ void QHttpPrivate::_q_slotConnected()
 #endif
 
     if (postDevice) {
+        postDevice->seek(0);    // reposition the device
         bytesTotal += postDevice->size();
     } else {
         bytesTotal += buffer.size();
@@ -2624,7 +2628,7 @@ void QHttpPrivate::_q_slotBytesWritten(qint64 written)
         arr.resize(max);
 
         int n = postDevice->read(arr.data(), max);
-        if (n <= 0) {
+        if (n < 0) {
             qWarning("Could not read enough bytes from the device");
             closeConn();
             return;
@@ -2713,7 +2717,7 @@ void QHttpPrivate::_q_slotReadyRead()
                 closeConn();
                 return;
             } else {
-                // close the connection if it isn't already and reconnect using the chose authentication method
+                // close the connection if it isn't already and reconnect using the chosen authentication method
                 bool willClose = (response.value(QLatin1String("proxy-connection")).toLower() == QLatin1String("close"))
                                  || (response.value(QLatin1String("connection")).toLower() == QLatin1String("close"));
                 if (willClose) {

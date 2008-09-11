@@ -454,7 +454,7 @@ QString QUndoView::emptyLabel() const
 
     A stack may have a clean state set with QUndoStack::setClean(). This is usually
     the state of the document at the point it was saved. QUndoView can display an
-    icon in the list of commands to show the clean state. If this proprety is
+    icon in the list of commands to show the clean state. If this property is
     a null icon, no icon is shown. The default value is the null icon.
 */
 

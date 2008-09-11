@@ -66,9 +66,9 @@ namespace qdesigner_internal {
 
     class PropertyLineEdit;
 
-    // Editor for text properties. Does escaping of newline characters
-    // and provides validation modes. The interface corresponds to
-    // that of QLineEdit.
+    // Inline-Editor for text properties. Does escaping of newline characters
+    // to '\n' and back and provides validation modes. The interface
+    // corresponds to that of QLineEdit.
     class QDESIGNER_SHARED_EXPORT TextPropertyEditor : public QWidget
     {
         TextPropertyEditor(const TextPropertyEditor &);
@@ -88,7 +88,7 @@ namespace qdesigner_internal {
         enum UpdateMode {
             // Emit textChanged() as the user types
             UpdateAsYouType,
-            // Emit textChanged() only when the user finishes
+            // Emit textChanged() only when the user finishes (for QUrl, etc.)
             UpdateOnFinished
         };
 
@@ -136,6 +136,7 @@ namespace qdesigner_internal {
 
     private slots:
         void slotTextChanged(const QString &text);
+        void slotTextEdited();
         void slotEditingFinished();
 
     private:
@@ -148,6 +149,7 @@ namespace qdesigner_internal {
 
         // Cached text containing real newline characters.
         QString m_cachedText;
+        bool m_textEdited;
     };
 }
 

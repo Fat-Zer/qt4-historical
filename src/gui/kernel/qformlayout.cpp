@@ -112,7 +112,7 @@ bool FixedColumnMatrix<T, NumColumns>::find(const T &value, int *rowPtr, int *co
     const int idx = m_storage.indexOf(value);
     if (idx == -1)
         return false;
-    storageIndexToPosition(rowPtr, colPtr);
+    storageIndexToPosition(idx, rowPtr, colPtr);
     return true;
 }
 
@@ -215,6 +215,8 @@ public:
     uint has_hfw : 2;
     uint dirty : 2; // have we laid out yet?
     uint sizesDirty : 2; // have we (not) gathered layout item sizes?
+    uint expandVertical : 1; // Do we expand vertically?
+    uint expandHorizontal : 1; // Do we expand horizonally?
     Qt::Alignment labelAlignment;
     Qt::Alignment formAlignment;
 
@@ -251,7 +253,8 @@ public:
 QFormLayoutPrivate::QFormLayoutPrivate()
     : fieldGrowthPolicy(DefaultFieldGrowthPolicy),
       rowWrapPolicy(DefaultRowWrapPolicy), has_hfw(false), dirty(true), sizesDirty(true),
-      labelAlignment(0), formAlignment(0), hfw_width(-1), hfw_sh_height(-1), min_width(-1),
+      expandVertical(0), expandHorizontal(0), labelAlignment(0), formAlignment(0),
+      hfw_width(-1), hfw_sh_height(-1), min_width(-1),
       sh_width(-1), thresh_width(QLAYOUTSIZE_MAX), hSpacing(-1), vSpacing(-1)
 {
 }
@@ -313,6 +316,11 @@ void QFormLayoutPrivate::updateSizes()
 
         has_hfw = false;
 
+        // If any control can expand, so can this layout
+        // Wrapping doesn't affect expansion, though, just the minsize
+        bool expandH = false;
+        bool expandV = false;
+
         QFormLayoutItem *prevLbl = 0;
         QFormLayoutItem *prevFld = 0;
 
@@ -342,12 +350,25 @@ void QFormLayoutPrivate::updateSizes()
                 updateFormLayoutItem(label, userVSpacing, q->fieldGrowthPolicy(), false);
                 if (label->isHfw)
                     has_hfw = true;
+                Qt::Orientations o = label->expandingDirections();
+
+                if (o & Qt::Vertical)
+                    expandV = true;
+                if (o & Qt::Horizontal)
+                    expandH = true;
             }
             if (field) {
                 updateFormLayoutItem(field, userVSpacing, q->fieldGrowthPolicy(), !label && field->fullRow);
                 field->sbsHSpace = (!label && field->fullRow) ? 0 : userHSpacing;
                 if (field->isHfw)
                     has_hfw = true;
+
+                Qt::Orientations o = field->expandingDirections();
+
+                if (o & Qt::Vertical)
+                    expandV = true;
+                if (o & Qt::Horizontal)
+                    expandH = true;
             }
 
             // See if we need to calculate default spacings
@@ -454,6 +475,10 @@ void QFormLayoutPrivate::updateSizes()
             // We split a pair at label sh + field min (### for now..)
             thresh_width = maxShLblWidth + maxMinFldWidth;
         }
+
+        // Update the expansions
+        expandVertical = expandV;
+        expandHorizontal = expandH;
     }
     sizesDirty = false;
 }
@@ -1016,11 +1041,11 @@ QStyle* QFormLayoutPrivate::getStyle() const
        creates a QLabel behind the scenes and automatically set up
        its buddy. We can then write code like this:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qformlayout.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qformlayout.cpp 0
 
        Compare this with the following code, written using QGridLayout:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qformlayout.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qformlayout.cpp 1
     \endlist
 
     The table below shows the default appearance in different styles.
@@ -1063,7 +1088,7 @@ QStyle* QFormLayoutPrivate::getStyle() const
     appearance of QMacStyle on all platforms, but with left-aligned
     labels, you could write:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qformlayout.cpp 2
+    \snippet doc/src/snippets/code/src_gui_kernel_qformlayout.cpp 2
 
     \sa QGridLayout, QBoxLayout, QStackedLayout
 */
@@ -1396,7 +1421,16 @@ QLayoutItem *QFormLayout::takeAt(int index)
 */
 Qt::Orientations QFormLayout::expandingDirections() const
 {
-    return Qt::Horizontal | Qt::Vertical;
+    Q_D(const QFormLayout);
+    QFormLayoutPrivate *e = const_cast<QFormLayoutPrivate *>(d);
+    e->updateSizes();
+
+    Qt::Orientations o = 0;
+    if (e->expandHorizontal)
+        o = Qt::Horizontal;
+    if (e->expandVertical)
+        o |= Qt::Vertical;
+    return o;
 }
 
 /*!
@@ -1769,9 +1803,9 @@ Qt::Alignment QFormLayout::formAlignment() const
     \property QFormLayout::horizontalSpacing
     \brief the spacing between widgets that are laid out side by side
 
-    If no value is explicitly set, the layout's horizontal spacing is
-    inherited from the parent layout, or from the style settings for
-    the parent widget.
+    By default, if no value is explicitly set, the layout's horizontal
+    spacing is inherited from the parent layout, or from the style settings
+    for the parent widget.
 
     \sa verticalSpacing, QStyle::pixelMetric(), {QStyle::}{PM_LayoutHorizontalSpacing}
 */
@@ -1796,11 +1830,11 @@ int QFormLayout::horizontalSpacing() const
 
 /*!
     \property QFormLayout::verticalSpacing
-    \brief the spacing between widgets that are laid out on top of each other
+    \brief the spacing between widgets that are laid out vertically
 
-    If no value is explicitly set, the layout's vertical spacing is
-    inherited from the parent layout, or from the style settings for
-    the parent widget.
+    By default, if no value is explicitly set, the layout's vertical spacing is
+    inherited from the parent layout, or from the style settings for the parent
+    widget.
 
     \sa horizontalSpacing, QStyle::pixelMetric(), {QStyle::}{PM_LayoutHorizontalSpacing}
 */

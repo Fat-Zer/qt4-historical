@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qlineedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qlineedit.cpp -->
 <head>
   <title>Qt 4.4: QLineEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLineEdit Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QLineEdit widget is a one-line text editor. <a href="#details">More...</a></p>
@@ -227,6 +227,7 @@
 <a name="//apple_ref/cpp/instm/QLineEdit/hasAcceptableInput" />
 <h3 class="fn"><a name="acceptableInput-prop"></a>acceptableInput : const bool</h3>
 <p>This property holds whether the input satisfies the inputMask and the validator.</p>
+<p>By default, this property is true.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool hasAcceptableInput () const</b></li>
@@ -237,6 +238,7 @@
 <h3 class="fn"><a name="alignment-prop"></a>alignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
 <p>This property holds the alignment of the line edit.</p>
 <p>Both horizontal and vertical alignment is allowed here, <a href="qt.html#AlignmentFlag-enum">Qt::AlignJustify</a> will map to <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a>.</p>
+<p>By default, this property contains a combination of <a href="qt.html#AlignmentFlag-enum">Qt::AlignLeft</a> and <a href="qt.html#AlignmentFlag-enum">Qt::AlignVCenter</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::Alignment alignment () const</b></li>
@@ -248,6 +250,7 @@
 <h3 class="fn"><a name="cursorPosition-prop"></a>cursorPosition : int</h3>
 <p>This property holds the current cursor position for this line edit.</p>
 <p>Setting the cursor position causes a repaint when appropriate.</p>
+<p>By default, this property contains a value of 0.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int cursorPosition () const</b></li>
@@ -257,6 +260,7 @@
 <h3 class="fn"><a name="displayText-prop"></a>displayText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the displayed text.</p>
 <p>If <a href="qlineedit.html#echoMode-prop">echoMode</a> is <a href="qlineedit.html#EchoMode-enum">Normal</a> this returns the same as <a href="qlineedit.html#text-prop">text</a>(); if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">Password</a> or <a href="qlineedit.html#EchoMode-enum">PasswordEchoOnEdit</a> it returns a string of asterisks <a href="qlineedit.html#text-prop">text</a>().length() characters long, e.g&#x2e; &quot;******&quot;; if <a href="qlineedit.html#EchoMode-enum">EchoMode</a> is <a href="qlineedit.html#EchoMode-enum">NoEcho</a> returns an empty string, &quot;&quot;.</p>
+<p>By default, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString displayText () const</b></li>
@@ -276,8 +280,10 @@
 <a name="//apple_ref/cpp/instm/QLineEdit/setEchoMode" />
 <h3 class="fn"><a name="echoMode-prop"></a>echoMode : <a href="qlineedit.html#EchoMode-enum">EchoMode</a></h3>
 <p>This property holds the line edit's echo mode.</p>
-<p>The initial setting is <a href="qlineedit.html#EchoMode-enum">Normal</a>, but <a href="qlineedit.html">QLineEdit</a> also supports <a href="qlineedit.html#EchoMode-enum">NoEcho</a>, <a href="qlineedit.html#EchoMode-enum">Password</a> and <a href="qlineedit.html#EchoMode-enum">PasswordEchoOnEdit</a> modes.</p>
+<p>The echo mode determines how the text entered in the line edit is displayed (or echoed) to the user.</p>
+<p>The most common setting is <a href="qlineedit.html#EchoMode-enum">Normal</a>, in which the text entered by the user is displayed verbatim, but <a href="qlineedit.html">QLineEdit</a> also supports modes that allow the entered text to be suppressed or obscured: these include <a href="qlineedit.html#EchoMode-enum">NoEcho</a>, <a href="qlineedit.html#EchoMode-enum">Password</a> and <a href="qlineedit.html#EchoMode-enum">PasswordEchoOnEdit</a>.</p>
 <p>The widget's display and the ability to copy or drag the text is affected by this setting.</p>
+<p>By default, this property is set to <a href="qlineedit.html#EchoMode-enum">Normal</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>EchoMode echoMode () const</b></li>
@@ -298,6 +304,7 @@
 <h3 class="fn"><a name="hasSelectedText-prop"></a>hasSelectedText : const bool</h3>
 <p>This property holds whether there is any text selected.</p>
 <p>hasSelectedText() returns true if some or all of the text has been selected by the user; otherwise returns false.</p>
+<p>By default, this property is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool hasSelectedText () const</b></li>
@@ -342,7 +349,7 @@
 <tr valign="top" class="odd"><td><tt>0000-00-00</tt></td><td>ISO Date; blanks are <tt>space</tt></td></tr>
 <tr valign="top" class="even"><td><tt>&gt;AAAAA-AAAAA-AAAAA-AAAAA-AAAAA;#</tt></td><td>License number; blanks are <tt>-</tt> and all (alphabetic) characters are converted to uppercase.</td></tr>
 </table></p>
-<p>To get range control (e.g&#x2e; for an IP address) use masks together with <a href="qlineedit.html#setValidator">validators</a>.</p>
+<p>To get range control (e.g&#x2e;, for an IP address) use masks together with <a href="qlineedit.html#setValidator">validators</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString inputMask () const</b></li>
@@ -356,6 +363,7 @@
 <p>If the text is too long, it is truncated at the limit.</p>
 <p>If truncation occurs any selected text will be unselected, the cursor position is set to 0 and the first part of the string is shown.</p>
 <p>If the line edit has an input mask, the mask defines the maximum string length.</p>
+<p>By default, this property contains a value of 32767.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int maxLength () const</b></li>
@@ -380,6 +388,7 @@
 <p>This property holds whether the line edit is read only.</p>
 <p>In read-only mode, the user can still copy the text to the clipboard, or drag and drop the text (if <a href="qlineedit.html#echoMode-prop">echoMode</a>() is <a href="qlineedit.html#EchoMode-enum">Normal</a>), but cannot edit it.</p>
 <p><a href="qlineedit.html">QLineEdit</a> does not show a cursor in read-only mode.</p>
+<p>By default, this property is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isReadOnly () const</b></li>
@@ -389,6 +398,8 @@
 <a name="//apple_ref/cpp/instm/QLineEdit/isRedoAvailable" />
 <h3 class="fn"><a name="redoAvailable-prop"></a>redoAvailable : const bool</h3>
 <p>This property holds whether redo is available.</p>
+<p>Redo becomes available once the user has performed one or more undo operations on text in the line edit.</p>
+<p>By default, this property is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isRedoAvailable () const</b></li>
@@ -397,6 +408,7 @@
 <h3 class="fn"><a name="selectedText-prop"></a>selectedText : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the selected text.</p>
 <p>If there is no selected text this property's value is an empty string.</p>
+<p>By default, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString selectedText () const</b></li>
@@ -408,6 +420,7 @@
 <p>This property holds the line edit's text.</p>
 <p>Setting this property clears the selection, clears the undo/redo history, moves the cursor to the end of the line and resets the <a href="qlineedit.html#modified-prop">modified</a> property to false. The text is not validated when inserted with setText().</p>
 <p>The text is truncated to <a href="qlineedit.html#maxLength-prop">maxLength</a>() length.</p>
+<p>By default, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString text () const</b></li>
@@ -417,6 +430,8 @@
 <a name="//apple_ref/cpp/instm/QLineEdit/isUndoAvailable" />
 <h3 class="fn"><a name="undoAvailable-prop"></a>undoAvailable : const bool</h3>
 <p>This property holds whether undo is available.</p>
+<p>Undo becomes available once the user has modified the text in the line edit.</p>
+<p>By default, this property is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isUndoAvailable () const</b></li>
@@ -454,14 +469,14 @@
 <h3 class="fn"><a name="contextMenuEvent"></a>void QLineEdit::contextMenuEvent ( <a href="qcontextmenuevent.html">QContextMenuEvent</a> * <i>event</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>Shows the standard context menu created with <a href="qlineedit.html#createStandardContextMenu">createStandardContextMenu</a>().</p>
 <p>If you do not want the line edit to have a context menu, you can set its <a href="qwidget.html#contextMenuPolicy-prop">contextMenuPolicy</a> to <a href="qt.html#ContextMenuPolicy-enum">Qt::NoContextMenu</a>. If you want to customize the context menu, reimplement this function. If you want to extend the standard context menu, reimplement this function, call <a href="qlineedit.html#createStandardContextMenu">createStandardContextMenu</a>() and extend the menu returned.</p>
-<pre>         void LineEdit::contextMenuEvent(QContextMenuEvent *event)
-         {
-             QMenu *menu = createStandardContextMenu();
-             menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
-             <span class="comment">//...</span>
-             menu-&gt;exec(event-&gt;globalPos());
-             delete menu;
-         }</pre>
+<pre> void LineEdit::contextMenuEvent(QContextMenuEvent *event)
+ {
+     QMenu *menu = createStandardContextMenu();
+     menu-&gt;addAction(tr(&quot;My Menu Item&quot;));
+     <span class="comment">//...</span>
+     menu-&gt;exec(event-&gt;globalPos());
+     delete menu;
+ }</pre>
 <p>The <i>event</i> parameter is used to obtain the position where the mouse cursor was when the event was generated.</p>
 <p>Reimplemented from <a href="qwidget.html#contextMenuEvent">QWidget</a>.</p>
 <p>See also <a href="qwidget.html#contextMenuPolicy-prop">setContextMenuPolicy</a>().</p>
@@ -603,8 +618,8 @@
 <p>See also <a href="qlineedit.html#setValidator">setValidator</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

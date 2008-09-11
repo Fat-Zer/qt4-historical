@@ -382,22 +382,26 @@
     signal, Qt provides the QObject::sender() function, which returns
     a pointer to the object that sent the signal.
 
-    The QSignalMapper class is also provided for situations where
-    many signals are connected to the same slot and the slot needs
-    to handle each signal differently. Suppose you have three
-    QPushButton objects that determine which file you will open, and
-    you connect their QPushButton::clicked() signal to \c{mySlot()},
-    you can use QSignalMapper's \l{QSignalMapper::}{setMapping()} to
+    The QSignalMapper class is provided for situations where many
+    signals are connected to the same slot and the slot needs to
+    handle each signal differently.
+
+    Suppose you have three push buttons that determine which file you
+    will open: "Tax File", "Accounts File", or "Report File". 
+
+    In order to open the correct file, you connect their
+    QPushButton::clicked() signal to \c{readFile()}. Then, use
+    QSignalMapper's \l{QSignalMapper::}{setMapping()} to
     map all the \l{QPushButton::}{clicked()} signals to a
     QSignalMapper object.
 
-    \snippet doc/src/snippets/signalsandslots/signalmapper.cpp 0
+    \snippet doc/src/snippets/signalmapper/filereader.cpp 0
 
     Then, you connect the \l{QSignalMapper::}{mapped()} signal to
-    \c{mySlot()} where a different file will be opened, depending on
+    \c{readFile()} where a different file will be opened, depending on
     which push button is pressed.
 
-    \snippet doc/src/snippets/signalsandslots/signalmapper.cpp 1
+    \snippet doc/src/snippets/signalmapper/filereader.cpp 1
 
     \sa {Meta-Object System}, {Qt's Property System}
 
@@ -408,7 +412,7 @@
     You can even use both mechanisms in the same project. Just add the
     following line to your qmake project (.pro) file.
 
-    \snippet doc/src/snippets/code/doc.src.containers.qdoc 22
+    \snippet doc/src/snippets/code/doc_src_containers.qdoc 22
 
     It tells Qt not to define the moc keywords \c{signals}, \c{slots},
     and \c{emit}, because these names will be used by a 3rd party

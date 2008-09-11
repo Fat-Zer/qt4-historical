@@ -69,6 +69,9 @@ class QCommonStylePrivate : public QStylePrivate
     Q_DECLARE_PUBLIC(QCommonStyle)
 public:
     inline QCommonStylePrivate()
+#ifndef QT_NO_ITEMVIEWS
+    : cachedOption(0)
+#endif
     { }
 
 #ifndef QT_NO_ITEMVIEWS
@@ -78,22 +81,22 @@ public:
     QSize viewItemSize(const QStyleOptionViewItemV4 *option, int role) const;
 
     mutable QRect decorationRect, displayRect, checkRect;
-    mutable QStyleOptionViewItemV4 cachedOption;
+    mutable QStyleOptionViewItemV4 *cachedOption;
     bool isViewItemCached(const QStyleOptionViewItemV4 &option) const {
-        return option.rect == cachedOption.rect
-               && option.direction == cachedOption.direction
-               && option.state == cachedOption.state
-               && option.displayAlignment == cachedOption.displayAlignment
-               && option.decorationAlignment == cachedOption.decorationAlignment
-               && option.decorationPosition == cachedOption.decorationPosition
-               && option.decorationSize == cachedOption.decorationSize
-               && option.font == cachedOption.font
-               && option.features == cachedOption.features
-               && option.widget == cachedOption.widget
-               && option.index == cachedOption.index
-               && option.icon.isNull() == cachedOption.icon.isNull()
-               && option.text == cachedOption.text
-               && option.viewItemPosition == cachedOption.viewItemPosition;
+        return cachedOption && (option.rect == cachedOption->rect
+               && option.direction == cachedOption->direction
+               && option.state == cachedOption->state
+               && option.displayAlignment == cachedOption->displayAlignment
+               && option.decorationAlignment == cachedOption->decorationAlignment
+               && option.decorationPosition == cachedOption->decorationPosition
+               && option.decorationSize == cachedOption->decorationSize
+               && option.font == cachedOption->font
+               && option.features == cachedOption->features
+               && option.widget == cachedOption->widget
+               && option.index == cachedOption->index
+               && option.icon.isNull() == cachedOption->icon.isNull()
+               && option.text == cachedOption->text
+               && option.viewItemPosition == cachedOption->viewItemPosition);
     }
 #endif
 

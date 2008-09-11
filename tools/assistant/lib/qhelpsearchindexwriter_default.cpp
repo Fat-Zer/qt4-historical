@@ -161,7 +161,6 @@ void Writer::insertInDocumentList(const QString &title, const QString &url)
 QHelpSearchIndexWriter::QHelpSearchIndexWriter()
     : QThread()
     , m_cancel(false)
-    , m_collectionFile(QString())
 {
     // nothing todo
 }
@@ -183,13 +182,16 @@ void QHelpSearchIndexWriter::cancelIndexing()
     mutex.unlock();
 }
 
-void QHelpSearchIndexWriter::updateIndex(const QString &collectionFile, bool reindex)
+void QHelpSearchIndexWriter::updateIndex(const QString &collectionFile,
+                                         const QString &indexFilesFolder,
+                                         bool reindex)
 {
     QMutexLocker lock(&mutex);
     
     this->m_cancel = false;
     this->m_reindex = reindex;
     this->m_collectionFile = collectionFile;
+    this->m_indexFilesFolder = indexFilesFolder;
 
     start(QThread::NormalPriority);
 }
@@ -206,6 +208,7 @@ void QHelpSearchIndexWriter::run()
     const bool reindex(this->m_reindex);
     const QLatin1String key("DefaultSearchNamespaces");
     const QString collectionFile(this->m_collectionFile);
+    const QString indexPath = m_indexFilesFolder;
     
     mutex.unlock();
 
@@ -215,12 +218,6 @@ void QHelpSearchIndexWriter::run()
 
     if (reindex)
         engine.setCustomValue(key, QLatin1String(""));
-
-    QString indexPath = engine.customValue(QLatin1String("indexFilesFolder")).toString();
-    QDir dir(indexPath);
-    if (!dir.isAbsolute()) {
-        indexPath = QFileInfo(engine.collectionFile()).path() + dir.separator() + dir.path();
-    }
 
     const QStringList registeredDocs = engine.registeredDocumentations();
     const QStringList indexedNamespaces = engine.customValue(key).toString().
@@ -252,7 +249,7 @@ void QHelpSearchIndexWriter::run()
             writer.removeIndex();
 
             QSet<QString> documentsSet;
-            const QList<QUrl> docFiles = engine.files(namespaceName, attributes, QLatin1String("html"));
+            const QList<QUrl> docFiles = engine.files(namespaceName, attributes);
             foreach(QUrl url, docFiles) {
                 if (m_cancel)
                     return;
@@ -260,8 +257,12 @@ void QHelpSearchIndexWriter::run()
                 // get rid of duplicated files
                 if (url.hasFragment())
                     url.setFragment(QString());
-                   
-                documentsSet.insert(url.toString());
+                
+                QString s = url.toString();
+                if (s.endsWith(QLatin1String(".html"))
+                    || s.endsWith(QLatin1String(".htm"))
+                    || s.endsWith(QLatin1String(".txt")))
+                    documentsSet.insert(s);
             }
 
             int docNum = 0;
@@ -275,14 +276,14 @@ void QHelpSearchIndexWriter::run()
                     continue;
 
                 QTextStream s(data);
-                QString en = charsetFromData(data);
+                QString en = QHelpGlobal::charsetFromData(data);
                 s.setCodec(QTextCodec::codecForName(en.toLatin1().constData()));
 
                 QString text = s.readAll();
                 if (text.isNull())
                     continue;
 
-                QString title = documentTitle(text);
+                QString title = QHelpGlobal::documentTitle(text);
 
                 int j = 0;
                 int i = 0;

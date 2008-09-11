@@ -815,7 +815,7 @@ const QAccessibleInterface *other, int otherChild) const
     The following code demonstrates how to use this function to
     navigate to the first child of an object:
 
-    \snippet doc/src/snippets/code/src.gui.accessible.qaccessible.cpp 0
+    \snippet doc/src/snippets/code/src_gui_accessible_qaccessible.cpp 0
 
     \i \e{Geometric relationships} -- the index of the child from
     which to start navigating in the specified direction. \a entry

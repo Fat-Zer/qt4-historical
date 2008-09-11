@@ -111,6 +111,11 @@ QT_BEGIN_NAMESPACE
     See \l{How to Create Qt Plugins} for more information about
     how to make your application extensible through plugins.
 
+    Note that the QPluginLoader cannot be used if your application is
+    statically linked against Qt. In this case, you will also have to
+    link to plugins statically. You can use QLibrary if you need to
+    load dynamic libraries in a statically linked application.
+
     \sa QLibrary, {Plug & Paint Example}
 */
 
@@ -253,8 +258,10 @@ bool QPluginLoader::isLoaded() const
     Unix, \c .dylib on Mac OS X, and \c .dll on Windows. The suffix
     can be verified with QLibrary::isLibrary().
 
-    If the file name does not exist, it will not be set. This function
-    will then return an empty string.
+    If the file name does not exist, it will not be set. This property
+    will then contain an empty string.
+
+    By default, this property contains an empty string.
 
     \sa load()
 */

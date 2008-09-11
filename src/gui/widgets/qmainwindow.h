@@ -178,7 +178,9 @@ Q_SIGNALS:
     void toolButtonStyleChanged(Qt::ToolButtonStyle toolButtonStyle);
 
 protected:
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event);
+#endif
     bool event(QEvent *event);
 
 private:

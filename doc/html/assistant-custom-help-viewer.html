@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/assistant-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/assistant-manual.qdoc -->
 <head>
   <title>Qt 4.4: Using Qt Assistant as a Custom Help Viewer</title>
   <link rel="prev" href="assistant-details.html" />
@@ -13,7 +13,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="assistant-details.html">Qt Assistant in More Detail</a>]
 [<a href="assistant-manual.html">Contents</a>]
@@ -31,6 +31,7 @@
 <li><a href="#compatibility-with-old-formats">Compatibility with Old Formats</a></li>
 </ul>
 <p>The <a href="help-simpletextviewer.html">Simple Text Viewer</a> example uses the techniques described in this document to show how to use <i>Qt Assistant</i> as a custom help viewer for an application.</p>
+<p><b>Warning:</b> In order to ship Qt Assistant in your application, it is crucial that you include the sqlite plugin. For more information on how to include plugins in your application, refer to the <a href="deployment.html">deployment documentation</a>.</p>
 <a name="qt-help-collection-files"></a>
 <h2>Qt Help Collection Files</h2>
 <p>The first important point to know about <i>Qt Assistant</i> is that it stores all settings related to its appearance <i>and</i> a list of installed documentation in a help collection file. This means, when starting <i>Qt Assistant</i> with different collection files, <i>Qt Assistant</i> may look totally different. This complete separation of settings makes it possible to deploy <i>Qt Assistant</i> as a custom help viewer for more than one application on one machine without risk of interference between different instances of <i>Qt Assistant</i>.</p>
@@ -172,8 +173,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -630,11 +630,15 @@ void QTextBrowserPrivate::restoreHistoryEntry(const HistoryEntry entry)
 /*!
     \property QTextBrowser::readOnly
     \brief whether the text browser is read-only
+
+    By default, this property is true.
 */
 
 /*!
     \property QTextBrowser::undoRedoEnabled
     \brief whether the text browser supports undo/redo operations
+
+    By default, this property is false.
 */
 
 void QTextBrowserPrivate::init()
@@ -702,6 +706,8 @@ QTextBrowser::~QTextBrowser()
     the browser window itself. Otherwise, the document is displayed
     normally in the text browser with the text set to the contents of
     the named document with setHtml().
+
+    By default, this property contains an empty URL.
 */
 QUrl QTextBrowser::source() const
 {
@@ -718,6 +724,8 @@ QUrl QTextBrowser::source() const
     content
 
     QTextBrowser uses this list to locate images and documents.
+
+    By default, this property contains an empty string list.
 */
 
 QStringList QTextBrowser::searchPaths() const
@@ -1172,7 +1180,7 @@ QUrl QTextBrowser::historyUrl(int i) const
     \row \i \a{i} > 0  \i \l forward() history
     \endtable
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qtextbrowser.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qtextbrowser.cpp 0
 
     \since 4.4
 */

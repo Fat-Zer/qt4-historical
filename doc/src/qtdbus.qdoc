@@ -109,13 +109,13 @@
 
     To use this module, use the following code in your application:
 
-    \snippet doc/src/snippets/code/doc.src.qtdbus.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtdbus.qdoc 0
 
     If you're using qmake to build your application, you can add this
     line to your .pro file to make it link against the QtDBus
     libraries:
 
-    \snippet doc/src/snippets/code/doc.src.qtdbus.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtdbus.qdoc 1
 
     \note The source code for this module is located in the \c{src/qdbus}
     directory. When installing Qt from source, this module is built when Qt's

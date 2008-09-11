@@ -676,11 +676,11 @@
     
     Example where data is written repeatedly.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 0
 
     Example where data is written once:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 1
 
     \sa Phonon::MediaSource, Phonon::MediaObject 
 
@@ -796,7 +796,7 @@
 
     The function is necessary for the case where a non-seekable MediaStream is
     played more than once. For a seekable stream the implementation can simply call
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 2
 
     \sa writeData(), needData()
 */
@@ -990,7 +990,7 @@
     send an URL or filename directly to the constructors of the
     \l{Phonon::}{MediaObject}.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 3
 
     A MediaSource object cannot be reused for another multimedia
     source. It is possible to play the same source again, and also
@@ -1347,7 +1347,7 @@
     stop.
 
     A play and forget code example:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 4
 
     \author Matthias Kretz <kretz@kde.org>
 */
@@ -1425,7 +1425,7 @@
     If you need low latency between calling play() and the sound actually
     starting to play on your output device you need to use MediaObject
     and be able to set the URL before calling play(). Note that
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 5
     doesn't make a difference: the application should be idle between the
     load and play calls so that the backend can start preloading the
     media and fill audio buffers.
@@ -1550,13 +1550,13 @@
     queue; the new source is then removed from the queue. The
     queue can be altered at any time. 
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 7
 
     You can also make use of the
     \l{Phonon::MediaObject::}{aboutToFinish()} signal, which is
     guaranteed to be emitted in time for altering the queue.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 8
 
     When playback is finishing, i.e., when a media source has been
     played to the end and the queue is empty, several signals are
@@ -1646,9 +1646,9 @@
 
     \warning The back-end is free to choose a different tick interval close
     to what you asked for. This means that the following code \c may fail:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 9
     On the other hand the following is guaranteed:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 10
 
     \sa tick()
 */
@@ -1676,7 +1676,7 @@
     media object gets a new source. Listen to the hasVideoChanged()
     signal instead.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 11
 
     Returns \c true if the media contains video data; otherwise,
     returns  \c false.
@@ -1694,7 +1694,7 @@
     media object gets a new media source. The hasVideoChanged() signal
     is emitted after this information is available.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 12
 
     Returns \c true if the current media may be seeked; otherwise,
     returns \c false.
@@ -1717,7 +1717,7 @@
 
     A typical usage looks like this:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 13
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 13
 */
 
 /*!
@@ -1795,7 +1795,7 @@
 
     We show an example:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 14
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 14
 
     \sa currentSource()
 */
@@ -2030,7 +2030,7 @@
     You can use this signal to show a progress bar to the user when
     in BufferingState:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 15
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 15
 
     \a percentFilled is a number between 0 and 100 telling you how
     much the buffer is filled.
@@ -2066,14 +2066,18 @@
 /*!
     \fn void Phonon::MediaObject::aboutToFinish()
 
-    Emitted before the playback of the whole queue stops. When this
+    Emitted before the playback of the whole queue ends. When this
     signal is emitted you still have time to provide the next
     MediaSource, using enqueue(), so that playback continues.
 
     This signal can be used to provide the next MediaSource just in
     time for the transition still to work.
 
-    \sa enqueue()
+    If you need a signal to be emitted at a specific time before
+    playback is finished, you should use the prefinishMarkReached()
+    signal instead.
+
+    \sa enqueue(), prefinishMark, prefinishMarkReached()
 */
 
 /*!
@@ -2173,7 +2177,7 @@
     happen if the user has requested a backend change.
 
     To connect to this signal do the following:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 16
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 16
 
     \sa Notifier::capabilitiesChanged()
 */
@@ -2266,10 +2270,10 @@
 
     An example use case would be to give the user a QComboBox to select
     the output device:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 17
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 17
 
     And to retrieve the selected AudioOutputDevice:
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 18
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 18
 
     \author Matthias Kretz <kretz@kde.org>
 */
@@ -2468,9 +2472,9 @@
 
     In order to use an effect, insert it into the path as follows:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 19
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 19
 
-    The effect will immediately begin applying it's transformations on
+    The effect will immediately begin applying its transformations on
     the path. To stop it, remove the Effect from the path.
 
     For creating an effect, you use the
@@ -2975,7 +2979,7 @@
     The following code example shows how create a path between two
     media nodes and insert an effect on that path.
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 20
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 20
 
     \author Matthias Kretz <kretz@kde.org>
 
@@ -3449,6 +3453,13 @@
 */
 
 /*!
+    \fn explicit EffectWidget(Effect *effect, QWidget *parent = 0)
+
+    Constructs a new EffectWidget for the specified \a effect and with
+    the specified \a parent.
+*/
+
+/*!
     \class Phonon::AbstractAudioOutput
     \inmodule Phonon
     \internal
@@ -3868,7 +3879,7 @@
     \brief The VideoWidget class provides a widget that is used to display video.
 
     The VideoWidget class renders the video of a media stream on a
-    QWidget.  It is connected to the \l{Phonon::}{MediaObject}, of
+    QWidget. It is connected to the \l{Phonon::}{MediaObject}, of
     which video stream it should render. You connect the two objects
     using the Phonon::createPath() function.
 
@@ -3878,11 +3889,13 @@
 
     The widget can resize the video to fit the widget, the AspectRatio
     is kept during resizing. It is also possible to go to fullScreen()
-    mode. 
+    mode. If you need to know the size of the video, you can call
+    \l{QWidget::}{sizeHint()} after the video has been loaded (i.e.,
+    after the MediaObject leaves the \l{MediaObject::}{LoadingState}).
 
     A typical example of usage follows below:
 
-    \snippet doc/src/snippets/code/doc.src.phonon-api.qdoc 21
+    \snippet doc/src/snippets/code/doc_src_phonon-api.qdoc 21
 
     \author Matthias Kretz <kretz@kde.org>
 */
@@ -3892,7 +3905,6 @@
     
     The ScaleMode enum describes how to treat aspect ratio during
     resizing of video. 
-    
 
     \value FitInView    The video will be fitted to fill the view
                         keeping aspect ratio.

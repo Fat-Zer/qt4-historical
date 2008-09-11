@@ -271,7 +271,7 @@ void QAbstractSpinBox::setSpecialValueText(const QString &specialValueText)
     to the minimum() value and vica versa. Wrapping only make sense if
     you have minimum() and maximum() values set.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qabstractspinbox.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qabstractspinbox.cpp 0
 
     \sa QSpinBox::minimum(), QSpinBox::maximum()
 */

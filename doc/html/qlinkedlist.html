@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/tools/qlinkedlist.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/tools/qlinkedlist.cpp -->
 <head>
   <title>Qt 4.4: QLinkedList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLinkedList Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QLinkedList class is a template class that provides linked lists. <a href="#details">More...</a></p>
@@ -97,8 +97,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qlinkedlist.html#operator-lt-lt-73">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QLinkedList&lt;T&gt; &amp; <i>list</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qlinkedlist.html#operator-gt-gt-37">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QLinkedList&lt;T&gt; &amp; <i>list</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qlinkedlist.html#operator-lt-lt-70">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QLinkedList&lt;T&gt; &amp; <i>list</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qlinkedlist.html#operator-gt-gt-38">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QLinkedList&lt;T&gt; &amp; <i>list</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -112,18 +112,18 @@
 <li>If you want the items to occupy adjacent memory positions, use <a href="qvector.html">QVector</a>.</li>
 </ul>
 <p>Here's an example of a QLinkedList that stores integers and a QLinkedList that stores <a href="qtime.html">QTime</a> values:</p>
-<pre>         QLinkedList&lt;int&gt; integerList;
-         QLinkedList&lt;QTime&gt; timeList;</pre>
+<pre> QLinkedList&lt;int&gt; integerList;
+ QLinkedList&lt;QTime&gt; timeList;</pre>
 <p>QLinkedList stores a list of items. The default constructor creates an empty list. To insert items into the list, you can use operator&lt;&lt;():</p>
-<pre>         QLinkedList&lt;QString&gt; list;
-         list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
-         <span class="comment">// list: [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]</span></pre>
+<pre> QLinkedList&lt;QString&gt; list;
+ list &lt;&lt; &quot;one&quot; &lt;&lt; &quot;two&quot; &lt;&lt; &quot;three&quot;;
+<span class="comment"> // list: [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]</span></pre>
 <p>If you want to get the first or last item in a linked list, use <a href="qlinkedlist.html#first">first</a>() or <a href="qlinkedlist.html#last">last</a>(). If you want to remove an item from either end of the list, use <a href="qlinkedlist.html#removeFirst">removeFirst</a>() or <a href="qlinkedlist.html#removeLast">removeLast</a>(). If you want to remove all occurrences of a given value in the list, use <a href="qlinkedlist.html#removeAll">removeAll</a>().</p>
 <p>A common requirement is to remove the first or last item in the list and do something with it. For this, QLinkedList provides <a href="qlinkedlist.html#takeFirst">takeFirst</a>() and <a href="qlinkedlist.html#takeLast">takeLast</a>(). Here's a loop that removes the items from a list one at a time and calls <tt>delete</tt> on them:</p>
-<pre>         QLinkedList&lt;QWidget *&gt; list;
-         ...
-         while (!list.isEmpty())
-             delete list.takeFirst();</pre>
+<pre> QLinkedList&lt;QWidget *&gt; list;
+ ...
+ while (!list.isEmpty())
+     delete list.takeFirst();</pre>
 <p>QLinkedList's value type must be an <a href="containers.html#assignable-data-types">assignable data type</a>. This covers most data types that are commonly used, but the compiler won't let you, for example, store a <a href="qwidget.html">QWidget</a> as a value; instead, store a <a href="qwidget.html">QWidget</a> *. A few functions have additional requirements; for example, <a href="qlinkedlist.html#contains">contains</a>() and <a href="qlinkedlist.html#removeAll">removeAll</a>() expect the value type to support <tt>operator==()</tt>. These requirements are documented on a per-function basis.</p>
 <p>If you want to insert, modify, or remove items in the middle of the list, you must use an iterator. QLinkedList provides both <a href="containers.html#java-style-iterators">Java-style iterators</a> (<a href="qlinkedlistiterator.html">QLinkedListIterator</a> and <a href="qmutablelinkedlistiterator.html">QMutableLinkedListIterator</a>) and <a href="containers.html#stl-style-iterators">STL-style iterators</a> (<a href="qlinkedlist-const-iterator.html">QLinkedList::const_iterator</a> and <a href="qlinkedlist-iterator.html">QLinkedList::iterator</a>). See the documentation for these classes for details.</p>
 <p>See also <a href="qlinkedlistiterator.html">QLinkedListIterator</a>, <a href="qmutablelinkedlistiterator.html">QMutableLinkedListIterator</a>, <a href="qlist.html">QList</a>, and <a href="qvector.html">QVector</a>.</p>
@@ -172,11 +172,11 @@
 <h3 class="fn"><a name="append"></a>void QLinkedList::append ( const T &amp; <i>value</i> )</h3>
 <p>Inserts <i>value</i> at the end of the list.</p>
 <p>Example:</p>
-<pre>         QLinkedList&lt;QString&gt; list;
-         list.append(&quot;one&quot;);
-         list.append(&quot;two&quot;);
-         list.append(&quot;three&quot;);
-         <span class="comment">// list: [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]</span></pre>
+<pre> QLinkedList&lt;QString&gt; list;
+ list.append(&quot;one&quot;);
+ list.append(&quot;two&quot;);
+ list.append(&quot;three&quot;);
+<span class="comment"> // list: [&quot;one&quot;, &quot;two&quot;, &quot;three&quot;]</span></pre>
 <p>This is the same as list.insert(<a href="qlinkedlist.html#end">end</a>(), <i>value</i>).</p>
 <p>See also <a href="qlinkedlist.html#operator-lt-lt">operator&lt;&lt;</a>(), <a href="qlinkedlist.html#prepend">prepend</a>(), and <a href="qlinkedlist.html#insert">insert</a>().</p>
 <a name="//apple_ref/cpp/instm/QLinkedList/back" />
@@ -241,12 +241,12 @@
 <h3 class="fn"><a name="fromStdList"></a>QLinkedList&lt;T&gt; QLinkedList::fromStdList ( const std::list&lt;T&gt; &amp; <i>list</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns a <a href="qlinkedlist.html">QLinkedList</a> object with the data contained in <i>list</i>. The order of the elements in the <a href="qlinkedlist.html">QLinkedList</a> is the same as in <i>list</i>.</p>
 <p>Example:</p>
-<pre>         std::list&lt;double&gt; stdlist;
-         list.push_back(1.2);
-         list.push_back(0.5);
-         list.push_back(3.14);
+<pre> std::list&lt;double&gt; stdlist;
+ list.push_back(1.2);
+ list.push_back(0.5);
+ list.push_back(3.14);
 
-         QLinkedList&lt;double&gt; list = QLinkedList&lt;double&gt;::fromStdList(stdlist);</pre>
+ QLinkedList&lt;double&gt; list = QLinkedList&lt;double&gt;::fromStdList(stdlist);</pre>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qlinkedlist.html#toStdList">toStdList</a>().</p>
 <a name="//apple_ref/cpp/instm/QLinkedList/front" />
@@ -278,11 +278,11 @@
 <h3 class="fn"><a name="prepend"></a>void QLinkedList::prepend ( const T &amp; <i>value</i> )</h3>
 <p>Inserts <i>value</i> at the beginning of the list.</p>
 <p>Example:</p>
-<pre>         QLinkedList&lt;QString&gt; list;
-         list.prepend(&quot;one&quot;);
-         list.prepend(&quot;two&quot;);
-         list.prepend(&quot;three&quot;);
-         <span class="comment">// list: [&quot;three&quot;, &quot;two&quot;, &quot;one&quot;]</span></pre>
+<pre> QLinkedList&lt;QString&gt; list;
+ list.prepend(&quot;one&quot;);
+ list.prepend(&quot;two&quot;);
+ list.prepend(&quot;three&quot;);
+<span class="comment"> // list: [&quot;three&quot;, &quot;two&quot;, &quot;one&quot;]</span></pre>
 <p>This is the same as list.insert(<a href="qlinkedlist.html#begin">begin</a>(), <i>value</i>).</p>
 <p>See also <a href="qlinkedlist.html#append">append</a>() and <a href="qlinkedlist.html#insert">insert</a>().</p>
 <a name="//apple_ref/cpp/instm/QLinkedList/push_back" />
@@ -295,10 +295,10 @@
 <h3 class="fn"><a name="removeAll"></a>int QLinkedList::removeAll ( const T &amp; <i>value</i> )</h3>
 <p>Removes all occurrences of <i>value</i> in the list.</p>
 <p>Example:</p>
-<pre>         QList&lt;QString&gt; list;
-         list &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;cloud&quot; &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;rain&quot;;
-         list.removeAll(&quot;sun&quot;);
-         <span class="comment">// list: [&quot;cloud&quot;, &quot;rain&quot;]</span></pre>
+<pre> QList&lt;QString&gt; list;
+ list &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;cloud&quot; &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;rain&quot;;
+ list.removeAll(&quot;sun&quot;);
+<span class="comment"> // list: [&quot;cloud&quot;, &quot;rain&quot;]</span></pre>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>See also <a href="qlinkedlist.html#insert">insert</a>().</p>
 <a name="//apple_ref/cpp/instm/QLinkedList/removeFirst" />
@@ -314,10 +314,10 @@
 <h3 class="fn"><a name="removeOne"></a>bool QLinkedList::removeOne ( const T &amp; <i>value</i> )</h3>
 <p>Removes the first occurrences of <i>value</i> in the list. Returns true on success; otherwise returns false.</p>
 <p>Example:</p>
-<pre>         QList&lt;QString&gt; list;
-         list &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;cloud&quot; &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;rain&quot;;
-         list.removeOne(&quot;sun&quot;);
-         <span class="comment">// list: [&quot;cloud&quot;, &quot;sun&quot;, &quot;rain&quot;]</span></pre>
+<pre> QList&lt;QString&gt; list;
+ list &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;cloud&quot; &lt;&lt; &quot;sun&quot; &lt;&lt; &quot;rain&quot;;
+ list.removeOne(&quot;sun&quot;);
+<span class="comment"> // list: [&quot;cloud&quot;, &quot;sun&quot;, &quot;rain&quot;]</span></pre>
 <p>This function requires the value type to have an implementation of <tt>operator==()</tt>.</p>
 <p>This function was introduced in Qt 4.4.</p>
 <p>See also <a href="qlinkedlist.html#insert">insert</a>().</p>
@@ -338,10 +338,10 @@
 <a name="//apple_ref/cpp/instm/QLinkedList/toStdList" />
 <h3 class="fn"><a name="toStdList"></a>std::list&lt;T&gt; QLinkedList::toStdList () const</h3>
 <p>Returns a std::list object with the data contained in this <a href="qlinkedlist.html">QLinkedList</a>. Example:</p>
-<pre>         QLinkedList&lt;double&gt; list;
-         list &lt;&lt; 1.2 &lt;&lt; 0.5 &lt;&lt; 3.14;
+<pre> QLinkedList&lt;double&gt; list;
+ list &lt;&lt; 1.2 &lt;&lt; 0.5 &lt;&lt; 3.14;
 
-         std::list&lt;double&gt; stdlist = list.toStdList();</pre>
+ std::list&lt;double&gt; stdlist = list.toStdList();</pre>
 <p>This function was introduced in Qt 4.1.</p>
 <p>See also <a href="qlinkedlist.html#fromStdList">fromStdList</a>().</p>
 <a name="//apple_ref/cpp/instm/QLinkedList/operator!=" />
@@ -379,20 +379,20 @@
 <p>See also <a href="qlinkedlist.html#operator-not-eq">operator!=</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-73"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-70"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the linked list <i>list</i> to stream <i>out</i>.</p>
 <p>This function requires the value type to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-37"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-38"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QLinkedList&lt;T&gt; &amp; <i>list</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads a linked list from stream <i>in</i> into <i>list</i>.</p>
 <p>This function requires the value type to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

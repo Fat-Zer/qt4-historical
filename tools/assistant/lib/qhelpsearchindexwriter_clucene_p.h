@@ -63,6 +63,7 @@
 #include <QtCore/QMutex>
 #include <QtCore/QObject>
 #include <QtCore/QString>
+#include <QtCore/QDateTime>
 #include <QtCore/QStringList>
 #include <QtCore/QWaitCondition>
 
@@ -83,8 +84,9 @@ public:
     ~QHelpSearchIndexWriter();
 
     void cancelIndexing();
-    void updateIndex(const QString &collectionFile, bool reindex);
-    void optimizeIndex(const QString &indexFilesPath);
+    void updateIndex(const QString &collectionFile,
+        const QString &indexFilesFolder, bool reindex);
+    void optimizeIndex();
 
 signals:
     void indexingStarted();
@@ -98,9 +100,11 @@ private:
         QCLuceneIndexWriter *writer, QCLuceneAnalyzer &analyzer);
     void removeDocuments(const QString &indexPath, const QString &namespaceName);
 
-    QString addNamespace(const QString namespaces, const QString &namespaceName);
-    QString removeNamespace(const QString namespaces, const QString &namespaceName);
-    
+    bool writeIndexMap(QHelpEngineCore& engine,
+        const QMap<QString, QDateTime>& indexMap);
+
+    QList<QUrl> indexableFiles(QHelpEngineCore *helpEngine,
+        const QString &namespaceName, const QStringList &attributes) const;
 
 private:
     QMutex mutex;
@@ -109,6 +113,7 @@ private:
     bool m_cancel;
     bool m_reindex;
     QString m_collectionFile;
+    QString m_indexFilesFolder;
 };
 
         }   // namespace clucene

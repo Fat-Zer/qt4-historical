@@ -115,7 +115,9 @@ protected:
     void closeEvent(QCloseEvent *);
     void showEvent(QShowEvent *);
     void resizeEvent(QResizeEvent *);
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *);
+#endif
     bool eventFilter(QObject *, QEvent *);
     void adjustPosition(QWidget*);
 

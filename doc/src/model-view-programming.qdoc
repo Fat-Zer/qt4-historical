@@ -156,7 +156,7 @@
 
     Generally, the model/view classes can be separated into the three groups
     described above: models, views, and delegates. Each of these components
-    are defined by \e abstract classes that provide common interfaces and,
+    is defined by \e abstract classes that provide common interfaces and,
     in some cases, default implementations of features.
     Abstract classes are meant to be subclassed in order to provide the full
     set of functionality expected by other components; this also allows
@@ -400,7 +400,7 @@
     Model indexes contain a pointer to the model that created them, and
     this prevents confusion when working with more than one model.
 
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 0
 
     Model indexes provide \e temporary references to pieces of information,
     and can be used to retrieve or modify data via the model. Since models
@@ -429,7 +429,7 @@
     and column numbers to the model, and we receive an index that
     represents the item:
 
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 1
 
     Models that provide interfaces to simple, single level data structures
     like lists and tables do not need any other information to be provided
@@ -445,7 +445,7 @@
     By passing the relevant row and column numbers to the model we
     obtain a model index that refers to an item of data.
 
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 2
 
     Top level items in a model are always referenced by specifying
     \c QModelIndex() as their parent item. This is discussed in the next
@@ -467,7 +467,7 @@
     refer to an item is through a model index, so a parent model index must
     also be given:
 
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 3
 
     \table
     \row \i \inlineimage modelview-treemodel.png
@@ -477,11 +477,11 @@
     is referred to by a parent, a row number, and a column number.
 
     Items "A" and "C" are represented as top-level siblings in the model:
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 4
 
     Item "A" has a number of children. A model index for item "B" is
     obtained with the following code:
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 5
     \endtable
 
     \section2 Item Roles
@@ -497,7 +497,7 @@
     corresponding to the item, and by specifying a role to obtain the type
     of data we want:
 
-    \snippet doc/src/snippets/code/doc.src.model-view-programming.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_model-view-programming.qdoc 6
 
     \table
     \row \i \inlineimage modelview-roles.png
@@ -1325,8 +1325,8 @@
     \l{QAbstractItemModel::index()}{index()} and
     \l{QAbstractItemModel::parent()}{parent()} functions.
 
-    The list of strings are stored internally in the \c stringList
-    private member variable.
+    The list of strings is stored internally in the \c stringList private
+    member variable.
 
     \section2 Dimensions of The Model
 
@@ -1363,9 +1363,9 @@
 
     \snippet doc/src/snippets/stringlistmodel/model.cpp 2
 
-    Again, we return a valid QVariant only if the model index is valid and
-    the role is one that we support. The orientation of the header is also
-    taken into account when deciding the exact data to return.
+    Again, we return a valid QVariant only if the role is one that we support.
+    The orientation of the header is also taken into account when deciding the
+    exact data to return.
 
     Not all views display headers with the item data, and those that do may
     be configured to hide them. Nonetheless, it is recommended that you
@@ -1859,6 +1859,10 @@
 
     Since a list of model indexes is supplied to the function, this approach is general
     enough to be used in both hierarchical and non-heirarchical models.
+
+    Note that custom datatypes must be declared as \l{QMetaObject}{meta objects}
+    and that stream operators must be implemented for them. See the QMetaObject
+    class description for details.
 
     \section2 Inserting Dropped Data into a Model
 

@@ -836,6 +836,10 @@ void QAbstractItemModelPrivate::reset()
 
     Returns a pointer to the model containing the item that this index
     refers to.
+
+    You receive a const pointer to the model because calls to
+    non-const functions of the model might invalidate the model index
+    - and possibly crash your application.
 */
 
 /*!
@@ -1029,13 +1033,15 @@ void QAbstractItemModelPrivate::reset()
        call endRemoveColumns() \e{immediately afterwards}.
     \endlist
 
-    The \e private signals that these functions emit give attached components
-    the chance to take action before any data becomes unavailable. The
-    encapsulation of the insert and remove operations with these begin and end
-    functions also enables the model to manage
-    \l{QPersistentModelIndex}{persistent model indexes} correctly.
-    \bold{If you want selections to be handled properly, you must ensure that
-    you call these functions.}
+    The \e private signals that these functions emit give attached
+    components the chance to take action before any data becomes
+    unavailable. The encapsulation of the insert and remove operations
+    with these begin and end functions also enables the model to
+    manage \l{QPersistentModelIndex}{persistent model indexes}
+    correctly. \bold{If you want selections to be handled properly,
+    you must ensure that you call these functions.} If you insert or
+    remove an item with child items, you don't need to call these
+    functions for the child items.
 
     \sa {Model Classes}, {Model Subclassing Reference}, QModelIndex,
         QAbstractItemView, {Using Drag and Drop with Item Views},
@@ -1129,8 +1135,10 @@ void QAbstractItemModelPrivate::reset()
     Note that this signal must be emitted explicitly when
     reimplementing the setHeaderData() function.
 
-    If you are changing the number of columns or rows you don't need to emit this signal,
-    but use the begin/end functions.
+    If you are changing the number of columns or rows you don't need
+    to emit this signal, but use the begin/end functions (see the
+    section on subclassing in the QAbstractItemModel class description
+    for details).
 
     \sa headerData(), setHeaderData(), dataChanged()
 */
@@ -2048,7 +2056,7 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
 
     For example, as shown in the diagram, we insert three rows before
     row 2, so \a first is 2 and \a last is 4:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 0
     This inserts the three new rows as rows 2, 3, and 4.
     \row
     \o \inlineimage modelview-begin-append-rows.png Appending rows
@@ -2057,7 +2065,7 @@ bool QAbstractItemModel::decodeData(int row, int column, const QModelIndex &pare
     For example, as shown in the diagram, we append two rows to a
     collection of 4 existing rows (ending in row 3), so \a first is 4
     and \a last is 5:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 1
     This appends the two new rows as rows 4 and 5.
     \endtable
 
@@ -2108,7 +2116,7 @@ void QAbstractItemModel::endInsertRows()
 
     For example, as shown in the diagram, we remove the two rows from
     row 2 to row 3, so \a first is 2 and \a last is 3:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 2
     \endtable
 
     \sa endRemoveRows()
@@ -2158,7 +2166,7 @@ void QAbstractItemModel::endRemoveRows()
 
     For example, as shown in the diagram, we insert three columns before
     column 4, so \a first is 4 and \a last is 6:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 3
     This inserts the three new columns as columns 4, 5, and 6.
     \row
     \o \inlineimage modelview-begin-append-columns.png Appending columns
@@ -2167,7 +2175,7 @@ void QAbstractItemModel::endRemoveRows()
     For example, as shown in the diagram, we append three columns to a
     collection of six existing columns (ending in column 5), so \a first
     is 6 and \a last is 8:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 4
     This appends the two new columns as columns 6, 7, and 8.
     \endtable
 
@@ -2218,7 +2226,7 @@ void QAbstractItemModel::endInsertColumns()
 
     For example, as shown in the diagram, we remove the three columns
     from column 4 to column 6, so \a first is 4 and \a last is 6:
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstractitemmodel.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstractitemmodel.cpp 5
     \endtable
 
     \sa endRemoveColumns()

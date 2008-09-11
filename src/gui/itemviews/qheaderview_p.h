@@ -221,6 +221,10 @@ public:
                 : model->rowCount(root));
     }
 
+    inline bool modelIsEmpty() const {
+        return (model->rowCount(root) == 0 || model->columnCount(root) == 0);
+    }
+
     inline void doDelayedResizeSections() {
         if (!delayedResize.isActive())
             delayedResize.start(0, q_func());

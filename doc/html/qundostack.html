@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/util/qundostack.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/util/qundostack.cpp -->
 <head>
   <title>Qt 4.4: QUndoStack Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QUndoStack Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QUndoStack class is a stack of <a href="qundocommand.html">QUndoCommand</a> objects. <a href="#details">More...</a></p>
@@ -158,18 +158,18 @@
 <li>the undo/redo actions are disabled.</li>
 </ul>
 <p>The stack becomes enabled and appropriate signals are emitted when <a href="qundostack.html#endMacro">endMacro</a>() is called for the outermost macro.</p>
-<pre>     stack.beginMacro(&quot;insert red text&quot;);
-     stack.push(new InsertText(document, idx, text));
-     stack.push(new SetColor(document, idx, text.length(), Qt::red));
-     stack.endMacro(); <span class="comment">// indexChanged() is emitted</span></pre>
+<pre> stack.beginMacro(&quot;insert red text&quot;);
+ stack.push(new InsertText(document, idx, text));
+ stack.push(new SetColor(document, idx, text.length(), Qt::red));
+ stack.endMacro(); <span class="comment">// indexChanged() is emitted</span></pre>
 <p>This code is equivalent to:</p>
-<pre>     QUndoCommand *insertRed = new QUndoCommand(); <span class="comment">// an empty command</span>
-     insertRed-&gt;setText(&quot;insert red text&quot;);
+<pre> QUndoCommand *insertRed = new QUndoCommand(); <span class="comment">// an empty command</span>
+ insertRed-&gt;setText(&quot;insert red text&quot;);
 
-     new InsertText(document, idx, text, insertRed); <span class="comment">// becomes child of insertRed</span>
-     new SetColor(document, idx, text.length(), Qt::red, insertRed);
+ new InsertText(document, idx, text, insertRed); <span class="comment">// becomes child of insertRed</span>
+ new SetColor(document, idx, text.length(), Qt::red, insertRed);
 
-     stack.push(insertRed);</pre>
+ stack.push(insertRed);</pre>
 <p>See also <a href="qundostack.html#endMacro">endMacro</a>().</p>
 <a name="//apple_ref/cpp/instm/QUndoStack/canRedo" />
 <h3 class="fn"><a name="canRedo"></a>bool QUndoStack::canRedo () const</h3>
@@ -291,8 +291,8 @@
 <p>This signal is emitted whenever the value of <a href="qundostack.html#undoText">undoText</a>() changes. It is used to update the text property of the undo action returned by <a href="qundostack.html#createUndoAction">createUndoAction</a>(). <i>undoText</i> specifies the new text.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

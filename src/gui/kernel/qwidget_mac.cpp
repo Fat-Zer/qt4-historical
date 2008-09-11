@@ -101,7 +101,7 @@ enum {
 
 #ifdef QT_NAMESPACE
 
-// produce the string "com.trolltech.qt-namespace.widget", where "namespace" is the contents of QT_NAMESPACE. 
+// produce the string "com.trolltech.qt-namespace.widget", where "namespace" is the contents of QT_NAMESPACE.
 #define SS(x) #x
 #define S0(x) SS(x)
 #define S "com.trolltech.qt-" S0(QT_NAMESPACE) ".widget"
@@ -183,7 +183,7 @@ bool qt_mac_is_macdrawer(const QWidget *w)
     return (w && w->parentWidget() && w->windowType() == Qt::Drawer);
 }
 
-bool qt_mac_set_drawer_preferred_edge(QWidget *w, Qt::DockWidgetArea where) //users of Qt/Mac can use this..
+bool qt_mac_set_drawer_preferred_edge(QWidget *w, Qt::DockWidgetArea where) //users of Qt for Mac OS X can use this..
 {
     if(!qt_mac_is_macdrawer(w))
         return false;
@@ -517,7 +517,7 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
 
             if (!widget->isVisible()){
                 // Don't send a show event if the window is already showing, as an event
-                // has been sendt to preserve the X11 order: first 'show', then 'activated'. 
+                // has been sendt to preserve the X11 order: first 'show', then 'activated'.
                 QShowEvent qse;
                 QApplication::sendSpontaneousEvent(widget, &qse);
             }
@@ -560,10 +560,12 @@ OSStatus QWidgetPrivate::qt_window_event(EventHandlerCallRef er, EventRef event,
                 if(!(w && w->isVisible() && !w->isMinimized()))
                     qApp->setActiveWindow(0);
             }
-            
+
             //we send a hide to be like X11/Windows
             QEvent e(QEvent::Hide);
             QApplication::sendSpontaneousEvent(widget, &e);
+            extern QPointer<QWidget> qt_button_down; //qapplication_mac.cpp
+            qt_button_down = 0;
         } else if(ekind == kEventWindowToolbarSwitchMode) {
             QToolBarChangeEvent ev(!(GetCurrentKeyModifiers() & cmdKey));
             QApplication::sendSpontaneousEvent(widget, &ev);
@@ -1090,7 +1092,7 @@ OSStatus QWidgetPrivate::qt_widget_event(EventHandlerCallRef er, EventRef event,
                             dropWidget->d_func()->qt_mac_dnd_event(kEventControlDragEnter, drag);
                         }
                         // Set dropWidget to zero, so qt_mac_dnd_event
-                        // doesn't get called a second time below: 
+                        // doesn't get called a second time below:
                         dropWidget = 0;
                     }
                 }
@@ -1906,12 +1908,12 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     bool wasCreated = q->testAttribute(Qt::WA_WState_Created);
 
 
-    // Maintain the glWidgets list on parent change: remove "our" gl widgets 
+    // Maintain the glWidgets list on parent change: remove "our" gl widgets
     // from the list on the old parent and grandparents.
     if (glWidgets.isEmpty() == false) {
         QWidget *current = q->parentWidget();
         while (current) {
-            for (QList<QWidgetPrivate::GlWidgetInfo>::const_iterator it = glWidgets.constBegin(); 
+            for (QList<QWidgetPrivate::GlWidgetInfo>::const_iterator it = glWidgets.constBegin();
                  it != glWidgets.constEnd(); ++it)
                 current->d_func()->glWidgets.removeAll(*it);
 
@@ -2763,13 +2765,13 @@ void QWidgetPrivate::setWSGeometry(bool dontShow, const QRect &oldRect)
     HIRect bounds = CGRectMake(xrect.x(), xrect.y(),
                                xrect.width(), xrect.height());
 
-    // StaticContents optimization for non-toplevel widgets: when this flag is set 
+    // StaticContents optimization for non-toplevel widgets: when this flag is set
     // only invalidate the newly exposed areas on pure resizes.
     const QRect newRect(q->mapToParent(QPoint(0, 0)), q->size());
     const bool isMove = (oldRect.topLeft() != newRect.topLeft());
     const bool isResize = (oldRect.size() != newRect.size());
     const HIViewRef view = qt_mac_hiview_for(q);
-    if (q->layoutDirection() == Qt::LeftToRight && q->testAttribute(Qt::WA_StaticContents) 
+    if (q->layoutDirection() == Qt::LeftToRight && q->testAttribute(Qt::WA_StaticContents)
         && isResize && !isMove) {
         // Update view geometry without repainting.
         HIViewSetDrawingEnabled(view, false);
@@ -2929,7 +2931,7 @@ void QWidgetPrivate::scroll_sys(int dx, int dy, const QRect &r)
     if (!q->updatesEnabled() &&  (valid_rect || q->children().isEmpty()))
         return;
 
-    qt_event_request_window_change(q);    
+    qt_event_request_window_change(q);
 
     if(!valid_rect) {        // scroll children
         QPoint pd(dx, dy);
@@ -3185,14 +3187,14 @@ void QWidgetPrivate::setModal_sys()
             if (old_wclass == kDocumentWindowClass || old_wclass == kFloatingWindowClass || old_wclass == kUtilityWindowClass){
                 // Only change the class to kMovableModalWindowClass if the no explicit jewels
                 // are set (kMovableModalWindowClass can't contain them), and the current window class
-                // can be converted to modal (according to carbon doc). Mind the order of 
+                // can be converted to modal (according to carbon doc). Mind the order of
                 // HIWindowChangeClass and ChangeWindowAttributes.
                 WindowGroupRef group = GetWindowGroup(windowRef);
                 HIWindowChangeClass(windowRef, kMovableModalWindowClass);
                 quint32 tmpWattr = kWindowCloseBoxAttribute | kWindowHorizontalZoomAttribute;
                 ChangeWindowAttributes(windowRef, tmpWattr, kWindowNoAttributes);
                 ChangeWindowAttributes(windowRef, kWindowNoAttributes, tmpWattr);
-                // If the window belongs to a qt-created group, set that group once more: 
+                // If the window belongs to a qt-created group, set that group once more:
                 if (data.window_flags & Qt::WindowStaysOnTopHint
                     || q->windowType() == Qt::Popup
                     || q->windowType() == Qt::ToolTip)
@@ -3209,12 +3211,12 @@ void QWidgetPrivate::setModal_sys()
         if (old_wclass != newClass && newClass != 0){
             WindowGroupRef group = GetWindowGroup(windowRef);
             HIWindowChangeClass(windowRef, newClass);
-            // If the window belongs to a qt-created group, set that group once more: 
+            // If the window belongs to a qt-created group, set that group once more:
             if (data.window_flags & Qt::WindowStaysOnTopHint
                 || q->windowType() == Qt::Popup
                 || q->windowType() == Qt::ToolTip)
                 SetWindowGroup(windowRef, group);
-        }        
+        }
     }
 
     // Make sure that HIWindowChangeClass didn't remove drag support

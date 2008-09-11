@@ -349,7 +349,7 @@ void QWidgetPrivate::create_sys(WId window, bool initializeWindow, bool destroyO
                 if (flags & Qt::WindowTitleHint)
                     style |= WS_CAPTION;
                 if (flags & Qt::WindowSystemMenuHint)
-                    style |= (WS_SYSMENU | WS_CAPTION);
+                    style |= WS_SYSMENU;
                 if (flags & Qt::WindowMinimizeButtonHint)
                     style |= WS_MINIMIZEBOX;
                 if (flags & Qt::WindowMaximizeButtonHint)
@@ -617,9 +617,11 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
         ShowWindow(data.winid, SW_HIDE);
         SetParent(data.winid, 0);
     }
-
-    if (q->testAttribute(Qt::WA_DropSiteRegistered))
+    bool dropSiteWasRegistered = false;
+    if (q->testAttribute(Qt::WA_DropSiteRegistered)) {
+        dropSiteWasRegistered = true;
         q->setAttribute(Qt::WA_DropSiteRegistered, false); // ole dnd unregister (we will register again below)
+    }
 
     if ((q->windowType() == Qt::Desktop))
         old_winid = 0;
@@ -658,10 +660,9 @@ void QWidgetPrivate::setParent_sys(QWidget *parent, Qt::WindowFlags f)
     if (old_winid)
         DestroyWindow(old_winid);
 
-    if (q->testAttribute(Qt::WA_AcceptDrops)
+    if (q->testAttribute(Qt::WA_AcceptDrops) || dropSiteWasRegistered
         || (!q->isWindow() && q->parentWidget() && q->parentWidget()->testAttribute(Qt::WA_DropSiteRegistered)))
         q->setAttribute(Qt::WA_DropSiteRegistered, true);
-
 
 #ifdef Q_OS_WINCE
     // Show borderless toplevel windows in tasklist & NavBar
@@ -1627,7 +1628,9 @@ int QWidget::metric(PaintDeviceMetric m) const
 #ifndef Q_OS_WINCE
 void QWidgetPrivate::createSysExtra()
 {
+#ifndef QT_NO_DRAGANDDROP
     extra->dropTarget = 0;
+#endif
 #ifndef QT_NO_DIRECT3D
     extra->had_auto_fill_bg = 0;
     extra->had_paint_on_screen = 0;

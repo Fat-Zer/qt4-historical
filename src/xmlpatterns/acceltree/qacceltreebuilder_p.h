@@ -97,7 +97,7 @@ namespace QPatternist
         AccelTreeBuilder(const QUrl &docURI,
                          const QUrl &baseURI,
                          const NamePool::Ptr &np,
-                         const ReportContext::Ptr &context);
+                         ReportContext *const context);
         virtual void startDocument();
         virtual void endDocument();
         virtual void startElement(const QXmlName &name);
@@ -171,7 +171,12 @@ namespace QPatternist
          */
         QSet<QString>                   m_attributeCompress;
         const QUrl                      m_documentURI;
-        const ReportContext::Ptr        m_context;
+        /**
+         * We don't store a reference pointer here because then we get a
+         * circular reference with GenericDynamicContext, when it stores us as
+         * a member.
+         */
+        ReportContext *const            m_context;
     };
 
 #include "qacceltreebuilder.cpp"

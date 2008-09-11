@@ -24,6 +24,7 @@ along with this library.  If not, see <http://www.gnu.org/licenses/>.
 
 
 #include <QtCore/QUrl>
+#include <QtCore/QDebug>
 
 #include <qnetwork.h>
 
@@ -121,14 +122,21 @@ namespace Phonon
 
         void MediaGraph::grabNode(BackendNode *node)
         {
-            FILTER_INFO info;
-            const Filter filter = node->filter(m_index);
+            grabFilter(node->filter(m_index));
+        }
+
+        void MediaGraph::grabFilter(Filter filter)
+        {
             if (filter) {
+                FILTER_INFO info;
                 filter->QueryFilterInfo(&info);
-                if (info.pGraph == 0) {
-                    HRESULT hr = m_graph->AddFilter(filter, 0);
-                    m_mediaObject->catchComError(hr);
-                } else {
+                if (info.pGraph != m_graph) {
+                    if (info.pGraph) {
+                        m_mediaObject->catchComError(info.pGraph->RemoveFilter(filter));
+                    }
+                    m_mediaObject->catchComError(m_graph->AddFilter(filter, 0));
+                }
+                if (info.pGraph) {
                     info.pGraph->Release();
                 }
             }
@@ -210,13 +218,7 @@ namespace Phonon
                 const Filter currentFilter = node->filter(m_index);
                 foreach(const InputPin &inpin, BackendNode::pins(currentFilter, PINDIR_INPUT)) {
                     //we ensure the filter belongs to the graph
-                    FILTER_INFO info;
-                    currentFilter->QueryFilterInfo(&info);
-                    if (info.pGraph == 0) {
-                        m_graph->AddFilter(currentFilter, 0);
-                    } else {
-                        info.pGraph->Release();
-                    }
+                    grabFilter(currentFilter);
 
                     foreach(const OutputPin outpin, m_decoderPins) {
                         //a decoder has only one output
@@ -329,8 +331,12 @@ namespace Phonon
         void MediaGraph::ensureStopped()
         {
             m_isStopping = true;
+            //special case here because we want stopped to be synchronous
             m_graph->Abort();
-            m_mediaControl->Stop(); //special case here because we want stopped to be synchronous
+            m_mediaControl->Stop(); 
+            OAFilterState dummy;
+            //this will wait until the change is effective
+            m_mediaControl->GetState(INFINITE, &dummy);
             m_isStopping = false;
         }
 
@@ -586,7 +592,8 @@ namespace Phonon
                 }
 
             } else {
-                return SUCCEEDED(m_graph->Connect(out, newIn));
+                HRESULT hr = m_graph->Connect(out, newIn);
+                return SUCCEEDED(hr);
             }
         }
 
@@ -594,7 +601,11 @@ namespace Phonon
         {
             bool ret = false;
             const QList<InputPin> inputs = BackendNode::pins(sink->filter(m_index), PINDIR_INPUT);
-            const QList<OutputPin> outputs = BackendNode::pins(source == m_mediaObject ? m_fakeSource : source->filter(m_index), PINDIR_OUTPUT);
+            QList<OutputPin> outputs = BackendNode::pins(source == m_mediaObject ? m_fakeSource : source->filter(m_index), PINDIR_OUTPUT);
+            
+            if (source == m_mediaObject) {
+                grabFilter(m_fakeSource);
+            }
 
 #ifdef GRAPH_DEBUG
             qDebug() << Q_FUNC_INFO << source << sink << this;
@@ -681,12 +692,6 @@ namespace Phonon
             case Phonon::MediaSource::Stream:
                 {
                     m_realSource = Filter(new IODeviceReader(source, this));
-                    m_result = m_graph->AddFilter(m_realSource, L"Phonon Stream Reader");
-
-                    if (FAILED(m_result)) {
-                        return m_result;
-                    }
-
                     m_renderId = m_mediaObject->workerThread()->addFilterToRender(m_realSource);
                 }
                 break;
@@ -720,6 +725,9 @@ namespace Phonon
 				}
 
                 m_result = reallyFinishLoading(hr, graph);
+                //qDebug() << "total time is" << this->absoluteTotalTime();
+                //m_mediaControl->Run();
+
                 emit loadingFinished(this);
             }
         }
@@ -730,6 +738,9 @@ namespace Phonon
             if (FAILED(hr)) {
                 return hr;
             }
+
+            const Graph oldGraph = m_graph;
+            m_graph = graph;
 
             //we keep the source and all the way down to the decoders
             QSet<Filter> keptFilters;
@@ -762,54 +773,33 @@ namespace Phonon
                 graph->RemoveFilter(filter);
             }
 
+            m_mediaObject->workerThread()->replaceGraphForEventManagement(graph, oldGraph);
 
             //let's transfer the nodes from the current graph to the new one
             QList<GraphConnection> connections; //we store the connections that need to be restored
 
 
             // First get all the sink nodes (nodes with no input connected)
-            foreach(const Filter &filter, getAllFilters()) {
-                bool isSink = true;
-                foreach(InputPin pin, BackendNode::pins(filter, PINDIR_INPUT)) {
-                    OutputPin out;
-                    if (pin->ConnectedTo(out.pparam()) != VFW_E_NOT_CONNECTED) {
-                        isSink = false;
-                    }
-                }
-
-                if (isSink) {
-                    connections += getConnections(filter);
-                    //we can now transfer the filter itself
-                    m_graph->RemoveFilter(filter);
-                    graph->AddFilter(filter, 0);
-                }
+            foreach(BackendNode *node, m_sinkConnections) {
+                Filter currentFilter = node->filter(m_index);
+                connections += getConnections(currentFilter);
+                grabFilter(currentFilter);
             }
 
+            ensureSourceConnectedTo(true);
 
             //let's reestablish the connections
             foreach(GraphConnection connection, connections) {
                 //check if we shoud transfer the sink node
-                FILTER_INFO info;
-                connection.input->QueryFilterInfo(&info);
-                if (info.pGraph != graph) {
-                    if (info.pGraph) {
-                        info.pGraph->RemoveFilter(connection.input);
-                        info.pGraph->Release();
-                    }
-                    graph->AddFilter(connection.input, 0);
-                }
+
+                grabFilter(connection.input);
+                grabFilter(connection.output);
 
                 const OutputPin output = BackendNode::pins(connection.output, PINDIR_OUTPUT).at(connection.outputOffset);
                 const InputPin input   = BackendNode::pins(connection.input, PINDIR_INPUT).at(connection.inputOffset);
                 HRESULT hr = output->Connect(input, 0);
                 Q_ASSERT( SUCCEEDED(hr));
             }
-
-            m_mediaObject->workerThread()->replaceGraphForEventManagement(graph, m_graph);
-            m_graph = graph;
-            //let's update the interfaces
-            m_mediaControl = ComPointer<IMediaControl>(m_graph, IID_IMediaControl);
-            m_mediaSeeking = ComPointer<IMediaSeeking>(m_graph, IID_IMediaSeeking);
 
             //we need to do something smart to detect if the streams are unencoded
             if (m_demux) {
@@ -821,7 +811,10 @@ namespace Phonon
                 }
             }
 
-            ensureSourceConnectedTo(true);
+
+            //Finally, let's update the interfaces
+            m_mediaControl = ComPointer<IMediaControl>(graph, IID_IMediaControl);
+            m_mediaSeeking = ComPointer<IMediaSeeking>(graph, IID_IMediaSeeking);
             return hr;
         }
 
@@ -916,6 +909,16 @@ namespace Phonon
 
         bool MediaGraph::isSourceFilter(const Filter &filter) const
         {
+#ifdef GRAPH_DEBUG
+            {
+                FILTER_INFO info;
+                filter->QueryFilterInfo(&info);
+                qDebug() << Q_FUNC_INFO << QString::fromWCharArray(info.achName);
+                if (info.pGraph) {
+                    info.pGraph->Release();
+                }
+            }
+#endif
             //a source filter is one that has no input
             return BackendNode::pins(filter, PINDIR_INPUT).isEmpty();
         }

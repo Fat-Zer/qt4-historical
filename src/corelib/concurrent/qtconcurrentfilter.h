@@ -117,19 +117,19 @@ ThreadEngineStarter<void> filterInternal(Sequence &sequence, KeepFunctor keep, T
 template <typename Sequence, typename KeepFunctor>
 QFuture<void> filter(Sequence &sequence, KeepFunctor keep)
 {
-    return filterInternal(sequence, keep, &Sequence::append);
+    return filterInternal(sequence, keep, &Sequence::push_back);
 }
 
 template <typename Sequence, typename T>
 QFuture<void> filter(Sequence &sequence, bool (keep)(T))
 {
-    return filterInternal(sequence, FunctionWrapper1<bool, T>(keep), &Sequence::append);
+    return filterInternal(sequence, FunctionWrapper1<bool, T>(keep), &Sequence::push_back);
 }
 
 template <typename Sequence, typename C>
 QFuture<void> filter(Sequence &sequence, bool (C::*keep)() const)
 {
-    return filterInternal(sequence, ConstMemberFunctionWrapper<bool, C>(keep), &Sequence::append);
+    return filterInternal(sequence, ConstMemberFunctionWrapper<bool, C>(keep), &Sequence::push_back);
 }
 
 // filteredReduced() on sequences
@@ -370,32 +370,32 @@ QFuture<typename Sequence::value_type> filtered(const Sequence &sequence, KeepFu
 }
 
 template <typename Sequence, typename T>
-QFuture<T> filtered(const Sequence &sequence, bool (keep)(T))
+QFuture<typename Sequence::value_type> filtered(const Sequence &sequence, bool (keep)(T))
 {
     return startFiltered(sequence, FunctionWrapper1<bool, T>(keep));
 }
 
 template <typename Sequence, typename C>
-QFuture<C> filtered(const Sequence &sequence, bool (C::*keep)() const)
+QFuture<typename Sequence::value_type> filtered(const Sequence &sequence, bool (C::*keep)() const)
 {
     return startFiltered(sequence, ConstMemberFunctionWrapper<bool, C>(keep));
 }
 
 // filtered() on iterators
 template <typename Iterator, typename KeepFunctor>
-QFuture<typename Iterator::value_type> filtered(Iterator begin, Iterator end, KeepFunctor keep)
+QFuture<typename qValueType<Iterator>::value_type> filtered(Iterator begin, Iterator end, KeepFunctor keep)
 {
     return startFiltered(begin, end, keep);
 }
 
 template <typename Iterator, typename T>
-QFuture<typename Iterator::value_type> filtered(Iterator begin, Iterator end, bool (keep)(T))
+QFuture<typename qValueType<Iterator>::value_type> filtered(Iterator begin, Iterator end, bool (keep)(T))
 {
     return startFiltered(begin, end, FunctionWrapper1<bool, T>(keep));
 }
 
 template <typename Iterator, typename C>
-QFuture<typename Iterator::value_type> filtered(Iterator begin,
+QFuture<typename qValueType<Iterator>::value_type> filtered(Iterator begin,
                                                 Iterator end,
                                                 bool (C::*keep)() const)
 {
@@ -407,13 +407,13 @@ QFuture<typename Iterator::value_type> filtered(Iterator begin,
 template <typename Sequence, typename KeepFunctor>
 void blockingFilter(Sequence &sequence, KeepFunctor keep)
 {
-    filterInternal(sequence, keep, &Sequence::append).startBlocking();
+    filterInternal(sequence, keep, &Sequence::push_back).startBlocking();
 }
 
 template <typename Sequence, typename T>
 void blockingFilter(Sequence &sequence, bool (keep)(T))
 {
-    filterInternal(sequence, FunctionWrapper1<bool, T>(keep), &Sequence::append)
+    filterInternal(sequence, FunctionWrapper1<bool, T>(keep), &Sequence::push_back)
         .startBlocking();
 }
 
@@ -422,7 +422,7 @@ void blockingFilter(Sequence &sequence, bool (C::*keep)() const)
 {
     filterInternal(sequence,
                    ConstMemberFunctionWrapper<bool, C>(keep),
-                   &Sequence::append)
+                   &Sequence::push_back)
         .startBlocking();
 }
 
@@ -677,13 +677,13 @@ D blockingFilteredReduced(Iterator begin,
 template <typename Sequence, typename KeepFunctor>
 Sequence blockingFiltered(const Sequence &sequence, KeepFunctor keep)
 {
-    return blockingFilteredReduced(sequence, keep, &Sequence::append, OrderedReduce);
+    return blockingFilteredReduced(sequence, keep, &Sequence::push_back, OrderedReduce);
 }
 
 template <typename Sequence, typename T>
 Sequence blockingFiltered(const Sequence &sequence, bool (keep)(T))
 {
-    return blockingFilteredReduced(sequence, keep, &Sequence::append, OrderedReduce);
+    return blockingFilteredReduced(sequence, keep, &Sequence::push_back, OrderedReduce);
 }
 
 template <typename Sequence, typename C>
@@ -691,7 +691,7 @@ Sequence blockingFiltered(const Sequence &sequence, bool (C::*filter)() const)
 {
     return blockingFilteredReduced(sequence,
                                    filter,
-                                   &Sequence::append,
+                                   &Sequence::push_back,
                                    OrderedReduce);
 }
 
@@ -702,7 +702,7 @@ OutputSequence blockingFiltered(Iterator begin, Iterator end, KeepFunctor keep)
     return blockingFilteredReduced(begin,
                                    end,
                                    keep,
-                                   &OutputSequence::append,
+                                   &OutputSequence::push_back,
                                    OrderedReduce);
 }
 
@@ -712,7 +712,7 @@ OutputSequence blockingFiltered(Iterator begin, Iterator end, bool (keep)(T))
     return blockingFilteredReduced(begin,
                                    end,
                                    keep,
-                                   &OutputSequence::append,
+                                   &OutputSequence::push_back,
                                    OrderedReduce);
 }
 
@@ -722,7 +722,7 @@ OutputSequence blockingFiltered(Iterator begin, Iterator end, bool (C::*filter)(
     return blockingFilteredReduced(begin,
                                    end,
                                    filter,
-                                   &OutputSequence::append,
+                                   &OutputSequence::push_back,
                                    OrderedReduce);
 }
 

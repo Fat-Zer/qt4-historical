@@ -93,7 +93,7 @@ When \l {QObject} {QObjects} are created on the stack, the same
 behavior applies. Normally, the order of destruction still doesn't
 present a problem. Consider the following snippet:
 
-\snippet doc/src/snippets/code/doc.src.objecttrees.qdoc 0
+\snippet doc/src/snippets/code/doc_src_objecttrees.qdoc 0
 
 The parent, \c window, and the child, \c quit, are both \l {QObject}
 {QObjects} because QPushButton inherits QWidget, and QWidget inherits
@@ -107,12 +107,12 @@ parent, \c window, before the destructor of \c window is called.
 But now consider what happens if we swap the order of construction, as
 shown in this second snippet:
 
-\snippet doc/src/snippets/code/doc.src.objecttrees.qdoc 1
+\snippet doc/src/snippets/code/doc_src_objecttrees.qdoc 1
 
 In this case, the order of destruction causes a problem. The parent's
 destructor is called first because it was created last. It then calls
 the destructor of its child, \c quit, which is incorrect because \c
-quit is a local variable. When \c quit susequently goes out of scope,
+quit is a local variable. When \c quit subsequently goes out of scope,
 its destructor is called again, this time correctly, but the damage has
 already been done.
 

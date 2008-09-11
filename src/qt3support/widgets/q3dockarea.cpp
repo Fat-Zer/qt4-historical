@@ -516,10 +516,10 @@ int Q3DockAreaLayout::widthForHeight(int h) const
     read back later to restore the saved positions.
 
     Save the positions to a QTextStream:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockarea.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3dockarea.cpp 0
 
     Restore the positions from a QTextStream:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockarea.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3dockarea.cpp 1
 */
 
 /*!

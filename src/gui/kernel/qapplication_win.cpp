@@ -385,7 +385,7 @@ static bool        appNoGrab        = false;        // mouse/keyboard grabbing
 static bool        app_do_modal           = false;        // modal mode
 extern QWidgetList *qt_modal_stack;
 extern QDesktopWidget *qt_desktopWidget;
-static QWidget *popupButtonFocus   = 0;
+static QPointer<QWidget> popupButtonFocus;
 static bool        qt_try_modal(QWidget *, MSG *, int& ret);
 
 QWidget               *qt_button_down = 0;                // widget got last button-down
@@ -1496,34 +1496,6 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
         break;
 
     case WM_LBUTTONDOWN: 
-#if defined(Q_OS_WINCE)
-        {
-            QWidget *widget = QWidget::find(hwnd);
-            if (widget && (widget != qApp->activePopupWidget())) {
-                QPoint pos = QPoint(short(LOWORD(lParam)), short(HIWORD(lParam)));
-                QPoint globalPos = widget->mapToGlobal(pos);
-                // In case we are using Alien, then we the widget to
-                // send the context menu event is a different one
-                if (!widget->testAttribute(Qt::WA_NativeWindow) && !widget->testAttribute(Qt::WA_PaintOnScreen)) {
-                    widget = QApplication::widgetAt(globalPos);
-                    pos = widget->mapFromGlobal(globalPos);
-                }
-                SHRGINFO    shrg;
-                shrg.cbSize = sizeof(shrg);
-                shrg.hwndClient = hwnd;
-                shrg.ptDown.x = LOWORD(lParam);
-                shrg.ptDown.y = HIWORD(lParam);
-                shrg.dwFlags = SHRG_RETURNCMD | SHRG_NOANIMATION;
-                resolveAygLibs();
-                if (ptrRecognizeGesture && (ptrRecognizeGesture(&shrg) == GN_CONTEXTMENU)) {
-                    if (qApp->activePopupWidget())
-                        qApp->activePopupWidget()->close();
-                    QContextMenuEvent e(QContextMenuEvent::Mouse, pos, globalPos);
-                    result = qt_sendSpontaneousEvent(widget, &e);
-                }
-            }
-        }
-#endif
     case WM_MBUTTONDOWN:
     case WM_RBUTTONDOWN:
     case WM_XBUTTONDOWN:
@@ -1575,6 +1547,34 @@ LRESULT CALLBACK QtWndProc(HWND hwnd, UINT message, WPARAM wParam, LPARAM lParam
 
         if (!qt_tabletChokeMouse) {
             result = widget->translateMouseEvent(msg);        // mouse event
+#if defined(Q_OS_WINCE)
+            if (message == WM_LBUTTONDOWN && widget != qApp->activePopupWidget()) {
+                QWidget* alienWidget = widget;
+                if (alienWidget != qApp->activePopupWidget()) {
+                    QPoint pos(GET_X_LPARAM(lParam), GET_Y_LPARAM(lParam));
+                    QPoint globalPos(msg.pt.x, msg.pt.y);
+                    // In case we are using Alien, then the widget to
+                    // send the context menu event is a different one
+                    if (!alienWidget->testAttribute(Qt::WA_NativeWindow) && !alienWidget->testAttribute(Qt::WA_PaintOnScreen)) {
+                        alienWidget = QApplication::widgetAt(globalPos);
+                        pos = alienWidget->mapFromGlobal(globalPos);
+                    }
+                    SHRGINFO shrg;
+                    shrg.cbSize = sizeof(shrg);
+                    shrg.hwndClient = hwnd;
+                    shrg.ptDown.x = GET_X_LPARAM(lParam);
+                    shrg.ptDown.y = GET_Y_LPARAM(lParam);
+                    shrg.dwFlags = SHRG_RETURNCMD | SHRG_NOANIMATION;
+                    resolveAygLibs();
+                    if (ptrRecognizeGesture && (ptrRecognizeGesture(&shrg) == GN_CONTEXTMENU)) {
+                        if (qApp->activePopupWidget())
+                            qApp->activePopupWidget()->close();
+                        QContextMenuEvent e(QContextMenuEvent::Mouse, pos, globalPos);
+                        result = qt_sendSpontaneousEvent(alienWidget, &e);
+                    }
+                }
+            }
+#endif
         } else {
             // Sometimes we only get a WM_MOUSEMOVE message
             // and sometimes we get both a WM_MOUSEMOVE and

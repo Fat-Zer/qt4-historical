@@ -407,21 +407,21 @@ void QHashData::checkSanity()
     \endlist
 
     Here's an example QHash with QString keys and \c int values:
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 0
 
     To insert a (key, value) pair into the hash, you can use operator[]():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 1
 
     This inserts the following three (key, value) pairs into the
     QHash: ("one", 1), ("three", 3), and ("seven", 7). Another way to
     insert items into the hash is to use insert():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 2
 
     To look up a value, use operator[]() or value():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 3
 
     If there is no item with the specified key in the hash, these
     functions return a \l{default-constructed value}.
@@ -429,12 +429,12 @@ void QHashData::checkSanity()
     If you want to check whether the hash contains a particular key,
     use contains():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 4
 
     There is also a value() overload that uses its second argument as
     a default value if there is no item with the specified key:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 5
 
     In general, we recommend that you use contains() and value()
     rather than operator[]() for looking up a key in a hash. The
@@ -443,7 +443,7 @@ void QHashData::checkSanity()
     const). For example, the following code snippet will create 1000
     items in memory:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 6
 
     To avoid this problem, replace \c hash[i] with \c hash.value(i)
     in the code above.
@@ -455,11 +455,11 @@ void QHashData::checkSanity()
     QHash::iterator). Here's how to iterate over a QHash<QString,
     int> using a Java-style iterator:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 7
 
     Here's the same code, but using an STL-style iterator:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 8
 
     QHash is unordered, so an iterator's sequence cannot be assumed
     to be predictable. If ordering by key is required, use a QMap.
@@ -468,7 +468,7 @@ void QHashData::checkSanity()
     insert() with a key that already exists in the QHash, the
     previous value is erased. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 9
 
     However, you can store multiple values per key by using
     insertMulti() instead of insert() (or using the convenience
@@ -476,19 +476,19 @@ void QHashData::checkSanity()
     the values for a single key, you can use values(const Key &key),
     which returns a QList<T>:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 10
 
     The items that share the same key are available from most
     recently to least recently inserted. A more efficient approach is
     to call find() to get the iterator for the first item with a key
     and iterate from there:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 11
 
     If you only need to extract the values from a hash (not the keys),
     you can also use \l{foreach}:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 12
 
     Items can be removed from the hash in several ways. One way is to
     call remove(); this will remove any item with the given key.
@@ -511,7 +511,7 @@ void QHashData::checkSanity()
     implementation.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 13
 
     The qHash() function computes a numeric value based on a key. It
     can use any algorithm imaginable, as long as it always returns
@@ -629,7 +629,7 @@ void QHashData::checkSanity()
     This function is useful for code that needs to build a huge hash
     and wants to avoid repeated reallocation. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 14
 
     Ideally, \a size should be slightly more than the maximum number
     of items expected in the hash. \a size doesn't have to be prime,
@@ -765,10 +765,9 @@ void QHashData::checkSanity()
 /*! \fn QList<Key> QHash::uniqueKeys() const
     \since 4.2
 
-    Returns a list containing all the keys in the map in ascending
-    order. Keys that occur multiple times in the map (because items
-    were inserted with insertMulti(), or unite() was used) occur only
-    once in the returned list.
+    Returns a list containing all the keys in the map. Keys that occur multiple
+    times in the map (because items were inserted with insertMulti(), or
+    unite() was used) occur only once in the returned list.
 
     \sa keys(), values()
 */
@@ -917,7 +916,7 @@ void QHashData::checkSanity()
     be called while iterating, and won't affect the order of items in
     the hash. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 15
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 15
 
     \sa remove(), take(), find()
 */
@@ -936,7 +935,7 @@ void QHashData::checkSanity()
     the iterator. For example, here's some code that iterates over all
     the items with the same key:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 16
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 16
 
     \sa value(), values(), QMultiHash::find()
 */
@@ -1093,7 +1092,7 @@ void QHashData::checkSanity()
     start iterating. Here's a typical loop that prints all the (key,
     value) pairs stored in a hash:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 17
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 17
 
     Unlike QMap, which orders its items by key, QHash stores its
     items in an arbitrary order. The only guarantee is that items that
@@ -1106,22 +1105,22 @@ void QHashData::checkSanity()
     Here's an example that increments every value stored in the QHash
     by 2:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 18
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 18
 
     Here's an example that removes all the items whose key is a
     string that starts with an underscore character:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 19
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 19
 
     The call to QHash::erase() removes the item pointed to by the
     iterator from the hash, and returns an iterator to the next item.
     Here's another way of removing an item while iterating:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 20
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 20
 
     It might be tempting to write code like this:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 21
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 21
 
     However, this will potentially crash in \c{++i}, because \c i is
     a dangling iterator after the call to erase().
@@ -1178,7 +1177,7 @@ void QHashData::checkSanity()
     You can change the value of an item by using value() on
     the left side of an assignment, for example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 22
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 22
 
     \sa key(), operator*()
 */
@@ -1322,7 +1321,7 @@ void QHashData::checkSanity()
     QHash::find() before you can start iterating. Here's a typical
     loop that prints all the (key, value) pairs stored in a hash:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 23
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 23
 
     Unlike QMap, which orders its items by key, QHash stores its
     items in an arbitrary order. The only guarantee is that items that
@@ -1655,7 +1654,7 @@ void QHashData::checkSanity()
     operator+=().
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 24
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 24
 
     Unlike QHash, QMultiHash provides no operator[]. Use value() or
     replace() if you want to access the most recently inserted item
@@ -1664,7 +1663,7 @@ void QHashData::checkSanity()
     If you want to retrieve all the values for a single key, you can
     use values(const Key &key), which returns a QList<T>:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 25
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 25
 
     The items that share the same key are available from most
     recently to least recently inserted.
@@ -1673,7 +1672,7 @@ void QHashData::checkSanity()
     the STL-style iterator for the first item with a key and iterate from
     there:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qhash.cpp 26
+    \snippet doc/src/snippets/code/src_corelib_tools_qhash.cpp 26
 
     QMultiHash's key and value data types must be \l{assignable data
     types}. You cannot, for example, store a QWidget as a value;

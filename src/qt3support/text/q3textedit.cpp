@@ -338,7 +338,7 @@ static bool block_set_alignment = false;
 
     Loading and saving text is achieved using setText() and text(),
     for example:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textedit.cpp 0
 
     By default the text edit wraps words at whitespace to fit within
     the text edit widget. The setWordWrap() function is used to
@@ -382,10 +382,10 @@ static bool block_set_alignment = false;
     navigation, and text may only be selected with the mouse:
     \table
     \header \i Keypresses \i Action
-    \row \i Qt::UpArrow        \i Move one line up
-    \row \i Qt::DownArrow        \i Move one line down
-    \row \i Qt::LeftArrow        \i Move one character left
-    \row \i Qt::RightArrow        \i Move one character right
+    \row \i Up        \i Move one line up
+    \row \i Down        \i Move one line down
+    \row \i Left        \i Move one character left
+    \row \i Right        \i Move one character right
     \row \i PageUp        \i Move one (viewport) page up
     \row \i PageDown        \i Move one (viewport) page down
     \row \i Home        \i Move to the beginning of the text
@@ -434,11 +434,11 @@ static bool block_set_alignment = false;
     color="#223344">}. Bold, italic and underline settings can be
     specified by the tags \c {<b>}, \c <i> and \c {<u>}. Note that a
     tag does not necessarily have to be closed. A valid example:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textedit.cpp 1
 
     Stylesheets can also be used in Qt::LogText mode. To create and use a
     custom tag, you could do the following:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textedit.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textedit.cpp 2
     Note that only the color, bold, underline and italic attributes of
     a Q3StyleSheetItem is used in Qt::LogText mode.
 
@@ -518,14 +518,14 @@ static bool block_set_alignment = false;
                       (also Shift+Delete under Windows)
     \row \i Ctrl+Z \i Undo the last operation
     \row \i Ctrl+Y \i Redo the last operation
-    \row \i Qt::LeftArrow            \i Move the cursor one character left
-    \row \i Ctrl+Qt::LeftArrow  \i Move the cursor one word left
-    \row \i Qt::RightArrow            \i Move the cursor one character right
-    \row \i Ctrl+Qt::RightArrow \i Move the cursor one word right
-    \row \i Qt::UpArrow            \i Move the cursor one line up
-    \row \i Ctrl+Qt::UpArrow    \i Move the cursor one word up
-    \row \i Qt::DownArrow            \i Move the cursor one line down
-    \row \i Ctrl+Down Arrow \i Move the cursor one word down
+    \row \i Left            \i Move the cursor one character left
+    \row \i Ctrl+Left  \i Move the cursor one word left
+    \row \i Right            \i Move the cursor one character right
+    \row \i Ctrl+Right \i Move the cursor one word right
+    \row \i Up            \i Move the cursor one line up
+    \row \i Ctrl+Qt::Up    \i Move the cursor one word up
+    \row \i DownArrow            \i Move the cursor one line down
+    \row \i Ctrl+Down \i Move the cursor one word down
     \row \i PageUp            \i Move the cursor one page up
     \row \i PageDown            \i Move the cursor one page down
     \row \i Home            \i Move the cursor to the beginning of the line
@@ -538,9 +538,8 @@ static bool block_set_alignment = false;
     \endtable
 
     To select (mark) text hold down the Shift key whilst pressing one
-    of the movement keystrokes, for example, \e{Shift+Right Arrow}
-    will select the character to the right, and \e{Shift+Ctrl+Right
-    Arrow} will select the word to the right, etc.
+    of the movement keystrokes, for example, \e{Shift+Right}
+    will select the character to the right, and \e{Shift+Ctrl+Right} will select the word to the right, etc.
 
     By default the text edit widget operates in insert mode so all
     text that the user enters is inserted into the text edit and any

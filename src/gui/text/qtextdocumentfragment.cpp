@@ -489,10 +489,22 @@ void QTextHtmlImporter::import()
                 hasBlock = false;
             } else if (hasBlock) {
                 // when collapsing subsequent block tags we need to clear the block format
-                QTextBlockFormat block = currentNode->blockFormat;
-                block.setIndent(indent);
+                QTextBlockFormat blockFormat = currentNode->blockFormat;
+                blockFormat.setIndent(indent);
 
-                cursor.setBlockFormat(block);
+                QTextBlockFormat oldFormat = cursor.blockFormat();
+                if (oldFormat.hasProperty(QTextFormat::PageBreakPolicy)) {
+                    QTextFormat::PageBreakFlags pageBreak = oldFormat.pageBreakPolicy();
+                    if (pageBreak == QTextFormat::PageBreak_AlwaysAfter)
+                        /* We remove an empty paragrah that requested a page break after.
+                           moving that request to the next paragraph means we also need to make
+                            that a pagebreak before to keep the same visual appearance.
+                        */
+                        pageBreak = QTextFormat::PageBreak_AlwaysBefore;
+                    blockFormat.setPageBreakPolicy(pageBreak);
+                }
+
+                cursor.setBlockFormat(blockFormat);
             }
         }
 

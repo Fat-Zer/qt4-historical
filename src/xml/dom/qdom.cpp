@@ -1107,7 +1107,7 @@ QDomImplementation::InvalidDataPolicy QDomImplementation::invalidDataPolicy()
     The \a policy is set for all instances of QDomDocument which already
     exist and which will be created in the future.
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 0
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 0
 
     \sa invalidDataPolicy() InvalidDataPolicy
 */
@@ -1963,7 +1963,7 @@ void QDomNodePrivate::setLocation(int lineNumber, int columnNumber)
 
     The following example looks for the first element in an XML document and
     prints the names of all the elements that are its direct children.
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 1
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 1
 
     For further information about the Document Object Model see
     \l{http://www.w3.org/TR/REC-DOM-Level-1/}{Level 1} and
@@ -2029,13 +2029,13 @@ QDomNode& QDomNode::operator=(const QDomNode &n)
     structure in QDomDocument. The test for equality checks if the two
     references point to the same underlying node. For example:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 2
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 2
 
     The two nodes (QDomElement is a QDomNode subclass) both refer to
     the document's root element, and \c {element1 == element2} will
     return true. On the other hand:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 3
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 3
 
     Even though both nodes are empty elements carrying the same name,
     \c {element3 == element4} will return false because they refer to
@@ -2192,7 +2192,7 @@ QDomNode QDomNode::parentNode() const
     Most often you will call this function on a QDomElement object.
 
     For example, if the XML document looks like this:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 4
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 4
     Then the list of child nodes for the "body"-element will contain
     the node created by the &lt;h1&gt; tag and the node created by the
     &lt;p&gt; tag.
@@ -2242,7 +2242,7 @@ QDomNode QDomNode::lastChild() const
     returned node will also change the node in the document tree.
 
     For example, if you have XML like this:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 5
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 5
     and this QDomNode represents the &lt;p&gt; tag, previousSibling()
     will return the node representing the &lt;h1&gt; tag.
 
@@ -2260,7 +2260,7 @@ QDomNode QDomNode::previousSibling() const
     returned node will also change the node in the document tree.
 
     If you have XML like this:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 6
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 6
     and this QDomNode represents the <p> tag, nextSibling() will
     return the node representing the <h2> tag.
 
@@ -4221,11 +4221,11 @@ void QDomAttrPrivate::save(QTextStream& s, int, int) const
     For example, the following piece of XML produces an element with
     no children, but two attributes:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 7
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 7
 
     You can access the attributes of an element with code like this:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 8
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 8
 
     This example also shows that changing an attribute received from
     an element changes the attribute of the element. If you do not
@@ -4631,12 +4631,12 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
     removeAttributeNS().
 
     If you want to access the text of a node use text(), e.g.
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 9
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 9
     The text() function operates recursively to find the text (since
     not all elements contain text). If you want to find all the text
     in all of a node's children, iterate over the children looking for
     QDomText nodes, e.g.
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 10
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 10
     Note that we attempt to convert each node to a text node and use
     text() rather than using firstChild().toText().data() or
     n.toText().data() directly on the node, because the node may not
@@ -4649,7 +4649,7 @@ void QDomElementPrivate::save(QTextStream& s, int depth, int indent) const
     To browse the elements of a dom document use firstChildElement(), lastChildElement(),
     nextSiblingElement() and previousSiblingElement(). For example, to iterate over all
     child elements called "entry" in a root element called "database", you can use:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 11
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 11
 
     For further information about the Document Object Model see
     \l{http://www.w3.org/TR/REC-DOM-Level-1/}{Level 1} and
@@ -4716,7 +4716,7 @@ void QDomElement::setTagName(const QString& name)
 /*!
     Returns the tag name of this element. For an XML element like this:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 12
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 12
 
     the tagname would return "img".
 
@@ -4773,16 +4773,20 @@ void QDomElement::setAttribute(const QString& name, const QString& value)
   \fn void QDomElement::setAttribute(const QString& name, int value)
 
     \overload
+    The number is formatted according to the current locale.
 */
 
 /*!
   \fn void QDomElement::setAttribute(const QString& name, uint value)
 
     \overload
+    The number is formatted according to the current locale.
 */
 
 /*!
     \overload
+
+    The number is formatted according to the current locale.
 */
 void QDomElement::setAttribute(const QString& name, qlonglong value)
 {
@@ -4795,6 +4799,8 @@ void QDomElement::setAttribute(const QString& name, qlonglong value)
 
 /*!
     \overload
+
+    The number is formatted according to the current locale.
 */
 void QDomElement::setAttribute(const QString& name, qulonglong value)
 {
@@ -4807,6 +4813,8 @@ void QDomElement::setAttribute(const QString& name, qulonglong value)
 
 /*!
     \overload
+
+    The number is formatted according to the current locale.
 */
 void QDomElement::setAttribute(const QString& name, float value)
 {
@@ -4819,6 +4827,8 @@ void QDomElement::setAttribute(const QString& name, float value)
 
 /*!
     \overload
+
+    The number is formatted according to the current locale.
 */
 void QDomElement::setAttribute(const QString& name, double value)
 {
@@ -5081,12 +5091,12 @@ bool QDomElement::hasAttributeNS(const QString& nsURI, const QString& localName)
     Returns the element's text or an empty string.
 
     Example:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 13
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 13
 
     The function text() of the QDomElement for the \c{<h1>} tag,
     will return the following text:
 
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 14
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 14
 
     Comments are ignored by this function. It only evaluates QDomText
     and QDomCDATASection objects.
@@ -5292,7 +5302,7 @@ void QDomCommentPrivate::save(QTextStream& s, int depth, int indent) const
     \ingroup xml-tools
 
     A comment in the parsed XML such as this:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 15
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 15
     is represented by QDomComment objects in the parsed Dom tree.
 
     For further information about the Document Object Model see
@@ -6507,13 +6517,13 @@ void QDomDocumentPrivate::saveDocument(QTextStream& s, const int indent, QDomNod
     tag with elementsByTagName() or with elementsByTagNameNS().
 
     The QDom classes are typically used as follows:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 16
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 16
 
     Once \c doc and \c elem go out of scope, the whole internal tree
     representing the XML document is deleted.
 
     To create a document using DOM use code like this:
-    \snippet doc/src/snippets/code/src.xml.dom.qdom.cpp 17
+    \snippet doc/src/snippets/code/src_xml_dom_qdom.cpp 17
 
     For further information about the Document Object Model see
     the Document Object Model (DOM)

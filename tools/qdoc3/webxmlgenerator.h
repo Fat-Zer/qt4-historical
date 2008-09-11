@@ -80,7 +80,21 @@ protected:
     virtual void generateInnerNode( const InnerNode *node, CodeMarker *marker );
 
 private:
+    const QPair<QString,QString> anchorForNode(const Node *node);
+    void findAllClasses(const InnerNode *node);
+    void findAllNamespaces(const InnerNode *node);
     const Node *findNode(const Atom *atom, const Node *relative, CodeMarker *marker);
+    const Node *findNode(const QString &title, const Node *relative, CodeMarker *marker);
+    void generateAnnotatedList(QXmlStreamWriter &writer, const Node *relative,
+                               CodeMarker *marker, const QMap<QString,
+                               const Node *> &nodeMap);
+    void generateFullName(QXmlStreamWriter &writer, const Node *apparentNode,
+                          const Node *relative, CodeMarker *marker,
+                          const Node *actualNode = 0);
+    void generateRelations(QXmlStreamWriter &writer, const Node *node, CodeMarker *marker);
+    void generateTableOfContents(QXmlStreamWriter &writer, const Node *node,
+                                 Doc::SectioningUnit sectioningUnit,
+                                 int numColumns, const Node *relative);
     void startLink(QXmlStreamWriter &writer, const Atom *atom, const Node *node,
                    const Node *relative);
     QString targetType(const Node *node);
@@ -93,6 +107,10 @@ private:
     bool inTableHeader;
     int numTableRows;
     bool threeColumnEnumValueTable;
+    QMap<QString, QMap<QString, const Node *> > moduleClassMap;
+    QMap<QString, QMap<QString, const Node *> > moduleNamespaceMap;
+    QMap<QString, const Node *> namespaceIndex;
+    QMap<QString, const Node *> serviceClasses;
     QString link;
     QString project;
     QString projectDescription;

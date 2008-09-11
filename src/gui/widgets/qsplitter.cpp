@@ -922,8 +922,9 @@ QSplitterLayoutStruct *QSplitterPrivate::insertWidget(int index, QWidget *w)
     would rather have QSplitter resize the children only at the end of
     a resize operation, call setOpaqueResize(false).
 
-    The initial distribution of size between the widgets is determined by the
-    initial size of each widget. You can also use setSizes() to set the sizes
+    The initial distribution of size between the widgets is determined by
+    multiplying the initial size with the stretch factor.
+    You can also use setSizes() to set the sizes
     of all the widgets. The function sizes() returns the sizes set by the user.
     Alternatively, you can save and restore the sizes of the widgets from a
     QByteArray using saveState() and restoreState() respectively.
@@ -1262,6 +1263,8 @@ void QSplitter::setRubberBand(int pos)
     if (!d->rubberBand) {
         QBoolBlocker block(d->blockChildAdd);
         d->rubberBand = new QRubberBand(QRubberBand::Line, this);
+        // For accessibility to identify this special widget.
+        d->rubberBand->setObjectName(QLatin1String("qt_rubberband"));
     }
     if (d->orient == Qt::Horizontal)
         d->rubberBand->setGeometry(QRect(QPoint(pos + hw / 2 - rBord, r.y()),
@@ -1631,6 +1634,9 @@ void QSplitter::setSizes(const QList<int> &list)
 /*!
     \property QSplitter::handleWidth
     \brief the width of the splitter handles
+
+    By default, this property contains a value that depends on the user's platform
+    and style preferences.
 */
 
 int QSplitter::handleWidth() const
@@ -1746,9 +1752,13 @@ bool QSplitter::restoreState(const QByteArray &state)
     Updates the size policy of the widget at position \a index to
     have a stretch factor of \a stretch.
 
+    \a stretch is not the effective stretch factor; the effective
+    stretch factor is calculated by taking the initial size of the 
+    widget and multiplying it with \a stretch.
+
     This function is provided for convenience. It is equivalent to
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qsplitter.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qsplitter.cpp 0
 
     \sa setSizes(), widget()
 */

@@ -208,7 +208,7 @@ void QAdoptedThread::run()
     below). To create your own threads, subclass QThread and
     reimplement run(). For example:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qthread.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_thread_qthread.cpp 0
 
     This will create a QTcpSocket in the thread and then execute the
     thread's event loop. Use the start() method to begin execution.
@@ -388,7 +388,7 @@ QThread::~QThread()
 }
 
 /*!
-    Returns true is the thread is finished; otherwise returns false.
+    Returns true if the thread is finished; otherwise returns false.
 
     \sa isRunning()
 */

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/concurrent/qthreadpool.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/concurrent/qthreadpool.cpp -->
 <head>
   <title>Qt 4.4: QThreadPool Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QThreadPool Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QThreadPool class manages a collection of QThreads. <a href="#details">More...</a></p>
@@ -71,17 +71,17 @@
 <p>The QThreadPool class manages a collection of QThreads.</p>
 <p>QThreadPool manages and recyles individual <a href="qthread.html">QThread</a> objects to help reduce thread creation costs in programs that use threads. Each Qt application has one global QThreadPool object, which can be accessed by calling <a href="qthreadpool.html#globalInstance">globalInstance</a>().</p>
 <p>To use one of the QThreadPool threads, subclass <a href="qrunnable.html">QRunnable</a> and implement the run() virtual function. Then create an object of that class and pass it to <a href="qthreadpool.html#start">QThreadPool::start</a>().</p>
-<pre>         class HelloWorldTask : public QRunnable
-         {
-             void run()
-             {
-                 qDebug() &lt;&lt; &quot;Hello world from thread&quot; &lt;&lt; QThread::currentThread();
-             }
-         }
+<pre> class HelloWorldTask : public QRunnable
+ {
+     void run()
+     {
+         qDebug() &lt;&lt; &quot;Hello world from thread&quot; &lt;&lt; QThread::currentThread();
+     }
+ }
 
-         HelloWorldTask *hello = new HelloWorldTask();
-         <span class="comment">// QThreadPool takes ownership and deletes 'hello' automatically</span>
-         QThreadPool::globalInstance()-&gt;start(hello);</pre>
+ HelloWorldTask *hello = new HelloWorldTask();
+<span class="comment"> // QThreadPool takes ownership and deletes 'hello' automatically</span>
+ QThreadPool::globalInstance()-&gt;start(hello);</pre>
 <p>QThreadPool deletes the <a href="qrunnable.html">QRunnable</a> automatically by default. Use <a href="qrunnable.html#setAutoDelete">QRunnable::setAutoDelete</a>() to change the auto-deletion flag.</p>
 <p>QThreadPool supports executing the same <a href="qrunnable.html">QRunnable</a> more than once by calling tryStart(this) from within <a href="qrunnable.html#run">QRunnable::run</a>(). If autoDelete is enabled the <a href="qrunnable.html">QRunnable</a> will be deleted when the last thread exits the run function. Calling <a href="qthreadpool.html#start">start</a>() multiple times with the same <a href="qrunnable.html">QRunnable</a> when autoDelete is enabled creates a race condition and is not recommended.</p>
 <p>Threads that are unused for a certain amount of time will expire. The default expiry timeout is 30000 milliseconds (30 seconds). This can be changed using <a href="qthreadpool.html#expiryTimeout-prop">setExpiryTimeout</a>(). Setting a negative expiry timeout disables the expiry mechanism.</p>
@@ -157,8 +157,8 @@
 <p>Waits for each thread to exit and removes all threads from the thread pool.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

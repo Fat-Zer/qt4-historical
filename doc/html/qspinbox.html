@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qspinbox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qspinbox.cpp -->
 <head>
   <title>Qt 4.4: QSpinBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSpinBox Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QSpinBox class provides a spin box widget. <a href="#details">More...</a></p>
@@ -180,7 +180,7 @@
 <h3 class="fn"><a name="prefix-prop"></a>prefix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the spin box's prefix.</p>
 <p>The prefix is prepended to the start of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
-<pre>         sb-&gt;setPrefix(&quot;$&quot;);</pre>
+<pre> sb-&gt;setPrefix(&quot;$&quot;);</pre>
 <p>To turn off the prefix display, set this property to an empty string. The default is no prefix. The prefix is not displayed when <a href="qspinbox.html#value-prop">value</a>() == <a href="qspinbox.html#minimum-prop">minimum</a>() and <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() is set.</p>
 <p>If no prefix is set, prefix() returns an empty string.</p>
 <p>Access functions:</p>
@@ -204,7 +204,7 @@
 <h3 class="fn"><a name="suffix-prop"></a>suffix : <a href="qstring.html">QString</a></h3>
 <p>This property holds the suffix of the spin box.</p>
 <p>The suffix is appended to the end of the displayed value. Typical use is to display a unit of measurement or a currency symbol. For example:</p>
-<pre>         sb-&gt;setSuffix(&quot; km&quot;);</pre>
+<pre> sb-&gt;setSuffix(&quot; km&quot;);</pre>
 <p>To turn off the suffix display, set this property to an empty string. The default is no suffix. The suffix is not displayed for the <a href="qspinbox.html#minimum-prop">minimum</a>() if <a href="qabstractspinbox.html#specialValueText-prop">specialValueText</a>() is set.</p>
 <p>If no suffix is set, suffix() returns an empty string.</p>
 <p>Access functions:</p>
@@ -232,10 +232,10 @@
 <a name="//apple_ref/cpp/instm/QSpinBox/setRange" />
 <h3 class="fn"><a name="setRange"></a>void QSpinBox::setRange ( int <i>minimum</i>, int <i>maximum</i> )</h3>
 <p>Convenience function to set the <i>minimum</i>, and <i>maximum</i> values with a single function call.</p>
-<pre>     setRange(minimum, maximum);</pre>
+<pre> setRange(minimum, maximum);</pre>
 <p>is equivalent to:</p>
-<pre>     setMinimum(minimum);
-     setMaximum(maximum);</pre>
+<pre> setMinimum(minimum);
+ setMaximum(maximum);</pre>
 <p>See also <a href="qspinbox.html#minimum-prop">minimum</a> and <a href="qspinbox.html#maximum-prop">maximum</a>.</p>
 <a name="//apple_ref/cpp/instm/QSpinBox/textFromValue" />
 <h3 class="fn"><a name="textFromValue"></a><a href="qstring.html">QString</a> QSpinBox::textFromValue ( int <i>value</i> ) const&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
@@ -257,8 +257,8 @@
 <p>See also <a href="qspinbox.html#textFromValue">textFromValue</a>() and <a href="qabstractspinbox.html#validate">validate</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

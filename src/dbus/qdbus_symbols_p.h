@@ -83,6 +83,9 @@ DEFINEFUNC(void, dbus_bus_remove_match, (DBusConnection *connection,
                                          const char     *rule,
                                          DBusError      *error),
            (connection, rule, error), )
+DEFINEFUNC(dbus_bool_t, dbus_bus_register,(DBusConnection *connection,
+                                           DBusError      *error),
+           (connection, error), return)
 DEFINEFUNC(DBusConnection *, dbus_bus_get_private, (DBusBusType     type,
                                                     DBusError      *error),
            (type, error), return)

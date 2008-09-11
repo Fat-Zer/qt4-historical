@@ -1137,7 +1137,7 @@ void QTabBar::showEvent(QShowEvent *)
 {
     Q_D(QTabBar);
     if (d->layoutDirty)
-        d->layoutTabs();
+        d->refresh();
     if (!d->validIndex(d->currentIndex))
         setCurrentIndex(0);
 
@@ -1215,7 +1215,10 @@ bool QTabBar::event(QEvent *e)
 void QTabBar::resizeEvent(QResizeEvent *)
 {
     Q_D(QTabBar);
+    if (d->layoutDirty)
+        updateGeometry();
     d->layoutTabs();
+
     d->makeVisible(d->currentIndex);
 }
 
@@ -1426,7 +1429,7 @@ void QTabBar::setElideMode(Qt::TextElideMode mode)
     \since 4.2
 
     When there are too many tabs in a tab bar for its size, the tab bar can either choose
-    to expand it's size or to add buttons that allow you to scroll through the tabs.
+    to expand its size or to add buttons that allow you to scroll through the tabs.
 
     By default the value is style dependant.
 

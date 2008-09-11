@@ -79,7 +79,7 @@ QT_BEGIN_NAMESPACE
   {http://www.w3.org/TR/xpath-datamodel/} {XQuery 1.0 and XPath 2.0
   Data Model}.
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstractxmlreceiver.cpp 0
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qabstractxmlreceiver.cpp 0
 
   The example uses QXmlQuery to match the first paragraph of an XML
   document and then \l {QXmlSerializer} {output the result} to a
@@ -101,43 +101,43 @@ QT_BEGIN_NAMESPACE
 
   \list
 
-  \o evaluateTo(QAbstractXmlReceiver *) is called with a pointer to an XML
-  \l {QAbstractXmlReceiver} {receiver}, which receives the query
-  results as a sequence of callbacks. The receiver callback class
-  is like the callback class used for translating the output of a
-  SAX parser. QXmlSerializer, for example, is a receiver callback
-  class for translating the sequence of callbacks for output as
+  \o evaluateTo(QAbstractXmlReceiver *) is called with a pointer to an
+  XML \l {QAbstractXmlReceiver} {receiver}, which receives the query
+  results as a sequence of callbacks. The receiver callback class is
+  like the callback class used for translating the output of a SAX
+  parser. QXmlSerializer, for example, is a receiver callback class
+  for translating the sequence of callbacks for output as unformatted
   XML text.
 
   \endlist
 
   \list
 
-  \o evaluateTo(QXmlResultItems *) is called with a pointer to an iterator for
-  an empty sequence of query \l {QXmlResultItems} {result items}.
-  The Java-like iterator allows the query results to be accessed
-  sequentially.
+  \o evaluateTo(QXmlResultItems *) is called with a pointer to an
+  iterator for an empty sequence of query \l {QXmlResultItems} {result
+  items}.  The Java-like iterator allows the query results to be
+  accessed sequentially.
 
   \endlist
 
   \list
 
-  \o evaluateTo(QStringList * target) is similar to evaluateTo(QXmlResultItems * result), but the
-  query must evaluate to a sequence of strings.
+  \o evaluateTo(QStringList *) is like evaluateTo(QXmlResultItems *),
+  but the query must evaluate to a sequence of strings.
 
   \endlist
 
   \section1 Binding A Query To A Starting Node
 
-  When a query is run on XML data, as in the snippet above, the \e
-  doc() function returns the node in the built-in data model where the
-  query evaluation will begin. But when a query is run on a custom
-  node model representing non-XML data, one of the bindVariable()
-  functions must be called to bind a variable name to a starting node.
-  A variable reference can then be used in the written query to access the
-  node in the custom data model. It is not necessary to
-  declare the variable name external in the query. See the example in
-  the documentation for QAbstractXmlNodeModel.
+  When a query is run on XML data, as in the snippet above, the
+  \c{doc()} function returns the node in the built-in data model where
+  the query evaluation will begin. But when a query is run on a custom
+  node model containing non-XML data, one of the bindVariable()
+  functions must be called to bind a variable name to a starting node
+  in the custom model.  A $variable reference is used in the XQuery
+  text to access the starting node in the custom model. It is not
+  necessary to declare the variable name external in the query. See
+  the example in the documentation for QAbstractXmlNodeModel.
 
   \section1 Reentrancy and Thread-Safety
 
@@ -157,22 +157,30 @@ QT_BEGIN_NAMESPACE
 
   \o The error message is sent to the messageHandler().
 
-  \o QXmlResultItems::hasError() will return \c true, or
-  evaluateTo() will return \c false;
+  \o QXmlResultItems::hasError() will return \c{true}, or
+  evaluateTo() will return \c{false};
 
-  \o The results of the evaluation function called is undefined.
+  \o The results of the evaluation are undefined.
 
   \endlist
 
   \section1 Resource Management
 
-  A query can create \l {QXmlItem}{query result items}, open
-  documents, and allocate other resources. All resources created,
-  opened, or allocated by QtXmlPatterns are normally managed and
-  deallocated automatically, when they are no longer needed. If it
-  should become necessary to deallocate resources manually, ensure
-  that the relevant instances of QXmlQuery, QAbstractXmlReceiver, and
-  QAbstractXmlForwardIterator have been destroyed.
+  When a query runs, it parses documents, allocating internal data
+  structures to hold them, and it may load other resources over the
+  network. It reuses these allocated resources when possible, to
+  avoid having to reload and reparse them.
+
+  When setQuery() is called, the query text is compiled into an
+  internal data structure and optimized. The optimized form can
+  then be reused for multiple evaluations of the query.  Since the
+  compile-and-optimize process can be expensive, repeating it for
+  the same query should be avoided by using a separate instance of
+  QXmlQuery for each query text.
+
+  Once a document has been parsed, its internal representation is
+  maintained in the QXmlQuery instance and shared among multiple
+  QXmlQuery instances.
 
   An instance of QCoreApplication must exist before QXmlQuery can be
   used.
@@ -187,7 +195,9 @@ QXmlQuery::QXmlQuery() : d(new QXmlQueryPrivate())
 }
 
 /*!
-  Constructs a QXmlQuery that is a copy of \a other.
+  Constructs a QXmlQuery that is a copy of \a other. The new
+  instance will share resources with the existing query
+  to the extent possible.
  */
 QXmlQuery::QXmlQuery(const QXmlQuery &other) : d(new QXmlQueryPrivate(*other.d))
 {
@@ -340,7 +350,7 @@ void QXmlQuery::setQuery(const QString &sourceCode, const QUrl &documentURI)
   invalid, isValid() will return \e false.
 
   The supported URI schemes are the same as those in the XQuery
-  function \c fn:doc, except that queryURI can be the object of
+  function \c{fn:doc}, except that queryURI can be the object of
   a variable binding.
 
   \a baseURI is the Base URI of the static context, as defined in the
@@ -438,7 +448,7 @@ void QXmlQuery::bindVariable(const QXmlName &name, const QXmlItem &value)
   query's \l {QXmlNamePool} {namespace}. The function then behaves as
   the overloaded function. It is equivalent to the following snippet.
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qxmlquery.cpp 0
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 0
  */
 void QXmlQuery::bindVariable(const QString &localName, const QXmlItem &value)
 {
@@ -448,20 +458,20 @@ void QXmlQuery::bindVariable(const QString &localName, const QXmlItem &value)
 /*!
   Binds the variable \a name to the \a device so that $\a name can be
   used from within the query to refer to the \a device. The QIODevice
-  \a device is exposed to the query as a URI of type \c xs:anyURI,
-  which can be passed to the \c fn:doc() function to be read. E.g.,
+  \a device is exposed to the query as a URI of type \c{xs:anyURI},
+  which can be passed to the \c{fn:doc()} function to be read. E.g.,
   this function can be used to pass an XML document in memory to
-  \c fn:doc.
+  \c{fn:doc}.
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qxmlquery.cpp 1
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 1
 
-  The caller must ensure that \c device has been opened with at least
+  The caller must ensure that \a device has been opened with at least
   QIODevice::ReadOnly prior to this binding. Otherwise, behavior is
   undefined.
 
   If the query will access an XML document contained in a QString, use
   a QBuffer as shown in the following snippet. Suppose \e myQString
-  contains \e {<document>content</document>}
+  contains \c{<document>content</document>}
 
   \snippet doc/src/snippets/qxmlquery/bindingExample.cpp 0
 
@@ -470,7 +480,14 @@ void QXmlQuery::bindVariable(const QString &localName, const QXmlItem &value)
   overriden. The URI that \a name evaluates to is arbitrary and may
   change.
 
-  \a device must not be deleted while this QXmlQuery exists.
+  If the type of the variable binding changes (e.g., if a previous
+  binding by the same name was a QVariant, or if there was no previous
+  binding), isValid() will return \c{false}, and recompilation of the
+  query text is required. To recompile the query, call setQuery(). For
+  this reason, bindVariable() should be called before setQuery(), if
+  possible.
+
+  \note \a device must not be deleted while this QXmlQuery exists.
 */
 void QXmlQuery::bindVariable(const QXmlName &name, QIODevice *device)
 {
@@ -487,9 +504,7 @@ void QXmlQuery::bindVariable(const QXmlName &name, QIODevice *device)
     if(d->deviceBindings.contains(name))
         d->updateVariableValues = true;
     else
-    {
         d->recompileRequired();
-    }
 
     d->variableBindings.take(name);
     d->deviceBindings.insert(name, device);
@@ -501,7 +516,7 @@ void QXmlQuery::bindVariable(const QXmlName &name, QIODevice *device)
   If \a localName is a valid \l {QXmlName::isNCName()} {NCName}, this
   function is equivalent to the following snippet.
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qxmlquery.cpp 2
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 2
 
   A QXmlName is constructed from \a localName, and is passed
   to the appropriate overload along with \a device.
@@ -521,7 +536,7 @@ void QXmlQuery::bindVariable(const QString &localName, QIODevice *device)
   If an error occurs during the evaluation, error messages are sent to
   messageHandler() and false is returned.
 
-  If this query \l {isValid()} {is invalid}, \c false is returned
+  If this query \l {isValid()} {is invalid}, \c{false} is returned
   and the behavior is undefined. If \a callback is null,
   behavior is undefined.
 
@@ -568,12 +583,12 @@ bool QXmlQuery::evaluateTo(QAbstractXmlReceiver *callback) const
   true is returned. Otherwise, false is returned and the contents of
   \a target are undefined.
 
-  The query must evaluate to a sequence of \c xs:string values. If the
-  query does not evaluate to a sequence of strings, the values can
-  often be converted by adding a call to \c string() at the end of the
-  XQuery.
+  The query must evaluate to a sequence of \c{xs:string} values. If
+  the query does not evaluate to a sequence of strings, the values can
+  often be converted by adding a call to \c{string()} at the end of
+  the XQuery.
 
-  If \a target is \c null, the behavior is undefined.
+  If \a target is null, the behavior is undefined.
  */
 bool QXmlQuery::evaluateTo(QStringList *target) const
 {
@@ -724,11 +739,11 @@ QXmlNamePool QXmlQuery::namePool() const
   example, in the expression \e p/span, the element that \e p
   evaluates to is the focus for the following expression, \e span.
 
-  The focus can be accessed using the context item expression, dot,
-  \e ".".
+  The focus can be accessed using the context item expression, i.e.,
+  dot (".").
 
   By default, the focus is not set but is undefined. It will therefore
-  result in a dynamic error, \c XPDY0002, if the query is evaluated
+  result in a dynamic error, \c{XPDY0002}, if the query is evaluated
   without a focus. In fact, the focus must be set before the query is
   set with setQuery().
  */

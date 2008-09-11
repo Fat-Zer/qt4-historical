@@ -139,7 +139,7 @@ QT_BEGIN_NAMESPACE
     QMatrix transforms a point in the plane to another point using the
     following formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qmatrix.cpp 0
 
     The point \e (x, y) is the original point, and \e (x', y') is the
     transformed point. \e (x', y') can be transformed back to \e (x,
@@ -322,7 +322,7 @@ void QMatrix::setMatrix(qreal m11, qreal m12, qreal m21, qreal m22,
 
     The coordinates are transformed using the following formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 1
+    \snippet doc/src/snippets/code/src_gui_painting_qmatrix.cpp 1
 
     The point (x, y) is the original point, and (x', y') is the
     transformed point.
@@ -407,7 +407,7 @@ QRect QMatrix::mapRect(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 2
+    \snippet doc/src/snippets/code/src_gui_painting_qmatrix.cpp 2
 
     If rotation or shearing has been specified, this function returns
     the \e bounding rectangle. To retrieve the exact region the given
@@ -586,58 +586,13 @@ QPolygon QMatrix::map(const QPolygon &a) const
 {
     int size = a.size();
     int i;
-    QPolygonF p(size);
+    QPolygon p(size);
     const QPoint *da = a.constData();
-    QPointF *dp = p.data();
-    qreal xmin = qreal(INT_MAX);
-    qreal ymin = xmin;
-    qreal xmax = qreal(INT_MIN);
-    qreal ymax = xmax;
-    int xminp = 0;
-    int yminp = 0;
+    QPoint *dp = p.data();
     for(i = 0; i < size; i++) {
-        dp[i].xp = da[i].x();
-        dp[i].yp = da[i].y();
-        if (dp[i].xp < xmin) {
-            xmin = dp[i].xp;
-            xminp = i;
-        }
-        if (dp[i].yp < ymin) {
-            ymin = dp[i].yp;
-            yminp = i;
-        }
-        xmax = qMax(xmax, dp[i].xp);
-        ymax = qMax(ymax, dp[i].yp);
+        MAPINT(da[i].x(), da[i].y(), dp[i].rx(), dp[i].ry());
     }
-    qreal w = qMax<qreal>(xmax - xmin, 1.);
-    qreal h = qMax<qreal>(ymax - ymin, 1.);
-    for(i = 0; i < size; i++) {
-        dp[i].xp += (dp[i].xp - xmin)/w;
-        dp[i].yp += (dp[i].yp - ymin)/h;
-        MAPDOUBLE(dp[i].xp, dp[i].yp, dp[i].xp, dp[i].yp);
-    }
-
-    // now apply correction back for transformed values...
-    xmin = qreal(INT_MAX/256);
-    ymin = xmin;
-    xmax = qreal(INT_MIN/256);
-    ymax = xmax;
-    for(i = 0; i < size; i++) {
-        xmin = qMin<qreal>(xmin, dp[i].xp);
-        ymin = qMin<qreal>(ymin, dp[i].yp);
-        xmax = qMax<qreal>(xmax, dp[i].xp);
-        ymax = qMax<qreal>(ymax, dp[i].yp);
-    }
-    w = qMax<qreal>(xmax - xmin, 1.);
-    h = qMax<qreal>(ymax - ymin, 1.);
-
-    QPolygon result(size);
-    QPoint *dr = result.data();
-    for(i = 0; i < size; i++) {
-        dr[i].setX(qRound(dp[i].xp - (dp[i].xp - dp[xminp].xp)/w));
-        dr[i].setY(qRound(dp[i].yp - (dp[i].yp - dp[yminp].yp)/h));
-    }
-    return result;
+    return p;
 }
 
 /*!
@@ -802,7 +757,7 @@ QRegion QMatrix::mapToRegion(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qmatrix.cpp 3
+    \snippet doc/src/snippets/code/src_gui_painting_qmatrix.cpp 3
 
     Polygons and rectangles behave slightly differently when
     transformed (due to integer rounding), so

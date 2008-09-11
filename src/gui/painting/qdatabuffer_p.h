@@ -99,7 +99,8 @@ public:
 
     inline void reserve(int size) {
         if (size > capacity) {
-            capacity *= 2;
+            while (capacity < size)
+                capacity *= 2;
             buffer = (Type*) qRealloc(buffer, capacity * sizeof(Type));
         }
     }

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/thread/qthread.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/thread/qthread.cpp -->
 <head>
   <title>Qt 4.4: QThread Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QThread Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QThread class provides platform-independent threads. <a href="#details">More...</a></p>
@@ -100,20 +100,20 @@
 <h2>Detailed Description</h2>
 <p>The QThread class provides platform-independent threads.</p>
 <p>A QThread represents a separate thread of control within the program; it shares data with all the other threads within the process but executes independently in the way that a separate program does on a multitasking operating system. Instead of starting in <tt>main()</tt>, QThreads begin executing in <a href="qthread.html#run">run</a>(). By default, <a href="qthread.html#run">run</a>() starts the event loop by calling <a href="qthread.html#exec">exec</a>() (see below). To create your own threads, subclass QThread and reimplement <a href="qthread.html#run">run</a>(). For example:</p>
-<pre>         class MyThread : public QThread
-         {
-         public:
-             void run();
-         };
+<pre> class MyThread : public QThread
+ {
+ public:
+     void run();
+ };
 
-         void MyThread::run()
-         {
-             QTcpSocket socket;
-             <span class="comment">// connect QTcpSocket's signals somewhere meaningful</span>
-             ...
-             socket.connectToHost(hostName, portNumber);
-             exec();
-         }</pre>
+ void MyThread::run()
+ {
+     QTcpSocket socket;
+     <span class="comment">// connect QTcpSocket's signals somewhere meaningful</span>
+     ...
+     socket.connectToHost(hostName, portNumber);
+     exec();
+ }</pre>
 <p>This will create a <a href="qtcpsocket.html">QTcpSocket</a> in the thread and then execute the thread's event loop. Use the <a href="qthread.html#start">start</a>() method to begin execution. Execution ends when you return from <a href="qthread.html#run">run</a>(), just as an application does when it leaves main(). QThread will notifiy you via a signal when the thread is <a href="qthread.html#started">started</a>(), <a href="qthread.html#finished">finished</a>(), and <a href="qthread.html#terminated">terminated</a>(), or you can use <a href="qthread.html#isFinished">isFinished</a>() and <a href="qthread.html#isRunning">isRunning</a>() to query the state of the thread. Use <a href="qthread.html#wait">wait</a>() to block until the thread has finished execution.</p>
 <p>Each thread gets its own stack from the operating system. The operating system also determines the default size of the stack. You can use <a href="qthread.html#setStackSize">setStackSize</a>() to set a custom stack size.</p>
 <p>Each QThread can have its own event loop. You can start the event loop by calling <a href="qthread.html#exec">exec</a>(); you can stop it by calling <a href="qthread.html#exit">exit</a>() or <a href="qthread.html#quit">quit</a>(). Having an event loop in a thread makes it possible to connect signals from other threads to slots in this thread, using a mechanism called <a href="qt.html#ConnectionType-enum">queued connections</a>. It also makes it possible to use classes that require the event loop, such as <a href="qtimer.html">QTimer</a> and <a href="qtcpsocket.html">QTcpSocket</a>, in the thread. Note, however, that it is not possible to use any widget classes in the thread.</p>
@@ -184,7 +184,7 @@
 <p>Returns the ideal number of threads that can be run on the system. This is done querying the number of processor cores, both real and logical, in the system. This function returns -1 if the number of processor cores could not be detected.</p>
 <a name="//apple_ref/cpp/instm/QThread/isFinished" />
 <h3 class="fn"><a name="isFinished"></a>bool QThread::isFinished () const</h3>
-<p>Returns true is the thread is finished; otherwise returns false.</p>
+<p>Returns true if the thread is finished; otherwise returns false.</p>
 <p>See also <a href="qthread.html#isRunning">isRunning</a>().</p>
 <a name="//apple_ref/cpp/instm/QThread/isRunning" />
 <h3 class="fn"><a name="isRunning"></a>bool QThread::isRunning () const</h3>
@@ -268,8 +268,8 @@
 <p>See also <a href="qthread.html#sleep">sleep</a>() and <a href="qthread.html#terminate">terminate</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

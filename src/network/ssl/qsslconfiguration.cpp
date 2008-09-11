@@ -104,7 +104,7 @@ Q_GLOBAL_STATIC(QSslConfigurationPrivate, emptySslConfiguration)
     achieve that. The following example illustrates how to change the
     protocol to TLSv1 in a QSslSocket object:
 
-    \snippet doc/src/snippets/code/src.network.ssl.qsslconfiguration.cpp 0
+    \snippet doc/src/snippets/code/src_network_ssl_qsslconfiguration.cpp 0
 
     \sa QSsl::SslProtocol, QSslCertificate, QSslCipher, QSslKey
         QSslSocket, QNetworkAccessManager,

@@ -99,6 +99,7 @@ void AddressWidget::addEntry(QString name, QString address)
 void AddressWidget::editEntry()
 {
     QTableView *temp = static_cast<QTableView*>(currentWidget());
+    QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
 
     QModelIndexList indexes = selectionModel->selectedRows();
@@ -108,7 +109,7 @@ void AddressWidget::editEntry()
     int row;
 
     foreach (index, indexes) {
-        row = index.row();
+        row = proxy->mapToSource(index).row();
         i = table->index(row, 0, QModelIndex());
         QVariant varName = table->data(i, Qt::DisplayRole);
         name = varName.toString();
@@ -141,13 +142,14 @@ void AddressWidget::editEntry()
 void AddressWidget::removeEntry()
 {
     QTableView *temp = static_cast<QTableView*>(currentWidget());
+    QSortFilterProxyModel *proxy = static_cast<QSortFilterProxyModel*>(temp->model());
     QItemSelectionModel *selectionModel = temp->selectionModel();
     
     QModelIndexList indexes = selectionModel->selectedRows();
     QModelIndex index;
 
     foreach (index, indexes) {
-        int row = index.row();
+        int row = proxy->mapToSource(index).row();
         table->removeRows(row, 1, QModelIndex());
     }
 

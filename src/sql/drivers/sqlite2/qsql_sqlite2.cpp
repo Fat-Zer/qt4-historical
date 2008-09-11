@@ -116,12 +116,13 @@ public:
     uint skipRow: 1; // skip the next fetchNext()?
     uint utf8: 1;
     QSqlRecord rInf;
+    QSql::NumericalPrecisionPolicy precisionPolicy;
 };
 
 static const uint initial_cache_size = 128;
 
 QSQLite2ResultPrivate::QSQLite2ResultPrivate(QSQLite2Result* res) : q(res), access(0), currentTail(0),
-    currentMachine(0), skippedStatus(false), skipRow(false), utf8(false)
+    currentMachine(0), skippedStatus(false), skipRow(false), utf8(false), precisionPolicy(QSql::HighPrecision)
 {
 }
 
@@ -249,11 +250,17 @@ QSQLite2Result::~QSQLite2Result()
 
 void QSQLite2Result::virtual_hook(int id, void *data)
 {
-    if (id == DetachFromResultSet) {
+    switch (id) {
+    case QSqlResult::DetachFromResultSet:
         d->finalize();
-        return;
+        break;
+    case QSqlResult::SetNumericalPrecision:
+        Q_ASSERT(data);
+        d->precisionPolicy = *reinterpret_cast<QSql::NumericalPrecisionPolicy *>(data);
+        break;
+    default:
+        QSqlResult::virtual_hook(id, data);
     }
-    QSqlResult::virtual_hook(id, data);
 }
 
 /*

@@ -73,7 +73,9 @@ public:
     QString cursorToShapeName(const QCursor &cursor) const;
     QIcon cursorToShapeIcon(const QCursor &cursor) const;
     int cursorToValue(const QCursor &cursor) const;
+#ifndef QT_NO_CURSOR
     QCursor valueToCursor(int value) const;
+#endif
 private:
     void appendCursor(Qt::CursorShape shape, const QString &name, const QIcon &icon);
     QStringList m_cursorNames;

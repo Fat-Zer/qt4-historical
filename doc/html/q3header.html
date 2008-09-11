@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3header.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3header.cpp -->
 <head>
   <title>Qt 4.4: Q3Header Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Header Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3Header class provides a header row or column, e.g&#x2e; for tables and listviews. <a href="#details">More...</a></p>
@@ -388,10 +388,10 @@
 <h3 class="fn"><a name="setResizeEnabled"></a>void Q3Header::setResizeEnabled ( bool <i>enable</i>, int <i>section</i> = -1 )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>If <i>enable</i> is true the user may resize section <i>section</i>; otherwise the section may not be manually resized.</p>
 <p>If <i>section</i> is negative (the default) then the <i>enable</i> value is set for all existing sections and will be applied to any new sections that are added. Example:</p>
-<pre>     <span class="comment">// Allow resizing of all current and future sections</span>
-     header-&gt;setResizeEnabled(true);
-     <span class="comment">// Disable resizing of section 3, (the fourth section added)</span>
-     header-&gt;setResizeEnabled(false, 3);</pre>
+<pre><span class="comment"> // Allow resizing of all current and future sections</span>
+ header-&gt;setResizeEnabled(true);
+<span class="comment"> // Disable resizing of section 3, (the fourth section added)</span>
+ header-&gt;setResizeEnabled(false, 3);</pre>
 <p>If the user resizes a section, a <a href="q3header.html#sizeChange">sizeChange</a>() signal is emitted.</p>
 <p>See also <a href="q3header.html#isResizeEnabled">isResizeEnabled</a>(), <a href="q3header.html#moving-prop">setMovingEnabled</a>(), <a href="q3header.html#setClickEnabled">setClickEnabled</a>(), and <a href="q3header.html#tracking-prop">setTracking</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3Header/setSortIndicator" />
@@ -415,8 +415,8 @@
 <p>See also <a href="q3header.html#setSortIndicator">setSortIndicator</a>() and <a href="q3header.html#sortIndicatorOrder">sortIndicatorOrder</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

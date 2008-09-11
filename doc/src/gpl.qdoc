@@ -61,18 +61,18 @@ of Qt.
 
 \section1 The GNU General Public License (Version 2)
 
-\snippet doc/src/snippets/code/doc.src.gpl.qdoc GPL v2
+\snippet doc/src/snippets/code/doc_src_gpl.qdoc GPL v2
 
 \section1 The GNU General Public License (Version 3)
 
-\snippet doc/src/snippets/code/doc.src.gpl.qdoc GPL v3
+\snippet doc/src/snippets/code/doc_src_gpl.qdoc GPL v3
 
 \section1 Additional Exception for OpenSSL
 
 The following exception is included with files that make use of the OpenSSL
 library:
 
-\snippet doc/src/snippets/code/doc.src.gpl.qdoc OpenSSL Exception
+\snippet doc/src/snippets/code/doc_src_gpl.qdoc OpenSSL Exception
 
 You must comply with the GNU General Public License version 2 or the
 GNU General Public License version 3 in all respects for all of the code

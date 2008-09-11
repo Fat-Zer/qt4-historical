@@ -871,7 +871,7 @@ public:
     information. It is recommended that the Q3DateEdit be initialised
     with a date, e.g.
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3datetimeedit.cpp 0
 
     Here we've created a new Q3DateEdit object initialised with today's
     date and restricted the valid date range to today plus or minus
@@ -1796,7 +1796,7 @@ public:
     they complete a section using setAutoAdvance(). Times appear in
     hour, minute, second order. It is recommended that the Q3TimeEdit
     is initialised with a time, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3datetimeedit.cpp 1
     Here we've created a Q3TimeEdit widget set to the current time.
     We've also set the minimum value to the current time and the
     maximum time to one hour from now.
@@ -2614,7 +2614,7 @@ public:
 
     It is recommended that the Q3DateTimeEdit is initialised with a
     datetime, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3datetimeedit.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3datetimeedit.cpp 2
     Here we've created a new Q3DateTimeEdit set to the current date and
     time, and set the date to have a minimum date of now and a maximum
     date of a week from now.

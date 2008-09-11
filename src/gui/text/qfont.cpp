@@ -417,7 +417,9 @@ QFontEngineData::~QFontEngineData()
     Use QFontMetrics to get measurements, e.g. the pixel length of a
     string using QFontMetrics::width().
 
-    Use QApplication::setFont() to set the application's default font.
+    Note that a QApplication instance must exist before a QFont can be
+    used. You can set the application's default font with
+    QApplication::setFont().
 
     If a chosen font does not include all the characters that
     need to be displayed, QFont will try to find the characters in the
@@ -427,7 +429,7 @@ QFontEngineData::~QFontEngineData()
 
     Create QFonts like this:
 
-    \snippet doc/src/snippets/code/src.gui.text.qfont.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qfont.cpp 0
 
     The attributes set in the constructor can also be set later, e.g.
     setFamily(), setPointSize(), setPointSizeFloat(), setWeight() and
@@ -524,11 +526,11 @@ QFontEngineData::~QFontEngineData()
 
     Examples:
 
-    \snippet doc/src/snippets/code/src.gui.text.qfont.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qfont.cpp 1
     If you had both an Adobe and a Cronyx Helvetica, you might get
     either.
 
-    \snippet doc/src/snippets/code/src.gui.text.qfont.cpp 2
+    \snippet doc/src/snippets/code/src_gui_text_qfont.cpp 2
 
     You can specify the foundry you want in the family name. The font f
     in the above example will be set to "Helvetica
@@ -537,11 +539,11 @@ QFontEngineData::~QFontEngineData()
     To determine the attributes of the font actually used in the window
     system, use a QFontInfo object, e.g.
 
-    \snippet doc/src/snippets/code/src.gui.text.qfont.cpp 3
+    \snippet doc/src/snippets/code/src_gui_text_qfont.cpp 3
 
     To find out font metrics use a QFontMetrics object, e.g.
 
-    \snippet doc/src/snippets/code/src.gui.text.qfont.cpp 4
+    \snippet doc/src/snippets/code/src_gui_text_qfont.cpp 4
 
     For more general information on fonts, see the
     \link http://nwalsh.com/comp.fonts/FAQ/ comp.fonts FAQ.\endlink

@@ -112,7 +112,7 @@
 
     \hr
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc 0
 
     \list
     \o Parts of the Q3PolygonScanner Class Used in Qt for Embedded Linux
@@ -174,7 +174,7 @@
 
     \section1 Babelfish
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc 1
 
     \section1 Bigelow & Holmes Luxi
 
@@ -305,7 +305,7 @@
 
     Fonts are (c) Bitstream (see below). DejaVu changes are in public domain. Glyphs imported from Arev fonts are (c) Tavmjung Bah (see below)
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc 2
 
     \section1 Fixed Fonts
 
@@ -456,18 +456,18 @@
 
     \section1 The "Artistic License"
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc Artistic License
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc Artistic License
 
     \section1 MIT License
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc MIT License
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc MIT License
 
     \section1 Python License (CNRI Python License)
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc CNRI Python License
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc CNRI Python License
 
     \section1 The zlib/libpng License
 
-    \snippet doc/src/snippets/code/doc.src.licenses.qdoc The zlib/libpng License
+    \snippet doc/src/snippets/code/doc_src_licenses.qdoc The zlib/libpng License
     \endif
 */

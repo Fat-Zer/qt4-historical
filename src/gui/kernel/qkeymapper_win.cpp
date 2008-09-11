@@ -454,9 +454,9 @@ int ToUnicode(UINT vk, int /*scancode*/, unsigned char* /*kbdBuffer*/, LPWSTR un
     return 0;
 }
 
-int ToAscii(UINT vk, int scancode, unsigned char *kbdBuffer, LPWSTR unicodeBuffer, int flag)
+int ToAscii(UINT vk, int scancode, unsigned char *kbdBuffer, LPWORD unicodeBuffer, int flag)
 {
-    return ToUnicode(vk, scancode, kbdBuffer, unicodeBuffer, 0, flag);
+    return ToUnicode(vk, scancode, kbdBuffer, (LPWSTR) unicodeBuffer, 0, flag);
 
 }
 QT_END_INCLUDE_NAMESPACE

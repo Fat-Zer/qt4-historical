@@ -61,7 +61,7 @@
     files, or on an entire project specified by a \c qmake \c .pro
     file:
 
-    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qt3to4.qdoc 0
 
     In project mode, \c qt3to4 reads the \c .pro file and converts
     all files specified in it. The tool modifies the files in place.
@@ -98,7 +98,7 @@
     possible to create a "patch" file that includes the original file and adds
     or disables rules. The syntax for this file looks like this:
 
-    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qt3to4.qdoc 1
 
     \section1 Logging
 
@@ -138,7 +138,7 @@
     In some cases, you might get compiler errors because of identifiers
     in the global namespace (e.g., \c CTRL). Adding
 
-    \snippet doc/src/snippets/code/doc.src.qt3to4.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qt3to4.qdoc 2
 
     at the beginning of the source file that contains
     the indentifier solves the problem.

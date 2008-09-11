@@ -101,20 +101,20 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     Here's an example of a QVector that stores integers and a QVector
     that stores QString values:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 0
 
     QVector stores a vector (or array) of items. Typically, vectors
     are created with an initial size. For example, the following code
     constructs a QVector with 200 elements:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 1
 
     The elements are automatically initialized with a
     \l{default-constructed value}. If you want to initialize the
     vector with a different value, pass that value as the second
     argument to the constructor:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 2
 
     You can also call fill() at any time to fill the vector with a
     value.
@@ -124,11 +124,11 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     non-const vectors, operator[]() returns a reference to the item
     that can be used on the left side of an assignment:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 3
 
     For read-only access, an alternative syntax is to use at():
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 4
 
     at() can be faster than operator[](), because it never causes a
     \l{deep copy} to occur.
@@ -146,7 +146,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     backward. Both return the index of the matching item if they found
     one; otherwise, they return -1. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 5
 
     If you simply want to check whether a vector contains a
     particular value, use contains(). If you want to find out how
@@ -372,7 +372,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     can be used to access and modify the items in the vector.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 6
 
     The pointer remains valid as long as the vector isn't
     reallocated.
@@ -443,7 +443,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     Inserts \a value at the end of the vector.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 7
 
     This is the same as calling resize(size() + 1) and assigning \a
     value to the new last element in the vector.
@@ -460,7 +460,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     Inserts \a value at the beginning of the vector.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 8
 
     This is the same as vector.insert(0, \a value).
 
@@ -480,7 +480,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     value is appended to the vector.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 9
 
     For large vectors, this operation can be slow (\l{linear time}),
     because it requires moving all the items at indexes \a i and
@@ -499,7 +499,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     vector.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 10
 */
 
 /*! \fn QVector::iterator QVector::insert(iterator before, const T &value)
@@ -553,7 +553,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     size beforehand.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 11
 
     \sa resize()
 */
@@ -565,7 +565,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     Returns -1 if no item matched.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 12
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -581,7 +581,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     last item. Returns -1 if no item matched.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 13
 
     This function requires the value type to have an implementation of
     \c operator==().
@@ -890,7 +890,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 14
 
     \sa fromList(), QList::fromVector()
 */
@@ -901,7 +901,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 15
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 15
 
     \sa toList(), QList::toVector()
 */
@@ -913,7 +913,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 16
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 16
 
     \sa toStdVector(), QList::fromStdList()
 */
@@ -923,7 +923,7 @@ int QVectorData::grow(int sizeofTypedData, int size, int sizeofT, bool excessive
     Returns a std::vector object with the data contained in this QVector.
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qvector.cpp 17
+    \snippet doc/src/snippets/code/src_corelib_tools_qvector.cpp 17
 
     \sa fromStdVector(), QList::toStdList()
 */

@@ -582,7 +582,7 @@ void QVFb::about()
 {
     QMessageBox::about(this, "About QVFB",
 	"<h2>The Qtopia Core Virtual X11 Framebuffer</h2>"
-	"<p>This application runs under Qt/X11, emulating a simple framebuffer, "
+	"<p>This application runs under Qt for X11, emulating a simple framebuffer, "
 	"which the Qtopia Core server and clients can attach to just as if "
 	"it was a hardware Linux framebuffer. "
 	"<p>With the aid of this development tool, you can develop Qtopia Core "

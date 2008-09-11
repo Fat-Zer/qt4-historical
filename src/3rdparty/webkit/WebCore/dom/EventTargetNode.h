@@ -24,6 +24,7 @@
 #ifndef EventTargetNode_h
 #define EventTargetNode_h
 
+#include "Event.h"
 #include "EventTarget.h"
 #include "Node.h"
 

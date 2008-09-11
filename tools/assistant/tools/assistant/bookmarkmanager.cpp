@@ -382,10 +382,10 @@ void BookmarkWidget::customContextMenuRequested(const QPoint &point)
     if (!index.isValid())
         return;
 
-    QAction *showItem;
-    QAction *removeItem;
-    QAction *renameItem;
-    QAction *showItemNewTab;
+    QAction *showItem = 0;
+    QAction *removeItem = 0;
+    QAction *renameItem = 0;
+    QAction *showItemNewTab = 0;
 
     QMenu menu(QLatin1String(""), this);
     QString data = index.data(Qt::UserRole + 10).toString();
@@ -626,9 +626,6 @@ BookmarkManager::BookmarkManager(QHelpEngineCore* _helpEngine)
     folderIcon = QApplication::style()->standardIcon(QStyle::SP_DirClosedIcon);
     treeModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Bookmark"));
     listModel->setHeaderData(0, Qt::Horizontal, QObject::tr("Bookmark"));
-    m_bookmarks = helpEngine->customValue(QLatin1String("Bookmarks")).toByteArray();
-
-    setupBookmarkModels();
 
     connect(treeModel, SIGNAL(itemChanged(QStandardItem*)), this,
         SLOT(itemChanged(QStandardItem*)));
@@ -785,7 +782,8 @@ void BookmarkManager::setupBookmarkModels()
     QList<int> lastDepths;
     QList<QStandardItem*> parents;
 
-    QDataStream stream(m_bookmarks);
+    QByteArray ba = helpEngine->customValue(QLatin1String("Bookmarks")).toByteArray();
+    QDataStream stream(ba);
     while (!stream.atEnd()) {
         stream >> depth >> name >> type >> expanded;
 

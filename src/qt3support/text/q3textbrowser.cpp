@@ -96,7 +96,7 @@ QT_BEGIN_NAMESPACE
     If you intend using the mime factory to read the data directly
     from the file system, you may have to specify the encoding for the
     file extension you are using. For example:
-    \snippet doc/src/snippets/code/src.qt3support.text.q3textbrowser.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_text_q3textbrowser.cpp 0
     This is to ensure that the factory is able to resolve the document
     names.
 

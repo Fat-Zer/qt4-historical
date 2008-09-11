@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtopiacore-architecture.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qtopiacore-architecture.qdoc -->
 <head>
   <title>Qt 4.4: Qt for Embedded Linux Architecture</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,13 +11,13 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Qt for Embedded Linux Architecture<br /><span class="subtitle"></span>
 </h1>
-<p>A <a href="qt-embedded.html">Qt for Embedded Linux</a> application requires a server application to be running, or to be the server application itself. Any <a href="qt-embedded.html">Qt for Embedded Linux</a> application can act as the server. When more than one application are running, the subsequent applications connect to the existing server application as clients.</p>
+<p>A <a href="qt-embedded.html">Qt for Embedded Linux</a> application requires a server application to be running, or to be the server application itself. Any <a href="qt-embedded.html">Qt for Embedded Linux</a> application can act as the server. When more than one application is running, the subsequent applications connect to the existing server application as clients.</p>
 <p>The server and client processes have different responsibilities: The server process manages pointer handling, character input, and screen output. In addition, the server controls the appearance of the screen cursor and the screen saver. The client process performs all application specific operations.</p>
 <p>The server application is represented by an instance of the QWSServer class, while the client applications are represented by instances of the QWSClient class. On each side, there are several classes performing the various operations.</p>
-<p align="center"><img src="images/qt-embedded-architecture2.png" /></p><p>All system generated events, including keyboard and mouse events, are passed to the server application which then propagates the event to the appropiate client.</p>
+<p align="center"><img src="images/qt-embedded-architecture2.png" /></p><p>All system generated events, including keyboard and mouse events, are passed to the server application which then propagates the event to the appropriate client.</p>
 <p>When rendering, the default behavior is for each client to render its widgets into memory while the server is responsible for putting the contents of the memory onto the screen. But when the hardware is known and well defined, as is often the case with software for embedded devices, it may be useful for the clients to manipulate and control the underlying hardware directly. <a href="qt-embedded.html">Qt for Embedded Linux</a> provides two different approaches to achieve this behavior, see the graphics rendering section below for details.</p>
 <ul><li><a href="#client-server-communication">Client/Server Communication</a></li>
 <li><a href="#pointer-handling-layer">Pointer Handling Layer</a></li>
@@ -28,7 +28,7 @@
 <a name="client-server-communication"></a>
 <h2>Client/Server Communication</h2>
 <p>The running applications continuously alter the appearance of the screen by adding and removing widgets. The server maintains information about each top-level window in a corresponding QWSWindow object.</p>
-<p>Whenever the server receives an event, it queries its stack of top-level windows to find the window containing the event's position. Each window can identify the client application that created it, and returns its ID to the server upon request. Finally, the server forwards the event, encapsulated by an instance of the QWSEvent class, to the appropiate client.</p>
+<p>Whenever the server receives an event, it queries its stack of top-level windows to find the window containing the event's position. Each window can identify the client application that created it, and returns its ID to the server upon request. Finally, the server forwards the event, encapsulated by an instance of the QWSEvent class, to the appropriate client.</p>
 <p align="center"><img src="images/qt-embedded-clientservercommunication.png" /></p><p>If an input method is installed, it is used as a filter between the server and the client application. Derive from the QWSInputMethod class to implement custom input methods, and use the server's setCurrentInputMethod() function to install it. In addition, it is possible to implement global, low-level filters on key events using the QWSServer::KeyboardFilter class; this can be used to implement things like advanced power management suspended from a button without having to filter for it in all applications.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>UNIX Domain Socket</th></tr></thead>
@@ -98,8 +98,8 @@
 <p>See also: <a href="qt-embedded-displaymanagement.html">Qt for Embedded Linux Display Management</a> and <a href="plugins-howto.html">How to Create Qt Plugins</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

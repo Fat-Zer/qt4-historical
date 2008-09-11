@@ -83,10 +83,11 @@ QT_BEGIN_NAMESPACE
     an action on a given shortcut. On X11 the ampersand will not be
     shown and the character will be underlined. On Windows, shortcuts
     are normally not displayed until the user presses the \gui Alt
-    key, but this is a setting the user can change. On Mac such
-    shortcuts do not exists, unless you explicitly call the global
-    qt_set_sequence_auto_mnemonic() function; then they will appear as
-    they do on X11.
+    key, but this is a setting the user can change. On Mac, shortcuts
+    are disabled by default. Call qt_set_sequence_auto_mnemonic() to
+    enable them. However, because mnemonic shortcuts do not fit in
+    with Aqua's guidelines, Qt will not show the shortcut character
+    underlined.
 
     For applications that use menus, it may be more convenient to
     use the convenience functions provided in the QMenu class to
@@ -97,7 +98,7 @@ QT_BEGIN_NAMESPACE
     The simplest way to create a shortcut for a particular widget is
     to construct the shortcut with a key sequence. For example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qshortcut.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qshortcut.cpp 0
 
     When the user types the \l{QKeySequence}{key sequence}
     for a given shortcut, the shortcut's activated() signal is
@@ -234,7 +235,9 @@ QShortcut::~QShortcut()
     This is a key sequence with an optional combination of Shift, Ctrl,
     and Alt. The key sequence may be supplied in a number of ways:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qshortcut.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qshortcut.cpp 1
+
+    By default, this property contains an empty key sequence.
 */
 void QShortcut::setKey(const QKeySequence &key)
 {
@@ -263,6 +266,8 @@ QKeySequence QShortcut::key() const
     If the application is in \c WhatsThis mode the shortcut will not emit
     the signals, but will show the "What's This?" text instead.
 
+    By default, this property is true.
+
     \sa whatsThis
 */
 void QShortcut::setEnabled(bool enable)
@@ -290,6 +295,8 @@ bool QShortcut::isEnabled() const
     which allows the shortcut to trigger if the parent (the widget
     containing the shortcut) is a subwidget of the active top-level
     window.
+
+    By default, this property is set to Qt::WindowShortcut.
 */
 void QShortcut::setContext(Qt::ShortcutContext context)
 {
@@ -316,6 +323,8 @@ Qt::ShortcutContext QShortcut::context()
 
     To set "What's This?" help on a menu item (with or without a
     shortcut key), set the help on the item's action.
+
+    By default, this property contains an empty string.
 
     \sa QWhatsThis::inWhatsThisMode(), QAction::setWhatsThis()
 */

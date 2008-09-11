@@ -1137,7 +1137,7 @@ int Q3Socket::ungetch( int ch )
     function returns false. This means that loops such as this won't
     work:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3socket.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3socket.cpp 0
 
     \sa readLine()
 */

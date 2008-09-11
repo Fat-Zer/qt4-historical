@@ -85,7 +85,7 @@ class Q_GUI_EXPORT QTextEdit : public QAbstractScrollArea
     Q_PROPERTY(bool readOnly READ isReadOnly WRITE setReadOnly)
 #ifndef QT_NO_TEXTHTMLPARSER
     Q_PROPERTY(QString html READ toHtml WRITE setHtml NOTIFY textChanged USER true)
-#endif    
+#endif
     Q_PROPERTY(QString plainText READ toPlainText WRITE setPlainText DESIGNABLE false)
     Q_PROPERTY(bool overwriteMode READ overwriteMode WRITE setOverwriteMode)
     Q_PROPERTY(int tabStopWidth READ tabStopWidth WRITE setTabStopWidth)
@@ -299,7 +299,9 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual bool focusNextPrevChild(bool next);
+#ifndef QT_NO_CONTEXTMENU
     virtual void contextMenuEvent(QContextMenuEvent *e);
+#endif
 #ifndef QT_NO_DRAGANDDROP
     virtual void dragEnterEvent(QDragEnterEvent *e);
     virtual void dragLeaveEvent(QDragLeaveEvent *e);

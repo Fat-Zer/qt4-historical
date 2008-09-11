@@ -117,11 +117,16 @@ QSqlQueryPrivate::~QSqlQueryPrivate()
     standard SQL (e.g. \c{SET DATESTYLE=ISO} for PostgreSQL).
 
     Successfully executed SQL statements set the query's state to
-    active; isActive() then returns true. Otherwise the query's state
-    is set to inactive. In either case, when executing a new SQL
-    statement, the query is positioned on an invalid record; an
-    active query must be navigated to a valid record (so that
-    isValid() returns true) before values can be retrieved.
+    active so that isActive() returns true. Otherwise the query's
+    state is set to inactive. In either case, when executing a new SQL
+    statement, the query is positioned on an invalid record. An active
+    query must be navigated to a valid record (so that isValid()
+    returns true) before values can be retrieved.
+
+    For some databases, if an active query that is a \c{SELECT}
+    statement exists when you call \l{QSqlDatabase::}{commit()} or
+    \l{QSqlDatabase::}{rollback()}, the commit or rollback will
+    fail. See isActive() for details.
 
     \target QSqlQuery examples
 
@@ -306,12 +311,12 @@ QSqlQuery& QSqlQuery::operator=(const QSqlQuery& other)
 }
 
 /*!
-    Returns true if the query is active and positioned on a valid
-    record and the \a field is NULL; otherwise returns false. Note
-    that for some drivers, isNull() will not return accurate
-    information until after an attempt is made to retrieve data.
+  Returns true if the query is \l{isActive()}{active} and positioned
+  on a valid record and the \a field is NULL; otherwise returns
+  false. Note that for some drivers, isNull() will not return accurate
+  information until after an attempt is made to retrieve data.
 
-    \sa isActive(), isValid(), value()
+  \sa isActive(), isValid(), value()
 */
 
 bool QSqlQuery::isNull(int field) const
@@ -322,24 +327,25 @@ bool QSqlQuery::isNull(int field) const
 }
 
 /*!
-    Executes the SQL in \a query. Returns true and sets the query
-    state to active if the query was successful; otherwise returns
-    false. The \a query string must use syntax appropriate for the
-    SQL database being queried (for example, standard SQL).
+  
+  Executes the SQL in \a query. Returns true and sets the query state
+  to \l{isActive()}{active} if the query was successful; otherwise
+  returns false. The \a query string must use syntax appropriate for
+  the SQL database being queried (for example, standard SQL).
 
-    After the query is executed, the query is positioned on an \e
-    invalid record and must be navigated to a valid record before
-    data values can be retrieved (for example, using next()).
+  After the query is executed, the query is positioned on an \e
+  invalid record and must be navigated to a valid record before data
+  values can be retrieved (for example, using next()).
 
-    Note that the last error for this query is reset when exec() is
-    called.
+  Note that the last error for this query is reset when exec() is
+  called.
 
-    Example:
+  Example:
 
-    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 34
+  \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 34
 
-    \sa isActive(), isValid(), next(), previous(), first(), last(),
-        seek()
+  \sa isActive(), isValid(), next(), previous(), first(), last(),
+  seek()
 */
 
 bool QSqlQuery::exec(const QString& query)
@@ -377,7 +383,7 @@ bool QSqlQuery::exec(const QString& query)
     The fields are numbered from left to right using the text of the
     \c SELECT statement, e.g. in
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 0
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlquery.cpp 0
 
     field 0 is \c forename and field 1 is \c
     surname. Using \c{SELECT *} is not recommended because the order
@@ -443,44 +449,52 @@ const QSqlResult* QSqlQuery::result() const
 }
 
 /*!
-    Retrieves the record at position \a index, if available, and
-    positions the query on the retrieved record. The first record is
-    at position 0. Note that the query must be in an active state and
-    isSelect() must return true before calling this function.
+  Retrieves the record at position \a index, if available, and
+  positions the query on the retrieved record. The first record is at
+  position 0. Note that the query must be in an \l{isActive()}
+  {active} state and isSelect() must return true before calling this
+  function.
 
-    If \a relative is false (the default), the following rules apply:
+  If \a relative is false (the default), the following rules apply:
 
-    \list
-    \o If \a index is negative, the result is positioned before the
-    first record and false is returned.
-    \o Otherwise, an attempt is made to move to the record at position
-    \a index. If the record at position \a index could not be retrieved, the
-    result is positioned after the last record and false is returned. If
-    the record is successfully retrieved, true is returned.
-    \endlist
+  \list
 
-    If \a relative is true, the following rules apply:
+  \o If \a index is negative, the result is positioned before the
+  first record and false is returned.
 
-    \list
-    \o If the result is currently positioned before the first
-    record or on the first record, and \a index is negative, there is no
-    change, and false is returned.
-    \o If the result is currently located after the last record, and
-    \a index is positive, there is no change, and false is returned.
-    \o If the result is currently located somewhere in the middle,
-    and the relative offset \a index moves the result below zero, the
-    result is positioned before the first record and false is
-    returned.
-    \o Otherwise, an attempt is made to move to the record \a index
-    records ahead of the current record (or \a index records behind the
-    current record if \a index is negative). If the record at offset \a index
-    could not be retrieved, the result is positioned after the last
-    record if \a index >= 0, (or before the first record if \a index is
-    negative), and false is returned. If the record is successfully
-    retrieved, true is returned.
-    \endlist
+  \o Otherwise, an attempt is made to move to the record at position
+  \a index. If the record at position \a index could not be retrieved,
+  the result is positioned after the last record and false is
+  returned. If the record is successfully retrieved, true is returned.
 
-    \sa next() previous() first() last() at() isActive() isValid()
+  \endlist
+
+  If \a relative is true, the following rules apply:
+
+  \list
+
+  \o If the result is currently positioned before the first record or
+  on the first record, and \a index is negative, there is no change,
+  and false is returned.
+
+  \o If the result is currently located after the last record, and \a
+  index is positive, there is no change, and false is returned.
+
+  \o If the result is currently located somewhere in the middle, and
+  the relative offset \a index moves the result below zero, the result
+  is positioned before the first record and false is returned.
+
+  \o Otherwise, an attempt is made to move to the record \a index
+  records ahead of the current record (or \a index records behind the
+  current record if \a index is negative). If the record at offset \a
+  index could not be retrieved, the result is positioned after the
+  last record if \a index >= 0, (or before the first record if \a
+  index is negative), and false is returned. If the record is
+  successfully retrieved, true is returned.
+
+  \endlist
+
+  \sa next() previous() first() last() at() isActive() isValid()
 */
 bool QSqlQuery::seek(int index, bool relative)
 {
@@ -546,32 +560,34 @@ bool QSqlQuery::seek(int index, bool relative)
 }
 
 /*!
-    Retrieves the next record in the result, if available, and
-    positions the query on the retrieved record. Note that the result
-    must be in an active state and isSelect() must return true before
-    calling this function or it will do nothing and return false.
+  
+  Retrieves the next record in the result, if available, and positions
+  the query on the retrieved record. Note that the result must be in
+  the \l{isActive()}{active} state and isSelect() must return true
+  before calling this function or it will do nothing and return false.
 
-    The following rules apply:
+  The following rules apply:
 
-    \list
-    \o If the result is currently located before the first
-    record, e.g. immediately after a query is executed, an attempt is
-    made to retrieve the first record.
+  \list
 
-    \o If the result is currently located after the last record,
-    there is no change and false is returned.
+  \o If the result is currently located before the first record,
+  e.g. immediately after a query is executed, an attempt is made to
+  retrieve the first record.
 
-    \o If the result is located somewhere in the middle, an attempt
-    is made to retrieve the next record.
-    \endlist
+  \o If the result is currently located after the last record, there
+  is no change and false is returned.
 
-    If the record could not be retrieved, the result is positioned after
-    the last record and false is returned. If the record is successfully
-    retrieved, true is returned.
+  \o If the result is located somewhere in the middle, an attempt is
+  made to retrieve the next record.
 
-    \sa previous() first() last() seek() at() isActive() isValid()
+  \endlist
+
+  If the record could not be retrieved, the result is positioned after
+  the last record and false is returned. If the record is successfully
+  retrieved, true is returned.
+
+  \sa previous() first() last() seek() at() isActive() isValid()
 */
-
 bool QSqlQuery::next()
 {
     if (!isSelect() || !isActive())
@@ -593,31 +609,34 @@ bool QSqlQuery::next()
 }
 
 /*!
-    Retrieves the previous record in the result, if available, and
-    positions the query on the retrieved record. Note that the result
-    must be in an active state and isSelect() must return true before
-    calling this function or it will do nothing and return false.
 
-    The following rules apply:
+  Retrieves the previous record in the result, if available, and
+  positions the query on the retrieved record. Note that the result
+  must be in the \l{isActive()}{active} state and isSelect() must
+  return true before calling this function or it will do nothing and
+  return false.
 
-    \list
-    \o If the result is currently located before the first record,
-    there is no change and false is returned.
+  The following rules apply:
 
-    \o If the result is currently located after the last record, an
-    attempt is made to retrieve the last record.
+  \list
 
-    \o If the result is somewhere in the middle, an attempt is made
-    to retrieve the previous record.
-    \endlist
+  \o If the result is currently located before the first record, there
+  is no change and false is returned.
 
-    If the record could not be retrieved, the result is positioned
-    before the first record and false is returned. If the record is
-    successfully retrieved, true is returned.
+  \o If the result is currently located after the last record, an
+  attempt is made to retrieve the last record.
 
-    \sa next() first() last() seek() at() isActive() isValid()
+  \o If the result is somewhere in the middle, an attempt is made to
+  retrieve the previous record.
+
+  \endlist
+
+  If the record could not be retrieved, the result is positioned
+  before the first record and false is returned. If the record is
+  successfully retrieved, true is returned.
+
+  \sa next() first() last() seek() at() isActive() isValid()
 */
-
 bool QSqlQuery::previous()
 {
     if (!isSelect() || !isActive())
@@ -644,16 +663,15 @@ bool QSqlQuery::previous()
 }
 
 /*!
-    Retrieves the first record in the result, if available, and
-    positions the query on the retrieved record. Note that the result
-    must be in an active state and isSelect() must return true before
-    calling this function or it will do nothing and return false.
-    Returns true if successful. If unsuccessful the query position is
-    set to an invalid position and false is returned.
+  Retrieves the first record in the result, if available, and
+  positions the query on the retrieved record. Note that the result
+  must be in the \l{isActive()}{active} state and isSelect() must
+  return true before calling this function or it will do nothing and
+  return false.  Returns true if successful. If unsuccessful the query
+  position is set to an invalid position and false is returned.
 
-    \sa next() previous() last() seek() at() isActive() isValid()
-*/
-
+  \sa next() previous() last() seek() at() isActive() isValid()
+ */
 bool QSqlQuery::first()
 {
     if (!isSelect() || !isActive())
@@ -668,14 +686,15 @@ bool QSqlQuery::first()
 }
 
 /*!
-    Retrieves the last record in the result, if available, and
-    positions the query on the retrieved record. Note that the result
-    must be in an active state and isSelect() must return true before
-    calling this function or it will do nothing and return false.
-    Returns true if successful. If unsuccessful the query position is
-    set to an invalid position and false is returned.
 
-    \sa next() previous() first() seek() at() isActive() isValid()
+  Retrieves the last record in the result, if available, and positions
+  the query on the retrieved record. Note that the result must be in
+  the \l{isActive()}{active} state and isSelect() must return true
+  before calling this function or it will do nothing and return false.
+  Returns true if successful. If unsuccessful the query position is
+  set to an invalid position and false is returned.
+
+  \sa next() previous() first() seek() at() isActive() isValid()
 */
 
 bool QSqlQuery::last()
@@ -688,17 +707,16 @@ bool QSqlQuery::last()
 }
 
 /*!
-    Returns the size of the result (number of rows returned), or -1
-    if the size cannot be determined or if the database does not
-    support reporting information about query sizes. Note that for
-    non-\c SELECT statements (isSelect() returns false), size() will
-    return -1. If the query is not active (isActive() returns false),
-    -1 is returned.
+  Returns the size of the result (number of rows returned), or -1 if
+  the size cannot be determined or if the database does not support
+  reporting information about query sizes. Note that for non-\c SELECT
+  statements (isSelect() returns false), size() will return -1. If the
+  query is not active (isActive() returns false), -1 is returned.
 
-    To determine the number of rows affected by a non-\c SELECT
-    statement, use numRowsAffected().
+  To determine the number of rows affected by a non-\c SELECT
+  statement, use numRowsAffected().
 
-    \sa isActive() numRowsAffected() QSqlDriver::hasFeature()
+  \sa isActive() numRowsAffected() QSqlDriver::hasFeature()
 */
 int QSqlQuery::size() const
 {
@@ -708,12 +726,12 @@ int QSqlQuery::size() const
 }
 
 /*!
-    Returns the number of rows affected by the result's SQL statement,
-    or -1 if it cannot be determined. Note that for \c SELECT
-    statements, the value is undefined; use size() instead. If the
-    query is not active (isActive() returns false), -1 is returned.
+  Returns the number of rows affected by the result's SQL statement,
+  or -1 if it cannot be determined. Note that for \c SELECT
+  statements, the value is undefined; use size() instead. If the query
+  is not \l{isActive()}{active}, -1 is returned.
 
-    \sa size() QSqlDriver::hasFeature()
+  \sa size() QSqlDriver::hasFeature()
 */
 
 int QSqlQuery::numRowsAffected() const
@@ -724,10 +742,10 @@ int QSqlQuery::numRowsAffected() const
 }
 
 /*!
-    Returns error information about the last error (if any) that
-    occurred with this query.
+  Returns error information about the last error (if any) that
+  occurred with this query.
 
-    \sa QSqlError, QSqlDatabase::lastError()
+  \sa QSqlError, QSqlDatabase::lastError()
 */
 
 QSqlError QSqlQuery::lastError() const
@@ -736,8 +754,8 @@ QSqlError QSqlQuery::lastError() const
 }
 
 /*!
-    Returns true if the query is currently positioned on a valid
-    record; otherwise returns false.
+  Returns true if the query is currently positioned on a valid
+  record; otherwise returns false.
 */
 
 bool QSqlQuery::isValid() const
@@ -746,18 +764,30 @@ bool QSqlQuery::isValid() const
 }
 
 /*!
-    Returns true if the query is currently active; otherwise returns
-    false.
-*/
+  
+  Returns true if the query is \e{active}. An active QSqlQuery is one
+  that has been \l{QSqlQuery::exec()} {exec()'d} successfully but not
+  yet finished with.  When you are finished with an active query, you
+  can make make the query inactive by calling finish() or clear(), or
+  you can delete the QSqlQuery instance.
 
+  \note Of particular interest is an active query that is a \c{SELECT}
+  statement. For some databases that support transactions, an active
+  query that is a \c{SELECT} statement can cause a \l{QSqlDatabase::}
+  {commit()} or a \l{QSqlDatabase::} {rollback()} to fail, so before
+  committing or rolling back, you should make your active \c{SELECT}
+  statement query inactive using one of the ways listed above.
+
+  \sa isSelect()
+ */
 bool QSqlQuery::isActive() const
 {
     return d->sqlResult->isActive();
 }
 
 /*!
-    Returns true if the current query is a \c SELECT statement;
-    otherwise returns false.
+  Returns true if the current query is a \c SELECT statement;
+  otherwise returns false.
 */
 
 bool QSqlQuery::isSelect() const
@@ -766,10 +796,10 @@ bool QSqlQuery::isSelect() const
 }
 
 /*!
-    Returns true if you can only scroll forward through a result set;
-    otherwise returns false.
+  Returns true if you can only scroll forward through a result set;
+  otherwise returns false.
 
-    \sa setForwardOnly(), next()
+  \sa setForwardOnly(), next()
 */
 bool QSqlQuery::isForwardOnly() const
 {
@@ -777,20 +807,20 @@ bool QSqlQuery::isForwardOnly() const
 }
 
 /*!
-    Sets forward only mode to \a forward. If \a forward is true,
-    only next() and seek() with positive values, are allowed for
-    navigating the results.
+  Sets forward only mode to \a forward. If \a forward is true, only
+  next() and seek() with positive values, are allowed for navigating
+  the results.
 
-    Forward only mode can be (depending on the driver) more memory
-    efficient since results do not need to be cached. It will also
-    improve performance on some databases. For this to be true, you
-    must call \c setForwardMode() before the query is prepared or
-    executed. Note that the constructor that takes a query and a
-    database may execute the query.
+  Forward only mode can be (depending on the driver) more memory
+  efficient since results do not need to be cached. It will also
+  improve performance on some databases. For this to be true, you must
+  call \c setForwardMode() before the query is prepared or executed.
+  Note that the constructor that takes a query and a database may
+  execute the query.
 
-    Forward only mode is off by default.
+  Forward only mode is off by default.
 
-    \sa isForwardOnly(), next(), seek()
+  \sa isForwardOnly(), next(), seek()
 */
 void QSqlQuery::setForwardOnly(bool forward)
 {
@@ -798,22 +828,22 @@ void QSqlQuery::setForwardOnly(bool forward)
 }
 
 /*!
-    Returns a QSqlRecord containing the field information for the
-    current query. If the query points to a valid row (isValid()
-    returns true), the record is populated with the row's values.
-    An empty record is returned when there is no active query
-    (isActive() returns false).
+  Returns a QSqlRecord containing the field information for the
+  current query. If the query points to a valid row (isValid() returns
+  true), the record is populated with the row's values.  An empty
+  record is returned when there is no active query (isActive() returns
+  false).
 
-    To retrieve values from a query, value() should be used since
-    its index-based lookup is faster.
+  To retrieve values from a query, value() should be used since
+  its index-based lookup is faster.
 
-    In the following example, a \c{SELECT * FROM} query is executed.
-    Since the order of the columns is not defined, QSqlRecord::indexOf()
-    is used to obtain the index of a column.
+  In the following example, a \c{SELECT * FROM} query is executed.
+  Since the order of the columns is not defined, QSqlRecord::indexOf()
+  is used to obtain the index of a column.
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 1
+  \snippet doc/src/snippets/code/src_sql_kernel_qsqlquery.cpp 1
 
-    \sa value()
+  \sa value()
 */
 QSqlRecord QSqlQuery::record() const
 {
@@ -827,8 +857,9 @@ QSqlRecord QSqlQuery::record() const
 }
 
 /*!
-    Clears the result set and releases any resources held by the
-    query. You should rarely if ever need to call this function.
+  Clears the result set and releases any resources held by the
+  query. Sets the query state to inactive. You should rarely if ever
+  need to call this function.
 */
 void QSqlQuery::clear()
 {
@@ -836,24 +867,25 @@ void QSqlQuery::clear()
 }
 
 /*!
-    Prepares the SQL query \a query for execution. Returns true if the
-    query is prepared successfully; otherwise returns false.
+  Prepares the SQL query \a query for execution. Returns true if the
+  query is prepared successfully; otherwise returns false.
 
-    The query may
-    contain placeholders for binding values. Both Oracle style
-    colon-name (e.g., \c{:surname}), and ODBC style (\c{?})
-    placeholders are supported; but they cannot be mixed in the same
-    query. See the \l{QSqlQuery examples}{Detailed Description} for examples.
+  The query may contain placeholders for binding values. Both Oracle
+  style colon-name (e.g., \c{:surname}), and ODBC style (\c{?})
+  placeholders are supported; but they cannot be mixed in the same
+  query. See the \l{QSqlQuery examples}{Detailed Description} for
+  examples.
 
-    Portability note: Some databases choose to delay preparing a query until
-    it is executed the first time. In this case, preparing a syntactically wrong
-    query succeeds, but every consecutive exec() will fail.
+  Portability note: Some databases choose to delay preparing a query
+  until it is executed the first time. In this case, preparing a
+  syntactically wrong query succeeds, but every consecutive exec()
+  will fail.
 
-    Example:
+  Example:
 
-    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 9
+  \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 9
 
-    \sa exec(), bindValue(), addBindValue()
+  \sa exec(), bindValue(), addBindValue()
 */
 bool QSqlQuery::prepare(const QString& query)
 {
@@ -887,15 +919,13 @@ bool QSqlQuery::prepare(const QString& query)
 }
 
 /*!
-    \overload
+  Executes a previously prepared SQL query. Returns true if the query
+  executed successfully; otherwise returns false.
 
-    Executes a previously prepared SQL query. Returns true if the
-    query executed successfully; otherwise returns false.
+  Note that the last error for this query is reset when exec() is
+  called.
 
-    Note that the last error for this query is reset when exec() is
-    called.
-
-    \sa prepare() bindValue() addBindValue() boundValue() boundValues()
+  \sa prepare() bindValue() addBindValue() boundValue() boundValues()
 */
 bool QSqlQuery::exec()
 {
@@ -916,38 +946,45 @@ bool QSqlQuery::exec()
 /*!
     \since 4.2
 
-    Executes a previously prepared SQL query in a batch. All the bound parameters
-    have to be lists of variants. If the database doesn't support batch executions,
-    the driver will simulate it using conventional exec() calls.
+  Executes a previously prepared SQL query in a batch. All the bound
+  parameters have to be lists of variants. If the database doesn't
+  support batch executions, the driver will simulate it using
+  conventional exec() calls.
 
-    Returns true if the query is executed successfully; otherwise returns false.
+  Returns true if the query is executed successfully; otherwise
+  returns false.
 
-    Example:
+  Example:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 2
+  \snippet doc/src/snippets/code/src_sql_kernel_qsqlquery.cpp 2
 
-    The example above inserts four new rows into \c myTable:
+  The example above inserts four new rows into \c myTable:
 
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlquery.cpp 3
+  \snippet doc/src/snippets/code/src_sql_kernel_qsqlquery.cpp 3
 
-    To bind NULL values, a null QVariant of the relevant type has to be added to
-    the bound QVariantList; for example, \c {QVariant(QVariant::String)} should be
-    used if you are using strings.
+  To bind NULL values, a null QVariant of the relevant type has to be
+  added to the bound QVariantList; for example, \c
+  {QVariant(QVariant::String)} should be used if you are using
+  strings.
 
-    Note that every bound QVariantList must contain the same amount of variants.
-    Note that the type of the QVariants in a list must not change. For example,
-    you cannot mix integer and string variants within a QVariantList.
+  \note Every bound QVariantList must contain the same amount of
+  variants.
 
-    The \a mode parameter indicates how the bound QVariantList will be interpreted.
-    If \a mode is \c ValuesAsRows, every variant within the QVariantList will be
-    interpreted as a value for a new row. \c ValuesAsColumns is a special case
-    for the Oracle driver. In this mode, every entry within a QVariantList will
-    be interpreted as array-value for an IN or OUT value within a stored procedure.
-    Note that this will only work if the IN or OUT value is a table-type consisting
-    of only one column of a basic type, for example
-    \c{TYPE myType IS TABLE OF VARCHAR(64) INDEX BY BINARY_INTEGER;}
+  \note The type of the QVariants in a list must not change. For
+  example, you cannot mix integer and string variants within a
+  QVariantList.
 
-    \sa prepare(), bindValue(), addBindValue()
+  The \a mode parameter indicates how the bound QVariantList will be
+  interpreted.  If \a mode is \c ValuesAsRows, every variant within
+  the QVariantList will be interpreted as a value for a new row. \c
+  ValuesAsColumns is a special case for the Oracle driver. In this
+  mode, every entry within a QVariantList will be interpreted as
+  array-value for an IN or OUT value within a stored procedure.  Note
+  that this will only work if the IN or OUT value is a table-type
+  consisting of only one column of a basic type, for example \c{TYPE
+  myType IS TABLE OF VARCHAR(64) INDEX BY BINARY_INTEGER;}
+
+  \sa prepare(), bindValue(), addBindValue()
 */
 bool QSqlQuery::execBatch(BatchExecutionMode mode)
 {
@@ -955,16 +992,16 @@ bool QSqlQuery::execBatch(BatchExecutionMode mode)
 }
 
 /*!
-    Set the placeholder \a placeholder to be bound to value \a val in
-    the prepared statement. Note that the placeholder mark (e.g \c{:})
-    must be included when specifying the placeholder name. If \a paramType
-    is QSql::Out or QSql::InOut, the placeholder will be
-    overwritten with data from the database after the exec() call.
+  Set the placeholder \a placeholder to be bound to value \a val in
+  the prepared statement. Note that the placeholder mark (e.g \c{:})
+  must be included when specifying the placeholder name. If \a
+  paramType is QSql::Out or QSql::InOut, the placeholder will be
+  overwritten with data from the database after the exec() call.
 
-    To bind a NULL value, use a null QVariant; for example, use
-    \c {QVariant(QVariant::String)} if you are binding a string.
+  To bind a NULL value, use a null QVariant; for example, use
+  \c {QVariant(QVariant::String)} if you are binding a string.
 
-    \sa addBindValue(), prepare(), exec(), boundValue() boundValues()
+  \sa addBindValue(), prepare(), exec(), boundValue() boundValues()
 */
 void QSqlQuery::bindValue(const QString& placeholder, const QVariant& val,
                           QSql::ParamType paramType
@@ -974,12 +1011,10 @@ void QSqlQuery::bindValue(const QString& placeholder, const QVariant& val,
 }
 
 /*!
-    \overload
-
-    Set the placeholder in position \a pos to be bound to value \a val
-    in the prepared statement. Field numbering starts at 0. If \a paramType
-    is QSql::Out or QSql::InOut, the placeholder will be
-    overwritten with data from the database after the exec() call.
+  Set the placeholder in position \a pos to be bound to value \a val
+  in the prepared statement. Field numbering starts at 0. If \a
+  paramType is QSql::Out or QSql::InOut, the placeholder will be
+  overwritten with data from the database after the exec() call.
 */
 void QSqlQuery::bindValue(int pos, const QVariant& val, QSql::ParamType paramType)
 {
@@ -987,16 +1022,16 @@ void QSqlQuery::bindValue(int pos, const QVariant& val, QSql::ParamType paramTyp
 }
 
 /*!
-    Adds the value \a val to the list of values when using positional
-    value binding. The order of the addBindValue() calls determines
-    which placeholder a value will be bound to in the prepared query.
-    If \a paramType is QSql::Out or QSql::InOut, the placeholder will
-    be overwritten with data from the database after the exec() call.
+  Adds the value \a val to the list of values when using positional
+  value binding. The order of the addBindValue() calls determines
+  which placeholder a value will be bound to in the prepared query.
+  If \a paramType is QSql::Out or QSql::InOut, the placeholder will be
+  overwritten with data from the database after the exec() call.
 
-    To bind a NULL value, use a null QVariant; for example, use
-    \c {QVariant(QVariant::String)} if you are binding a string.
+  To bind a NULL value, use a null QVariant; for example, use \c
+  {QVariant(QVariant::String)} if you are binding a string.
 
-    \sa bindValue(), prepare(), exec(), boundValue() boundValues()
+  \sa bindValue(), prepare(), exec(), boundValue() boundValues()
 */
 void QSqlQuery::addBindValue(const QVariant& val, QSql::ParamType paramType)
 {
@@ -1004,9 +1039,9 @@ void QSqlQuery::addBindValue(const QVariant& val, QSql::ParamType paramType)
 }
 
 /*!
-    Returns the value for the \a placeholder.
+  Returns the value for the \a placeholder.
 
-    \sa boundValues() bindValue() addBindValue()
+  \sa boundValues() bindValue() addBindValue()
 */
 QVariant QSqlQuery::boundValue(const QString& placeholder) const
 {
@@ -1014,9 +1049,7 @@ QVariant QSqlQuery::boundValue(const QString& placeholder) const
 }
 
 /*!
-    \overload
-
-    Returns the value for the placeholder at position \a pos.
+  Returns the value for the placeholder at position \a pos.
 */
 QVariant QSqlQuery::boundValue(int pos) const
 {
@@ -1024,18 +1057,18 @@ QVariant QSqlQuery::boundValue(int pos) const
 }
 
 /*!
-    Returns a map of the bound values.
+  Returns a map of the bound values.
 
-    With named binding, the bound values can be examined in the
-    following ways:
+  With named binding, the bound values can be examined in the
+  following ways:
 
-    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 14
+  \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 14
 
-    With positional binding, the code becomes:
+  With positional binding, the code becomes:
 
-    \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 15
+  \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 15
 
-    \sa boundValue() bindValue() addBindValue()
+  \sa boundValue() bindValue() addBindValue()
 */
 QMap<QString,QVariant> QSqlQuery::boundValues() const
 {
@@ -1048,16 +1081,16 @@ QMap<QString,QVariant> QSqlQuery::boundValues() const
 }
 
 /*!
-    Returns the last query that was successfully executed.
+  Returns the last query that was successfully executed.
 
-    In most cases this function returns the same string as
-    lastQuery(). If a prepared query with placeholders is executed on
-    a DBMS that does not support it, the preparation of this query is
-    emulated. The placeholders in the original query are replaced with
-    their bound values to form a new query. This function returns the
-    modified query. It is mostly useful for debugging purposes.
+  In most cases this function returns the same string as lastQuery().
+  If a prepared query with placeholders is executed on a DBMS that
+  does not support it, the preparation of this query is emulated. The
+  placeholders in the original query are replaced with their bound
+  values to form a new query. This function returns the modified
+  query. It is mostly useful for debugging purposes.
 
-    \sa lastQuery()
+  \sa lastQuery()
 */
 QString QSqlQuery::executedQuery() const
 {
@@ -1065,27 +1098,25 @@ QString QSqlQuery::executedQuery() const
 }
 
 /*!
-    \fn bool QSqlQuery::prev()
+  \fn bool QSqlQuery::prev()
 
-    Use previous() instead.
+  Use previous() instead.
 */
 
 /*!
-    Returns the object ID of the most recent inserted row if the
-    database supports it.
-    An invalid QVariant will be returned if the query did not
-    insert any value or if the database does not report the id back.
-    If more than one row was touched by the insert, the behavior is
-    undefined.
+  Returns the object ID of the most recent inserted row if the
+  database supports it.  An invalid QVariant will be returned if the
+  query did not insert any value or if the database does not report
+  the id back.  If more than one row was touched by the insert, the
+  behavior is undefined.
 
-    For MySQL databases the row's auto-increment field will
-    be returned.
+  For MySQL databases the row's auto-increment field will be returned.
     
-    \note For this function to work in PSQL, the table table must
-    contain OIDs, which may not have been created by default.
-    Check the \c default_with_oids configuration variable to be sure.
+  \note For this function to work in PSQL, the table table must
+  contain OIDs, which may not have been created by default.  Check the
+  \c default_with_oids configuration variable to be sure.
 
-    \sa QSqlDriver::hasFeature()
+  \sa QSqlDriver::hasFeature()
 */
 QVariant QSqlQuery::lastInsertId() const
 {
@@ -1093,21 +1124,25 @@ QVariant QSqlQuery::lastInsertId() const
 }
 
 /*!
-    Instruct the database driver to return numerical values with a precision specified by
-    \a precisionPolicy.
 
-    The Oracle driver, for example, retrieves numerical values as strings by default to
-    prevent the loss of precision. If the high precision doesn't matter, use this method
-    to increase execution speed by bypassing string conversions.
+  Instruct the database driver to return numerical values with a
+  precision specified by \a precisionPolicy.
 
-    Note: Drivers that don't support fetching numerical values with low precision will
-    ignore the precision policy. You can use QSqlDriver::hasFeature() to find out whether a
-    driver supports this feature.
+  The Oracle driver, for example, retrieves numerical values as
+  strings by default to prevent the loss of precision. If the high
+  precision doesn't matter, use this method to increase execution
+  speed by bypassing string conversions.
 
-    Note: Setting the precision policy doesn't affect the currently active query. Call
-    \l{exec()}{exec(QString)} or prepare() in order to activate the policy.
+  Note: Drivers that don't support fetching numerical values with low
+  precision will ignore the precision policy. You can use
+  QSqlDriver::hasFeature() to find out whether a driver supports this
+  feature.
 
-    \sa QSql::NumericalPrecisionPolicy, numericalPrecisionPolicy()
+  Note: Setting the precision policy doesn't affect the currently
+  active query. Call \l{exec()}{exec(QString)} or prepare() in order
+  to activate the policy.
+
+  \sa QSql::NumericalPrecisionPolicy, numericalPrecisionPolicy()
 */
 void QSqlQuery::setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy precisionPolicy)
 {
@@ -1115,9 +1150,9 @@ void QSqlQuery::setNumericalPrecisionPolicy(QSql::NumericalPrecisionPolicy preci
 }
 
 /*!
-    Returns the current precision policy.
+  Returns the current precision policy.
 
-    \sa QSql::NumericalPrecisionPolicy, setNumericalPrecisionPolicy()
+  \sa QSql::NumericalPrecisionPolicy, setNumericalPrecisionPolicy()
 */
 QSql::NumericalPrecisionPolicy QSqlQuery::numericalPrecisionPolicy() const
 {
@@ -1125,16 +1160,17 @@ QSql::NumericalPrecisionPolicy QSqlQuery::numericalPrecisionPolicy() const
 }
 
 /*!
-    \since 4.3.2
+  \since 4.3.2
 
-    Instruct the database driver that no more data will be fetched from this
-    query until it is re-executed. There is normally no need to call this
-    function, but it may be helpful in order to free resources such as locks
-    or cursors if you intend to re-use the query at a later time.
+  Instruct the database driver that no more data will be fetched from
+  this query until it is re-executed. There is normally no need to
+  call this function, but it may be helpful in order to free resources
+  such as locks or cursors if you intend to re-use the query at a
+  later time.
     
-    Sets the query to inactive. Bound values retain their values.
+  Sets the query to inactive. Bound values retain their values.
 
-    \sa prepare() exec() isActive()
+  \sa prepare() exec() isActive()
 */
 void QSqlQuery::finish()
 {
@@ -1147,33 +1183,34 @@ void QSqlQuery::finish()
 }
 
 /*!
-    \since 4.4
+  \since 4.4
  
-    Discards the current result set and navigates to the next if available.
+  Discards the current result set and navigates to the next if available.
 
-    Some databases are capable of returning multiple result sets for stored
-    procedures or SQL batches (a query strings that contains multiple
-    statements). If multiple result sets are available after executing a
-    query this function can be used to navigate to the next result set(s).
+  Some databases are capable of returning multiple result sets for
+  stored procedures or SQL batches (a query strings that contains
+  multiple statements). If multiple result sets are available after
+  executing a query this function can be used to navigate to the next
+  result set(s).
     
-    If a new result set is available this function will return true.
-    The query will be repositioned on an \e invalid record in the new
-    result set and must be navigated to a valid record before data
-    values can be retrieved. If a new result set isn't available the
-    function returns false and the the query is set to inactive. In any
-    case the old result set will be discarded.
+  If a new result set is available this function will return true.
+  The query will be repositioned on an \e invalid record in the new
+  result set and must be navigated to a valid record before data
+  values can be retrieved. If a new result set isn't available the
+  function returns false and the the query is set to inactive. In any
+  case the old result set will be discarded.
 
-    When one of the statements is a non-select statement a count of affected 
-    rows may be available instead of a result set.
+  When one of the statements is a non-select statement a count of
+  affected rows may be available instead of a result set.
 
-    Note that some databases, i.e. Microsoft SQL Server, requires
-    non-scrollable cursors when working with multiple result sets. 
-    Some databases may execute all statements at once while others may
-    delay the execution until the result set is actually accessed,
-    and some databases may have restrictions on which statements are
-    allowed to be used in a SQL batch. 
+  Note that some databases, i.e. Microsoft SQL Server, requires
+  non-scrollable cursors when working with multiple result sets.  Some
+  databases may execute all statements at once while others may delay
+  the execution until the result set is actually accessed, and some
+  databases may have restrictions on which statements are allowed to
+  be used in a SQL batch.
 
-    \sa QSqlDriver::hasFeature() setForwardOnly() next() isSelect() numRowsAffected() isActive() lastError()
+  \sa QSqlDriver::hasFeature() setForwardOnly() next() isSelect() numRowsAffected() isActive() lastError()
 */
 bool QSqlQuery::nextResult()
 {

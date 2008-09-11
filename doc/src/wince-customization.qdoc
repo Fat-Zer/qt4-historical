@@ -57,9 +57,9 @@
     \section1 Creating a Custom Build Specification
 
     Create a subdirectory in the \c mkspecs folder of the Qt directory.
-    New specifications for Qt/Windows CE following this naming convention:
+    New specifications for Qt for Windows CE following this naming convention:
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 0
 
     Using this convention makes it possible for \l{qmake} to identify that
     you are building Qt for Windows CE, and will customize the compilation
@@ -68,11 +68,11 @@
     Create the files \c qmake.conf and \c qplatformdefs.h inside the new
     specification directory. Take a look at the implementation of the other
     Windows CE specifications included in the \c mkspecs directory to see
-    what is required to build Qt/Windows CE successfully.
+    what is required to build Qt for Windows CE successfully.
 
     \section1 Fine-Tuning Options
 
-    Compared to the desktop versions, Qt/Windows CE needs two additional
+    Compared to the desktop versions, Qt for Windows CE needs two additional
     options:
 
     \list
@@ -83,7 +83,7 @@
     Following is an example configuration for the Windows Mobile 5 for 
     Pocket PC SDK:
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 1
 
     \bold{Note:} \l{qmake} uses this information to build a valid Visual
     Studio project file. You need to ensure that they are identical to the
@@ -96,11 +96,12 @@
     For example, with Windows Mobile 5 for Pocket PC, the \c DEFINES variable
     is expanded in the following way:
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 2
 
 */
 
-/*! \page shadow builds-wince.html
+/*! 
+    \page shadow builds-wince.html
     \ingroup qtce
 
     \title Windows CE - Using shadow builds
@@ -114,55 +115,63 @@
     Qt builds from a single source tree. Such builds are called shadow
     builds.
 
-    Basicly a shadow build is created by calling configure.exe from a
+    Basically a shadow build is created by calling configure.exe from a
     different directory.
 
-    To make sure that the shadow build compiles correctly it is important that:   
+    To make sure that the shadow build compiles correctly it is important
+    that:
     \list
-    \o The original Qt source package is untouched (configure has never been run in the source tree directory).
-    \o The shadow build directory is on the same level as the Qt source package. 
+    \o The original Qt source package is untouched (configure has never been
+        run in the source tree directory).
 
-     If the Qt package is in \c{C:\Qt\4.4.1} the shadow build
-     directory could be \c{C:\Qt\shadowbuild}. A shadow build from a
-     directory like \c{C:\shadowbuild} will not compile.
+    \o The shadow build directory is on the same level as the Qt source
+        package.
 
-    \o Add the \c{\bin} directory of the shadow build directory to the \c PATH environment variable.
+    If the Qt package is in \c{C:\Qt\4.4.2} the shadow build directory
+    could be \c{C:\Qt\shadowbuild}. A shadow build from a directory like
+    \c{C:\shadowbuild} will not compile.
+
+    \o The \c{\bin} directory of the shadow build directory is added to the
+    \c PATH environment variable.
+    \o Perl is installed on your system. (\l{ActivePerl} is a popular
+    distribution of Perl on Windows.)
     \endlist
 
-    So lets assume you have installed Qt in \c{C:\Qt\4.4.1} and
-    you want to create a shadow build in
-    \c{C:\Qt\mobile5-release-shared}:
+    So lets assume you have installed Qt in \c{C:\Qt\4.4.2} and you want
+    to create a shadow build in \c{C:\Qt\mobile5-release-shared}:
 
     \list
-
     \o First add \c{C:\Qt\mobile5-release-shared\bin} to the \c PATH variable.
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 3
 
     \o Make sure the enviroment variables for your compiler are set.
 
-    Visual Studio includes vcvars32.bat for that purpose - or simply
-    use the "Visual Studio Command Prompt" from the Start menu.
+    Visual Studio includes \c{vcvars32.bat} for that purpose - or simply use
+    the "Visual Studio Command Prompt" from the Start menu.
 
     \o Now navigate to your shadow build directory and run configure:
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 4
 
-    \o
-    Now, to build Qt you first have to update your \c{PATH, INCLUDE} and \c LIB
-    paths to point to your target platforms. For a default installation
-    of the Windows Mobile 5.0 Pocket PC SDK this is done by:    
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 5
-    We have provided a convenience script for this called \c{setcepaths}.
-    Simply type:    
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 6
+    \o To build Qt, you have to update your \c{PATH, INCLUDE} and \c LIB paths
+    to point to your target platforms.
 
-    \o
-    Then to build the shadow build type:
+    For a default installation of the Windows Mobile 5.0 Pocket PC SDK, you
+    can do the following:
 
-    \snippet doc/src/snippets/code/doc.src.wince-customization.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 5
 
-    \o That's all. Now you created a shadow build of Qt in \c{C:\Qt\mobile5-release-shared}.    
+    We have provided a convenience script for this called \c{setcepaths}. Simply
+    type:
 
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 6
+
+    \o Finally, to build the shadow build type:
+
+    \snippet doc/src/snippets/code/doc_src_wince-customization.qdoc 7
+
+    \o That's all. You have successfully created a shadow build of Qt in
+    \c{C:\Qt\mobile5-release-shared}.
     \endlist
 */

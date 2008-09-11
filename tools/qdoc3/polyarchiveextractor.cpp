@@ -50,16 +50,42 @@
 
 QT_BEGIN_NAMESPACE
 
+/*!
+  \class PolyArchiveExtractor
+  
+  \brief The PolyArchiveExtractor class is a class for unpacking
+  archive files.
+
+  This subclass of ArchiveExtractor contains a parameterized
+  command for doing the archive extraction.
+
+  It has an extractArchive() function you call to do the
+  actual archive extraction.
+ */
+
+/*!
+  The constructor takes the list of filename \a extensions,
+  which it passes to the base class, and the \a commandFormat,
+  which it stores locally. The \a commandFormat is a command
+  template string.
+ */
 PolyArchiveExtractor::PolyArchiveExtractor( const QStringList& extensions,
 					    const QString& commandFormat )
     : ArchiveExtractor( extensions ), cmd( commandFormat )
 {
 }
 
+/*!
+  The destructor doesn't have to do anything.
+ */
 PolyArchiveExtractor::~PolyArchiveExtractor()
 {
 }
 
+/*!
+  Call this function to do the actual archive extraction. It calls
+  the executeCommand() function to do the work. That's all it does.
+ */
 void PolyArchiveExtractor::extractArchive( const Location& location,
 					   const QString& filePath,
 					   const QString& outputDir )

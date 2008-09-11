@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/dialogs/qwizard.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/dialogs/qwizard.cpp -->
 <head>
   <title>Qt 4.4: QWizard Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QWizard Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QWizard class provides a framework for wizards. <a href="#details">More...</a></p>
@@ -348,30 +348,30 @@
      return -1;
  }</pre>
 <p>It would also be possible to put all the logic in one place, in a <a href="qwizard.html#nextId">QWizard::nextId</a>() reimplementation. For example:</p>
-<pre>         int LicenseWizard::nextId() const
-         {
-             switch (currentId()) {
-             case Page_Intro:
-                 if (field(&quot;intro.evaluate&quot;).toBool()) {
-                     return Page_Evaluate;
-                 } else {
-                     return Page_Register;
-                 }
-             case Page_Evaluate:
-                 return Page_Conclusion;
-             case Page_Register:
-                 if (field(&quot;register.upgradeKey&quot;).toString().isEmpty()) {
-                     return Page_Details;
-                 } else {
-                     return Page_Conclusion;
-                 }
-             case Page_Details:
-                 return Page_Conclusion;
-             case Page_Conclusion:
-             default:
-                 return -1;
-             }
-         }</pre>
+<pre> int LicenseWizard::nextId() const
+ {
+     switch (currentId()) {
+     case Page_Intro:
+         if (field(&quot;intro.evaluate&quot;).toBool()) {
+             return Page_Evaluate;
+         } else {
+             return Page_Register;
+         }
+     case Page_Evaluate:
+         return Page_Conclusion;
+     case Page_Register:
+         if (field(&quot;register.upgradeKey&quot;).toString().isEmpty()) {
+             return Page_Details;
+         } else {
+             return Page_Conclusion;
+         }
+     case Page_Details:
+         return Page_Conclusion;
+     case Page_Conclusion:
+     default:
+         return -1;
+     }
+ }</pre>
 <p>To start at another page than the page with the lowest ID, call <a href="qwizard.html#startId-prop">setStartId</a>().</p>
 <p>To test whether a page has been visited or not, call <a href="qwizard.html#hasVisitedPage">hasVisitedPage</a>(). For example:</p>
 <pre> void ConclusionPage::initializePage()
@@ -509,6 +509,7 @@
 <h3 class="fn"><a name="currentId-prop"></a>currentId : const int</h3>
 <p>This property holds the ID of the current page.</p>
 <p>This property cannot be set directly. To change the current page, call <a href="qwizard.html#next">next</a>(), <a href="qwizard.html#back">back</a>(), or <a href="qwizard.html#restart">restart</a>().</p>
+<p>By default, this property has a value of -1, indicating that no page is currently shown.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int currentId () const</b></li>
@@ -706,16 +707,16 @@
 <p>The default layout depends on the options (e.g&#x2e;, whether <a href="qwizard.html#WizardOption-enum">HelpButtonOnRight</a>) that are set. You can call this function if you need more control over the buttons' layout than what <a href="qwizard.html#options-prop">options</a> already provides.</p>
 <p>You can specify horizontal stretches in the layout using <a href="qwizard.html#WizardButton-enum">Stretch</a>.</p>
 <p>Example:</p>
-<pre>         MyWizard::MyWizard(QWidget *parent)
-             : QWizard(parent)
-         {
-             ...
-             QList&lt;QWizard::WizardButton&gt; layout;
-             layout &lt;&lt; QWizard::Stretch &lt;&lt; QWizard::BackButton &lt;&lt; QWizard::CancelButton
-                    &lt;&lt; QWizard::NextButton &lt;&lt; QWizard::FinishButton;
-             setButtonLayout(layout);
-             ...
-         }</pre>
+<pre> MyWizard::MyWizard(QWidget *parent)
+     : QWizard(parent)
+ {
+     ...
+     QList&lt;QWizard::WizardButton&gt; layout;
+     layout &lt;&lt; QWizard::Stretch &lt;&lt; QWizard::BackButton &lt;&lt; QWizard::CancelButton
+            &lt;&lt; QWizard::NextButton &lt;&lt; QWizard::FinishButton;
+     setButtonLayout(layout);
+     ...
+ }</pre>
 <p>See also <a href="qwizard.html#setButton">setButton</a>(), <a href="qwizard.html#setButtonText">setButtonText</a>(), and <a href="qwizard.html#options-prop">setOptions</a>().</p>
 <a name="//apple_ref/cpp/instm/QWizard/setButtonText" />
 <h3 class="fn"><a name="setButtonText"></a>void QWizard::setButtonText ( <a href="qwizard.html#WizardButton-enum">WizardButton</a> <i>which</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
@@ -776,8 +777,8 @@
 <p>See also <a href="qwizard.html#hasVisitedPage">hasVisitedPage</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

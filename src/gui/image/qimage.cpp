@@ -131,7 +131,6 @@ const QVector<QRgb> *qt_image_colortable(const QImage &image)
     return &image.d->colortable;
 }
 
-extern int qt_defaultDpi();
 extern int qt_defaultDpiX();
 extern int qt_defaultDpiY();
 
@@ -155,14 +154,8 @@ QImageData::QImageData()
     bytes_per_line = 0;
     format = QImage::Format_ARGB32;
 
-    // ### Qt 4.4: remove #ifdef
-#ifdef Q_WS_QWS
     dpmx = qt_defaultDpiX() * 100 / qreal(2.54);
     dpmy = qt_defaultDpiY() * 100 / qreal(2.54);
-#else
-    dpmx = qt_defaultDpi() * 100 / qreal(2.54);
-    dpmy = qt_defaultDpi() * 100 / qreal(2.54);
-#endif
     offset = QPoint(0,0);
 
     paintEngine = 0;
@@ -487,7 +480,7 @@ QImageData::~QImageData()
     \row
     \o \inlineimage qimage-32bit_scaled.png
     \o
-    \snippet doc/src/snippets/code/src.gui.image.qimage.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qimage.cpp 0
     \header
     \o {2,1}32-bit
     \endtable
@@ -508,7 +501,7 @@ QImageData::~QImageData()
     \row
     \o \inlineimage qimage-8bit_scaled.png
     \o
-    \snippet doc/src/snippets/code/src.gui.image.qimage.cpp 1
+    \snippet doc/src/snippets/code/src_gui_image_qimage.cpp 1
     \header
     \o {2,1} 8-bit
     \endtable
@@ -795,6 +788,10 @@ QImage::QImage()
 /*!
     Constructs an image with the given \a width, \a height and \a
     format.
+
+    \warning This will create a QImage with uninitialized data. Call
+    fill() to fill the image with an appropriate pixel value before
+    drawing onto it with QPainter.
 */
 QImage::QImage(int width, int height, Format format)
     : QPaintDevice()
@@ -804,6 +801,10 @@ QImage::QImage(int width, int height, Format format)
 
 /*!
     Constructs an image with the given \a size and \a format.
+
+    \warning This will create a QImage with uninitialized data. Call
+    fill() to fill the image with an appropriate pixel value before
+    drawing onto it with QPainter.
 */
 QImage::QImage(const QSize &size, Format format)
     : QPaintDevice()
@@ -1028,7 +1029,7 @@ extern bool qt_read_xpm_image_or_array(QIODevice *device, const char * const *so
     Note that it's possible to squeeze the XPM variable a little bit
     by using an unusual declaration:
 
-    \snippet doc/src/snippets/code/src.gui.image.qimage.cpp 2
+    \snippet doc/src/snippets/code/src_gui_image_qimage.cpp 2
 
     The extra \c const makes the entire definition read-only, which is
     slightly more efficient (e.g., when the code is in a shared
@@ -3590,6 +3591,11 @@ QRgb QImage::pixel(int x, int y) const
     \a index_or_rgb >= numColors() in the case of monochrome and
     8-bit images, the result is undefined.
 
+    \warning This function is expensive due to the call of the internal
+    \c{detach()} function called within; if performance is a concern, we
+    recommend the use of \l{QImage::}{scanLine()} to access pixel data
+    directly.
+
     \sa pixel(), {QImage#Pixel Manipulation}{Pixel Manipulation}
 */
 
@@ -3604,7 +3610,7 @@ void QImage::setPixel(int x, int y, uint index_or_rgb)
         qWarning("QImage::setPixel: coordinate (%d,%d) out of range", x, y);
         return;
     }
-    detach();
+    // detach is called from within scanLine
     uchar * s = scanLine(y);
     const quint32p p = quint32p::fromRawData(index_or_rgb);
     switch(d->format) {
@@ -4441,13 +4447,12 @@ QImage QImage::rgbSwapped() const
 }
 
 /*!
-    Loads an image from the file with the given \a fileName. Returns
-    true if the image was successfully loaded; otherwise returns
-    false.
+    Loads an image from the file with the given \a fileName. Returns true if
+    the image was successfully loaded; otherwise returns false.
 
-    The loader attempts to read the image using the specified \a
-    format. If the \a format is not specified (which is the default),
-    the loader probes the file for a header to guess the file format.
+    The loader attempts to read the image using the specified \a format, e.g.,
+    PNG or JPG. If \a format is not specified (which is the default), the
+    loader probes the file for a header to guess the file format.
 
     The file name can either refer to an actual file on disk or to one
     of the application's embedded resources. See the
@@ -4495,9 +4500,9 @@ bool QImage::load(QIODevice* device, const char* format)
     data. Returns true if the image was successfully loaded; otherwise
     returns false.
 
-    The loader attempts to read the image using the specified
-    format. If the \a format is not specified (which is the default),
-    the loader probes the file for a header to guess the file format.
+    The loader attempts to read the image using the specified \a format, e.g.,
+    PNG or JPG. If \a format is not specified (which is the default), the
+    loader probes the file for a header to guess the file format.
 
     \sa {QImage#Reading and Writing Image Files}{Reading and Writing Image Files}
 */
@@ -4524,10 +4529,9 @@ bool QImage::loadFromData(const uchar *data, int len, const char *format)
     \fn QImage QImage::fromData(const uchar *data, int size, const char *format)
 
     Constructs a QImage from the first \a size bytes of the given
-    binary \a data. the loader attempts to read the image using the
-    specified \a format. If the \a format is not specified (which is
-    the default), the loader probes the file for a header to guess the
-    file format.
+    binary \a data. The loader attempts to read the image using the
+    specified \a format. If \a format is not specified (which is the default),
+    the loader probes the file for a header to guess the file format.
 
     If the loading of the image failed, this object is a null image.
 
@@ -5261,15 +5265,15 @@ bool qt_xForm_helper(const QTransform &trueMat, int xoffset, int type, int depth
                      uchar *dptr, int dbpl, int p_inc, int dHeight,
                      const uchar *sptr, int sbpl, int sWidth, int sHeight)
 {
-    int m11 = qRound(trueMat.m11()*4096.0);
-    int m12 = qRound(trueMat.m12()*4096.0);
-    int m21 = qRound(trueMat.m21()*4096.0);
-    int m22 = qRound(trueMat.m22()*4096.0);
+    int m11 = int(trueMat.m11()*4096.0);
+    int m12 = int(trueMat.m12()*4096.0);
+    int m21 = int(trueMat.m21()*4096.0);
+    int m22 = int(trueMat.m22()*4096.0);
     int dx  = qRound(trueMat.dx()*4096.0);
     int dy  = qRound(trueMat.dy()*4096.0);
 
-    int m21ydx = dx + (xoffset<<16);
-    int m22ydy = dy;
+    int m21ydx = dx + (xoffset<<16) + (m11 + m21) / 2;
+    int m22ydy = dy + (m12 + m22) / 2;
     uint trigx;
     uint trigy;
     uint maxws = sWidth<<12;
@@ -5823,8 +5827,8 @@ QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode
     QTransform mat = trueMatrix(matrix, ws, hs);
     bool complex_xform = false;
     bool scale_xform = false;
-    if (mat.m12() == 0.0F && mat.m21() == 0.0F) {
-        if (mat.m11() == 1.0F && mat.m22() == 1.0F) // identity matrix
+    if (mat.type() <= QTransform::TxScale) {
+        if (mat.type() == QTransform::TxNone) // identity matrix
             return *this;
         else if (mat.m11() == -1. && mat.m22() == -1.)
             return rotated180(*this);
@@ -5837,19 +5841,19 @@ QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode
             wd = int(qAbs(mat.m11()) * ws + 0.9999);
         }
         scale_xform = true;
-    } else if (mat.m11() == 0. && mat.m22() == 0.
-               && ((mat.m12() == 1. && mat.m21() == -1.)        // 90 degrees
-                   || (mat.m12() == -1. && mat.m21() == 1.))) { // -90 degrees
-        if (mat.m12() == 1. && mat.m21() == -1.)
-            return rotated90(*this);
-        else
-            return rotated270(*this);
-    } else {                                        // rotation or shearing
+    } else {
+        if (mat.type() <= QTransform::TxRotate && mat.m11() == 0 && mat.m22() == 0) {
+            if (mat.m12() == 1. && mat.m21() == -1.)
+                return rotated90(*this);
+            else if (mat.m12() == -1. && mat.m21() == 1.)
+                return rotated270(*this);
+        }
+
         QPolygonF a(QRectF(0, 0, ws, hs));
         a = mat.map(a);
-        QRectF r = a.boundingRect();
-        wd = int(qAbs(r.width()) + 0.9999);
-        hd = int(qAbs(r.height()) + 0.9999);
+        QRect r = a.boundingRect().toAlignedRect();
+        wd = r.width();
+        hd = r.height();
         complex_xform = true;
     }
 
@@ -5956,42 +5960,10 @@ QImage QImage::transformed(const QTransform &matrix, Qt::TransformationMode mode
 
 QTransform QImage::trueMatrix(const QTransform &matrix, int w, int h)
 {
-    const qreal dt = qreal(0.);
-    qreal x1,y1, x2,y2, x3,y3, x4,y4;                // get corners
-    qreal xx = qreal(w);
-    qreal yy = qreal(h);
-
-    QTransform mat(matrix.m11(), matrix.m12(), matrix.m13(),
-                   matrix.m21(), matrix.m22(), matrix.m23(),
-                   0., 0., 1);
-
-    mat.map(dt, dt, &x1, &y1);
-    mat.map(xx, dt, &x2, &y2);
-    mat.map(xx, yy, &x3, &y3);
-    mat.map(dt, yy, &x4, &y4);
-
-    qreal ymin = y1;                                // lowest y value
-    if (y2 < ymin) ymin = y2;
-    if (y3 < ymin) ymin = y3;
-    if (y4 < ymin) ymin = y4;
-    qreal xmin = x1;                                // lowest x value
-    if (x2 < xmin) xmin = x2;
-    if (x3 < xmin) xmin = x3;
-    if (x4 < xmin) xmin = x4;
-
-    qreal ymax = y1;                                // lowest y value
-    if (y2 > ymax) ymax = y2;
-    if (y3 > ymax) ymax = y3;
-    if (y4 > ymax) ymax = y4;
-    qreal xmax = x1;                                // lowest x value
-    if (x2 > xmax) xmax = x2;
-    if (x3 > xmax) xmax = x3;
-    if (x4 > xmax) xmax = x4;
-
-    mat.setMatrix(matrix.m11(), matrix.m12(), matrix.m13(),
-                  matrix.m21(), matrix.m22(), matrix.m23(),
-                  -xmin, -ymin, 1);
-    return mat;
+    const QRectF rect(0, 0, w, h);
+    const QRect mapped = matrix.mapRect(rect).toAlignedRect();
+    const QPoint delta = mapped.topLeft();
+    return matrix * QTransform().translate(-delta.x(), -delta.y());
 }
 
 

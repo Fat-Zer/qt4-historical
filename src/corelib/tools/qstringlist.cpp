@@ -81,17 +81,17 @@ QT_BEGIN_NAMESPACE
     \mainclass
     \reentrant
 
-    QStringList inherits from QList<QString>. Like QList, QStringList
-    is \l{implicitly shared}. It provides fast index-based access as
-    well as fast insertions and removals. Passing string lists as
-    value parameters is both fast and safe.
+    QStringList inherits from QList<QString>. Like QList, QStringList is
+    \l{implicitly shared}. It provides fast index-based access as well as fast
+    insertions and removals. Passing string lists as value parameters is both
+    fast and safe.
 
-    All of QList's functionality also applies to QStringList. For
-    example, you can use isEmpty() to test whether the list is empty,
-    and you can call functions like append(), prepend(), insert(),
-    replace(), and remove() to modify a QStringList. In addition,
-    QStringList provides a few convenience functions that make
-    handling lists of strings easier:
+    All of QList's functionality also applies to QStringList. For example, you
+    can use isEmpty() to test whether the list is empty, and you can call
+    functions like append(), prepend(), insert(), replace(), removeAll(),
+    removeAt(), removeFirst(), removeLast(), and removeOne() to modify a
+    QStringList. In addition, QStringList provides a few convenience
+    functions that make handling lists of strings easier:
 
     \tableofcontents
 
@@ -520,6 +520,8 @@ QString QtPrivate::QStringList_join(const QStringList *that, const QString &sep)
     the list, searching forward from index position \a from. Returns
     -1 if no item matched.
 
+    By default, this function is case sensitive.
+
     \sa lastIndexOf(), contains(), QRegExp::exactMatch()
 */
 int QtPrivate::QStringList_indexOf(const QStringList *that, const QRegExp &rx, int from)
@@ -540,6 +542,8 @@ int QtPrivate::QStringList_indexOf(const QStringList *that, const QRegExp &rx, i
     the list, searching backward from index position \a from. If \a
     from is -1 (the default), the search starts at the last item.
     Returns -1 if no item matched.
+
+    By default, this function is case sensitive.
 
     \sa indexOf(), contains(), QRegExp::exactMatch()
 */
@@ -564,6 +568,8 @@ int QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QRegExp &r
     the list, searching forward from index position \a from. Returns
     -1 if no item matched.
 
+    By default, this function is case sensitive.
+
     \sa lastIndexOf(), contains(), QList::indexOf()
 */
 
@@ -574,6 +580,8 @@ int QtPrivate::QStringList_lastIndexOf(const QStringList *that, const QRegExp &r
     the list, searching backward from index position \a from. If \a
     from is -1 (the default), the search starts at the last item.
     Returns -1 if no item matched.
+
+    By default, this function is case sensitive.
 
     \sa indexOf(), QList::lastIndexOf()
 */

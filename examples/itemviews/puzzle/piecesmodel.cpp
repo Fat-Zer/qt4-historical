@@ -82,10 +82,8 @@ void PiecesModel::addPiece(const QPixmap &pixmap, const QPoint &location)
 
 Qt::ItemFlags PiecesModel::flags(const QModelIndex &index) const
 {
-    if (index.isValid()) {
-        return (Qt::ItemIsEnabled | Qt::ItemIsSelectable
-              | Qt::ItemIsDragEnabled | Qt::ItemIsSelectable);
-    }
+    if (index.isValid())
+        return (Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsDragEnabled);
 
     return Qt::ItemIsDropEnabled;
 }

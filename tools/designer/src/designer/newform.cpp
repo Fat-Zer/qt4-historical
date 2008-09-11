@@ -83,6 +83,18 @@ enum NewForm_CustomRole {
 
 static const char *newFormObjectNameC = "Form";
 
+// Create a form name for an arbitrary class. If it is Qt, qtify it,
+//  else return "Form".
+static QString formName(const QString &className)
+{
+    if (!className.startsWith(QLatin1Char('Q')))
+        return QLatin1String(newFormObjectNameC);
+    QString rc = className;
+    rc.remove(0, 1);
+    return rc;
+}
+
+// --------- NewForm
 NewForm::NewForm(QDesignerWorkbench *workbench, QWidget *parentWidget, const QString &fileName)
     : QDialog(parentWidget,
 #ifdef Q_WS_MAC
@@ -254,9 +266,10 @@ QPixmap  NewForm::formPreviewPixmap(const QTreeWidgetItem *item)
         if (fileName.type() == QVariant::String) {
             rc = formPreviewPixmap(fileName.toString());
         } else {
-            const QVariant className = item->data(0, ClassNameRole);
-            Q_ASSERT(className.type() == QVariant::String);
-            QByteArray data =  qdesigner_internal::WidgetDataBase::formTemplate(m_workbench->core(), className.toString(), QLatin1String(newFormObjectNameC)).toUtf8();
+            const QVariant classNameV = item->data(0, ClassNameRole);
+            Q_ASSERT(classNameV.type() == QVariant::String);
+            const QString className = classNameV.toString();
+            QByteArray data =  qdesigner_internal::WidgetDataBase::formTemplate(m_workbench->core(), className, formName(className)).toUtf8();
             QBuffer buffer(&data);
             rc = formPreviewPixmap(buffer);
         }
@@ -446,7 +459,7 @@ bool NewForm::openTemplate(const QTreeWidgetItem *item, QString *errorMessage)
         return workbench()->openTemplate(templateFileName.toString(), m_fileName, errorMessage);
     // Content, Write to temporary file
     const QString className = item->data(0, ClassNameRole).toString();
-    const QString contents = qdesigner_internal::WidgetDataBase::formTemplate(m_workbench->core(), className, QLatin1String(newFormObjectNameC));
+    const QString contents = qdesigner_internal::WidgetDataBase::formTemplate(m_workbench->core(), className, formName(className));
     QString tempPattern = QDir::tempPath();
     if (!tempPattern.endsWith(QDir::separator())) // platform-dependant
         tempPattern += QDir::separator();

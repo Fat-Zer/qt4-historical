@@ -53,213 +53,403 @@
 
     \keyword Patternist
 
-    \brief An overview of Qt's XQuery support.
+    \brief An overview of Qt's support for using XQuery and XPath in
+    Qt programs.
 
     \tableofcontents
 
-    XQuery is a pragmatic language that allows XML to be queried and
-    created in fast, concise, and safe ways.
-
-    The QtXmlPatterns module is part of the \l{Qt Desktop Edition}, and the
-    \l{Qt Open Source Edition}.
-
     \section1 Introduction
 
+    XQuery is a language for traversing XML documents to select and
+    aggregate items of interest and to transform them for output as
+    XML or some other format. XPath is the \e{element selection} part
+    of XQuery.
+
+    The QtXmlPatterns module supports using
+    \l{http://www.w3.org/TR/xquery} {XQuery 1.0} and
+    \l{http://www.w3.org/TR/xpath20} {XPath 2.0} in Qt applications,
+    for querying XML data \e{and} for querying
+    \l{QAbstractXmlNodeModel} {non-XML data that can be modeled to
+    look like XML}. The QtXmlPatterns module is included in the \l{Qt
+    Desktop Edition}, and the \l{Qt Open Source Edition}.  Readers who
+    are not familiar with the XQuery/XPath language can read \l {A
+    Short Path to XQuery} for a brief introduction.
+
+    \section1 Advantages of using QtXmlPatterns and XQuery
+
+    The XQuery/XPath language simplifies data searching and
+    transformation tasks by eliminating the need for doing a lot of
+    C++ or Java procedural programming for each new query task. Here
+    is an XQuery that constructs a bibliography of the contents of a
+    library:
+
+    \target qtxmlpatterns_example_query
     \quotefile snippets/patternist/introductionExample.xq
 
-    The query opens the file \c library.xml, and for each \c book
-    element that is a child of the top element \c bib, and whose
-    attribute by name \c year is larger than 1991 and has
-    Addison-Wesley as a publisher, it constructs a \c book element and
-    attaches it to the parent element called \c bibliography.
+    First, the query opens a \c{<bibliography>} element in the
+    output. The
+    \l{xquery-introduction.html#using-path-expressions-to-match-select-items}
+    {embedded path expression} then loads the XML document describing
+    the contents of the library (\c{library.xml}) and begins the
+    search. For each \c{<book>} element it finds, where the publisher
+    was Addison-Wesley and the publication year was after 1991, it
+    creates a new \c{<book>} element in the output as a child of the
+    open \c{<bibliography>} element. Each new \c{<book>} element gets
+    the book's title as its contents and the book's publication year
+    as an attribute. Finally, the \c{<bibliography>} element is
+    closed.
 
-    \section1 Why use XQuery?
-
-    XQuery is made for selecting and aggregating information in safe
-    and efficient ways. Hence, if an application selects and navigates
-    data, XQuery could be used to perform the selection and navigation
-    tasks quickly and bug-free. With QAbstractXmlNodeModel, these
-    advantages are not constrained to operating only on XML files, but
-    can be applied to other data as well.
-
-    The strengths of XQuery can be summarized as follows:
+    The advantages of using QtXmlPatterns and XQuery in your Qt
+    programs are summarized as follows:
 
     \list
 
-    \o \bold{Pragmatic functionality}: XQuery has many expressions
-       for sorting, selecting and filtering data. Typically, these
-       can be written in one or two lines. Aggregation functions
-       like \c avg(), \c abs() and \c max() help to make XQuery
-       code even more concise.
+    \o \bold{Ease of development}: All the C++ programming required to
+       perform data query tasks can be replaced by a simple XQuery
+       like the example above.
 
-    \o \bold{Development speed}: Pick any of the queries shown in
-       this document and imagine writing the equivalent code in C++
-       or Java. Compared to the one- or two-liner required in
-       XQuery, the equivalent procedural code would require a
-       significant investment of time and effort for development,
-       testing, and maintenance.
+    \o \bold{Comprehensive functionality}: The
+       \l{http://www.w3.org/TR/xquery/#id-expressions} {expression
+       syntax} and rich set of
+       \l{http://www.w3.org/TR/xpath-functions} {functions and
+       operators} provided by XQuery are sufficient for performing any
+       data searching, selecting, and sorting tasks.
 
-    \o \bold{Type safety}: XQuery values are strongly typed. It
-       is illegal, for example, to pass the \c{xs:time} value
-           returned from \c{current-time()} to a function expecting an
-           \c{xs:integer}. The value of an attribute or element is not
-           restricted to being an \c{xs:string} but can be any atomic
-           value, e.g., \c{xs:date} or \c{xs:double}.
+    \o \bold{Conformance to standards}: Conformance to all applicable
+       XML and XQuery standards ensures that QtXmlPatterns can always
+       process XML documents generated by other conformant
+       applications, and that XML documents created with QtXmlPatterns
+       can be processed by other conformant applications.
 
-    \o \bold{Interoperability}: XML specifications and
-       vocabularies describe in minute detail what constitutes
-       valid XML in different contexts. Adherence to these
-       standards is important, because it ensures that XML
-       generated by one application can be read and correctly
-       interpreted by another. However, knowing and using all
-       these standards is a daunting task. The QtXmlPatterns
-       XQuery engine performs all the required standards checking
-       transparently, leaving the user free to focus on writing
-       his query, secure in the knowledge that the output will be
-       usable by any other XML tool.
-
-    \o \bold{High-level expression}: Because XQuery is a
-       high-level programming language, XQueries can be written to
-       be human readable, while also being easily optimizable by
-       the XQuery engine at execution time.
+    \o \bold{Maximal flexibility} The QtXmlPatterns module can be used
+       to query XML data \e{and} non-XML data that can be
+       \l{QAbstractXmlNodeModel} {modeled to look like XML}.
 
     \endlist
 
-    \section1 Using QtXmlPatterns
+    \section1 Using the QtXmlPatterns module
 
-    Evaluation of an XQuery can be performed programatically, using
-    the QtXmlPatterns C++ API, or by running the XQuery engine
-    directly using the command line interface.
+    There are two ways QtXmlPatterns can be used to evaluate queries.
+    You can run the query engine in your Qt application using the
+    QtXmlPatterns C++ API, or you can run the query engine from the
+    command line using Qt's \c{xmlpatterns} command line utility.
 
-    \section2 Evaluating queries programatically using the C++ API
+    \section2 Running the query engine from your Qt application
 
-    A C++ application that uses classes from the QtXmlPatterns module
-    includes the classes at compilation time with the following:
+    To access the QtXmlPatterns C++ API from your Qt application,
+    include the QtXmlPatterns classes at compile time:
 
-    \snippet doc/src/snippets/code/doc.src.qtxmlpatterns.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtxmlpatterns.qdoc 0
 
-    The application is linked with the QtXmlPatterns module by adding
-    the following line to the qmake \c{.pro} file:
+    Link the compiled application with the QtXmlPatterns module by
+    adding the following line to the
+    \l{qmake-project-files.html#declaring-qt-libraries} {QT line} in
+    your qmake \c{.pro} file:
 
-    \snippet doc/src/snippets/code/doc.src.qtxmlpatterns.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtxmlpatterns.qdoc 1
 
-    Note that if you build Qt yourself, QtXmlPatterns will \e not be
-    built if exceptions are disabled, or if you compile Qt with a
-    compiler that doesn't support member templates, e.g., MSVC 6.
+    If we save the example XQuery shown above in a text file (e.g.
+    \c{myquery.xq}), we can run it from a Qt application using a
+    standard QtXmlPatterns code sequence:
 
-    See the QXmlQuery documentation for the QtXmlPatterns C++ API.
+    \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 3
 
-    \section2 Command line utility
+    First construct a QFile for the text file containing the XQuery
+    (\c{myquery.xq}). Then create an instance of QXmlQuery and call
+    its \l{QXmlQuery::}{setQuery()} function to load and parse the
+    XQuery file. Then create an \l{QXmlSerializer} {XML serializer} to
+    output the query's result set as unformatted XML. Finally, call
+    the \l{QXmlQuery::}{evaluateTo()} function to evaluate the query
+    and serialize the results as XML.
+
+    \note If you compile Qt yourself, the QtXmlPatterns module will
+    \e{not} be built if exceptions are disabled, or if you compile Qt
+    with a compiler that doesn't support member templates, e.g., MSVC
+    6.
+
+    See the QXmlQuery documentation for more information about the
+    QtXmlPatterns C++ API.
+
+    \section2 Running the query engine from the command line utility
 
     \e xmlpatterns is a command line utility for running XQueries.  It
-    takes as its single argument the name of a file containing the
-    text of the XQuery to be evaluated.
+    expects the name of a file containing the XQuery text.
 
-    \snippet doc/src/snippets/code/doc.src.qtxmlpatterns.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qtxmlpatterns.qdoc 2
 
     The XQuery in \c{myQuery.xq} will be evaluated and its output
-    written to \c stdout.
+    written to \c stdout. Pass the \c -help switch to get the list of
+    input flags and their meanings.
 
-    Passing the \c -help switch on the command line tells xmlpatterns
-    to print brief descriptions of the other flags it accepts.
-
-    xmlpatterns can be used for scripting, but the descriptions and
-    messages it outputs are not designed to be parsed, and they may be
+    xmlpatterns can be used in scripting. However, the descriptions
+    and messages it outputs were not meant to be parsed and may be
     changed in future releases of Qt.
 
-    \section1 XQuery Language Tutorial
-
-    See \l{A Short Path to XQuery} for a brief introduction to the
-    XQuery language.
-
     \target QtXDM
-    \section1 The Qt and XQuery Data Models
+    \section1 The XQuery Data Model
 
-    XQuery and Qt don't represent data the same way. XQuery represents
-    data as a sequence of items, where an item is either an atomic
-    value or a node. Atomic values are the primitives specified in the
-    W3C XML Schema. Nodes are normally XML elements or attributes, but
-    nodes can also represent non-XML data items, when non-XML data is
-    modeled with a custom subclass of QAbstractXmlNodeModel.
+    XQuery represents data items as \e{atomic values} or \e{nodes}. An
+    atomic value is a value in the domain of one of the
+    \l{http://www.w3.org/TR/xmlschema-2/#built-in-datatypes} {built-in
+    datatypes} defined in \l{http://www.w3.org/TR/xmlschema-2} {Part
+    2} of the W3C XML Schema. A node is normally an XML element or
+    attribute, but when non-XML data is \l{QAbstractXmlNodeModel}
+    {modeled to look like XML}, a node can also represent a non-XML
+    data items.
 
-    \section2 Mapping XQuery Atomic Value Types to QVariant Types
+    When you run an XQuery using the C++ API in a Qt application, you
+    will often want to bind program variables to $variables in the
+    XQuery. After the query is evaluated, you will want to interpret
+    the sequence of data items in the result set.
 
-    When XQuery Atomic Values are returned as XQuery result items via
-    the QtXmlPatterns API, they are represented as instances of the
-    QVariant class. The mapping from XQuery Atomic Value types to QVariant
-    types (or to QXmlName) is as follows.
+    \section2 Binding program variables to XQuery variables
+
+    When you want to run a parameterized XQuery from your Qt
+    application, you will need to \l{QXmlQuery::bindVariable()} {bind
+    variables} in your program to $name variables in your XQuery. 
+
+    Suppose you want to parameterize the bibliography XQuery in the
+    example above. You could define variables for the catalog that
+    contains the library (\c{$file}), the publisher name
+    (\c{$publisher}), and the year of publication (\c{$year}):
+
+    \target qtxmlpatterns_example_query2
+    \quotefile snippets/patternist/introExample2.xq
+
+    Modify the QtXmlPatterns code to use one of the \l{QXmlQuery::}
+    {bindVariable()} functions to bind a program variable to each
+    XQuery $variable:
+
+    \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 4
+
+    Each program variable is passed to QtXmlPatterns as a QVariant of
+    the type of the C++ variable or constant from which it is
+    constructed. Note that QtXmlPatterns assumes that the type of the
+    QVariant in the bindVariable() call is the correct type, so the
+    $variable it is bound to must be used in the XQuery accordingly.
+    The following table shows how QVariant types are mapped to XQuery
+    $variable types:
 
     \table
+
     \header
-        \o An XQuery Atomic Value of type...
-        \o is returned as an instance of...
+        \o QVariant type
+        \o XQuery $variable type
+
+    \row
+        \o QVariant::LongLong
+        \o \c xs:integer
+
+    \row
+        \o QVariant::Int
+        \o \c xs:integer
+ 
+   \row
+        \o QVariant::UInt
+        \o \c xs:nonNegativeInteger
+
+    \row
+        \o QVariant::ULongLong
+        \o \c xs:unsignedLong
+
+    \row
+        \o QVariant::String
+        \o \c xs:string
+
+    \row
+        \o QVariant::Double
+        \o \c xs:double
+
+    \row
+        \o QVariant::Bool
+        \o \c xs:boolean
+
+    \row
+        \o QVariant::Double
+        \o \c xs:decimal
+
+    \row
+        \o QVariant::ByteArray
+        \o \c xs:base64Binary
+
+    \row
+        \o QVariant::StringList
+        \o \c xs:string*
+
+    \row
+        \o QVariant::Url
+        \o \c xs:string
+
+    \row
+        \o QVariant::Date
+        \o \c xs:date.
+
+    \row
+        \o QVariant::DateTime
+        \o \c xs:dateTime
+
+    \row
+        \o QVariant::Time.
+        \o \c xs:time. (see \l{Binding To Time}{Binding To
+        QVariant::Time} below)
+
+    \row
+        \o QVariantList
+        \o (see \l{Binding To QVariantList}{Binding To QVariantList}
+           below)
+
+    \endtable
+
+    A type not shown in the table is not supported and will cause
+    undefined XQuery behavior or a $variable binding error, depending
+    on the context in the XQuery where the variable is used.
+
+    \target Binding To Time
+    \section3 Binding To QVariant::Time
+
+    Because the instance of QTime used in QVariant::Time does not
+    include a zone offset, an instance of QVariant::Time should not be
+    bound to an XQuery variable of type \c xs:time, unless the QTime is
+    UTC. When binding a non-UTC QTime to an XQuery variable, it should
+    first be passed as a string, or converted to a QDateTime with an arbitrary
+    date, and then bound to an XQuery variable of type \c xs:dateTime.
+
+    \target Binding To QVariantList
+    \section3 Binding To QVariantList
+
+    A QVariantList can be bound to an XQuery $variable. All the
+    \l{QVariant}s in the list must be of the same atomic type, and the
+    $variable the variant list is bound to must be of that same atomic
+    type. If the QVariants in the list are not all of the same atomic
+    type, the XQuery behavior is undefined.
+
+    \section2 Interpreting XQuery results
+
+    When the results of an XQuery are returned in a sequence of \l
+    {QXmlResultItems} {result items}, atomic values in the sequence
+    are treated as instances of QVariant. Suppose that instead of
+    serializing the results of the XQuery as XML, we process the
+    results programatically. Modify the standard QtXmlPatterns code
+    sequence to call the overload of QXmlQuery::evaluateTo() that
+    populates a sequence of \l {QXmlResultItems} {result items} with
+    the XQuery results:
+
+    \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 5
+
+    Iterate through the \l {QXmlResultItems} {result items} and test
+    each QXmlItem to see if it is an atomic value or a node. If it is
+    an atomic value, convert it to a QVariant with \l {QXmlItem::}
+    {toAtomicValue()} and switch on its \l {QVariant::type()} {variant
+    type} to handle all the atomic values your XQuery might return.
+    The following table shows the QVariant type to expect for each
+    atomic value type (or QXmlName):
+
+    \table
+
+    \header
+        \o XQuery result item type
+        \o QVariant type returned
+
     \row
         \o \c xs:QName
-        \o QXmlName (see \l{Using QXmlNames}{Using QXmlNames} below)
+        \o QXmlName (see \l{Handling QXmlNames}{Handling QXmlNames}
+        below)
+
     \row
         \o \c xs:integer
         \o QVariant::LongLong
+
     \row
         \o \c xs:string
         \o QVariant::String
+
     \row
         \o \c xs:string*
         \o QVariant::StringList
+
     \row
         \o \c xs:double
         \o QVariant::Double
+
     \row
         \o \c xs:float
         \o QVariant::Double
+
     \row
         \o \c xs:boolean
         \o QVariant::Bool
+
     \row
         \o \c xs:decimal
         \o QVariant::Double
+
     \row
         \o \c xs:hexBinary
         \o QVariant::ByteArray
+
     \row
         \o \c xs:base64Binary
         \o QVariant::ByteArray
+
     \row
         \o \c xs:gYear
         \o QVariant::DateTime
+
     \row
         \o \c xs:gYearMonth
         \o QVariant::DateTime
+
     \row
         \o \c xs:gMonthDay
         \o QVariant::DateTime
+
     \row
         \o \c xs:gDay
         \o QVariant::DateTime
+
     \row
         \o \c xs:gMonth
         \o QVariant::DateTime
+
     \row
         \o \c xs:anyURI
         \o QVariant::Url
+
     \row
         \o \c xs:untypedAtomic
         \o QVariant::String
+
     \row
         \o \c xs:ENTITY
         \o QVariant::String
+
     \row
         \o \c xs:date
         \o QVariant::DateTime
+
     \row
         \o \c xs:dateTime
         \o QVariant::DateTime
+
     \row
         \o \c xs:time
         \o (see \l{xstime-not-mapped}{No mapping for xs:time} below)
+
     \endtable
 
-    \target Using QXmlNames
-    \section3 Using QXmlNames
+    \target Handling QXmlNames
+    \section3 Handling QXmlNames
+
+    If your XQuery can return atomic value items of type \c{xs:QName},
+    they will appear in your QXmlResultItems as instances of QXmlName.
+    Since the QVariant class does not support the QXmlName class
+    directly, extracting them from QXmlResultItems requires a bit of
+    slight-of-hand using the \l{QMetaType} {Qt metatype system}. We
+    must modify our example to use a couple of template functions, a
+    friend of QMetaType (qMetaTypeId<T>()) and a friend of QVariant
+    (qVariantValue<T>()):
+
+    \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlquery.cpp 6
 
     To access the strings in a QXmlName returned by an
     \l{QXmlQuery::evaluateTo()} {XQuery evaluation}, the QXmlName must
@@ -277,88 +467,6 @@
     of type \c xs:time, an invalid QVariant will be returned. A query
     can return an atomic value of type xs:time by either converting it
     to an \c xs:dateTime with an arbitrary date, or to an \c xs:string.
-
-    \section2 Mapping QVariant Types to XQuery Atomic Value Types
-
-    The reverse mapping from QVariant to XQuery Atomic Value is
-    important when you want to \l{QXmlQuery::bindVariable()} {bind a
-    variable} in your program to a $name used in your XQuery.
-
-    \table
-    \header
-        \o An instance of...
-        \o can be bound to an XQuery variable of type...
-    \row
-        \o QVariant::LongLong
-        \o \c xs:integer
-    \row
-        \o QVariant::Int
-        \o \c xs:integer
-    \row
-        \o QVariant::UInt
-        \o \c xs:nonNegativeInteger
-    \row
-        \o QVariant::ULongLong
-        \o \c xs:unsignedLong
-    \row
-        \o QVariant::String
-        \o \c xs:string
-    \row
-        \o QVariant::Double
-        \o \c xs:double
-    \row
-        \o QVariant::Bool
-        \o \c xs:boolean
-    \row
-        \o QVariant::Double
-        \o \c xs:decimal
-    \row
-        \o QVariant::ByteArray
-        \o \c xs:base64Binary
-    \row
-        \o QVariant::StringList
-        \o \c xs:string*
-    \row
-        \o QVariant::Url
-        \o \c xs:string
-    \row
-        \o QVariant::Date
-        \o \c xs:date.
-    \row
-        \o QVariant::DateTime
-        \o \c xs:dateTime
-    \row
-        \o QVariant::Time.
-        \o \c xs:time. (see \l{Binding To Time}{Binding To QVariant::Time} below)
-    \row
-        \o QVariantList
-    \o (see \l{Binding To QVariantList}{Binding To QVariantList} below)
-
-    \endtable
-
-    Types other than the ones listed in the table are not supported
-    and will either cause undefined XQuery behavior or a nonexistent
-    variable binding, depending on the context where the variable is
-    used.
-
-    \target Binding To Time
-    \section3 Binding To QVariant::Time
-
-    Because the instance of QTime used in QVariant::Time does not
-    include a zone offset, an instance of QVariant::Time should not be
-    bound to an XQuery variable of type \c xs:time, unless the QTime is
-    UTC. When binding a non-UTC QTime to an XQuery variable, it should
-    first be passed as a string, or converted to a QDateTime with an arbitrary
-    date, and then bound to an XQuery variable of type \c xs:dateTime.
-
-    \target Binding To QVariantList
-    \section3 Binding To QVariantList
-
-    A QVariantList can be bound to an XQuery variable name. All the
-    QVariants in the list must be of the same type, and the variable
-    the list is bound to must be of the same type. If the QVariants in
-    the list are not all of the same type, the XQuery behavior is
-    undefined.
 
     \section1 Using XQuery with Non-XML Data
 
@@ -450,13 +558,21 @@
     QtXmlPatterns to query non-XML data:
 
     \list
+
         \o The internal representation for word processor documents
+
         \o The set of dependencies for a software build system
+
         \o The hierarchy (or graph) that links a set of HTML documents
         from a web crawler
+
         \o The images and meta-data in an image collection
+
         \o The set of D-Bus interfaces available in a system
-        \o A QObject hierarchy, as seen in the \l{QObject XML Model Example}{QObject XML Model example}.
+
+        \o A QObject hierarchy, as seen in the \l{QObject XML Model
+        Example} {QObject XML Model example}.
+
     \endlist
 
     See the QAbstractXmlNodeModel documentation for information about

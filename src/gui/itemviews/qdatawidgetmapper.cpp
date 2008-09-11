@@ -149,13 +149,12 @@ bool QDataWidgetMapperPrivate::commit(const WidgetMapper &m)
     if (!m.currentIndex.isValid())
         return false;
 
+    // Create copy to avoid passing the widget mappers data
+    QModelIndex idx = m.currentIndex;
     if (m.property.isEmpty())
-        delegate->setModelData(m.widget, model, m.currentIndex);
-    else {
-        // Create copy to avoid passing the widget mappers data
-        QModelIndex idx = m.currentIndex;
+        delegate->setModelData(m.widget, model, idx);
+    else
         model->setData(idx, m.widget->property(m.property), Qt::EditRole);
-    }
 
     return true;
 }
@@ -291,7 +290,7 @@ void QDataWidgetMapperPrivate::_q_modelDestroyed()
     The following code will map the columns of the model to widgets called \c mySpinBox,
     \c myLineEdit and \c{myCountryChooser}:
 
-    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 0
+    \snippet doc/src/snippets/code/src_gui_itemviews_qdatawidgetmapper.cpp 0
 
     After the call to toFirst(), \c mySpinBox displays the value \c{1}, \c myLineEdit
     displays \c {Trolltech ASA} and \c myCountryChooser displays \c{Oslo}. The
@@ -478,7 +477,7 @@ QModelIndex QDataWidgetMapper::rootIndex() const
     is mapped to the QLineEdit \c nameLineEdit, and the second is
     mapped to the QSpinBox \c{ageSpinBox}:
 
-    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 1
+    \snippet doc/src/snippets/code/src_gui_itemviews_qdatawidgetmapper.cpp 1
 
     \bold{Notes:}
     \list
@@ -739,7 +738,7 @@ int QDataWidgetMapper::currentIndex() const
     with new data whenever the selection of a QTableView named
     \c myTableView changes:
 
-    \snippet doc/src/snippets/code/src.gui.itemviews.qdatawidgetmapper.cpp 2
+    \snippet doc/src/snippets/code/src_gui_itemviews_qdatawidgetmapper.cpp 2
 
     \sa currentIndex()
 */

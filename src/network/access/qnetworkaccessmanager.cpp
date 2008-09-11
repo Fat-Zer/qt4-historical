@@ -116,7 +116,7 @@ static void ensureInitialized()
     as the downloaded data are posted.
 
     A simple download off the network could be accomplished with:
-    \snippet doc/src/snippets/code/src.network.access.qnetworkaccessmanager.cpp 0
+    \snippet doc/src/snippets/code/src_network_access_qnetworkaccessmanager.cpp 0
 
     When the \tt replyFinished slot above is called, the parameter it
     takes is the QNetworkReply object containing the downloaded data
@@ -126,7 +126,7 @@ static void ensureInitialized()
 
     A more involved example, assuming the manager is already existent,
     can be:
-    \snippet doc/src/snippets/code/src.network.access.qnetworkaccessmanager.cpp 1
+    \snippet doc/src/snippets/code/src_network_access_qnetworkaccessmanager.cpp 1
 
     \sa QNetworkRequest, QNetworkReply, QNetworkProxy
 */
@@ -251,12 +251,12 @@ public:
 
     QNetworkAuthenticationCredential *findClosestMatch(const QString &domain)
     {
-        QNetworkAuthenticationCredential *it = qLowerBound(begin(), end(), domain);
+        iterator it = qLowerBound(begin(), end(), domain);
         if (it == end() && !isEmpty())
             --it;
         if (it == end() || !domain.startsWith(it->domain))
             return 0;
-        return it;
+        return &*it;
     }
 
     void insert(const QString &domain, const QString &user, const QString &password)

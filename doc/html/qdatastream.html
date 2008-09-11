@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qdatastream.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/io/qdatastream.cpp -->
 <head>
   <title>Qt 4.4: QDataStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDataStream Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QDataStream class provides serialization of binary data to a <a href="qiodevice.html">QIODevice</a>. <a href="#details">More...</a></p>
@@ -86,18 +86,18 @@
 <p>The QDataStream class implements the serialization of C++'s basic data types, like <tt>char</tt>, <tt>short</tt>, <tt>int</tt>, <tt>char *</tt>, etc. Serialization of more complex data is accomplished by breaking up the data into primitive units.</p>
 <p>A data stream cooperates closely with a <a href="qiodevice.html">QIODevice</a>. A <a href="qiodevice.html">QIODevice</a> represents an input/output medium one can read data from and write data to. The <a href="qfile.html">QFile</a> class is an example of an I/O device.</p>
 <p>Example (write binary data to a stream):</p>
-<pre>         QFile file(&quot;file.dat&quot;);
-         file.open(QIODevice::WriteOnly);
-         QDataStream out(&amp;file);   <span class="comment">// we will serialize the data into the file</span>
-         out &lt;&lt; &quot;the answer is&quot;;   <span class="comment">// serialize a string</span>
-         out &lt;&lt; (qint32)42;        <span class="comment">// serialize an integer</span></pre>
+<pre> QFile file(&quot;file.dat&quot;);
+ file.open(QIODevice::WriteOnly);
+ QDataStream out(&amp;file);   <span class="comment">// we will serialize the data into the file</span>
+ out &lt;&lt; &quot;the answer is&quot;;   <span class="comment">// serialize a string</span>
+ out &lt;&lt; (qint32)42;        <span class="comment">// serialize an integer</span></pre>
 <p>Example (read binary data from a stream):</p>
-<pre>         QFile file(&quot;file.dat&quot;);
-         file.open(QIODevice::ReadOnly);
-         QDataStream in(&amp;file);    <span class="comment">// read the data serialized from the file</span>
-         QString str;
-         qint32 a;
-         in &gt;&gt; str &gt;&gt; a;           <span class="comment">// extract &quot;the answer is&quot; and 42</span></pre>
+<pre> QFile file(&quot;file.dat&quot;);
+ file.open(QIODevice::ReadOnly);
+ QDataStream in(&amp;file);    <span class="comment">// read the data serialized from the file</span>
+ QString str;
+ qint32 a;
+ in &gt;&gt; str &gt;&gt; a;           <span class="comment">// extract &quot;the answer is&quot; and 42</span></pre>
 <p>Each item written to the stream is written in a predefined binary format that varies depending on the item's type. Supported Qt types include <a href="qbrush.html">QBrush</a>, <a href="qcolor.html">QColor</a>, <a href="qdatetime.html">QDateTime</a>, <a href="qfont.html">QFont</a>, <a href="qpixmap.html">QPixmap</a>, <a href="qstring.html">QString</a>, <a href="qvariant.html">QVariant</a> and many others. For the complete list of all Qt types supporting data streaming see the <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
 <p>For integers it is best to always cast to a Qt integer type for writing, and to read back into the same Qt integer type. This ensures that you get integers of the size you want and insulates you from compiler and platform differences.</p>
 <p>To take one example, a <tt>char *</tt> string is written as a 32-bit integer equal to the length of the string including the '\0' byte, followed by all the characters of the string including the '\0' byte. When reading a <tt>char *</tt> string, 4 bytes are read to create the 32-bit length value, then that many characters for the <tt>char *</tt> string including the '\0' terminator are read.</p>
@@ -105,49 +105,49 @@
 <a name="versioning"></a>
 <h3>Versioning</h3>
 <p>QDataStream's binary format has evolved since Qt 1.0, and is likely to continue evolving to reflect changes done in Qt. When inputting or outputting complex types, it's very important to make sure that the same version of the stream (<a href="qdatastream.html#version">version</a>()) is used for reading and writing. If you need both forward and backward compatibility, you can hardcode the version number in the application:</p>
-<pre>         stream.setVersion(QDataStream::Qt_4_0);</pre>
+<pre> stream.setVersion(QDataStream::Qt_4_0);</pre>
 <p>If you are producing a new binary data format, such as a file format for documents created by your application, you could use a QDataStream to write the data in a portable format. Typically, you would write a brief header containing a magic string and a version number to give yourself room for future expansion. For example:</p>
-<pre>         QFile file(&quot;file.xxx&quot;);
-         file.open(QIODevice::WriteOnly);
-         QDataStream out(&amp;file);
+<pre> QFile file(&quot;file.xxx&quot;);
+ file.open(QIODevice::WriteOnly);
+ QDataStream out(&amp;file);
 
-         <span class="comment">// Write a header with a &quot;magic number&quot; and a version</span>
-         out &lt;&lt; (quint32)0xA0B0C0D0;
-         out &lt;&lt; (qint32)123;
+<span class="comment"> // Write a header with a &quot;magic number&quot; and a version</span>
+ out &lt;&lt; (quint32)0xA0B0C0D0;
+ out &lt;&lt; (qint32)123;
 
-         out.setVersion(QDataStream::Qt_4_0);
+ out.setVersion(QDataStream::Qt_4_0);
 
-         <span class="comment">// Write the data</span>
-         out &lt;&lt; lots_of_interesting_data;</pre>
+<span class="comment"> // Write the data</span>
+ out &lt;&lt; lots_of_interesting_data;</pre>
 <p>Then read it in with:</p>
-<pre>         QFile file(&quot;file.xxx&quot;);
-         file.open(QIODevice::ReadOnly);
-         QDataStream in(&amp;file);
+<pre> QFile file(&quot;file.xxx&quot;);
+ file.open(QIODevice::ReadOnly);
+ QDataStream in(&amp;file);
 
-         <span class="comment">// Read and check the header</span>
-         quint32 magic;
-         in &gt;&gt; magic;
-         if (magic != 0xA0B0C0D0)
-             return XXX_BAD_FILE_FORMAT;
+<span class="comment"> // Read and check the header</span>
+ quint32 magic;
+ in &gt;&gt; magic;
+ if (magic != 0xA0B0C0D0)
+     return XXX_BAD_FILE_FORMAT;
 
-         <span class="comment">// Read the version</span>
-         qint32 version;
-         in &gt;&gt; version;
-         if (version &lt; 100)
-             return XXX_BAD_FILE_TOO_OLD;
-         if (version &gt; 123)
-             return XXX_BAD_FILE_TOO_NEW;
+<span class="comment"> // Read the version</span>
+ qint32 version;
+ in &gt;&gt; version;
+ if (version &lt; 100)
+     return XXX_BAD_FILE_TOO_OLD;
+ if (version &gt; 123)
+     return XXX_BAD_FILE_TOO_NEW;
 
-         if (version &lt;= 110)
-             in.setVersion(QDataStream::Qt_3_2);
-         else
-             in.setVersion(QDataStream::Qt_4_0);
+ if (version &lt;= 110)
+     in.setVersion(QDataStream::Qt_3_2);
+ else
+     in.setVersion(QDataStream::Qt_4_0);
 
-         <span class="comment">// Read the data</span>
-         in &gt;&gt; lots_of_interesting_data;
-         if (version &gt;= 120)
-             in &gt;&gt; data_new_in_XXX_version_1_2;
-         in &gt;&gt; other_interesting_data;</pre>
+<span class="comment"> // Read the data</span>
+ in &gt;&gt; lots_of_interesting_data;
+ if (version &gt;= 120)
+     in &gt;&gt; data_new_in_XXX_version_1_2;
+ in &gt;&gt; other_interesting_data;</pre>
 <p>You can select which byte order to use when serializing data. The default setting is big endian (MSB first). Changing it to little endian breaks the portability (unless the reader also changes to little endian). We recommend keeping this setting unless you have special requirements.</p>
 <a name="raw"></a><a name="reading-and-writing-raw-binary-data"></a>
 <h3>Reading and writing raw binary data</h3>
@@ -278,19 +278,20 @@
 <p>In order to accommodate new functionality, the datastream serialization format of some Qt classes has changed in some versions of Qt. If you want to read data that was created by an earlier version of Qt, or write data that can be read by a program that was compiled with an earlier version of Qt, use this function to modify the serialization format used by <a href="qdatastream.html">QDataStream</a>.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Qt Version</th><th><a href="qdatastream.html">QDataStream</a> Version</th></tr></thead>
-<tr valign="top" class="odd"><td>Qt 4.3</td><td>9</td></tr>
-<tr valign="top" class="even"><td>Qt 4.2</td><td>8</td></tr>
-<tr valign="top" class="odd"><td>Qt 4.0, 4.1</td><td>7</td></tr>
-<tr valign="top" class="even"><td>Qt 3.3</td><td>6</td></tr>
-<tr valign="top" class="odd"><td>Qt 3.1, 3.2</td><td>5</td></tr>
-<tr valign="top" class="even"><td>Qt 3.0</td><td>4</td></tr>
-<tr valign="top" class="odd"><td>Qt 2.1, 2.2, 2.3</td><td>3</td></tr>
-<tr valign="top" class="even"><td>Qt 2.0</td><td>2</td></tr>
-<tr valign="top" class="odd"><td>Qt 1.x</td><td>1</td></tr>
+<tr valign="top" class="odd"><td>Qt 4.4</td><td>10</td></tr>
+<tr valign="top" class="even"><td>Qt 4.3</td><td>9</td></tr>
+<tr valign="top" class="odd"><td>Qt 4.2</td><td>8</td></tr>
+<tr valign="top" class="even"><td>Qt 4.0, 4.1</td><td>7</td></tr>
+<tr valign="top" class="odd"><td>Qt 3.3</td><td>6</td></tr>
+<tr valign="top" class="even"><td>Qt 3.1, 3.2</td><td>5</td></tr>
+<tr valign="top" class="odd"><td>Qt 3.0</td><td>4</td></tr>
+<tr valign="top" class="even"><td>Qt 2.1, 2.2, 2.3</td><td>3</td></tr>
+<tr valign="top" class="odd"><td>Qt 2.0</td><td>2</td></tr>
+<tr valign="top" class="even"><td>Qt 1.x</td><td>1</td></tr>
 </table></p>
 <p>The <a href="qdatastream.html#Version-enum">Version</a> enum provides symbolic constants for the different versions of Qt. For example:</p>
-<pre>         QDataStream out(file);
-         out.setVersion(QDataStream::Qt_4_0);</pre>
+<pre> QDataStream out(file);
+ out.setVersion(QDataStream::Qt_4_0);</pre>
 <p>See also <a href="qdatastream.html#version">version</a>() and <a href="qdatastream.html#Version-enum">Version</a>.</p>
 <a name="//apple_ref/cpp/instm/QDataStream/skipRawData" />
 <h3 class="fn"><a name="skipRawData"></a>int QDataStream::skipRawData ( int <i>len</i> )</h3>
@@ -391,8 +392,8 @@
 <p>Space for the string is allocated using <tt>new</tt> -- the caller must destroy it with <tt>delete[]</tt>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

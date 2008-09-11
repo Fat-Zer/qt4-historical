@@ -72,7 +72,7 @@ public:
     Q3SqlSelectCursor::exec() function.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3sqlselectcursor.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3sqlselectcursor.cpp 0
 */
 
 /*!

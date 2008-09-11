@@ -120,7 +120,22 @@ static int openModeToOpenFlags(QIODevice::OpenMode mode)
             oflags |= QT_OPEN_TRUNC;
     }
 
+#ifdef O_CLOEXEC
+    // supported on Linux >= 2.6.23; avoids one extra system call
+    oflags |= O_CLOEXEC;
+#endif
     return oflags;
+}
+
+/*!
+    \internal
+
+    Sets the file descriptor to close on exec. That is, the file
+    descriptor is not inherited by child processes.
+*/
+static bool setCloseOnExec(int fd)
+{
+    return fd != -1 && fcntl(fd, F_SETFD, FD_CLOEXEC) != -1;
 }
 
 /*!
@@ -153,6 +168,11 @@ bool QFSFileEnginePrivate::nativeOpen(QIODevice::OpenMode openMode)
             return false;
         }
 
+#ifndef O_CLOEXEC
+        // not needed on Linux >= 2.6.23
+        setCloseOnExec(fd);     // ignore failure
+#endif
+
         // Seek to the end when in Append mode.
         if (flags & QFile::Append) {
             int ret;
@@ -182,6 +202,8 @@ bool QFSFileEnginePrivate::nativeOpen(QIODevice::OpenMode openMode)
                         qt_error_string(int(errno)));
             return false;
         }
+
+        setCloseOnExec(fileno(fh)); // ignore failure
 
         // Seek to the end when in Append mode.
         if (openMode & QIODevice::Append) {

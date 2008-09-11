@@ -145,7 +145,7 @@ public:
   running to ensure that the application doesn't freeze. Do the
   operation in a loop, call \l setProgress() at intervals, and check
   for cancellation with wasCanceled(). For example:
-\snippet doc/src/snippets/code/src.qt3support.dialogs.q3progressdialog.cpp 0
+\snippet doc/src/snippets/code/src_qt3support_dialogs_q3progressdialog.cpp 0
 
   A modeless progress dialog is suitable for operations that take
   place in the background, where the user is able to interact with the
@@ -157,7 +157,7 @@ public:
   You need to have an event loop to be running, connect the
   canceled() signal to a slot that stops the operation, and call \l
   setProgress() at intervals. For example:
-\snippet doc/src/snippets/code/src.qt3support.dialogs.q3progressdialog.cpp 1
+\snippet doc/src/snippets/code/src_qt3support_dialogs_q3progressdialog.cpp 1
 
 
   In both modes the progress dialog may be customized by

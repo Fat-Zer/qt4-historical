@@ -168,7 +168,7 @@ void QCDEStyle::drawControl(ControlElement element, const QStyleOption *opt, QPa
         QPainterPath path;
         path.addRect(opt->rect);
         path.addRect(opt->rect.adjusted(2, 2, -2, -2));
-        p->fillPath(path, opt->palette.dark());
+        p->fillPath(path, opt->palette.color(QPalette::Active, QPalette::Text));
         p->restore();
         break; }
     default:

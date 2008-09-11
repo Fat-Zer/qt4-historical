@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/util/qdesktopservices.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/util/qdesktopservices.cpp -->
 <head>
   <title>Qt 4.4: QDesktopServices Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDesktopServices Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QDesktopServices class provides methods for accessing common desktop services. <a href="#details">More...</a></p>
@@ -48,16 +48,16 @@
 <p>The dispatch mechanism allows only one custom handler to be used for each URL scheme; this is set using the <a href="qdesktopservices.html#setUrlHandler">setUrlHandler</a>() function. Each handler is implemented as a slot which accepts only a single <a href="qurl.html">QUrl</a> argument.</p>
 <p>The existing handlers for each scheme can be removed with the <a href="qdesktopservices.html#unsetUrlHandler">unsetUrlHandler</a>() function. This returns the handling behavior for the given scheme to the default behavior.</p>
 <p>This system makes it easy to implement a help system, for example. Help could be provided in labels and text browsers using <b>help://myapplication/mytopic</b> URLs, and by registering a handler it becomes possible to display the help text inside the application:</p>
-<pre>     class MyHelpHandler : public QObject
-     {
-         Q_OBJECT
-     public:
-         ...
-     public slots:
-         void showHelp(const QUrl &amp;url);
-     };
+<pre> class MyHelpHandler : public QObject
+ {
+     Q_OBJECT
+ public:
+     ...
+ public slots:
+     void showHelp(const QUrl &amp;url);
+ };
 
-     QDesktopServices::setUrlHandler(&quot;help&quot;, helpInstance, &quot;showHelp&quot;);</pre>
+ QDesktopServices::setUrlHandler(&quot;help&quot;, helpInstance, &quot;showHelp&quot;);</pre>
 <p>If inside the handler you decide that you can't open the requested URL, you can just call <a href="qdesktopservices.html#openUrl">QDesktopServices::openUrl</a>() again with the same argument, and it will try to open the URL using the appropriate mechanism for the user's desktop environment.</p>
 <p>See also <a href="qsystemtrayicon.html">QSystemTrayIcon</a> and <a href="qprocess.html">QProcess</a>.</p>
 <hr />
@@ -101,7 +101,7 @@
 <p>If the URL is a reference to a local file (i.e&#x2e;, the URL scheme is &quot;file&quot;) then it will be opened with a suitable application instead of a Web browser.</p>
 <p>If a <tt>mailto</tt> URL is specified, the user's e-mail client will be used to open a composer window containing the options specified in the URL, similar to the way <tt>mailto</tt> links are handled by a Web browser.</p>
 <p>For example, the following URL contains a recipient (<tt>user@foo.com</tt>), a subject (<tt>Test</tt>), and a message body (<tt>Just a test</tt>):</p>
-<pre>     mailto:user@foo.com?subject=Test&amp;body=Just a test</pre>
+<pre> mailto:user@foo.com?subject=Test&amp;body=Just a test</pre>
 <p><b>Warning:</b> Although many e-mail clients can send attachments and are Unicode-aware, the user may have configured their client without these features. Also, certain e-mail clients (e.g&#x2e;, Lotus Notes) have problems with long URLs.</p>
 <p>See also <a href="qdesktopservices.html#setUrlHandler">setUrlHandler</a>().</p>
 <a name="//apple_ref/cpp/clm/QDesktopServices/setUrlHandler" />
@@ -123,8 +123,8 @@
 <p>See also <a href="qdesktopservices.html#setUrlHandler">setUrlHandler</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

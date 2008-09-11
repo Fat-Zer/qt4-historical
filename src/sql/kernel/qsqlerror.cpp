@@ -243,7 +243,7 @@ QString QSqlError::text() const
     Returns true if an error is set, otherwise false.
 
     Example:
-    \snippet doc/src/snippets/code/src.sql.kernel.qsqlerror.cpp 0
+    \snippet doc/src/snippets/code/src_sql_kernel_qsqlerror.cpp 0
 
     \sa type()
 */

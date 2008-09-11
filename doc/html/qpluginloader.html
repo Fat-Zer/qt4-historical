@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/plugin/qpluginloader.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/plugin/qpluginloader.cpp -->
 <head>
   <title>Qt 4.4: QPluginLoader Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QPluginLoader Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QPluginLoader class loads a plugin at run-time. <a href="#details">More...</a></p>
@@ -83,6 +83,7 @@
 <p>In order to speed up loading and validation of plugins, some of the information that is collected during loading is cached in persistent memory (through <a href="qsettings.html">QSettings</a>). For instance, the result of a load operation (e.g&#x2e; succeeded or failed) is stored in the cache, so that subsequent load operations don't try to load an invalid plugin. However, if the &quot;last modified&quot; timestamp of a plugin has changed, the plugin's cache entry is invalidated and the plugin is reloaded regardless of the values in the cache entry. The cache entry is then updated with the new result of the load operation.</p>
 <p>This also means that the timestamp must be updated each time the plugin or any dependent resources (such as a shared library) is updated, since the dependent resources might influence the result of loading a plugin.</p>
 <p>See <a href="plugins-howto.html">How to Create Qt Plugins</a> for more information about how to make your application extensible through plugins.</p>
+<p>Note that the QPluginLoader cannot be used if your application is statically linked against Qt. In this case, you will also have to link to plugins statically. You can use <a href="qlibrary.html">QLibrary</a> if you need to load dynamic libraries in a statically linked application.</p>
 <p>See also <a href="qlibrary.html">QLibrary</a> and <a href="tools-plugandpaint.html">Plug &amp; Paint Example</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
@@ -91,7 +92,8 @@
 <h3 class="fn"><a name="fileName-prop"></a>fileName : <a href="qstring.html">QString</a></h3>
 <p>This property holds the file name of the plugin.</p>
 <p>To be loadable, the file's suffix must be a valid suffix for a loadable library in accordance with the platform, e.g&#x2e; <tt>.so</tt> on Unix, <tt>.dylib</tt> on Mac OS X, and <tt>.dll</tt> on Windows. The suffix can be verified with <a href="qlibrary.html#isLibrary">QLibrary::isLibrary</a>().</p>
-<p>If the file name does not exist, it will not be set. This function will then return an empty string.</p>
+<p>If the file name does not exist, it will not be set. This property will then contain an empty string.</p>
+<p>By default, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString fileName () const</b></li>
@@ -162,8 +164,8 @@
 <p>This function was introduced in Qt 4.4.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

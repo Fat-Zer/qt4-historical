@@ -210,7 +210,7 @@ QIODevicePrivate::~QIODevicePrivate()
     Calling these functions from the main, GUI thread, may cause your
     user interface to freeze. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 0
 
     By subclassing QIODevice, you can provide the same interface to
     your own I/O devices. Subclasses of QIODevice are only required to
@@ -704,7 +704,7 @@ bool QIODevice::reset()
     Subclasses that reimplement this function must call the base
     implementation in order to include the size of QIODevices' buffer. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 1
 
     \sa bytesToWrite(), readyRead(), isSequential()
 */
@@ -990,7 +990,7 @@ QByteArray QIODevice::readAll()
     For example, the following code reads a line of characters from a
     file:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 2
 
     The newline character ('\n') is included in the buffer. If a
     newline is not encountered before maxSize - 1 bytes are read, a
@@ -1187,7 +1187,7 @@ qint64 QIODevice::readLineData(char *data, qint64 maxSize)
     Subclasses that reimplement this function must call the base
     implementation in order to include the size of the QIODevice's buffer. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 3
 
     \sa readyRead(), readLine()
 */
@@ -1389,7 +1389,7 @@ bool QIODevice::getChar(char *c)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 4
 
     \sa read()
 */
@@ -1411,7 +1411,7 @@ qint64 QIODevice::peek(char *data, qint64 maxSize)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qiodevice.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 5
 
     This function has no way of reporting errors; returning an empty
     QByteArray() can mean either that no data was currently available

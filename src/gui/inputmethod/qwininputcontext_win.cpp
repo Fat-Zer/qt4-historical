@@ -229,19 +229,44 @@ QWinInputContext::QWinInputContext(QObject *parent)
     }
 
 #ifndef Q_OS_WINCE
-    // figure out whether a RTL language is installed
-    typedef BOOL(WINAPI *PtrIsValidLanguageGroup)(DWORD,DWORD);
-    PtrIsValidLanguageGroup isValidLanguageGroup = (PtrIsValidLanguageGroup)QLibrary::resolve(QLatin1String("kernel32"), "IsValidLanguageGroup");
-    if (isValidLanguageGroup) {
-        qt_use_rtl_extensions = isValidLanguageGroup(LGRPID_ARABIC, LGRPID_INSTALLED)
-                             || isValidLanguageGroup(LGRPID_HEBREW, LGRPID_INSTALLED);
-    }
-    qt_use_rtl_extensions |= IsValidLocale(MAKELCID(MAKELANGID(LANG_ARABIC, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
-                          || IsValidLocale(MAKELCID(MAKELANGID(LANG_HEBREW, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
+    QSysInfo::WinVersion ver = QSysInfo::windowsVersion();
+    if (ver & QSysInfo::WV_NT_based  && ver >= QSysInfo::WV_VISTA) {
+        // Since the IsValidLanguageGroup/IsValidLocale functions always return true on 
+        // Vista, check the Keyboard Layouts for enabling RTL. 
+        UINT nLayouts = GetKeyboardLayoutList(0, 0);
+        if (nLayouts) {
+            HKL *lpList = new HKL[nLayouts];
+            GetKeyboardLayoutList(nLayouts, lpList);
+            for (int i = 0; i<(int)nLayouts; i++) {
+                WORD plangid = PRIMARYLANGID((quintptr)lpList[i]);
+                if (plangid == LANG_ARABIC 
+                    || plangid ==  LANG_HEBREW
+                    || plangid ==  LANG_FARSI
 #ifdef LANG_SYRIAC
-                          || IsValidLocale(MAKELCID(MAKELANGID(LANG_SYRIAC, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
+                    || plangid ==  LANG_SYRIAC
 #endif
-                          || IsValidLocale(MAKELCID(MAKELANGID(LANG_FARSI, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED);
+                    ) {
+                        qt_use_rtl_extensions = true;
+                        break;
+                }
+            }
+            delete []lpList;
+        }
+    } else {
+	    // figure out whether a RTL language is installed
+    	typedef BOOL(WINAPI *PtrIsValidLanguageGroup)(DWORD,DWORD);
+    	PtrIsValidLanguageGroup isValidLanguageGroup = (PtrIsValidLanguageGroup)QLibrary::resolve(QLatin1String("kernel32"), "IsValidLanguageGroup");
+    	if (isValidLanguageGroup) {
+        	qt_use_rtl_extensions = isValidLanguageGroup(LGRPID_ARABIC, LGRPID_INSTALLED)
+	            	                 || isValidLanguageGroup(LGRPID_HEBREW, LGRPID_INSTALLED);
+    	}
+    	qt_use_rtl_extensions |= IsValidLocale(MAKELCID(MAKELANGID(LANG_ARABIC, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
+        	                  || IsValidLocale(MAKELCID(MAKELANGID(LANG_HEBREW, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
+#ifdef LANG_SYRIAC
+            	              || IsValidLocale(MAKELCID(MAKELANGID(LANG_SYRIAC, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED)
+#endif
+                	          || IsValidLocale(MAKELCID(MAKELANGID(LANG_FARSI, SUBLANG_DEFAULT), SORT_DEFAULT), LCID_INSTALLED);
+    }
 #else
     qt_use_rtl_extensions = false;
 #endif

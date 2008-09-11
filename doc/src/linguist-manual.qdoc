@@ -180,8 +180,8 @@
     the \l{linguist-programmers.html}{Programmers} chapter.
 
     An example of a complete \c .pro file with four translation source files:
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 0
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 1
 
      QTextCodec::setCodecForTr() makes it possible to choose a
     8-bit encoding for literal strings that appear within \c tr() calls.
@@ -192,14 +192,14 @@
     application, \QL needs you to set the \c CODECFORTR
     entry in the \c .pro file as well. For example:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 1
 
     Also, if your compiler uses a different encoding for its runtime
     system as for its source code and you want to use  non-ASCII
     characters in string literals, you will need to set the \c
     CODECFORSRC. For example:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 2
 
     Microsoft Visual Studio 2005 .NET appears to be the only compiler
     for which this is necessary. However, if you want to write
@@ -207,7 +207,7 @@
     in your source files. You can still specify non-ASCII characters
     portably using escape sequences, for example:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 3
 
     \section1 lupdate
 
@@ -244,7 +244,7 @@
     Pass the \c -help option to \c lupdate to obtain the list of
     supported options:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 4
 
     \QL is also able to import and export XLIFF files. See the
     \l{Qt Linguist Manual: Translators}{Translators} section for more
@@ -275,7 +275,7 @@
     Pass the \c -help option to \c lrelease to obtain the list of
     supported options:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 5
 
     \section1 Missing Translations
 
@@ -1137,11 +1137,11 @@
 
     User-visible strings are marked as translation targets by wrapping them
     in a \c tr() call, for example:
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 6
 
     would become
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 7
 
     All QObject subclasses that use the \c Q_OBJECT macro implement
     the \c tr() function.
@@ -1150,11 +1150,11 @@
     usually called as a member function of a QObject subclass, in
     other cases an explicit class name can be supplied, for example:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 8
 
     or
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 9
 
     \section2 Distinguishing Identical Strings That Require Different Translations
 
@@ -1168,11 +1168,11 @@
     differ between the two. This is easily achieved using the
     two argument form of the \c tr() call, e.g.
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 10
 
     and
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 11
 
     Ctrl key accelerators are also translatable:
 
@@ -1189,7 +1189,7 @@
     solved by adding a comment using the keyword \e TRANSLATOR which
     describes the navigation steps to reach the text in question; e.g.
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 12
 
     These comments are particularly useful for widget classes.
 
@@ -1199,13 +1199,13 @@
     write "plural-aware" internationalized applications. This overload 
     has the following signature:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 17
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 17
 
     Depending on the value of \c n, the \c tr() function will return a different 
     translation, with the correct grammatical number for the target language. 
     Also, any occurrence of \c %n is replaced with \c{n}'s value. For example:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 18
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 18
 
     If a French translation is loaded, this will expand to "0 item 
     remplac\unicode{233}", "1 item remplac\unicode{233}", "2 items 
@@ -1234,7 +1234,7 @@
     comment at the beginning of the source files that use \c
     MyClass::tr():
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 13
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 13
 
     After the comment, all references to \c MyClass::tr() will be
     understood as meaning \c MyNamespace::MyClass::tr().
@@ -1247,7 +1247,7 @@
     use either the tr() function of an appropriate class, or the
     QCoreApplication::translate() function directly:
 
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 14
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 14
 
     \section3 Using QT_TR_NOOP() and QT_TRANSLATE_NOOP()
 
@@ -1257,10 +1257,10 @@
     The macros expand to just the text (without the context).
 
     Example of QT_TR_NOOP():
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 15
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 15
 
     Example of QT_TRANSLATE_NOOP():
-    \snippet doc/src/snippets/code/doc.src.linguist-manual.qdoc 16
+    \snippet doc/src/snippets/code/doc_src_linguist-manual.qdoc 16
 
     \section1 Tutorials
 

@@ -1869,7 +1869,7 @@ void QWizardAntiFlickerWidget::paintEvent(QPaintEvent *)
     It would also be possible to put all the logic in one place, in a
     QWizard::nextId() reimplementation. For example:
 
-    \snippet doc/src/snippets/code/src.gui.dialogs.qwizard.cpp 0
+    \snippet doc/src/snippets/code/src_gui_dialogs_qwizard.cpp 0
 
     To start at another page than the page with the lowest ID, call
     setStartId().
@@ -2153,6 +2153,9 @@ QWizardPage *QWizard::currentPage() const
     This property cannot be set directly. To change the current page,
     call next(), back(), or restart().
 
+    By default, this property has a value of -1, indicating that no page is
+    currently shown.
+
     \sa currentIdChanged(), currentPage()
 */
 int QWizard::currentId() const
@@ -2430,7 +2433,7 @@ QString QWizard::buttonText(WizardButton which) const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.dialogs.qwizard.cpp 1
+    \snippet doc/src/snippets/code/src_gui_dialogs_qwizard.cpp 1
 
     \sa setButton(), setButtonText(), setOptions()
 */
@@ -3060,6 +3063,8 @@ QWizardPage::QWizardPage(QWidget *parent)
     The title may be plain text or HTML, depending on the value of the
     \l{QWizard::titleFormat} property.
 
+    By default, this property contains an empty string.
+
     \sa subTitle, {Elements of a Wizard Page}
 */
 void QWizardPage::setTitle(const QString &title)
@@ -3090,6 +3095,8 @@ QString QWizardPage::title() const
 
     The subtitle may be plain text or HTML, depending on the value of
     the \l{QWizard::subTitleFormat} property.
+
+    By default, this property contains an empty string.
 
     \sa title, QWizard::IgnoreSubTitles, {Elements of a Wizard Page}
 */

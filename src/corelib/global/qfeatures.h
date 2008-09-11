@@ -179,6 +179,9 @@
 // Qt Prerendered Font Format
 //#define QT_NO_QWS_QPF
 
+// Raster Paint Engine callback functions
+//#define QT_NO_RASTERCALLBACKS
+
 // Resize Handler
 //#define QT_NO_RESIZEHANDLER
 
@@ -286,11 +289,6 @@
 // QButtonGroup
 #if !defined(QT_NO_BUTTONGROUP) && (defined(QT_NO_GROUPBOX))
 #define QT_NO_BUTTONGROUP
-#endif
-
-// QClipboard
-#if !defined(QT_NO_CLIPBOARD) && (defined(QT_NO_QWS_PROPERTIES) || defined(QT_NO_DRAGANDDROP))
-#define QT_NO_CLIPBOARD
 #endif
 
 // Codecs
@@ -591,6 +589,11 @@
 // QWhatsThis
 #if !defined(QT_NO_WHATSTHIS) && (defined(QT_NO_TOOLBUTTON) || defined(QT_NO_ACTION))
 #define QT_NO_WHATSTHIS
+#endif
+
+// QClipboard
+#if !defined(QT_NO_CLIPBOARD) && (defined(QT_NO_QWS_PROPERTIES))
+#define QT_NO_CLIPBOARD
 #endif
 
 // Common UNIX Printing System

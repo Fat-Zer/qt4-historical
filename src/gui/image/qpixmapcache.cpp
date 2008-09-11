@@ -224,7 +224,7 @@ Q_GLOBAL_STATIC(QPMCache, pm_cache)
     find(const QString&, QPixmap&) instead.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.image.qpixmapcache.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qpixmapcache.cpp 0
 */
 
 QPixmap *QPixmapCache::find(const QString &key)
@@ -239,7 +239,7 @@ QPixmap *QPixmapCache::find(const QString &key)
     returns true; otherwise it leaves \a pm alone and returns false.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.image.qpixmapcache.cpp 1
+    \snippet doc/src/snippets/code/src_gui_image_qpixmapcache.cpp 1
 */
 
 bool QPixmapCache::find(const QString &key, QPixmap& pm)

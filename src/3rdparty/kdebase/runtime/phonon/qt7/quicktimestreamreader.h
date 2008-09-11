@@ -52,7 +52,7 @@ namespace QT7
         void setCurrentPos(qint64 pos);
         qint64 currentPos() const;
         int currentBufferSize() const;
-        Movie QuickTimeStreamReader::movieRef();
+        Movie movieRef();
 
         QByteArray m_buffer;
         void *m_QTMovieRef;

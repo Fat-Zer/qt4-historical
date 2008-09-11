@@ -176,6 +176,9 @@ QWebView::QWebView(QWidget *parent)
 */
 QWebView::~QWebView()
 {
+    if (d->page)
+        d->page->d->view = 0;
+
     if (d->page && d->page->parent() == this)
         delete d->page;
     delete d;
@@ -322,7 +325,7 @@ void QWebView::setContent(const QByteArray &data, const QString &mimeType, const
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 0
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 0
 */
 QWebHistory *QWebView::history() const
 {
@@ -334,7 +337,7 @@ QWebHistory *QWebView::history() const
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 1
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 1
 
     \sa QWebSettings::globalSettings()
 */
@@ -346,6 +349,8 @@ QWebSettings *QWebView::settings() const
 /*!
     \property QWebView::title
     \brief the title of the web page currently viewed
+
+    By default, this property contains an empty string.
 
     \sa titleChanged()
 */
@@ -360,7 +365,9 @@ QString QWebView::title() const
     \property QWebView::url
     \brief the url of the web page currently viewed
 
-    Setting this property clears the view and loads the url.
+    Setting this property clears the view and loads the URL.
+
+    By default, this property contains an empty, invalid URL.
 
     \sa load(), urlChanged()
 */
@@ -381,6 +388,8 @@ QUrl QWebView::url() const
     \property QWebView::icon
     \brief the icon associated with the web page currently viewed
 
+    By default, this property contains a null icon.
+
     \sa iconChanged(), QWebSettings::iconForUrl()
 */
 QIcon QWebView::icon() const
@@ -393,6 +402,8 @@ QIcon QWebView::icon() const
 /*!
     \property QWebView::selectedText
     \brief the text currently selected
+
+    By default, this property contains an empty string.
 
     \sa findText(), selectionChanged()
 */
@@ -418,7 +429,7 @@ QAction *QWebView::pageAction(QWebPage::WebAction action) const
     The following example triggers the copy action and therefore copies any
     selected text to the clipboard.
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 2
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 2
 
     \sa pageAction()
 */
@@ -433,6 +444,8 @@ void QWebView::triggerPageAction(QWebPage::WebAction action, bool checked)
 
     Parts of HTML documents can be editable for example through the
     \c{contenteditable} attribute on HTML elements.
+
+    By default, this property is false.
 */
 bool QWebView::isModified() const
 {
@@ -475,6 +488,8 @@ QSize QWebView::sizeHint() const
 /*!
   \property QWebView::textSizeMultiplier
   \brief the scaling factor for all text in the frame
+
+  By default, this property contains a value of 1.0.
 */
 
 void QWebView::setTextSizeMultiplier(qreal factor)
@@ -506,6 +521,7 @@ bool QWebView::findText(const QString &subString, QWebPage::FindFlags options)
 bool QWebView::event(QEvent *e)
 {
     if (d->page) {
+#ifndef QT_NO_CONTEXTMENU
         if (e->type() == QEvent::ContextMenu) {
             QContextMenuEvent *event = static_cast<QContextMenuEvent *>(e);
             if (d->page->swallowContextMenuEvent(event)) {
@@ -513,7 +529,9 @@ bool QWebView::event(QEvent *e)
                 return true;
             }
             d->page->updatePositionDependentActions(event->pos());
-        } else if (e->type() == QEvent::ShortcutOverride) {
+        } else
+#endif // QT_NO_CONTEXTMENU
+        if (e->type() == QEvent::ShortcutOverride) {
             d->page->event(e);
 #ifndef QT_NO_CURSOR
         } else if (e->type() == static_cast<QEvent::Type>(WebCore::SetCursorEvent::EventType)) {
@@ -556,7 +574,7 @@ void QWebView::print(QPrinter *printer) const
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 3
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 3
 
     \sa reload(), pageAction(), loadFinished()
 */
@@ -572,7 +590,7 @@ void QWebView::stop()
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 4
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 4
 
     \sa forward(), pageAction()
 */
@@ -588,7 +606,7 @@ void QWebView::back()
 
     It is equivalent to
 
-    \snippet doc/src/snippets/code/src.3rdparty.webkit.WebKit.qt.Api.qwebview.cpp 5
+    \snippet doc/src/snippets/code/src_3rdparty_webkit_WebKit_qt_Api_qwebview.cpp 5
 
     \sa back(), pageAction()
 */
@@ -683,6 +701,7 @@ void QWebView::mouseReleaseEvent(QMouseEvent* ev)
         d->page->event(ev);
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*! \reimp
 */
 void QWebView::contextMenuEvent(QContextMenuEvent* ev)
@@ -690,7 +709,9 @@ void QWebView::contextMenuEvent(QContextMenuEvent* ev)
     if (d->page)
         d->page->event(ev);
 }
+#endif // QT_NO_CONTEXTMENU
 
+#ifndef QT_NO_WHEELEVENT
 /*! \reimp
 */
 void QWebView::wheelEvent(QWheelEvent* ev)
@@ -701,6 +722,7 @@ void QWebView::wheelEvent(QWheelEvent* ev)
     if (!ev->isAccepted())
         return QWidget::wheelEvent(ev);
 }
+#endif // QT_NO_WHEELEVENT
 
 /*! \reimp
 */

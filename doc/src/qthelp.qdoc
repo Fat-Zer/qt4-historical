@@ -55,12 +55,12 @@
     To include the definitions of the module's classes, use the
     following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 0
 
     To link against the module, add this line to your \l qmake \c
     .pro file:
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 1
 
     \section1 Topics
 
@@ -151,7 +151,7 @@
     has to be created. After specifying all relevant information in
     this file, it needs to be compiled by calling:
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 2
 
     The file 'doc.qch' contains then all html files in compressed
     form along with the table of contents and index keywords. To
@@ -166,11 +166,11 @@
     compressed help files, the project 'mycollection.qhcp' file
     looks unsurprisingly simple:
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 3
 
     For actually creating the collection file call:
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 4
 
     Instead of running two tools, one for generating the compressed
     help and one for generating the collection file, it is also
@@ -178,7 +178,7 @@
     slightly modified project file instructing the generator to
     create the compressed help first.
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 5
 
     Of course, it is possible to specify more than one file in the
     'generate' or 'register' section, so any number of compressed
@@ -223,7 +223,7 @@
     we get the actual help contents by calling fileData() and display
     the document to the user.
 
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 6
 
     For further information on how to use the API, have a look at
     the QHelpEngine class reference.
@@ -280,7 +280,7 @@
     The file format is XML based. For a better understanding of
     the format we'll discuss the following example:
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 7
     
     \section2 Namespace
     
@@ -310,7 +310,7 @@
     file is contained in both documentations or manuals, the one
     from the current manual has precedence over the other.
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 8
     
     The above example specifies 'doc' as virtual folder. If another
     manual, e.g. for a small helper tool for 'My Application'
@@ -332,7 +332,7 @@
     the documentation which has "myapp" and "1.0" set as filter
     attributes will be shown.
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 9
     
     It is possible to define any number of custom filters in a help
     project file. Important to know is, that the filter attributes have
@@ -358,7 +358,7 @@
     current custom filter in the QHelpEngine does not contain any filter
     attributes.
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 10
     
     In this case, the filter attributes 'myapp' and '1.0' are assigned
     to the filter section, i.e. all contents specified in this section
@@ -367,7 +367,7 @@
     
     \section3 Table of contents
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 11
     
     One section tag represents one item in the table of contents. The
     sections can be nested to any degree, but from a users perspective
@@ -378,7 +378,7 @@
     
     \section3 Keywords
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 12
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 12
     
     The keyword section lists all keywords of this filter section. A
     keyword consists basically of a name and a file reference. If the
@@ -390,7 +390,7 @@
     
     \section3 Files
     
-    \snippet doc/src/snippets/code/doc.src.qthelp.qdoc 13
+    \snippet doc/src/snippets/code/doc_src_qthelp.qdoc 13
     
     Finally, the actual documentation files have to be listed. Make sure
     that all files neccessary to display the help are mentioned, i.e. 

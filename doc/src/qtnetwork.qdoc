@@ -53,10 +53,11 @@
     write TCP/IP clients and servers.
 
     The network module provides classes to make network programming
-    easier and portable. It offers both high-level classes such as
-    QHttp and QFtp that implement specific application-level
-    protocols, and lower-level classes such as QTcpSocket,
-    QTcpServer, and QUdpSocket.
+    easier and portable. It offers classes such as QHttp and QFtp that
+    implement specific application-level protocols, lower-level classes
+    such as QTcpSocket, QTcpServer and QUdpSocket that represent low
+    level network concepts, and high level classes such as QNetworkRequest,
+    QNetworkReply and QNetworkAccessManager to perform network operations using common protocols.
 
     The QtNetwork module is part of the \l{Qt Console Edition}, the
     \l{Qt Desktop Edition}, and the \l{Qt Open Source Edition}.
@@ -72,7 +73,7 @@
     The following declaration in a \c qmake project file ensures that
     an application is compiled and linked appropriately:
 
-    \snippet doc/src/snippets/code/doc.src.qtnetwork.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtnetwork.qdoc 0
 
     This line is necessary because only the QtCore and QtGui modules
     are used in the default build process.
@@ -80,7 +81,40 @@
     To include the definitions of the module's classes, use the
     following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtnetwork.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtnetwork.qdoc 1
+
+    \section1 High Level Network Operations
+
+    The Network Access API is a collection of classes for performing
+    common network operations. The API provides an abstraction layer
+    over the specific operations and protocols used (for example,
+    getting and posting data over HTTP), and only exposes classes,
+    functions, and signals for general or high level concepts.
+
+    Network requests are represented by the QNetworkRequest class,
+    which also acts as a general container for information associated
+    with a request, such as any header information and the encryption
+    used. The URL specified when a request object is constructed
+    determines the protocol used for a request.
+
+    The coordination of network operations is performed by the
+    QNetworkAccessManager class. Once a request has been created,
+    this class is used to dispatch it and emit signals to report on
+    its progress. The manager also coordinates the use of
+    \l{QNetworkCookieJar}{cookies} to store data on the client,
+    authentication requests, and the use of proxies.
+
+    Replies to network requests are represented by the QNetworkReply
+    class; these are created by QNetworkAccessManager when a request
+    is dispatched. The signals provided by QNetworkReply can be used
+    to monitor each reply individually, or developers may choose to
+    use the manager's signals for this purpose instead and discard
+    references to replies. Since QNetworkReply is a subclass of
+    QIODevice, replies can be handled synchronously or asynchronously;
+    i.e., as blocking or non-blocking operations.
+
+    Each application or library can create one or more instances of
+    QNetworkAccessManager to handle network communication.
 
     \section1 Writing HTTP and FTP Clients with QHttp and QFtp
 

@@ -56,6 +56,7 @@
 #include <qmath.h>
 #include <QRubberBand>
 #include <QtGui/QFocusFrame>
+#include <QtGui/QMenu>
 
 QT_BEGIN_NAMESPACE
 
@@ -65,7 +66,10 @@ static QList<QWidget*> childWidgets(const QWidget *widget)
     QList<QWidget*> widgets;
     for (int i = 0; i < list.size(); ++i) {
         QWidget *w = qobject_cast<QWidget *>(list.at(i));
-        if (w && !w->isWindow() && !qobject_cast<QFocusFrame*>(w))
+        if (w && !w->isWindow() 
+            && !qobject_cast<QFocusFrame*>(w)
+            && !qobject_cast<QMenu*>(w)
+            && w->objectName() != QLatin1String("qt_rubberband"))
             widgets.append(w);
     }
     return widgets;

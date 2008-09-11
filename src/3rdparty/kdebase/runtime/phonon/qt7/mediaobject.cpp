@@ -792,7 +792,7 @@ void MediaObject::mediaNodeEvent(const MediaNodeEvent *event)
 bool MediaObject::event(QEvent *event)
 {
     switch (event->type()){
-        case QEvent::Timer:
+        case QEvent::Timer: {
             QTimerEvent *timerEvent = static_cast<QTimerEvent *>(event);
             if (timerEvent->timerId() == m_rapidTimer)
                 updateRapidly();
@@ -800,6 +800,7 @@ bool MediaObject::event(QEvent *event)
                 emit tick(currentTime());
             else if (timerEvent->timerId() == m_bufferTimer)
                 bufferAudioVideo();
+            }
             break;
         default:
             break;

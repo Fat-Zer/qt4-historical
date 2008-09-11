@@ -1176,7 +1176,7 @@ void QWindowsVistaStyle::drawControl(ControlElement element, const QStyleOption 
             if (!styleHint(SH_UnderlineShortcut, mbi, widget))
                 alignment |= Qt::TextHideMnemonic;
 
-            //The rect adjustment is a workaround for the menu not really filling it's background.
+            //The rect adjustment is a workaround for the menu not really filling its background.
             XPThemeData theme(widget, painter, QLatin1String("MENU"), MENU_BARBACKGROUND, 0, option->rect.adjusted(-1, 1 , 2, 1));
             d->drawBackground(theme);
 
@@ -2341,7 +2341,7 @@ void QWindowsVistaStyle::polish(QWidget *widget)
             if (pGetThemeColor(theme, TTP_STANDARD, TTSS_NORMAL, TMT_TEXTCOLOR, &bgRef) == S_OK) {
                 QColor textColor = QColor::fromRgb(bgRef);
                 QPalette pal;
-                pal.setColor(QPalette::All, QPalette::WindowText, textColor);
+                pal.setColor(QPalette::All, QPalette::ToolTipText, textColor);
                 widget->setPalette(pal);
             }
         }

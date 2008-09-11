@@ -79,6 +79,15 @@
     In the illustration above, Application One's primary screen is
     screen 0, and App Two's primary screen is screen 1.
 
+    \target multiple screens note
+    \note QDesktopWidget inherits the QWidget properties, width() and
+    height(), which specify the size of the desktop. However, for
+    desktops with multiple screens, the size of the desktop is the union
+    of all the screen sizes, so width() and height() should \e not be
+    used for computing the size of a widget to be placed on one of the
+    screens. The correct width and height values are obtained using
+    availableGeometry() or screenGeometry() for a particular screen.
+
     \sa QApplication, QX11Info::appRootWindow()
 */
 
@@ -227,4 +236,3 @@
 
     This signal is emitted when the work area available on \a screen changes.
 */
-

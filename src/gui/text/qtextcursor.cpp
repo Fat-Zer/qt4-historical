@@ -389,10 +389,9 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         newPosition = 0;
         break;
     case QTextCursor::StartOfLine: {
-
-        if (!line.isValid())
-            break;
-        newPosition = blockIt.position() + line.textStart();
+        newPosition = blockIt.position();
+        if (line.isValid())
+            newPosition += line.textStart();
 
         break;
     }
@@ -471,8 +470,12 @@ bool QTextCursorPrivate::movePosition(QTextCursor::MoveOperation op, QTextCursor
         newPosition = priv->length() - 1;
         break;
     case QTextCursor::EndOfLine: {
-        if (!line.isValid() || line.textLength() == 0)
+        if (!line.isValid() || line.textLength() == 0) {
+            if (blockIt.length() >= 1)
+                // position right before the block separator
+                newPosition = blockIt.position() + blockIt.length() - 1;
             break;
+        }
         newPosition = blockIt.position() + line.textStart() + line.textLength();
         if (line.lineNumber() < layout->lineCount() - 1) {
             const QString text = blockIt.text();
@@ -1196,7 +1199,7 @@ void QTextCursor::setVisualNavigation(bool b)
 
     If there is a selection, the selection is deleted and replaced by
     \a text, for example:
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 0
     This clears any existing selection, selects the word at the cursor
     (i.e. from position() forward), and replaces the selection with
     the phrase "Hello World".
@@ -2089,7 +2092,7 @@ void QTextCursor::insertImage(const QTextImageFormat &format)
     Convenience method for inserting the image with the given \a name at the
     current position().
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 1
 */
 void QTextCursor::insertImage(const QString &name)
 {
@@ -2211,7 +2214,7 @@ bool QTextCursor::operator>(const QTextCursor &rhs) const
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 2
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 2
 
     The call to undo() will cause both insertions to be undone,
     causing both "World" and "Hello" to be removed.
@@ -2237,7 +2240,7 @@ void QTextCursor::beginEditBlock()
 
     For example:
 
-    \snippet doc/src/snippets/code/src.gui.text.qtextcursor.cpp 3
+    \snippet doc/src/snippets/code/src_gui_text_qtextcursor.cpp 3
 
     The call to undo() will cause all three insertions to be undone.
 

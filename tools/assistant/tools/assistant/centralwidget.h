@@ -168,6 +168,7 @@ private:
     bool eventFilter(QObject *object, QEvent *e);
     void find(QString ttf, bool forward, bool backward);
     void initPrinter();
+    QString quoteTabTitle(const QString &title) const;
 
 private:
     int lastTabPage;

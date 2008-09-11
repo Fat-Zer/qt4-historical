@@ -177,7 +177,7 @@ QT_BEGIN_NAMESPACE
     QTransform transforms a point in the plane to another point using the
     following formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qtransform.cpp 0
 
     The point \e (x, y) is the original point, and \e (x', y') is the
     transformed point. \e (x', y') can be transformed back to \e (x,
@@ -1056,13 +1056,13 @@ static inline bool lineTo_clipped(QPainterPath &path, const QTransform &transfor
 
         hb.x += (ha.x - hb.x) * t;
         hb.y += (ha.y - hb.y) * t;
-        hb.w = Q_NEAR_CLIP;
+        hb.w = qreal(Q_NEAR_CLIP);
     } else if (ha.w < Q_NEAR_CLIP) {
         const qreal t = (Q_NEAR_CLIP - ha.w) / (hb.w - ha.w);
 
         ha.x += (hb.x - ha.x) * t;
         ha.y += (hb.y - ha.y) * t;
-        ha.w = Q_NEAR_CLIP;
+        ha.w = qreal(Q_NEAR_CLIP);
 
         const QPointF p = ha.toPoint();
         if (needsMoveTo) {
@@ -1203,7 +1203,7 @@ QPainterPath QTransform::map(const QPainterPath &path) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 1
+    \snippet doc/src/snippets/code/src_gui_painting_qtransform.cpp 1
 
     Polygons and rectangles behave slightly differently when
     transformed (due to integer rounding), so
@@ -1449,7 +1449,7 @@ QRect QTransform::mapRect(const QRect &rect) const
     The rectangle's coordinates are transformed using the following
     formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 2
+    \snippet doc/src/snippets/code/src_gui_painting_qtransform.cpp 2
 
     If rotation or shearing has been specified, this function returns
     the \e bounding rectangle. To retrieve the exact region the given
@@ -1526,7 +1526,7 @@ QRectF QTransform::mapRect(const QRectF &rect) const
 
     The coordinates are transformed using the following formulas:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qtransform.cpp 3
+    \snippet doc/src/snippets/code/src_gui_painting_qtransform.cpp 3
 
     The point (x, y) is the original point, and (x', y') is the
     transformed point.

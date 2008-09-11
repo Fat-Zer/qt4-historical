@@ -304,21 +304,14 @@ QPaintEngine* QRasterPixmapData::paintEngine() const
     return image.paintEngine();
 }
 
-extern int qt_defaultDpi();
 extern int qt_defaultDpiX();
 extern int qt_defaultDpiY();
 
 int QRasterPixmapData::metric(QPaintDevice::PaintDeviceMetric metric) const
 {
     // override the image dpi with the screen dpi when rendering to a pixmap
-    // ### Qt 4.4: remove #ifdef
-#ifdef Q_WS_QWS
     const int dpmX = qRound(qt_defaultDpiX() * 100 / qreal(2.54));
     const int dpmY = qRound(qt_defaultDpiY() * 100 / qreal(2.54));
-#else
-    const int dpmX = qRound(qt_defaultDpi() * 100 / qreal(2.54));
-    const int dpmY = dpmX;
-#endif
     switch (metric) {
     case QPaintDevice::PdmWidthMM:
         return qRound(image.width() * 1000 / dpmX);

@@ -50,7 +50,6 @@
 #include <stdlib.h>
 
 #include "apigenerator.h"
-#include "ccodeparser.h"
 #include "codemarker.h"
 #include "codeparser.h"
 #include "config.h"
@@ -92,22 +91,29 @@ static const struct {
 
 static bool slow = false;
 static QStringList defines;
-
 static QHash<QString, Tree *> trees;
 
-static Tree *treeForLanguage(const QString &lang)
+/*!
+  Find the Tree for language \a lang and return a pointer to it.
+  If there is no Tree for language \a lang in the Tree table, add
+  a new one. The Tree table is indexed by \a lang strings.
+ */
+static Tree* treeForLanguage(const QString &lang)
 {
-    Tree *tree = trees.value(lang);
-    if ( tree == 0 ) {
+    Tree* tree = trees.value(lang);
+    if (tree == 0) {
 	tree = new Tree;
-	trees.insert( lang, tree );
+	trees.insert(lang, tree);
     }
     return tree;
 }
 
+/*!
+  Print the help message to \c stdout.
+ */
 static void printHelp()
 {
-    Location::information( tr("Usage: qdoc [options] file1.qdocconf ...\n"
+    Location::information(tr("Usage: qdoc [options] file1.qdocconf ...\n"
 			      "Options:\n"
 			      "    -help     "
 			      "Display this information and exit\n"
@@ -116,55 +122,68 @@ static void printHelp()
 			      "    -D<name>  "
 			      "Define <name> as a macro while parsing sources\n"
 			      "    -slow     "
-			      "Turn on features that slow down qdoc") );
+			      "Turn on features that slow down qdoc"));
 }
 
+/*!
+  Prints the qdoc version number to stdout.
+ */
 static void printVersion()
 {
-    Location::information( tr("qdoc version 4.4.1") );
+    Location::information(tr("qdoc version 4.4.1"));
 }
 
+/*!
+  Processes the qdoc config file \a fileName. This is the
+  controller for all of qdoc.
+ */
 static void processQdocconfFile(const QString &fileName)
 {
     QList<QTranslator *> translators;
 
-    Config config( tr("qdoc") );
+    Config config(tr("qdoc"));
 
+    /*
+      Insert the default configuration variables into the
+      configuration variable string list map.
+     */
     int i = 0;
     while (defaults[i].key) {
-	config.setStringList(defaults[i].key, QStringList() << defaults[i].value);
+	config.setStringList(defaults[i].key,
+                             QStringList() << defaults[i].value);
 	++i;
     }
     config.setStringList(CONFIG_SLOW, QStringList(slow ? "true" : "false"));
 
-    Location::initialize( config );
-    config.load( fileName );
-    config.setStringList(CONFIG_DEFINES, defines + config.getStringList(CONFIG_DEFINES));
+    Location::initialize(config);
+    config.load(fileName);
+    config.setStringList(CONFIG_DEFINES,
+                         defines + config.getStringList(CONFIG_DEFINES));
 
     Location::terminate();
 
     QString prevCurrentDir = QDir::currentPath();
-    QString dir = QFileInfo( fileName ).path();
-    if ( !dir.isEmpty() )
-	QDir::setCurrent( dir );
+    QString dir = QFileInfo(fileName).path();
+    if (!dir.isEmpty())
+	QDir::setCurrent(dir);
 
-    Location::initialize( config );
-    Tokenizer::initialize( config );
-    Doc::initialize( config );
-    CppToQsConverter::initialize( config );
-    CodeMarker::initialize( config );
-    CodeParser::initialize( config );
-    Generator::initialize( config );
+    Location::initialize(config);
+    Tokenizer::initialize(config);
+    Doc::initialize(config);
+    CppToQsConverter::initialize(config);
+    CodeMarker::initialize(config);
+    CodeParser::initialize(config);
+    Generator::initialize(config);
 
-    QStringList fileNames = config.getStringList( CONFIG_TRANSLATORS );
+    QStringList fileNames = config.getStringList(CONFIG_TRANSLATORS);
     QStringList::Iterator fn = fileNames.begin();
-    while ( fn != fileNames.end() ) {
-	QTranslator *translator = new QTranslator( 0 );
-	if ( !translator->load(*fn) )
-	    config.lastLocation().error( tr("Cannot load translator '%1'")
-					 .arg(*fn) );
-	QCoreApplication::instance()->installTranslator( translator );
-	translators.append( translator );
+    while (fn != fileNames.end()) {
+	QTranslator *translator = new QTranslator(0);
+	if (!translator->load(*fn))
+	    config.lastLocation().error(tr("Cannot load translator '%1'")
+					 .arg(*fn));
+	QCoreApplication::instance()->installTranslator(translator);
+	translators.append(translator);
 	++fn;
     }
 
@@ -175,8 +194,8 @@ static void processQdocconfFile(const QString &fileName)
 
     Tree *tree = new Tree;
     tree->setVersion(config.getString(CONFIG_VERSION));
-    CodeParser *codeParser = CodeParser::parserForLanguage( lang );
-    if ( codeParser == 0 )
+    CodeParser *codeParser = CodeParser::parserForLanguage(lang);
+    if (codeParser == 0)
 	config.lastLocation().fatal(tr("Cannot parse programming language '%1'").arg(lang));
 
     QSet<QString> outputFormats = config.getStringSet(CONFIG_OUTPUTFORMATS);
@@ -184,8 +203,7 @@ static void processQdocconfFile(const QString &fileName)
 
     CodeMarker *marker = CodeMarker::markerForLanguage(lang);
     if (!marker && !outputFormats.isEmpty())
-	langLocation.fatal(tr("Cannot output documentation for programming language '%1'")
-			   .arg(lang));
+	langLocation.fatal(tr("Cannot output documentation for programming language '%1'").arg(lang));
 
     QStringList indexFiles = config.getStringList(CONFIG_INDEXES);
     tree->readIndexes(indexFiles);
@@ -200,31 +218,31 @@ static void processQdocconfFile(const QString &fileName)
                            codeParser->headerFileNameFilter(),
                            excludedDirs));
     QSet<QString>::ConstIterator h = headers.begin();
-    while ( h != headers.end() ) {
-	codeParser->parseHeaderFile( config.location(), *h, tree );
+    while (h != headers.end()) {
+	codeParser->parseHeaderFile(config.location(), *h, tree);
 	++h;
     }
-    codeParser->doneParsingHeaderFiles( tree );
+    codeParser->doneParsingHeaderFiles(tree);
 
     QSet<QString> sources = QSet<QString>::fromList(
         config.getAllFiles(CONFIG_SOURCES, CONFIG_SOURCEDIRS,
                            codeParser->sourceFileNameFilter(),
                            excludedDirs));
     QSet<QString>::ConstIterator s = sources.begin();
-    while ( s != sources.end() ) {
-	codeParser->parseSourceFile( config.location(), *s, tree );
+    while (s != sources.end()) {
+	codeParser->parseSourceFile(config.location(), *s, tree);
 	++s;
     }
-    codeParser->doneParsingSourceFiles( tree );
+    codeParser->doneParsingSourceFiles(tree);
     tree->resolveGroups();
     tree->resolveTargets();
 
     QSet<QString>::ConstIterator of = outputFormats.begin();
-    while ( of != outputFormats.end() ) {
-	Generator *generator = Generator::generatorForFormat( *of );
-	if ( generator == 0 )
+    while (of != outputFormats.end()) {
+	Generator *generator = Generator::generatorForFormat(*of);
+	if (generator == 0)
 	    outputFormatsLocation.fatal(tr("Unknown output format '%1'").arg(*of));
-	generator->generateTree( tree, marker );
+	generator->generateTree(tree, marker);
 	++of;
     }
 
@@ -241,7 +259,7 @@ static void processQdocconfFile(const QString &fileName)
     Doc::terminate();
     Tokenizer::terminate();
     Location::terminate();
-    QDir::setCurrent( prevCurrentDir );
+    QDir::setCurrent(prevCurrentDir);
 
     foreach (QTranslator *translator, translators)
 	delete translator;
@@ -251,39 +269,37 @@ static void processQdocconfFile(const QString &fileName)
 
 QT_END_NAMESPACE
 
-int main( int argc, char **argv )
+int main(int argc, char **argv)
 {
     QT_USE_NAMESPACE
 
     QCoreApplication app(argc, argv);
 
-    PolyArchiveExtractor qsaExtractor( QStringList() << "qsa",
-				       "qsauncompress \1 \2" );
-    PolyArchiveExtractor tarExtractor( QStringList() << "tar",
-				       "tar -C \2 -xf \1" );
-    PolyArchiveExtractor tazExtractor( QStringList() << "taz",
-				       "tar -C \2 -Zxf \1" );
-    PolyArchiveExtractor tbz2Extractor( QStringList() << "tbz" << "tbz2",
-					"tar -C \2 -jxf \1" );
-    PolyArchiveExtractor tgzExtractor( QStringList() << "tgz",
-				       "tar -C \2 -zxf \1" );
-    PolyArchiveExtractor zipExtractor( QStringList() << "zip",
-				       "unzip \1 -d \2" );
+    PolyArchiveExtractor qsaExtractor(QStringList() << "qsa",
+                                      "qsauncompress \1 \2");
+    PolyArchiveExtractor tarExtractor(QStringList() << "tar",
+                                      "tar -C \2 -xf \1");
+    PolyArchiveExtractor tazExtractor(QStringList() << "taz",
+                                      "tar -C \2 -Zxf \1");
+    PolyArchiveExtractor tbz2Extractor(QStringList() << "tbz" << "tbz2",
+                                       "tar -C \2 -jxf \1");
+    PolyArchiveExtractor tgzExtractor(QStringList() << "tgz",
+                                      "tar -C \2 -zxf \1");
+    PolyArchiveExtractor zipExtractor(QStringList() << "zip",
+                                      "unzip \1 -d \2");
 
-    PolyUncompressor bz2Uncompressor( QStringList() << "bz" << "bz2",
-				      "bunzip2 -c \1 > \2" );
-    PolyUncompressor gzAndZUncompressor( QStringList() << "gz" << "z" << "Z",
-					 "gunzip -c \1 > \2" );
-    PolyUncompressor zipUncompressor( QStringList() << "zip",
-				      "unzip -c \1 > \2" );
+    PolyUncompressor bz2Uncompressor(QStringList() << "bz" << "bz2",
+                                     "bunzip2 -c \1 > \2");
+    PolyUncompressor gzAndZUncompressor(QStringList() << "gz" << "z" << "Z",
+                                        "gunzip -c \1 > \2");
+    PolyUncompressor zipUncompressor(QStringList() << "zip",
+                                     "unzip -c \1 > \2");
 
-    CCodeParser cParser;
     CppCodeParser cppParser;
+    Tree *cppTree = treeForLanguage(cppParser.language());
 
-    Tree *cppTree = treeForLanguage( cppParser.language() );
-
-    QsCodeParser qsParser( cppTree );
-    QsaKernelParser qsaKernelParser( cppTree );
+    QsCodeParser qsParser(cppTree);
+    QsaKernelParser qsaKernelParser(cppTree);
     JambiApiParser jambiParser(cppTree);
 
     PlainCodeMarker plainMarker;
@@ -304,35 +320,43 @@ int main( int argc, char **argv )
     QString opt;
     int i = 1;
 
-    while ( i < argc ) {
+    while (i < argc) {
 	opt = argv[i++];
 
-	if ( opt == "-help" ) {
+	if (opt == "-help") {
 	    printHelp();
 	    return EXIT_SUCCESS;
-	} else if ( opt == "-version" ) {
+	}
+        else if (opt == "-version") {
 	    printVersion();
 	    return EXIT_SUCCESS;
-	} else if ( opt == "--" ) {
-	    while ( i < argc )
-		qdocFiles.append( argv[i++] );
-        } else if ( opt.startsWith("-D") ) {
+	}
+        else if (opt == "--") {
+	    while (i < argc)
+		qdocFiles.append(argv[i++]);
+        }
+        else if (opt.startsWith("-D")) {
             QString define = opt.mid(2);
             defines += define;
-        } else if (opt == "-slow") {
+        }
+        else if (opt == "-slow") {
             slow = true;
-	} else {
-	    qdocFiles.append( opt );
+	}
+        else {
+	    qdocFiles.append(opt);
 	}
     }
 
-    if ( qdocFiles.isEmpty() ) {
+    if (qdocFiles.isEmpty()) {
 	printHelp();
 	return EXIT_FAILURE;
     }
 
+    /*
+      Main loop.
+     */
     foreach (QString qf, qdocFiles)
-	processQdocconfFile( qf );
+	processQdocconfFile(qf);
 
     qDeleteAll(trees);
     return EXIT_SUCCESS;

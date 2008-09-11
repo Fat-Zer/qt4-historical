@@ -104,8 +104,8 @@ public:
     bool spansIntersectRow(int row) const;
     bool spansIntersectColumns(const QList<int> &columns) const;
     bool spansIntersectRows(const QList<int> &rows) const;
-    QBitArray drawAndClipSpans(const QRect &area, QPainter *painter,
-                               const QStyleOptionViewItemV4 &option);
+    void drawAndClipSpans(const QRect &area, QPainter *painter,
+                               const QStyleOptionViewItemV4 &option, QBitArray *drawn);
     void drawCell(QPainter *painter, const QStyleOptionViewItemV4 &option, const QModelIndex &index);
 
     bool showGrid;

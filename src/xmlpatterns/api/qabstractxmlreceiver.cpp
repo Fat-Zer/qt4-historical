@@ -64,7 +64,7 @@ QT_BEGIN_NAMESPACE
   transforming that sequence into a structure of your choosing,
   usually XML. Consider the example:
 
-  \snippet doc/src/snippets/code/src.xmlpatterns.api.qabstractxmlreceiver.cpp 0
+  \snippet doc/src/snippets/code/src_xmlpatterns_api_qabstractxmlreceiver.cpp 0
 
   First it constructs a \l {QXmlQuery} {query} that gets the
   first paragraph from document \c index.html. Then it constructs

@@ -152,7 +152,7 @@ QT_BEGIN_NAMESPACE
 
    Setting of the mask enums use essentially this:
 
-   \quotefile doc/src/snippets/code/src.xmlpatterns.api.qxmlname.cpp
+   \quotefile doc/src/snippets/code/src_xmlpatterns_api_qxmlname.cpp
 
    The masks, such as LocalNameMask, are positive. That is, for the
    area which the name resides, the bits are set.

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qpainter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qpainter.cpp -->
 <head>
   <title>Qt 4.4: QPainter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QPainter Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QPainter class performs low-level painting on widgets and other paint devices. <a href="#details">More...</a></p>
@@ -241,13 +241,13 @@
 <p>The QPainter class performs low-level painting on widgets and other paint devices.</p>
 <p>QPainter provides highly optimized functions to do most of the drawing GUI programs require. It can draw everything from simple lines to complex shapes like pies and chords. It can also draw aligned text and pixmaps. Normally, it draws in a &quot;natural&quot; coordinate system, but it can also do view and world transformation. QPainter can operate on any object that inherits the <a href="qpaintdevice.html">QPaintDevice</a> class.</p>
 <p>The common use of QPainter is inside a widget's paint event: Construct and customize (e.g&#x2e; set the pen or the brush) the painter. Then draw. Remember to destroy the QPainter object after drawing. For example:</p>
-<pre>     void SimpleExampleWidget::paintEvent(QPaintEvent *)
-     {
-         QPainter painter(this);
-         painter.setPen(Qt::blue);
-         painter.setFont(QFont(&quot;Arial&quot;, 30));
-         painter.drawText(rect(), Qt::AlignCenter, &quot;Qt&quot;);
-     }</pre>
+<pre> void SimpleExampleWidget::paintEvent(QPaintEvent *)
+ {
+     QPainter painter(this);
+     painter.setPen(Qt::blue);
+     painter.setFont(QFont(&quot;Arial&quot;, 30));
+     painter.drawText(rect(), Qt::AlignCenter, &quot;Qt&quot;);
+ }</pre>
 <p>The core functionality of QPainter is drawing, but the class also provide several functions that allows you to customize QPainter's settings and its rendering quality, and others that enable clipping. In addition you can control how different shapes are merged together by specifying the painter's composition mode.</p>
 <p>The <a href="qpainter.html#isActive">isActive</a>() function indicates whether the painter is active. A painter is activated by the <a href="qpainter.html#begin">begin</a>() function and the constructor that takes a <a href="qpaintdevice.html">QPaintDevice</a> argument. The <a href="qpainter.html#end">end</a>() function, and the destructor, deactivates it.</p>
 <p>Together with the <a href="qpaintdevice.html">QPaintDevice</a> and <a href="qpaintengine.html">QPaintEngine</a> classes, QPainter form the basis for Qt's paint system. QPainter is the class used to perform drawing operations. <a href="qpaintdevice.html">QPaintDevice</a> represents a device that can be painted on using a QPainter. <a href="qpaintengine.html">QPaintEngine</a> provides the interface that the painter uses to draw onto different types of devices. If the painter is active, <a href="qpainter.html#device">device</a>() returns the paint device on which the painter paints, and <a href="qpainter.html#paintEngine">paintEngine</a>() returns the paint engine that the painter is currently operating on. For more information, see <a href="paintsystem.html">The Paint System</a> documentation.</p>
@@ -437,19 +437,19 @@
 <p>Constructs a painter that begins painting the paint <i>device</i> immediately.</p>
 <p>This constructor is convenient for short-lived painters, e.g&#x2e; in a <a href="qwidget.html#paintEvent">QWidget::paintEvent</a>() and should be used only once. The constructor calls <a href="qpainter.html#begin">begin</a>() for you and the <a href="qpainter.html">QPainter</a> destructor automatically calls <a href="qpainter.html#end">end</a>().</p>
 <p>Here's an example using <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>():</p>
-<pre>         void MyWidget::paintEvent(QPaintEvent *)
-         {
-             QPainter p;
-             p.begin(this);
-             p.drawLine(...);        <span class="comment">// drawing code</span>
-             p.end();
-         }</pre>
+<pre> void MyWidget::paintEvent(QPaintEvent *)
+ {
+     QPainter p;
+     p.begin(this);
+     p.drawLine(...);        <span class="comment">// drawing code</span>
+     p.end();
+ }</pre>
 <p>The same example using this constructor:</p>
-<pre>         void MyWidget::paintEvent(QPaintEvent *)
-         {
-             QPainter p(this);
-             p.drawLine(...);        <span class="comment">// drawing code</span>
-         }</pre>
+<pre> void MyWidget::paintEvent(QPaintEvent *)
+ {
+     QPainter p(this);
+     p.drawLine(...);        <span class="comment">// drawing code</span>
+ }</pre>
 <p>Since the constructor cannot provide feedback when the initialization of the painter failed you should rather use <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>() to paint on external devices, e.g&#x2e; printers.</p>
 <p>See also <a href="qpainter.html#begin">begin</a>() and <a href="qpainter.html#end">end</a>().</p>
 <a name="//apple_ref/cpp/instm/QPainter/~QPainter" />
@@ -468,13 +468,13 @@
 <p>Begins painting the paint <i>device</i> and returns true if successful; otherwise returns false.</p>
 <p>Notice that all painter settings (<a href="qpainter.html#setPen">setPen</a>(), <a href="qpainter.html#setBrush">setBrush</a>() etc.) are reset to default values when begin() is called.</p>
 <p>The errors that can occur are serious problems, such as these:</p>
-<pre>         painter-&gt;begin(0); <span class="comment">// impossible - paint device cannot be 0</span>
+<pre> painter-&gt;begin(0); <span class="comment">// impossible - paint device cannot be 0</span>
 
-         QPixmap image(0, 0);
-         painter-&gt;begin(&amp;image); <span class="comment">// impossible - image.isNull() == true;</span>
+ QPixmap image(0, 0);
+ painter-&gt;begin(&amp;image); <span class="comment">// impossible - image.isNull() == true;</span>
 
-         painter-&gt;begin(myWidget);
-         painter2-&gt;begin(myWidget); <span class="comment">// impossible - only one painter at a time</span></pre>
+ painter-&gt;begin(myWidget);
+ painter2-&gt;begin(myWidget); <span class="comment">// impossible - only one painter at a time</span></pre>
 <p>Note that most of the time, you can use one of the constructors instead of begin(), and that <a href="qpainter.html#end">end</a>() is automatically done at destruction.</p>
 <p><b>Warning:</b> A paint device can only be painted by one painter at a time.</p>
 <p>See also <a href="qpainter.html#end">end</a>() and <a href="qpainter.html#QPainter">QPainter</a>().</p>
@@ -560,12 +560,12 @@
 <p>Draws the arc defined by the given <i>rectangle</i>, <i>startAngle</i> and <i>spanAngle</i>.</p>
 <p>The <i>startAngle</i> and <i>spanAngle</i> must be specified in 1/16th of a degree, i.e&#x2e; a full circle equals 5760 (16 * 360). Positive values for the angles mean counter-clockwise while negative values mean the clockwise direction. Zero degrees is at the 3 o'clock position.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-arc.png" /></td><td><pre>     QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-     int startAngle = 30 * 16;
-     int spanAngle = 120 * 16;
+<tr valign="top" class="odd"><td><img src="images/qpainter-arc.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+ int startAngle = 30 * 16;
+ int spanAngle = 120 * 16;
 
-     QPainter painter(this);
-     painter.drawArc(rectangle, startAngle, spanAngle);</pre>
+ QPainter painter(this);
+ painter.drawArc(rectangle, startAngle, spanAngle);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawPie">drawPie</a>(), <a href="qpainter.html#drawChord">drawChord</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -580,12 +580,12 @@
 <p>Draws the chord defined by the given <i>rectangle</i>, <i>startAngle</i> and <i>spanAngle</i>. The chord is filled with the current <a href="qpainter.html#brush">brush</a>().</p>
 <p>The startAngle and spanAngle must be specified in 1/16th of a degree, i.e&#x2e; a full circle equals 5760 (16 * 360). Positive values for the angles mean counter-clockwise while negative values mean the clockwise direction. Zero degrees is at the 3 o'clock position.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-chord.png" /></td><td><pre>         QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-         int startAngle = 30 * 16;
-         int spanAngle = 120 * 16;
+<tr valign="top" class="odd"><td><img src="images/qpainter-chord.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+ int startAngle = 30 * 16;
+ int spanAngle = 120 * 16;
 
-         QPainter painter(this);
-         painter.drawChord(rect, startAngle, spanAngle);</pre>
+ QPainter painter(this);
+ painter.drawChord(rect, startAngle, spanAngle);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawArc">drawArc</a>(), <a href="qpainter.html#drawPie">drawPie</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -599,15 +599,15 @@
 <h3 class="fn"><a name="drawConvexPolygon"></a>void QPainter::drawConvexPolygon ( const <a href="qpointf.html">QPointF</a> * <i>points</i>, int <i>pointCount</i> )</h3>
 <p>Draws the convex polygon defined by the first <i>pointCount</i> points in the array <i>points</i> using the current pen.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-polygon.png" /></td><td><pre>     static const QPointF points[4] = {
-         QPointF(10.0, 80.0),
-         QPointF(20.0, 10.0),
-         QPointF(80.0, 30.0),
-         QPointF(90.0, 70.0)
-     };
+<tr valign="top" class="odd"><td><img src="images/qpainter-polygon.png" /></td><td><pre> static const QPointF points[4] = {
+     QPointF(10.0, 80.0),
+     QPointF(20.0, 10.0),
+     QPointF(80.0, 30.0),
+     QPointF(90.0, 70.0)
+ };
 
-     QPainter painter(this);
-     painter.drawConvexPolygon(points, 4);</pre>
+ QPainter painter(this);
+ painter.drawConvexPolygon(points, 4);</pre>
 </td></tr>
 </table></p>
 <p>The first point is implicitly connected to the last point, and the polygon is filled with the current <a href="qpainter.html#brush">brush</a>(). If the supplied polygon is not convex, i.e&#x2e; it contains at least one angle larger than 180 degrees, the results are undefined.</p>
@@ -627,10 +627,10 @@
 <p>Draws the ellipse defined by the given <i>rectangle</i>.</p>
 <p>A filled ellipse has a size of <i>rectangle</i>.<a href="qrect.html#size">size()</a>. A stroked ellipse has a size of <i>rectangle</i>.<a href="qrect.html#size">size()</a> plus the pen width.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-ellipse.png" /></td><td><pre>         QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+<tr valign="top" class="odd"><td><img src="images/qpainter-ellipse.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
 
-         QPainter painter(this);
-         painter.drawEllipse(rectangle);</pre>
+ QPainter painter(this);
+ painter.drawEllipse(rectangle);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawPie">drawPie</a>() and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -654,12 +654,12 @@
 <p><b>Note:</b> The image is scaled to fit the rectangle, if both the image and rectangle size disagree.</p>
 <p>If the image needs to be modified to fit in a lower-resolution result (e.g&#x2e; converting from 32-bit to 8-bit), use the <i>flags</i> to specify how you would prefer this to happen.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><pre>     QRectF target(10.0, 20.0, 80.0, 60.0);
-     QRectF source(0.0, 0.0, 70.0, 40.0);
-     QImage image(&quot;:/images/myImage.png&quot;);
+<tr valign="top" class="odd"><td><pre> QRectF target(10.0, 20.0, 80.0, 60.0);
+ QRectF source(0.0, 0.0, 70.0, 40.0);
+ QImage image(&quot;:/images/myImage.png&quot;);
 
-     QPainter painter(this);
-     painter.drawImage(target, image, source);</pre>
+ QPainter painter(this);
+ painter.drawImage(target, image, source);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawPixmap">drawPixmap</a>().</p>
@@ -696,10 +696,10 @@
 <h3 class="fn"><a name="drawLine"></a>void QPainter::drawLine ( const <a href="qlinef.html">QLineF</a> &amp; <i>line</i> )</h3>
 <p>Draws a line defined by <i>line</i>.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-line.png" /></td><td><pre>     QLineF line(10.0, 80.0, 90.0, 20.0);
+<tr valign="top" class="odd"><td><img src="images/qpainter-line.png" /></td><td><pre> QLineF line(10.0, 80.0, 90.0, 20.0);
 
-     QPainter(this);
-     painter.drawLine(line);</pre>
+ QPainter(this);
+ painter.drawLine(line);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawLines">drawLines</a>(), <a href="qpainter.html#drawPolyline">drawPolyline</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -744,13 +744,13 @@
 <h3 class="fn"><a name="drawPath"></a>void QPainter::drawPath ( const <a href="qpainterpath.html">QPainterPath</a> &amp; <i>path</i> )</h3>
 <p>Draws the given painter <i>path</i> using the current pen for outline and the current brush for filling.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-path.png" /></td><td><pre>     QPainterPath path;
-     path.moveTo(20, 80);
-     path.lineTo(20, 30);
-     path.cubicTo(80, 0, 50, 50, 80, 80);
+<tr valign="top" class="odd"><td><img src="images/qpainter-path.png" /></td><td><pre> QPainterPath path;
+ path.moveTo(20, 80);
+ path.lineTo(20, 30);
+ path.cubicTo(80, 0, 50, 50, 80, 80);
 
-     QPainter painter(this);
-     painter.drawPath(path);</pre>
+ QPainter painter(this);
+ painter.drawPath(path);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="painting-painterpaths.html">the Painter Paths example</a> and <a href="demos-deform.html">the Vector Deformation demo</a>.</p>
@@ -760,12 +760,12 @@
 <p>The <a href="qpicture.html">QPicture</a> class is a paint device that records and replays <a href="qpainter.html">QPainter</a> commands. A picture serializes the painter commands to an IO device in a platform-independent format. Everything that can be painted on a widget or pixmap can also be stored in a picture.</p>
 <p>This function does exactly the same as <a href="qpicture.html#play">QPicture::play</a>() when called with <i>point</i> = <a href="qpoint.html">QPoint</a>(0, 0).</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><pre>         QPicture picture;
-         QPointF point(10.0, 20.0)
-         picture.load(&quot;drawing.pic&quot;);
+<tr valign="top" class="odd"><td><pre> QPicture picture;
+ QPointF point(10.0, 20.0)
+ picture.load(&quot;drawing.pic&quot;);
 
-         QPainter painter(this);
-         painter.drawPicture(0, 0, picture);</pre>
+ QPainter painter(this);
+ painter.drawPicture(0, 0, picture);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpicture.html#play">QPicture::play</a>().</p>
@@ -781,12 +781,12 @@
 <p>The pie is filled with the current <a href="qpainter.html#brush">brush</a>().</p>
 <p>The startAngle and spanAngle must be specified in 1/16th of a degree, i.e&#x2e; a full circle equals 5760 (16 * 360). Positive values for the angles mean counter-clockwise while negative values mean the clockwise direction. Zero degrees is at the 3 o'clock position.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-pie.png" /></td><td><pre>         QRectF rectangle(10.0, 20.0, 80.0, 60.0);
-         int startAngle = 30 * 16;
-         int spanAngle = 120 * 16;
+<tr valign="top" class="odd"><td><img src="images/qpainter-pie.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+ int startAngle = 30 * 16;
+ int spanAngle = 120 * 16;
 
-         QPainter painter(this);
-         painter.drawPie(rectangle, startAngle, spanAngle);</pre>
+ QPainter painter(this);
+ painter.drawPie(rectangle, startAngle, spanAngle);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawEllipse">drawEllipse</a>(), <a href="qpainter.html#drawChord">drawChord</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -801,12 +801,12 @@
 <p>Draws the rectangular portion <i>source</i> of the given <i>pixmap</i> into the given <i>target</i> in the paint device.</p>
 <p><b>Note:</b> The pixmap is scaled to fit the rectangle, if both the pixmap and rectangle size disagree.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><pre>     QRectF target(10.0, 20.0, 80.0, 60.0);
-     QRectF source(0.0, 0.0, 70.0, 40.0);
-     QPixmap pixmap(&quot;:myPixmap.png&quot;);
+<tr valign="top" class="odd"><td><pre> QRectF target(10.0, 20.0, 80.0, 60.0);
+ QRectF source(0.0, 0.0, 70.0, 40.0);
+ QPixmap pixmap(&quot;:myPixmap.png&quot;);
 
-     QPainter(this);
-     painter.drawPixmap(target, image, source);</pre>
+ QPainter(this);
+ painter.drawPixmap(target, image, source);</pre>
 </td></tr>
 </table></p>
 <p>If <i>pixmap</i> is a <a href="qbitmap.html">QBitmap</a> it is drawn with the bits that are &quot;set&quot; using the pens color. If backgroundMode is <a href="qt.html#BGMode-enum">Qt::OpaqueMode</a>, the &quot;unset&quot; bits are drawn using the color of the background brush; if backgroundMode is <a href="qt.html#BGMode-enum">Qt::TransparentMode</a>, the &quot;unset&quot; bits are transparent. Drawing bitmaps with gradient or texture colors is not supported.</p>
@@ -872,15 +872,15 @@
 <h3 class="fn"><a name="drawPolygon"></a>void QPainter::drawPolygon ( const <a href="qpointf.html">QPointF</a> * <i>points</i>, int <i>pointCount</i>, <a href="qt.html#FillRule-enum">Qt::FillRule</a> <i>fillRule</i> = Qt::OddEvenFill )</h3>
 <p>Draws the polygon defined by the first <i>pointCount</i> points in the array <i>points</i> using the current pen and brush.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-polygon.png" /></td><td><pre>     static const QPointF points[4] = {
-         QPointF(10.0, 80.0),
-         QPointF(20.0, 10.0),
-         QPointF(80.0, 30.0),
-         QPointF(90.0, 70.0)
-     };
+<tr valign="top" class="odd"><td><img src="images/qpainter-polygon.png" /></td><td><pre> static const QPointF points[4] = {
+     QPointF(10.0, 80.0),
+     QPointF(20.0, 10.0),
+     QPointF(80.0, 30.0),
+     QPointF(90.0, 70.0)
+ };
 
-     QPainter painter(this);
-     painter.drawPolygon(points, 4);</pre>
+ QPainter painter(this);
+ painter.drawPolygon(points, 4);</pre>
 </td></tr>
 </table></p>
 <p>The first point is implicitly connected to the last point, and the polygon is filled with the current <a href="qpainter.html#brush">brush</a>().</p>
@@ -900,14 +900,14 @@
 <p>Draws the polyline defined by the first <i>pointCount</i> points in <i>points</i> using the current pen.</p>
 <p>Note that unlike the <a href="qpainter.html#drawPolygon">drawPolygon</a>() function the last point is <i>not</i> connected to the first, neither is the polyline filled.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><pre>         static const QPointF points[3] = {
-             QPointF(10.0, 80.0),
-             QPointF(20.0, 10.0),
-             QPointF(80.0, 30.0),
-         };
+<tr valign="top" class="odd"><td><pre> static const QPointF points[3] = {
+     QPointF(10.0, 80.0),
+     QPointF(20.0, 10.0),
+     QPointF(80.0, 30.0),
+ };
 
-         QPainter painter(this);
-         painter.drawPolyline(points, 3);</pre>
+ QPainter painter(this);
+ painter.drawPolyline(points, 3);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawLines">drawLines</a>(), <a href="qpainter.html#drawPolygon">drawPolygon</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -925,10 +925,10 @@
 <p>Draws the current <i>rectangle</i> with the current pen and brush.</p>
 <p>A filled rectangle has a size of <i>rectangle</i>.size(). A stroked rectangle has a size of <i>rectangle</i>.size() plus the pen width.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-rectangle.png" /></td><td><pre>         QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+<tr valign="top" class="odd"><td><img src="images/qpainter-rectangle.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
 
-         QPainter painter(this);
-         painter.drawRect(rectangle);</pre>
+ QPainter painter(this);
+ painter.drawRect(rectangle);</pre>
 </td></tr>
 </table></p>
 <p>See also <a href="qpainter.html#drawRects">drawRects</a>(), <a href="qpainter.html#drawPolygon">drawPolygon</a>(), and <a href="coordsys.html">The Coordinate System</a>.</p>
@@ -957,10 +957,10 @@
 <p>The <i>xRadius</i> and <i>yRadius</i> arguments specify the radii of the ellipses defining the corners of the rounded rectangle. When <i>mode</i> is <a href="qt.html#SizeMode-enum">Qt::RelativeSize</a>, <i>xRadius</i> and <i>yRadius</i> are specified in percentage of half the rectangle's width and height respectively, and should be in the range 0.0 to 100.0&#x2e;</p>
 <p>A filled rectangle has a size of rect.size(). A stroked rectangle has a size of rect.size() plus the pen width.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-roundrect.png" /></td><td><pre>         QRectF rectangle(10.0, 20.0, 80.0, 60.0);
+<tr valign="top" class="odd"><td><img src="images/qpainter-roundrect.png" /></td><td><pre> QRectF rectangle(10.0, 20.0, 80.0, 60.0);
 
-         QPainter painter(this);
-         painter.drawRoundedRect(rectangle, 20.0, 15.0);</pre>
+ QPainter painter(this);
+ painter.drawRoundedRect(rectangle, 20.0, 15.0);</pre>
 </td></tr>
 </table></p>
 <p>This function was introduced in Qt 4.4.</p>
@@ -988,8 +988,8 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the given <i>text</i> within the provided <i>rectangle</i>.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
-<tr valign="top" class="odd"><td><img src="images/qpainter-text.png" /></td><td><pre>         QPainter painter(this);
-         painter.drawText(rect, Qt::AlignCenter, tr(&quot;Qt by\nTrolltech&quot;));</pre>
+<tr valign="top" class="odd"><td><img src="images/qpainter-text.png" /></td><td><pre> QPainter painter(this);
+ painter.drawText(rect, Qt::AlignCenter, tr(&quot;Qt by\nTrolltech&quot;));</pre>
 </td></tr>
 </table></p>
 <p>The <i>boundingRect</i> (if not null) is set to the what the bounding rectangle should be in order to enclose the whole text. The <i>flags</i> argument is a bitwise OR of the following flags:</p>
@@ -1067,7 +1067,7 @@
 <a name="//apple_ref/cpp/instm/QPainter/eraseRect" />
 <h3 class="fn"><a name="eraseRect"></a>void QPainter::eraseRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i> )</h3>
 <p>Erases the area inside the given <i>rectangle</i>. Equivalent to calling</p>
-<pre>         fillRect(rectangle, background()).</pre>
+<pre> fillRect(rectangle, background()).</pre>
 <p>See also <a href="qpainter.html#fillRect">fillRect</a>().</p>
 <h3 class="fn"><a name="eraseRect-2"></a>void QPainter::eraseRect ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -1317,12 +1317,12 @@
 <li><a href="qpainter.html#rotate">rotate</a>()</li>
 </ul>
 <p>They operate on the painter's <a href="qpainter.html#worldMatrix">worldMatrix</a>() and are implemented like this:</p>
-<pre>         void QPainter::rotate(qreal angle)
-         {
-             QMatrix matrix;
-             matrix.rotate(angle);
-             setWorldMatrix(matrix, true);
-         }</pre>
+<pre> void QPainter::rotate(qreal angle)
+ {
+     QMatrix matrix;
+     matrix.rotate(angle);
+     setWorldMatrix(matrix, true);
+ }</pre>
 <p>Note that when using setWorldMatrix() function you should always have <i>combine</i> be true when you are drawing into a <a href="qpicture.html">QPicture</a>. Otherwise it may not be possible to replay the picture with additional transformations; using the <a href="qpainter.html#translate">translate</a>(), <a href="qpainter.html#scale">scale</a>(), etc. convenience functions is safe.</p>
 <p>For more information about the coordinate system, transformations and window-viewport conversion, see <a href="coordsys.html">The Coordinate System</a> documentation.</p>
 <p>This function was introduced in Qt 4.2.</p>
@@ -1397,16 +1397,16 @@
 <p>Draws the plain rectangle beginning at (<i>x</i>, <i>y</i>) with the given <i>width</i> and <i>height</i>, using the specified <i>painter</i>, <i>lineColor</i> and <i>lineWidth</i>. The rectangle's interior is filled with the <i>fill</i> brush unless <i>fill</i> is 0.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a plain rectangle:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::Box | QFrame::Plain);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::Box | QFrame::Plain);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>() and <a href="qstyle.html">QStyle</a>.</p>
 <h3 class="fn"><a name="qDrawPlainRect-2"></a>void qDrawPlainRect ( QPainter * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qcolor.html">QColor</a> &amp; <i>lineColor</i>, int <i>lineWidth</i> = 1, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Draws the plain rectangle specified by <i>rect</i> using the given <i>painter</i>, <i>lineColor</i> and <i>lineWidth</i>. The rectangle's interior is filled with the <i>fill</i> brush unless <i>fill</i> is 0.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a plain rectangle:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::Box | QFrame::Plain);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::Box | QFrame::Plain);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>() and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/func//qDrawShadeLine" />
 <h3 class="fn"><a name="qDrawShadeLine"></a>void qDrawShadeLine ( QPainter * <i>painter</i>, int <i>x1</i>, int <i>y1</i>, int <i>x2</i>, int <i>y2</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = true, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0 )</h3>
@@ -1415,8 +1415,8 @@
 <p>The line appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded line:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <h3 class="fn"><a name="qDrawShadeLine-2"></a>void qDrawShadeLine ( QPainter * <i>painter</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p1</i>, const <a href="qpoint.html">QPoint</a> &amp; <i>p2</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = true, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -1425,8 +1425,8 @@
 <p>The line appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded line:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::HLine | QFrame::Sunken);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/func//qDrawShadePanel" />
 <h3 class="fn"><a name="qDrawShadePanel"></a>void qDrawShadePanel ( QPainter * <i>painter</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
@@ -1435,8 +1435,8 @@
 <p>The panel appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded panel:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);</pre>
 <p>See also <a href="qpainter.html#qDrawWinPanel">qDrawWinPanel</a>(), <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <h3 class="fn"><a name="qDrawShadePanel-2"></a>void qDrawShadePanel ( QPainter * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -1445,8 +1445,8 @@
 <p>The panel appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded panel:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle( QFrame::Panel | QFrame::Sunken);</pre>
 <p>See also <a href="qpainter.html#qDrawWinPanel">qDrawWinPanel</a>(), <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadeRect">qDrawShadeRect</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/func//qDrawShadeRect" />
 <h3 class="fn"><a name="qDrawShadeRect"></a>void qDrawShadeRect ( QPainter * <i>painter</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
@@ -1455,8 +1455,8 @@
 <p>The rectangle appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded rectangle:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::Box | QFrame::Raised);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::Box | QFrame::Raised);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), <a href="qpainter.html#qDrawPlainRect">qDrawPlainRect</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <h3 class="fn"><a name="qDrawShadeRect-2"></a>void qDrawShadeRect ( QPainter * <i>painter</i>, const <a href="qrect.html">QRect</a> &amp; <i>rect</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = false, int <i>lineWidth</i> = 1, int <i>midLineWidth</i> = 0, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -1465,8 +1465,8 @@
 <p>The rectangle appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded rectangle:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::Box | QFrame::Raised);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::Box | QFrame::Raised);</pre>
 <p>See also <a href="qpainter.html#qDrawShadeLine">qDrawShadeLine</a>(), <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), <a href="qpainter.html#qDrawPlainRect">qDrawPlainRect</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/func//qDrawWinButton" />
 <h3 class="fn"><a name="qDrawWinButton"></a>void qDrawWinButton ( QPainter * <i>painter</i>, int <i>x</i>, int <i>y</i>, int <i>width</i>, int <i>height</i>, const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, bool <i>sunken</i> = false, const <a href="qbrush.html">QBrush</a> * <i>fill</i> = 0 )</h3>
@@ -1488,13 +1488,13 @@
 <p>The given <i>palette</i> specifies the shading colors. The panel appears sunken if <i>sunken</i> is true, otherwise raised.</p>
 <p><b>Warning:</b> This function does not look at <a href="qwidget.html#style">QWidget::style</a>() or <a href="qapplication.html#style">QApplication::style</a>(). Use the drawing functions in <a href="qstyle.html">QStyle</a> to make widgets that follow the current GUI style.</p>
 <p>Alternatively you can use a <a href="qframe.html">QFrame</a> widget and apply the <a href="qframe.html#setFrameStyle">QFrame::setFrameStyle</a>() function to display a shaded panel:</p>
-<pre>         QFrame frame:
-         frame.setFrameStyle(QFrame::WinPanel | QFrame::Raised);</pre>
+<pre> QFrame frame:
+ frame.setFrameStyle(QFrame::WinPanel | QFrame::Raised);</pre>
 <p>See also <a href="qpainter.html#qDrawShadePanel">qDrawShadePanel</a>(), <a href="qpainter.html#qDrawWinButton">qDrawWinButton</a>(), and <a href="qstyle.html">QStyle</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

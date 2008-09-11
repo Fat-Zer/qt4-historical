@@ -128,20 +128,20 @@ static QImage richTextImageLoader(const QString &name, const QString &context)
     images that are stored in the program itself, not loaded from the
     hard disk. Your program may, for example, define some image data
     as:
-    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_other_q3mimefactory.cpp 0
 
     To be able to use this image within some rich text, for example
     inside a QLabel, you must create a QImage from the raw data and
     insert it into the factory with a unique name:
-    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_other_q3mimefactory.cpp 1
 
     Now you can create a rich text QLabel with
 
-    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_other_q3mimefactory.cpp 2
 
     When no longer needed, you can clear the data from the factory:
 
-    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_other_q3mimefactory.cpp 3
 */
 
 
@@ -182,9 +182,8 @@ QMimeSource* Q3MimeSourceFactory::dataInternal(const QString& abs_name, const QM
         QByteArray mimetype("application/octet-stream");
         if (extensions.contains(e))
             mimetype = extensions[e].latin1();
-        QByteArray imgfmt = QImageReader::imageFormat(abs_name);
-        if (!imgfmt.isEmpty())
-            mimetype = "image/" + imgfmt.toLower();
+        if (!QImageReader::imageFormat(abs_name).isEmpty())
+            mimetype = "application/x-qt-image";
 
         QFile f(abs_name);
         if (f.open(QIODevice::ReadOnly) && f.size()) {
@@ -225,7 +224,7 @@ QMimeSource* Q3MimeSourceFactory::dataInternal(const QString& abs_name, const QM
     The factory understands all the image formats supported by
     QImageReader. Any other mime types are determined by the file name
     extension. The default settings are
-    \snippet doc/src/snippets/code/src.qt3support.other.q3mimefactory.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_other_q3mimefactory.cpp 4
     The effect of these is that file names ending in "txt" will be
     treated as text encoded in the local encoding; those ending in
     "xml" will be treated as text encoded in Unicode UTF-8 encoding.

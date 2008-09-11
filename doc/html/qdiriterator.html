@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qdiriterator.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/io/qdiriterator.cpp -->
 <head>
   <title>Qt 4.4: QDirIterator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDirIterator Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QDirIterator class provides an iterator for directory entrylists. <a href="#details">More...</a></p>
@@ -47,16 +47,16 @@
 <p>The QDirIterator class provides an iterator for directory entrylists.</p>
 <p>You can use QDirIterator to navigate entries of a directory one at a time. It is similar to <a href="qdir.html#entryList">QDir::entryList</a>() and <a href="qdir.html#entryInfoList">QDir::entryInfoList</a>(), but because it lists entries one at a time instead of all at once, it scales better and is more suitable for large directories. It also supports listing directory contents recursively, and following symbolic links. Unlike <a href="qdir.html#entryList">QDir::entryList</a>(), QDirIterator does not support sorting.</p>
 <p>The QDirIterator constructor takes a <a href="qdir.html">QDir</a> or a directory as argument. After construction, the iterator is located before the first directory entry. Here's how to iterate over all the entries sequentially:</p>
-<pre>         QDirIterator it(&quot;/etc&quot;, QDirIterator::Subdirectories);
-         while (it.hasNext()) {
-             qDebug() &lt;&lt; it.next();
+<pre> QDirIterator it(&quot;/etc&quot;, QDirIterator::Subdirectories);
+ while (it.hasNext()) {
+     qDebug() &lt;&lt; it.next();
 
-             <span class="comment">// /etc/.</span>
-             <span class="comment">// /etc/..</span>
-             <span class="comment">// /etc/X11</span>
-             <span class="comment">// /etc/X11/fs</span>
-             <span class="comment">// ...</span>
-         }</pre>
+     <span class="comment">// /etc/.</span>
+     <span class="comment">// /etc/..</span>
+     <span class="comment">// /etc/X11</span>
+     <span class="comment">// /etc/X11/fs</span>
+     <span class="comment">// ...</span>
+ }</pre>
 <p>The <a href="qdiriterator.html#next">next</a>() function returns the path to the next directory entry and advances the iterator. You can also call <a href="qdiriterator.html#filePath">filePath</a>() to get the current file path without advancing the iterator. The <a href="qdiriterator.html#fileName">fileName</a>() function returns only the name of the file, similar to how <a href="qdir.html#entryList">QDir::entryList</a>() works. You can also call <a href="qdiriterator.html#fileInfo">fileInfo</a>() to get a <a href="qfileinfo.html">QFileInfo</a> for the current entry.</p>
 <p>Unlike Qt's container iterators, QDirIterator is uni-directional (i.e&#x2e;, you cannot iterate directories in reverse order) and does not allow random access.</p>
 <p>QDirIterator works with all supported file engines, and is implemented using <a href="qabstractfileengineiterator.html">QAbstractFileEngineIterator</a>.</p>
@@ -127,8 +127,8 @@
 <p>Returns the base directory of the iterator.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

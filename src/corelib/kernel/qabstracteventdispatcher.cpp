@@ -292,7 +292,7 @@ void QAbstractEventDispatcher::closingDown()
 
     Typedef for a function with the signature
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qabstracteventdispatcher.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_kernel_qabstracteventdispatcher.cpp 0
 
     \sa setEventFilter(), filterEvent()
 */

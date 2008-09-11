@@ -518,10 +518,10 @@ void Q3GArray::store(const char *d, uint len)
   allocating memory or copying data.
 
   Example of intended use:
-  \snippet doc/src/snippets/code/src.qt3support.tools.q3garray.cpp 0
+  \snippet doc/src/snippets/code/src_qt3support_tools_q3garray.cpp 0
 
   Example of misuse (do not do this):
-  \snippet doc/src/snippets/code/src.qt3support.tools.q3garray.cpp 1
+  \snippet doc/src/snippets/code/src_qt3support_tools_q3garray.cpp 1
 
   \warning If you do not call resetRawData(), Q3GArray will attempt to
   deallocate or reallocate the raw data, which might not be too good.

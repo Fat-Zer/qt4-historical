@@ -89,7 +89,8 @@ bool QHelpCollectionHandler::openCollectionFile()
     if (m_dbOpened)
         return m_dbOpened;
 
-    m_connectionName = uniquifyConnectionName(QLatin1String("QHelpCollectionHandler"), this);
+    m_connectionName = QHelpGlobal::uniquifyConnectionName(
+        QLatin1String("QHelpCollectionHandler"), this);
     bool openingOk = true;
     {
 	    QSqlDatabase db = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), m_connectionName);
@@ -135,7 +136,8 @@ bool QHelpCollectionHandler::copyCollectionFile(const QString &fileName)
     }
     
     QString colFile = fi.absoluteFilePath();
-    QString connectionName = uniquifyConnectionName(QLatin1String("QHelpCollectionHandlerCopy"), this);
+    QString connectionName = QHelpGlobal::uniquifyConnectionName(
+        QLatin1String("QHelpCollectionHandlerCopy"), this);
     QSqlQuery *copyQuery = 0;
     bool openingOk = true;
     {

@@ -121,7 +121,7 @@ void Q3SimpleRichTextData::adjustSize() {
     rich text rendering on a widget \e w, you would normally specify
     the widget's font, for example:
 
-    \snippet doc/src/snippets/code/src.qt3support.text.q3simplerichtext.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_text_q3simplerichtext.cpp 0
 
     \a context is the optional context of the rich text object. This
     becomes important if \a text contains relative references, for

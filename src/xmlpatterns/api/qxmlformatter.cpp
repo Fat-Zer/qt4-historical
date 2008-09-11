@@ -130,7 +130,7 @@ QXmlFormatterPrivate::QXmlFormatterPrivate(const QXmlQuery &query,
    Alternatively, you can subclass QXmlFormatter and reimplement
    the callbacks there.
 
-   \snippet doc/src/snippets/code/src.xmlpatterns.api.qxmlformatter.cpp 0
+   \snippet doc/src/snippets/code/src_xmlpatterns_api_qxmlformatter.cpp 0
 */
 
 /*!

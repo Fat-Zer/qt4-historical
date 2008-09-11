@@ -47,6 +47,8 @@
 #include <QtCore/QMap>
 #include <QtCore/QFileInfo>
 #include <QtCore/QCoreApplication>
+#include <QtCore/QDateTime>
+#include <QtCore/QBuffer>
 
 #include <private/qhelpgenerator_p.h>
 #include <private/qhelpprojectdata_p.h>
@@ -457,6 +459,8 @@ int main(int argc, char *argv[])
         config.enableAddressBar());
     helpEngine.setCustomValue(QLatin1String("HideAddressBar"),
         config.hideAddressBar());
+    helpEngine.setCustomValue(QLatin1String("CreationTime"),
+        QDateTime::currentDateTime().toTime_t());
 
     if (!config.applicationIcon().isEmpty()) {
         QFile icon(basePath + QDir::separator() + config.applicationIcon());
@@ -492,17 +496,56 @@ int main(int argc, char *argv[])
         QByteArray ba;
         QDataStream s(&ba, QIODevice::WriteOnly);
         QMap<QString, QString>::const_iterator it = config.aboutTextFiles().constBegin();
+        QMap<QString, QByteArray> imgData;
+
+        QRegExp srcRegExp("src=(\"(.+)\"|([^\"\\s]+)).*>");
+        srcRegExp.setMinimal(true);
+        QRegExp imgRegExp("(<img[^>]+>)");
+        imgRegExp.setMinimal(true);
+
         while (it != config.aboutTextFiles().constEnd()) {
             s << it.key();
-            QFile f(basePath + QDir::separator() + it.value());
+            QFileInfo fi(basePath + QDir::separator() + it.value());
+            QFile f(fi.absoluteFilePath());
             if (!f.open(QIODevice::ReadOnly)) {
                 fprintf(stderr, "Cannot open %s!\n", qPrintable(f.fileName()));
                 return -1;
             }
-            s << f.readAll();
+            QByteArray data = f.readAll();
+            s << data;
+
+            QString contents = QString::fromUtf8(data);
+            int pos = 0;
+            while ((pos = imgRegExp.indexIn(contents, pos)) != -1) {
+                QString imgTag = imgRegExp.cap(1);
+                pos += imgRegExp.matchedLength();
+
+                if (srcRegExp.indexIn(imgTag, 0) != -1) {
+                    QString src = srcRegExp.cap(2);
+                    if (src.isEmpty())
+                        src = srcRegExp.cap(3);
+
+                    QFile img(fi.absolutePath() + QDir::separator() + src);
+                    if (img.open(QIODevice::ReadOnly)) {
+                        if (!imgData.contains(src))
+                            imgData.insert(src, img.readAll());
+                    } else {
+                        fprintf(stderr, "Cannot open referenced image file %s!\n",
+                            qPrintable(img.fileName()));
+                    }
+                }
+            }
             ++it;
         }
         helpEngine.setCustomValue(QLatin1String("AboutTexts"), ba);
+        if (imgData.count()) {
+            QByteArray imageData;
+            QBuffer buffer(&imageData);
+            buffer.open(QIODevice::WriteOnly);
+            QDataStream out(&buffer);
+            out << imgData;
+            helpEngine.setCustomValue(QLatin1String("AboutImages"), imageData);
+        }
     }
   
     return 0;

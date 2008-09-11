@@ -117,12 +117,13 @@ public:
     uint skipRow: 1; // skip the next fetchNext()?
     uint utf8: 1;
     QSqlRecord rInf;
+    QSql::NumericalPrecisionPolicy precisionPolicy;
 };
 
 static const uint initial_cache_size = 128;
 
 QSQLiteResultPrivate::QSQLiteResultPrivate(QSQLiteResult* res) : q(res), access(0),
-    stmt(0), skippedStatus(false), skipRow(false), utf8(false)
+    stmt(0), skippedStatus(false), skipRow(false), utf8(false), precisionPolicy(QSql::HighPrecision)
 {
 }
 
@@ -213,7 +214,23 @@ bool QSQLiteResultPrivate::fetchNext(QSqlCachedResult::ValueCache &values, int i
                 values[i + idx] = sqlite3_column_int64(stmt, i);
                 break;
             case SQLITE_FLOAT:
-                values[i + idx] = sqlite3_column_double(stmt, i);
+                switch(precisionPolicy) {
+                    case QSql::LowPrecisionInt32:
+                        values[i + idx] = sqlite3_column_int(stmt, i);
+                        break;
+                    case QSql::LowPrecisionInt64:
+                        values[i + idx] = sqlite3_column_int64(stmt, i);
+                        break;
+                    case QSql::LowPrecisionDouble:
+                        values[i + idx] = sqlite3_column_double(stmt, i);
+                        break;
+                    case QSql::HighPrecision:
+                    default:
+                        values[i + idx] = QString::fromUtf16(static_cast<const ushort *>(
+                                            sqlite3_column_text16(stmt, i)),
+                                            sqlite3_column_bytes16(stmt, i) / sizeof(ushort));
+                        break;
+                };
                 break;
             case SQLITE_NULL:
                 values[i + idx] = QVariant(QVariant::String);
@@ -269,12 +286,18 @@ QSQLiteResult::~QSQLiteResult()
 
 void QSQLiteResult::virtual_hook(int id, void *data)
 {
-    if (id == DetachFromResultSet) {
+    switch (id) {
+    case QSqlResult::DetachFromResultSet:
         if (d->stmt)
             sqlite3_reset(d->stmt);
-        return;
+        break;
+    case QSqlResult::SetNumericalPrecision:
+        Q_ASSERT(data);
+        d->precisionPolicy = *reinterpret_cast<QSql::NumericalPrecisionPolicy *>(data);
+        break;
+    default:
+        QSqlResult::virtual_hook(id, data);
     }
-    QSqlResult::virtual_hook(id, data);
 }
 
 bool QSQLiteResult::reset(const QString &query)

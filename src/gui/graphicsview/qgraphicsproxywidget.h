@@ -86,7 +86,9 @@ protected:
     void showEvent(QShowEvent *event);
     void hideEvent(QHideEvent *event);
 
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QGraphicsSceneContextMenuEvent *event);
+#endif
 
     void hoverEnterEvent(QGraphicsSceneHoverEvent *event);
     void hoverLeaveEvent(QGraphicsSceneHoverEvent *event);

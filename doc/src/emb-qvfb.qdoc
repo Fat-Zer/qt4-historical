@@ -47,15 +47,19 @@
     \title The Virtual Framebuffer
     \ingroup qt-embedded
 
-    \l{Qt for Embedded Linux} applications write directly to the framebuffer,
-    eliminating the need for the X Window System and saving
-    memory. For development and debugging purposes, a virtual framebuffer
-    can be used, allowing \l{Qt for Embedded Linux} programs to be developed on a
-    desktop machine, without switching between consoles and X11.
+    \l{Qt for Embedded Linux} applications write directly to the
+    framebuffer, eliminating the need for the X Window System and
+    saving memory. For development and debugging purposes, a virtual
+    framebuffer can be used, allowing \l{Qt for Embedded Linux}
+    programs to be developed on a desktop machine, without switching
+    between consoles and X11.
 
-    QVFb is an X11 application supplied with Qt/X11 that provides a
-    virtual framebuffer for Qt for Embedded Linux to use. To use it, you need to
-    \l{Installing Qt/X11}{configure and install Qt/X11} according
+    QVFb is an X11 application supplied with Qt for X11 that provides
+    a virtual framebuffer for Qt for Embedded Linux to use. To use it,
+    you need to \l{Installing Qt on X11 Platforms}{configure and
+    install Qt on X11 platforms} appropriately. Further requirements
+    can be found in the \l{Qt for Embedded Linux Requirements}
+    document.
 
     \image qt-embedded-virtualframebuffer.png
 
@@ -70,7 +74,7 @@
     Please note that the virtual framebuffer is a development tool
     only. No security issues have been considered in the virtual
     framebuffer design. It should be avoided in a production
-    environment, i.e. do not configure production libraries with the
+    environment; i.e. do not configure production libraries with the
     \c -qvfb option.
 
     \tableofcontents
@@ -78,16 +82,18 @@
     \section1 Displaying the Virtual Framebuffer
 
     To run the \c qvfb tool displaying the virtual framebuffer, the
-    \l{Qt for Embedded Linux} library must be configured and compiled with the \c
-    -qvfb option:
+    \l{Qt for Embedded Linux} library must be configured and compiled
+    with the \c -qvfb option:
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 0
 
-    Then compile and run the \c qvfb tool as a normal Qt/X11
-    application (i.e. do \e not compile it as a \l{Qt for Embedded Linux}
-    application):
+    Ensure that you have all the
+    \l{Qt for Embedded Linux Requirements#Additional X11 Libraries for QVFb}
+    {necessary libraries} needed to build the tool, then compile and run the
+    \c qvfb tool as a normal Qt for X11 application (i.e., do \e not compile
+    it as a \l{Qt for Embedded Linux} application):
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 1
 
     The \c qvfb application supports the following command line
     options:
@@ -168,7 +174,7 @@
     /customskin.skin. See the ClamshellPhone skin for an example of the
     file structure:
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 2
 
     The \c /ClamshellPhone.skin directory contains the following files:
 
@@ -192,7 +198,7 @@
     \row
     \o {3,1}
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 3
 
     The \c ClamShellPhone.skin file quoted above, specifies three
     pixmaps: One for the normal skin (\c Up), one for the activated
@@ -275,7 +281,7 @@
     \l {Running Qt for Embedded Linux Applications}{running applications}
     documentation for details). For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 4
 
     Note that as long as the virtual framebuffer is running and the
     current \l{Qt for Embedded Linux} configuration supports \c qvfb,
@@ -283,7 +289,7 @@
     default. Alternatively, the \c -display option can be used to
     specify the virtual framebuffer driver. For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-qvfb.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_emb-qvfb.qdoc 5
 
     \warning If \c qvfb is not running (or the current
     \l{Qt for Embedded Linux} configuration doesn't support it) and the

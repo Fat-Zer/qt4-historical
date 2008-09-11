@@ -212,7 +212,7 @@ int LupdateApplication::start()
                 qWarning("The -extensions option should be followed by an extension list.");
                 return 1;
             }
-            extensions = arg;
+            extensions = argv.at(i);
             continue;
         }
 
@@ -238,7 +238,7 @@ int LupdateApplication::start()
         }
 
         codecForTr.clear();
-		codecForSource.clear();
+        codecForSource.clear();
 
         if (metTsFlag) {
             if ( arg.endsWith(QLatin1String(".ts"), Qt::CaseInsensitive)

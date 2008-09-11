@@ -517,7 +517,7 @@ void qt_mac_update_os_settings()
             QHash<QByteArray, QFont> *hash = qt_app_fonts_hash();
             if(!hash->isEmpty()) {
                 QHash<QByteArray, QFont>::const_iterator it
-                                        = hash->find(mac_widget_fonts[i].qt_class);
+                                        = hash->constFind(mac_widget_fonts[i].qt_class);
                 if (it != hash->constEnd())
                     set_font = (fnt != *it);
             }
@@ -630,7 +630,7 @@ void QApplicationPrivate::initializeWidgetPaletteHash()
             QHash<QByteArray, QPalette> *phash = qt_app_palettes_hash();
             if(!phash->isEmpty()) {
                 QHash<QByteArray, QPalette>::const_iterator it
-                                    = phash->find(mac_widget_colors[i].qt_class);
+                                    = phash->constFind(mac_widget_colors[i].qt_class);
                 if (it != phash->constEnd())
                     set_palette = (pal != *it);
             }
@@ -2623,8 +2623,8 @@ bool QApplicationPrivate::qt_mac_apply_settings()
                     .arg((QT_VERSION & 0xff00) >> 8);
     QStringList pathlist = settings.value(libpathkey).toString().split(QLatin1Char(':'));
     if(!pathlist.isEmpty()) {
-        QStringList::ConstIterator it = pathlist.begin();
-        while(it != pathlist.end())
+        QStringList::ConstIterator it = pathlist.constBegin();
+        while(it != pathlist.constEnd())
             QApplication::addLibraryPath(*it++);
     }
 

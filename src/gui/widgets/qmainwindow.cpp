@@ -169,7 +169,7 @@ void QMainWindowPrivate::init()
 
     \note Creating a main window without a central widget is not supported.
     You must have a central widget even if it is just a placeholder.
-    
+
     \section1 Creating Main Window Components
 
     A central widget will typically be a standard Qt widget such
@@ -435,7 +435,7 @@ void QMainWindow::setToolButtonStyle(Qt::ToolButtonStyle toolButtonStyle)
     can then share among all the Mac windows. Create a parent-less
     menu bar this way:
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qmenubar.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qmenubar.cpp 1
 
     \sa setMenuBar()
 */
@@ -1116,7 +1116,7 @@ void QMainWindowPrivate::adjustCursor(const QPoint &pos)
         if (!hoverSeparator.isEmpty())
             q->update(layout->layoutState.dockAreaLayout.separatorRect(hoverSeparator));
         hoverSeparator.clear();
-        
+
         if (cursorAdjusted) {
             cursorAdjusted = false;
             if (hasOldCursor)
@@ -1265,7 +1265,7 @@ bool QMainWindow::event(QEvent *event)
                d->hasOldCursor = testAttribute(Qt::WA_SetCursor);
            }
            break;
-#endif           
+#endif
 
         default:
             break;
@@ -1289,13 +1289,15 @@ bool QMainWindow::event(QEvent *event)
     means a couple of things.
 
     \list
-    \i QToolBars in this toolbar area are not movable and you cannot drag other toolbars to it
+    \i QToolBars in this toolbar area are not movable and you cannot drag other
+        toolbars to it
     \i Toolbar breaks are not respected or preserved
-    \i Any custom widgets in the toolbar will not be shown if the toolbar becomes too small
-      (only actions will be shown)
-    \i If you call showFullScreen() on the main window, the QToolbar will disappear since it is
-       considered to be part of the title bar. You can work around this by turning off the unified
-       toolbar before you call showFullScreen() and restore the value after you call showNormal().
+    \i Any custom widgets in the toolbar will not be shown if the toolbar
+        becomes too small (only actions will be shown)
+    \i If you call showFullScreen() on the main window, the QToolbar will
+        disappear since it is considered to be part of the title bar. You can
+        work around this by turning off the unified toolbar before you call
+        showFullScreen() and restoring it after you call showNormal().
     \endlist
 
     Setting this back to false will remove these restrictions.
@@ -1344,6 +1346,7 @@ bool QMainWindow::isSeparator(const QPoint &pos) const
 #endif
 }
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -1394,6 +1397,7 @@ void QMainWindow::contextMenuEvent(QContextMenuEvent *event)
     delete popup;
 #endif
 }
+#endif // QT_NO_CONTEXTMENU
 
 #ifndef QT_NO_MENU
 /*!

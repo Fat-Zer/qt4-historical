@@ -2962,13 +2962,13 @@ void blend_color_generic(int count, const QSpan *spans, void *userData)
     }
 }
 
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 static void blend_color_generic_callback(int count, const QSpan *spans, void *userData)
 {
     QSpanData *data = reinterpret_cast<QSpanData*>(userData);
     data->rasterEngine->drawColorSpans(spans, count, data->solid.color);
 }
-#endif
+#endif // QT_NO_RASTERCALLBACKS
 
 static void blend_color_argb(int count, const QSpan *spans, void *userData)
 {
@@ -4453,11 +4453,19 @@ void blendUntransformed_dest24(DST *dest, const SRC *src,
 template <class DST, class SRC>
 static void blendUntransformed(int count, const QSpan *spans, void *userData)
 {
-    QSpanData *data = reinterpret_cast<QSpanData *>(userData);
-    Operator op = getOperator(data, spans, count);
-    if (!op.func)
-        return;
+    QSpanData *data = reinterpret_cast<QSpanData*>(userData);
+    QPainter::CompositionMode mode = data->rasterBuffer->compositionMode;
 
+    if (mode != QPainter::CompositionMode_SourceOver &&
+        mode != QPainter::CompositionMode_Source)
+    {
+        blend_src_generic<RegularSpans>(count, spans, userData
+                                        Q_TEMPLATE_ENUM_CALL(SpanMethod, RegularSpans));
+        return;
+    }
+
+    const bool modeSource = !SRC::hasAlpha() ||
+                            mode == QPainter::CompositionMode_Source;
     const int image_width = data->texture.width;
     const int image_height = data->texture.height;
     int xoff = qRound(data->dx);
@@ -4485,7 +4493,7 @@ static void blendUntransformed(int count, const QSpan *spans, void *userData)
             if (length > 0) {
                 DST *dest = ((DST*)data->rasterBuffer->scanLine(spans->y)) + x;
                 const SRC *src = (SRC*)data->texture.scanLine(sy) + sx;
-                if (!SRC::hasAlpha() && coverage == 255) {
+                if (modeSource && coverage == 255) {
                     qt_memconvert<DST, SRC>(dest, src, length);
                 } else if (sizeof(DST) == 3 && sizeof(SRC) == 3 && length >= 3 &&
                            (quintptr(dest) & 3) == (quintptr(src) & 3))
@@ -4968,11 +4976,19 @@ static void blend_tiled_argb(int count, const QSpan *spans, void *userData
 template <class DST, class SRC>
 static void blendTiled(int count, const QSpan *spans, void *userData)
 {
-    QSpanData *data = reinterpret_cast<QSpanData *>(userData);
-    Operator op = getOperator(data, spans, count);
-    if (!op.func)
-        return;
+    QSpanData *data = reinterpret_cast<QSpanData*>(userData);
+    QPainter::CompositionMode mode = data->rasterBuffer->compositionMode;
 
+    if (mode != QPainter::CompositionMode_SourceOver &&
+        mode != QPainter::CompositionMode_Source)
+    {
+        blend_src_generic<RegularSpans>(count, spans, userData
+                                        Q_TEMPLATE_ENUM_CALL(SpanMethod, RegularSpans));
+        return;
+    }
+
+    const bool modeSource = !SRC::hasAlpha() ||
+                            mode == QPainter::CompositionMode_Source;
     const int image_width = data->texture.width;
     const int image_height = data->texture.height;
     int xoff = qRound(data->dx) % image_width;
@@ -5006,7 +5022,7 @@ static void blendTiled(int count, const QSpan *spans, void *userData)
 
             DST *dest = ((DST*)data->rasterBuffer->scanLine(spans->y)) + x;
             const SRC *src = (SRC*)data->texture.scanLine(sy) + sx;
-            if (!SRC::hasAlpha() && coverage == 255) {
+            if (modeSource && coverage == 255) {
                 qt_memconvert<DST, SRC>(dest, src, l);
             } else if (sizeof(DST) == 3 && sizeof(SRC) == 3 && length >= 4 &&
                        (quintptr(dest) & 3) == (quintptr(src) & 3))
@@ -6088,7 +6104,7 @@ static const ProcessSpans processTextureSpans[NBlendTypes][QImage::NImageFormats
     }
 };
 
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 static const ProcessSpans processTextureSpansCallback[NBlendTypes][QImage::NImageFormats] = {
     // Untransformed
     {
@@ -6205,7 +6221,7 @@ static const ProcessSpans processTextureSpansCallback[NBlendTypes][QImage::NImag
         blend_src_generic<CallbackSpans>    // ARGB4444_Premultiplied
     }
 };
-#endif // Q_WS_QWS
+#endif // QT_NO_RASTERCALLBACKS
 
 void qBlendTexture(int count, const QSpan *spans, void *userData)
 {
@@ -6214,14 +6230,14 @@ void qBlendTexture(int count, const QSpan *spans, void *userData)
     proc(count, spans, userData);
 }
 
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 void qBlendTextureCallback(int count, const QSpan *spans, void *userData)
 {
     QSpanData *data = reinterpret_cast<QSpanData *>(userData);
     ProcessSpans proc = processTextureSpansCallback[getBlendType(data)][data->rasterBuffer->format];
     proc(count, spans, userData);
 }
-#endif
+#endif // QT_NO_RASTERCALLBACKS
 
 template <class DST>
 inline void qt_bitmapblit_template(QRasterBuffer *rasterBuffer,
@@ -6510,7 +6526,7 @@ DrawHelper qDrawHelper[QImage::NImageFormats] =
     }
 };
 
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 DrawHelper qDrawHelperCallback[QImage::NImageFormats] =
 {
     // Format_Invalid,
@@ -6606,7 +6622,7 @@ DrawHelper qDrawHelperCallback[QImage::NImageFormats] =
         0, 0, 0
     }
 };
-#endif // Q_WS_QWS
+#endif // QT_NO_RASTERCALLBACKS
 
 #if defined(Q_CC_MSVC) && !defined(_MIPS_)
 template <class DST, class SRC>

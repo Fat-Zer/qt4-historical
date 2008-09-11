@@ -111,7 +111,6 @@ private Q_SLOTS:
     void indexDocumentation();
 
 private:
-    void setIndexFilesFolder(const QString &path);
     QHelpSearchEnginePrivate *d;
 };
 

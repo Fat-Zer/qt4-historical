@@ -236,7 +236,9 @@ protected:
     bool event(QEvent *event);
     bool viewportEvent(QEvent *event);
 
+#ifndef QT_NO_CONTEXTMENU
     void contextMenuEvent(QContextMenuEvent *event);
+#endif
     void dragEnterEvent(QDragEnterEvent *event);
     void dragLeaveEvent(QDragLeaveEvent *event);
     void dragMoveEvent(QDragMoveEvent *event);

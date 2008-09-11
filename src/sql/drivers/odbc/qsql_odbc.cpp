@@ -124,7 +124,7 @@ class QODBCPrivate
 {
 public:
     QODBCPrivate()
-    : hEnv(0), hDbc(0), hStmt(0), useSchema(false), hasSQLFetchScroll(true)
+    : hEnv(0), hDbc(0), hStmt(0), useSchema(false), hasSQLFetchScroll(true), precisionPolicy(QSql::HighPrecision)
     {
         sql_char_type = sql_varchar_type = sql_longvarchar_type = QVariant::ByteArray;
         unicode = false;
@@ -148,6 +148,7 @@ public:
     int fieldCacheIdx;
     int disconnectCount;
     bool hasSQLFetchScroll;
+    QSql::NumericalPrecisionPolicy precisionPolicy;
 
     bool isStmtHandleValid(const QSqlDriver *driver);
     void updateStmtHandleState(const QSqlDriver *driver);
@@ -428,11 +429,12 @@ static QVariant qGetIntData(SQLHANDLE hStmt, int column, bool isSigned = true)
                               column+1,
                               isSigned ? SQL_C_SLONG : SQL_C_ULONG,
                               (SQLPOINTER)&intbuf,
-                              0,
+                              sizeof(intbuf),
                               &lengthIndicator);
-    if ((r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) || lengthIndicator == SQL_NULL_DATA) {
+    if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO)
+        return QVariant(QVariant::Invalid);
+    if (lengthIndicator == SQL_NULL_DATA)
         return QVariant(QVariant::Int);
-    }
     if (isSigned)
         return int(intbuf);
     else
@@ -447,9 +449,11 @@ static QVariant qGetDoubleData(SQLHANDLE hStmt, int column)
                               column+1,
                               SQL_C_DOUBLE,
                               (SQLPOINTER)&dblbuf,
-                              0,
+                              sizeof(dblbuf),
                               &lengthIndicator);
-    if ((r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) || lengthIndicator == SQL_NULL_DATA)
+    if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO)
+        return QVariant(QVariant::Invalid);
+    if (lengthIndicator == SQL_NULL_DATA)
         return QVariant(QVariant::Double);
 
     return (double) dblbuf;
@@ -463,9 +467,11 @@ static QVariant qGetBigIntData(SQLHANDLE hStmt, int column, bool isSigned = true
                               column+1,
                               isSigned ? SQL_C_SBIGINT : SQL_C_UBIGINT,
                               (SQLPOINTER) &lngbuf,
-                              0,
+                              sizeof(lngbuf),
                               &lengthIndicator);
-    if ((r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO) || lengthIndicator == SQL_NULL_DATA)
+    if (r != SQL_SUCCESS && r != SQL_SUCCESS_WITH_INFO)
+        return QVariant(QVariant::Invalid);
+    if (lengthIndicator == SQL_NULL_DATA)
         return QVariant(QVariant::LongLong);
 
     if (isSigned)
@@ -1044,13 +1050,29 @@ QVariant QODBCResult::data(int field)
             d->fieldCache[i] = qGetStringData(d->hStmt, i, info.length(), true);
             break;
         case QVariant::Double:
-            if (info.typeID() == SQL_DECIMAL || info.typeID() == SQL_NUMERIC)
-                // bind Double values as string to prevent loss of precision
-                d->fieldCache[i] = qGetStringData(d->hStmt, i,
-                                       info.length() + 1, false); // length + 1 for the comma
-            else
-                d->fieldCache[i] = qGetDoubleData(d->hStmt, i);
-            break;
+            {
+                QString value=qGetStringData(d->hStmt, i, info.length() + 1, false);
+                bool ok=false;
+                switch(d->precisionPolicy) {
+                    case QSql::LowPrecisionInt32:
+                        d->fieldCache[i] = value.toInt(&ok);
+                        break;
+                    case QSql::LowPrecisionInt64:
+                        d->fieldCache[i] = value.toLongLong(&ok);
+                        break;
+                    case QSql::LowPrecisionDouble:
+                        d->fieldCache[i] = value.toDouble(&ok);
+                        break;
+                    case QSql::HighPrecision:
+                    default:
+                        d->fieldCache[i] = value;
+                        ok=true;
+                        break;
+                }
+                if(ok==false)
+                    d->fieldCache[i] = QVariant();
+                break;
+            }
         default:
             d->fieldCache[i] = QVariant(qGetStringData(d->hStmt, i,
                                                            info.length(), false));
@@ -1334,8 +1356,8 @@ bool QODBCResult::exec()
                                       0,
                                       *ind == SQL_NULL_DATA ? ind : NULL);
                 break;
-#ifndef Q_ODBC_VERSION_2
             case QVariant::String:
+#ifndef Q_ODBC_VERSION_2
                 if (d->unicode) {
                     QString str = val.toString();
                     str.utf16();
@@ -1371,7 +1393,26 @@ bool QODBCResult::exec()
                                           ind);
                     break;
                 }
+                else
 #endif
+                {
+                    QByteArray str = val.toString().toUtf8();
+                    if (*ind != SQL_NULL_DATA)
+                        *ind = str.length();
+                    int strSize = str.length();
+                    
+                    r = SQLBindParameter(d->hStmt,
+                                          i + 1,
+                                          qParamType[(QFlag)(bindValueType(i)) & QSql::InOut],
+                                          SQL_C_CHAR,
+                                          strSize > 254 ? SQL_LONGVARCHAR : SQL_VARCHAR,
+                                          strSize,
+                                          0,
+                                          (void *)str.constData(),
+                                          strSize,
+                                          ind);
+                    break;
+                }
             // fall through
             default: {
                 QByteArray ba = val.toByteArray();
@@ -1380,8 +1421,8 @@ bool QODBCResult::exec()
                 r = SQLBindParameter(d->hStmt,
                                       i + 1,
                                       qParamType[(QFlag)(bindValueType(i)) & QSql::InOut],
-                                      SQL_C_CHAR,
-                                      SQL_LONGVARCHAR,
+                                      SQL_C_BINARY,
+                                      SQL_VARBINARY,
                                       ba.length() + 1,
                                       0,
                                       (void *) ba.constData(),
@@ -1521,15 +1562,22 @@ bool QODBCResult::nextResult()
 
 void QODBCResult::virtual_hook(int id, void *data)
 {
-    if (id == DetachFromResultSet) {
+    switch (id) {
+    case QSqlResult::DetachFromResultSet:
         if (d->hStmt)
             SQLCloseCursor(d->hStmt);
-        return;
-    } else if (id == NextResult) {
+        break;
+    case QSqlResult::NextResult:
+        Q_ASSERT(data);
         *static_cast<bool*>(data) = nextResult();
-        return;
+        break;
+    case QSqlResult::SetNumericalPrecision:
+        Q_ASSERT(data);
+        d->precisionPolicy = *reinterpret_cast<QSql::NumericalPrecisionPolicy *>(data);
+        break;
+    default:
+        QSqlResult::virtual_hook(id, data);
     }
-    QSqlResult::virtual_hook(id, data);
 }
 
 ////////////////////////////////////////
@@ -1588,13 +1636,13 @@ bool QODBCDriver::hasFeature(DriverFeature f) const
     case BLOB:
     case PositionalPlaceholders:
     case FinishQuery:
+    case LowPrecisionNumbers:
         return true;
     case QuerySize:
     case NamedPlaceholders:
     case LastInsertId:
     case BatchOperations:
     case SimpleLocking:
-    case LowPrecisionNumbers:
     case EventNotifications:
         return false;
     case MultipleResultSets:

@@ -439,7 +439,8 @@ QByteArray getWinLocaleName(LCID id = LOCALE_USER_DEFAULT)
         }
     }
 
-    if (QSysInfo::WindowsVersion == QSysInfo::WV_95) {
+    if (QSysInfo::WindowsVersion == QSysInfo::WV_95
+        || (QSysInfo::WindowsVersion & QSysInfo::WV_CE_based)) {
         result = winLangCodeToIsoName(id != LOCALE_USER_DEFAULT ? id : GetThreadLocale());
     } else {
         if (id == LOCALE_USER_DEFAULT)
@@ -1487,7 +1488,7 @@ QDataStream &operator>>(QDataStream &ds, QLocale &l)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlocale.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qlocale.cpp 0
 
     QLocale supports the concept of a default locale, which is
     determined from the system's locale settings at application
@@ -1508,7 +1509,7 @@ QDataStream &operator>>(QDataStream &ds, QLocale &l)
 
     The following example illustrates how to use QLocale directly:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlocale.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qlocale.cpp 1
 
     When a language/country pair is specified in the constructor, one
     of three things can happen:
@@ -1530,7 +1531,7 @@ QDataStream &operator>>(QDataStream &ds, QLocale &l)
     An alternative method for constructing a QLocale object is by
     specifying the locale name.
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlocale.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qlocale.cpp 2
 
     This constructor converts the locale name to a language/country
     pair; it does not use the system locale database.
@@ -2513,7 +2514,7 @@ float QLocale::toFloat(const QString &s, bool *ok) const
     the "C" locale if the string cannot be interpreted in this
     locale.
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qlocale.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qlocale.cpp 3
 
     Notice that the last conversion returns 1234.0, because '.' is the
     thousands group separator in the German locale.
@@ -2925,8 +2926,8 @@ QDate QLocale::toDate(const QString &string, const QString &format) const
     time.  See QDateTime::fromString() for information on the expressions
     that can be used with this function.
 
-    This function searches month names and the names of the days of
-    the week in the current locale.
+    \note The month and day names used must be given in the user's local
+    language.
 
     If the string could not be parsed, returns an invalid QDateTime.
 

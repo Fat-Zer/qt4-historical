@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/layout.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/layout.qdoc -->
 <head>
   <title>Qt 4.4: Layout Classes</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,27 +11,12 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Layout Classes<br /><span class="subtitle"></span>
 </h1>
-<p>The Qt layout system provides a simple and powerful way of specifying the layout of child widgets.</p>
-<p>By specifying the logical layout once, you get the following benefits:</p>
-<ul>
-<li>Positioning of child widgets.</li>
-<li>Sensible default sizes for windows.</li>
-<li>Sensible minimum sizes for windows.</li>
-<li>Resize handling.</li>
-<li>Automatic update when contents change:<ul>
-<li>Font size, text or other contents of child widgets.</li>
-<li>Hiding or showing a child widget.</li>
-<li>Removal of child widgets.</li>
-</ul>
-</li>
-</ul>
-<p>The disadvantage of hand-written layout code is that it isn't very convenient when you're experimenting with the design of a form and you have to go through the compile, link and run cycle for each change. Our solution is <a href="designer-manual.html#qt-designer">Qt Designer</a>, a GUI visual design tool which makes it fast and easy to experiment with layouts and which generates the C++ layout code for you.</p>
-<p>Qt's layout classes were designed for hand-written C++ code, so they're easy to understand and use. The code generated for forms created using <a href="designer-manual.html#qt-designer">Qt Designer</a> also uses the layout classes.</p>
-<p>Topics:</p>
-<ul><li><a href="#horizontal-vertical-and-grid-layouts">Horizontal, Vertical, and Grid Layouts</a></li>
+<p>The Qt layout system provides a simple and powerful way of automatically arranging child widgets within a widget to ensure that they make good use of the available space.</p>
+<ul><li><a href="#introduction">Introduction</a></li>
+<li><a href="#horizontal-vertical-and-grid-layouts">Horizontal, Vertical, and Grid Layouts</a></li>
 <li><a href="#adding-widgets-to-a-layout">Adding Widgets to a Layout</a></li>
 <ul><li><a href="#stretch-factors">Stretch Factors</a></li>
 </ul>
@@ -44,6 +29,23 @@
 <li><a href="#further-notes">Further Notes</a></li>
 </ul>
 </ul>
+<a name="introduction"></a>
+<h3>Introduction</h3>
+<p>Qt includes a set of layout management classes that are used to describe how widgets are laid out in an application's user interface. These layouts automatically position and resize widgets when the available space for them changes, ensuring that they are consistently arranged and that the user interface as a whole remains usable.</p>
+<p>All <a href="qwidget.html">QWidget</a> subclasses can use layouts to manage their children. The <a href="qwidget.html#setLayout">QWidget::setLayout</a>() function applies a layout to a widget. When a layout is set on a widget in this way, it takes charge of the following tasks:</p>
+<ul>
+<li>Positioning of child widgets.</li>
+<li>Sensible default sizes for windows.</li>
+<li>Sensible minimum sizes for windows.</li>
+<li>Resize handling.</li>
+<li>Automatic updates when contents change:<ul>
+<li>Font size, text or other contents of child widgets.</li>
+<li>Hiding or showing a child widget.</li>
+<li>Removal of child widgets.</li>
+</ul>
+</li>
+</ul>
+<p>Qt's layout classes were designed for hand-written C++ code, allowing measurements to be specified in pixels for simplicity, so they're easy to understand and use. The code generated for forms created using <a href="designer-manual.html#qt-designer">Qt Designer</a> also uses the layout classes. <i>Qt Designer</i> is also useful to use when experimenting with the design of a form since it avoids the compile, link and run cycle usually involved in user interface development.</p>
 <a name="horizontal-vertical-and-grid-layouts"></a>
 <h3>Horizontal, Vertical, and Grid Layouts</h3>
 <p>The easiest way to give your widgets a good layout is to use the built-in layout managers: <a href="qhboxlayout.html">QHBoxLayout</a>, <a href="qvboxlayout.html">QVBoxLayout</a>, and <a href="qgridlayout.html">QGridLayout</a>. These classes inherit from <a href="qlayout.html">QLayout</a>, which in turn derives from <a href="qobject.html">QObject</a> (not <a href="qwidget.html">QWidget</a>). They take care of geometry management for a set of widgets. To create more complex layouts, you can nest layout managers inside each other.</p>
@@ -252,8 +254,8 @@
 <p>You should not call <a href="qlayoutitem.html#setGeometry">QLayoutItem::setGeometry</a>() twice on the same item in the same function. That can be very expensive if the item has several child widgets, because it must do a complete layout every time. Instead, calculate the geometry and then set it. (This doesn't only apply to layouts, you should do the same if you implement your own resizeEvent().)</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

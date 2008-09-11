@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtestlib.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qtestlib.qdoc -->
 <head>
   <title>Qt 4.4: Chapter 1: Writing a Unit Test</title>
   <link rel="contents" href="qtestlib-tutorial.html" />
@@ -13,7 +13,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [<a href="qtestlib-tutorial.html">Contents</a>]
 [Next: <a href="qtestlib-tutorial2.html">Chapter 2</a>]
@@ -39,11 +39,11 @@
  };</pre>
 <p>Note that you need to include the <a href="qtest.html">QTest</a> header, and that the test functions have to be declared as private slots so the test framework finds and executes it.</p>
 <p>Then you need to implement the test function itself. The implementation could look like this:</p>
-<pre>         void TestQString::toUpper()
-         {
-             QString str = &quot;Hello&quot;;
-             QVERIFY(str.toUpper() == &quot;HELLO&quot;);
-         }</pre>
+<pre> void TestQString::toUpper()
+ {
+     QString str = &quot;Hello&quot;;
+     QVERIFY(str.toUpper() == &quot;HELLO&quot;);
+ }</pre>
 <p>The <a href="qtest.html#QVERIFY">QVERIFY</a>() macro evaluates the expression passed as its argument. If the expression evaluates to true, the execution of the test function continues. Otherwise, a message describing the failure is appended to the test log, and the test function stops executing.</p>
 <p>But if you want a more verbose output to the test log, you should use the <a href="qtest.html#QCOMPARE">QCOMPARE</a>() macro instead:</p>
 <pre> void TestQString::toUpper()
@@ -59,18 +59,18 @@
 <a name="executing-a-test"></a>
 <h2>Executing a Test</h2>
 <p>Now that we finished writing our test, we want to execute it. Assuming that our test was saved as <tt>testqstring.cpp</tt> in an empty directory: we build the test using qmake to create a project and generate a makefile.</p>
-<pre>         /myTestDirectory$ qmake -project &quot;QT += testlib&quot;
-         /myTestDirectory$ qmake
-         /myTestDirectory$ make</pre>
+<pre> /myTestDirectory$ qmake -project &quot;QT += testlib&quot;
+ /myTestDirectory$ qmake
+ /myTestDirectory$ make</pre>
 <p><b>Note:</b>If you're using windows, replace <tt>make</tt> with <tt>nmake</tt> or whatever build tool you use.</p>
 <p>Running the resulting executable should give you the following output:</p>
-<pre>         ********* Start testing of TestQString *********
-         Config: Using QTest library 4.1.0, Qt 4.1.0
-         PASS   : TestQString::initTestCase()
-         PASS   : TestQString::toUpper()
-         PASS   : TestQString::cleanupTestCase()
-         Totals: 3 passed, 0 failed, 0 skipped
-         ********* Finished testing of TestQString *********</pre>
+<pre> ********* Start testing of TestQString *********
+ Config: Using QTest library 4.1.0, Qt 4.1.0
+ PASS   : TestQString::initTestCase()
+ PASS   : TestQString::toUpper()
+ PASS   : TestQString::cleanupTestCase()
+ Totals: 3 passed, 0 failed, 0 skipped
+ ********* Finished testing of TestQString *********</pre>
 <p>Congratulations! You just wrote and executed your first unit test using the <a href="qtestlib-manual.html#qtestlib">QTestLib</a> framework.</p>
 <p>
 [<a href="qtestlib-tutorial.html">Contents</a>]
@@ -78,8 +78,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

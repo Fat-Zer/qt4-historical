@@ -1323,7 +1323,8 @@ bool QToolBarAreaLayout::restoreState(QDataStream &stream, const QList<QToolBar*
                 toolBar->setVisible(shown);
                 toolBar->d_func()->setWindowState(floating, true, rect);
 
-                item.extraSpace = item.size - pick(line.o, item.sizeHint());
+                //if it is -1, it means we should use the default size
+                item.extraSpace = (item.size == -1) ? 0 : item.size - pick(line.o, item.sizeHint());
 
 
                 line.toolBarItems.append(item);

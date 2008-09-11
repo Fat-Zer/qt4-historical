@@ -668,12 +668,12 @@
     <message>
         <location filename="../src/3rdparty/webkit/WebKit/qt/QtLauncher/main.cpp" line="338"/>
         <source>Location:</source>
-        <translation>Standort:</translation>
+        <translation type="obsolete">Standort:</translation>
     </message>
     <message>
         <location filename="../src/3rdparty/webkit/WebKit/qt/QtLauncher/main.cpp" line="333"/>
         <source>Print</source>
-        <translation>Drucken</translation>
+        <translation type="obsolete">Drucken</translation>
     </message>
 </context>
 <context>
@@ -799,7 +799,7 @@ Die Audio- und Video-Unterstützung wurde abgeschaltet</translation>
 <context>
     <name>Phonon::Gstreamer::MediaObject</name>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="87"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="89"/>
         <source>Cannot start playback. 
 
 Check your Gstreamer installation and make sure you 
@@ -858,7 +858,7 @@ Bitte prüfen Sie die Gstreamer-Installation und stellen Sie sicher, dass das Pa
         <translation type="obsolete">Der Datenstrom konnte nicht geöffnet werden.</translation>
     </message>
     <message numerus="yes">
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="181"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="202"/>
         <source>A required codec is missing. You need to install the following codec(s) to play this content: %0</source>
         <translation>
             <numerusform>Es sind nicht alle erforderlichen Codecs installiert. Um diesen Inhalt abzuspielen, muss der folgende Codec installiert werden: %0</numerusform>
@@ -866,27 +866,27 @@ Bitte prüfen Sie die Gstreamer-Installation und stellen Sie sicher, dass das Pa
         </translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1181"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1245"/>
         <source>Could not open media source.</source>
         <translation>Die Medienquelle konnte nicht geöffnet werden.</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="819"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="866"/>
         <source>Invalid source type.</source>
         <translation>Ungültiger Typ der Medienquelle.</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1155"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1219"/>
         <source>Could not locate media source.</source>
         <translation>Die Medienquelle konnte nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1165"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1229"/>
         <source>Could not open audio device. The device is already in use.</source>
         <translation>Das Audiogerät konnte nicht geöffnet werden, da es bereits in Benutzung ist.</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1178"/>
+        <location filename="../src/3rdparty/kdebase/runtime/phonon/gstreamer/mediaobject.cpp" line="1242"/>
         <source>Could not decode media source.</source>
         <translation>Die Medienquelle konnte nicht gefunden werden.</translation>
     </message>
@@ -1379,37 +1379,37 @@ nach
 <context>
     <name>Q3TextEdit</name>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5402"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5401"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5403"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5402"/>
         <source>&amp;Redo</source>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5408"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5407"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5409"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5408"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5411"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5410"/>
         <source>&amp;Paste</source>
         <translation>Einf&amp;ügen</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5414"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5413"/>
         <source>Clear</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/qt3support/text/q3textedit.cpp" line="5420"/>
+        <location filename="../src/qt3support/text/q3textedit.cpp" line="5419"/>
         <source>Select All</source>
         <translation>Alles auswählen</translation>
     </message>
@@ -1569,7 +1569,7 @@ nach
 <context>
     <name>QAbstractSocket</name>
     <message>
-        <location filename="../src/network/socket/qabstractsocket.cpp" line="713"/>
+        <location filename="../src/network/socket/qabstractsocket.cpp" line="711"/>
         <source>Host not found</source>
         <translation>Rechner konnte nicht gefunden werden</translation>
     </message>
@@ -1579,12 +1579,12 @@ nach
         <translation>Verbindung verweigert</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qabstractsocket.cpp" line="1469"/>
+        <location filename="../src/network/socket/qabstractsocket.cpp" line="1467"/>
         <source>Socket operation timed out</source>
         <translation>Das Zeitlimit für die Operation wurde überschritten</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qabstractsocket.cpp" line="1848"/>
+        <location filename="../src/network/socket/qabstractsocket.cpp" line="1846"/>
         <source>Socket is not connected</source>
         <translation>Nicht verbunden</translation>
     </message>
@@ -1592,17 +1592,17 @@ nach
 <context>
     <name>QAbstractSpinBox</name>
     <message>
-        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1163"/>
+        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1165"/>
         <source>&amp;Step up</source>
         <translation>&amp;Inkrementieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1165"/>
+        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1167"/>
         <source>Step &amp;down</source>
         <translation>&amp;Dekrementieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1157"/>
+        <location filename="../src/gui/widgets/qabstractspinbox.cpp" line="1159"/>
         <source>&amp;Select All</source>
         <translation>&amp;Alles auswählen</translation>
     </message>
@@ -1610,7 +1610,7 @@ nach
 <context>
     <name>QApplication</name>
     <message>
-        <location filename="../src/gui/kernel/qapplication.cpp" line="2095"/>
+        <location filename="../src/gui/kernel/qapplication.cpp" line="2111"/>
         <source>QT_LAYOUT_DIRECTION</source>
         <comment>Translate this string to the string &apos;LTR&apos; in left-to-right languages or to &apos;RTL&apos; in right-to-left languages (such as Hebrew and Arabic) to get proper widget layout.</comment>
         <translation>LTR</translation>
@@ -1639,22 +1639,22 @@ nach
 <context>
     <name>QAxSelect</name>
     <message>
-        <location filename="../src/activeqt/container/ui_qaxselect.h" line="126"/>
+        <location filename="../src/activeqt/container/qaxselect.ui" line="28"/>
         <source>Select ActiveX Control</source>
         <translation>ActiveX-Element auswählen</translation>
     </message>
     <message>
-        <location filename="../src/activeqt/container/ui_qaxselect.h" line="127"/>
+        <location filename="../src/activeqt/container/qaxselect.ui" line="60"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/activeqt/container/ui_qaxselect.h" line="128"/>
+        <location filename="../src/activeqt/container/qaxselect.ui" line="76"/>
         <source>&amp;Cancel</source>
         <translation>&amp;Abbrechen</translation>
     </message>
     <message>
-        <location filename="../src/activeqt/container/ui_qaxselect.h" line="129"/>
+        <location filename="../src/activeqt/container/qaxselect.ui" line="125"/>
         <source>COM &amp;Object:</source>
         <translation>COM-&amp;Objekt:</translation>
     </message>
@@ -1883,22 +1883,22 @@ nach
 <context>
     <name>QDateTimeEdit</name>
     <message>
-        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2197"/>
+        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2255"/>
         <source>AM</source>
         <translation>AM</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2197"/>
+        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2255"/>
         <source>am</source>
         <translation>am</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2199"/>
+        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2257"/>
         <source>PM</source>
         <translation>PM</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2199"/>
+        <location filename="../src/gui/widgets/qdatetimeedit.cpp" line="2257"/>
         <source>pm</source>
         <translation>pm</translation>
     </message>
@@ -1924,7 +1924,7 @@ nach
 <context>
     <name>QDialog</name>
     <message>
-        <location filename="../src/gui/dialogs/qdialog.cpp" line="517"/>
+        <location filename="../src/gui/dialogs/qdialog.cpp" line="518"/>
         <source>What&apos;s This?</source>
         <translation>Direkthilfe</translation>
     </message>
@@ -1937,7 +1937,7 @@ nach
 <context>
     <name>QDialogButtonBox</name>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="2104"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="2240"/>
         <source>OK</source>
         <translation>OK</translation>
     </message>
@@ -1994,7 +1994,7 @@ nach
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="560"/>
         <source>Yes to &amp;All</source>
-        <translation>Ja zu &amp;allem</translation>
+        <translation>Ja, &amp;alle</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="563"/>
@@ -2004,7 +2004,7 @@ nach
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="566"/>
         <source>N&amp;o to All</source>
-        <translation>N&amp;ein zu allem</translation>
+        <translation>N&amp;ein, keine</translation>
     </message>
     <message>
         <location filename="../src/gui/widgets/qdialogbuttonbox.cpp" line="569"/>
@@ -2045,29 +2045,29 @@ nach
 <context>
     <name>QDirModel</name>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="423"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="425"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="424"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="426"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="427"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="429"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
         <translation>Art</translation>
     </message>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="429"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="431"/>
         <source>Type</source>
         <comment>All other platforms</comment>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="435"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="437"/>
         <source>Date Modified</source>
         <translation>Änderungsdatum</translation>
     </message>
@@ -2139,17 +2139,17 @@ nach
         <translation>Alle Dateien (*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="264"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="43"/>
         <source>Back</source>
         <translation>Zurück</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="284"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="71"/>
         <source>List View</source>
         <translation>Liste</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="289"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="78"/>
         <source>Detail View</source>
         <translation>Details</translation>
     </message>
@@ -2169,12 +2169,12 @@ nach
         <translation>Speichern unter</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2408"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2442"/>
         <source>&amp;Open</source>
         <translation>&amp;Öffnen</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="919"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="939"/>
         <source>&amp;Save</source>
         <translation>S&amp;peichern</translation>
     </message>
@@ -2194,7 +2194,7 @@ nach
         <translation>&amp;Versteckte Dateien anzeigen</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2137"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2162"/>
         <source>New Folder</source>
         <translation>Neues Verzeichnis</translation>
     </message>
@@ -2204,7 +2204,7 @@ nach
         <translation>Verzeichnis suchen</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="881"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="899"/>
         <source>Directories</source>
         <translation>Verzeichnisse</translation>
     </message>
@@ -2214,19 +2214,19 @@ nach
         <translation>Alle Dateien (*.*)</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="883"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="901"/>
         <source>Directory:</source>
         <translation>Verzeichnis:</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1670"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1692"/>
         <source>%1 already exists.
 Do you want to replace it?</source>
         <translation>Die Datei %1 existiert bereits.
 Soll sie überschrieben werden?</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1690"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="1712"/>
         <source>%1
 File not found.
 Please verify the correct file name was given.</source>
@@ -2235,17 +2235,17 @@ Die Datei konnte nicht gefunden werden.
 Stellen Sie sicher, dass der Dateiname richtig ist.</translation>
     </message>
     <message>
-        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="833"/>
+        <location filename="../src/gui/itemviews/qdirmodel.cpp" line="839"/>
         <source>My Computer</source>
         <translation>Mein Computer</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="274"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="57"/>
         <source>Parent Directory</source>
         <translation>Übergeordnetes Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="292"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="240"/>
         <source>Files of type:</source>
         <translation>Dateien des Typs:</translation>
     </message>
@@ -2259,7 +2259,7 @@ Die Datei konnte nicht gefunden werden.
 Stellen Sie sicher, dass der Dateiname richtig ist</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2476"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2510"/>
         <source>%1
 Directory not found.
 Please verify the correct directory name was given.</source>
@@ -2268,19 +2268,19 @@ Das Verzeichnis konnte nicht gefunden werden.
 Stellen Sie sicher, dass der Verzeichnisname richtig ist.</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2281"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2306"/>
         <source>&apos;%1&apos; is write protected.
 Do you want to delete it anyway?</source>
         <translation>&apos;%1&apos; ist schreibgeschützt.
 Möchten sie die Datei trotzdem löschen?</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2286"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2311"/>
         <source>Are sure you want to delete &apos;%1&apos;?</source>
         <translation>Sind Sie sicher, dass Sie %1 löschen möchten?</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2299"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="2324"/>
         <source>Could not delete directory.</source>
         <translation>Konnte Verzeichnis nicht löschen.</translation>
     </message>
@@ -2300,7 +2300,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>Anzeigen </translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="269"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="50"/>
         <source>Forward</source>
         <translation>Vorwärts</translation>
     </message>
@@ -2310,7 +2310,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>&amp;Neues Verzeichnis</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="917"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="937"/>
         <source>&amp;Choose</source>
         <translation>&amp;Auswählen</translation>
     </message>
@@ -2320,17 +2320,17 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="886"/>
+        <location filename="../src/gui/dialogs/qfiledialog.cpp" line="904"/>
         <source>File &amp;name:</source>
         <translation>Datei&amp;name:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="261"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="262"/>
         <source>Look in:</source>
         <translation>Suche in:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qfiledialog.h" line="279"/>
+        <location filename="../src/gui/dialogs/qfiledialog_wince.ui" line="64"/>
         <source>Create New Folder</source>
         <translation>Neuen Ordner erstellen</translation>
     </message>
@@ -2338,64 +2338,64 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QFileSystemModel</name>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="677"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="679"/>
         <source>%1 TB</source>
         <translation>%1 TB</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="679"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="681"/>
         <source>%1 GB</source>
         <translation>%1 GB</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="681"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="683"/>
         <source>%1 MB</source>
         <translation>%1 MB</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="683"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="685"/>
         <source>%1 KB</source>
         <translation>%1 KB</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="684"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="686"/>
         <source>%1 bytes</source>
         <translation>%1 byte</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="761"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="763"/>
         <source>Invalid filename</source>
         <translation>Ungültiger Dateiname</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="763"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="765"/>
         <source>&lt;b&gt;The name &quot;%1&quot; can not be used.&lt;/b&gt;&lt;p&gt;Try using another name, with fewer characters or no punctuations marks.</source>
         <translation>&lt;b&gt;Der Name &quot;%1&quot; kann nicht verwendet werden.&lt;/b&gt;&lt;p&gt;Versuchen Sie, die Sonderzeichen zu entfernen oder einen kürzeren Namen zu verwenden.</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="832"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="834"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="834"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="836"/>
         <source>Size</source>
         <translation>Größe</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="838"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="840"/>
         <source>Kind</source>
         <comment>Match OS X Finder</comment>
         <translation>Art</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="840"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="842"/>
         <source>Type</source>
         <comment>All other platforms</comment>
         <translation>Typ</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="847"/>
+        <location filename="../src/gui/dialogs/qfilesystemmodel.cpp" line="849"/>
         <source>Date Modified</source>
         <translation>Änderungsdatum</translation>
     </message>
@@ -2896,44 +2896,49 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>Der Inhalt (chunked body) der HTTP-Antwort ist ungültig</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttp.cpp" line="2648"/>
+        <location filename="../src/network/access/qhttp.cpp" line="2681"/>
         <source>Proxy authentication required</source>
         <translation>Proxy-Authentifizierung erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttp.cpp" line="2652"/>
+        <location filename="../src/network/access/qhttp.cpp" line="2685"/>
         <source>Authentication required</source>
         <translation>Authentifizierung erforderlich</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1719"/>
+        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1723"/>
         <source>Proxy requires authentication</source>
         <translation>Der Proxy-Server verlangt eine Authentifizierung</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1722"/>
+        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1726"/>
         <source>Host requires authentication</source>
         <translation>Der Hostrechner verlangt eine Authentifizierung</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1725"/>
+        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1729"/>
         <source>Data corrupted</source>
         <translation>Die Daten sind verfälscht</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1731"/>
+        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1735"/>
         <source>SSL handshake failed</source>
         <translation>Es trat ein Fehler im Ablauf des SSL-Protokolls auf.</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1728"/>
+        <location filename="../src/network/access/qhttpnetworkconnection.cpp" line="1732"/>
         <source>Unknown protocol specified</source>
         <translation>Es wurde ein unbekanntes Protokoll angegeben</translation>
     </message>
     <message>
-        <location filename="../src/network/access/qhttp.cpp" line="2522"/>
+        <location filename="../src/network/access/qhttp.cpp" line="2555"/>
         <source>Connection refused (or timed out)</source>
         <translation>Verbindung verweigert oder Zeitlimit überschritten</translation>
+    </message>
+    <message>
+        <location filename="../src/network/access/qhttp.cpp" line="331"/>
+        <source>HTTPS connection requested but SSL support not compiled in</source>
+        <translation>Die angeforderte HTTPS-Verbindung kann nicht aufgebaut werden, da keine SSL-Unterstützung vorhanden ist</translation>
     </message>
 </context>
 <context>
@@ -3063,27 +3068,27 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QIODevice</name>
     <message>
-        <location filename="../src/corelib/global/qglobal.cpp" line="1882"/>
+        <location filename="../src/corelib/global/qglobal.cpp" line="1932"/>
         <source>Permission denied</source>
         <translation>Zugriff verweigert</translation>
     </message>
     <message>
-        <location filename="../src/corelib/global/qglobal.cpp" line="1885"/>
+        <location filename="../src/corelib/global/qglobal.cpp" line="1935"/>
         <source>Too many open files</source>
         <translation>Zu viele Dateien geöffnet</translation>
     </message>
     <message>
-        <location filename="../src/corelib/global/qglobal.cpp" line="1888"/>
+        <location filename="../src/corelib/global/qglobal.cpp" line="1938"/>
         <source>No such file or directory</source>
         <translation>Die Datei oder das Verzeichnis konnte nicht gefunden werden</translation>
     </message>
     <message>
-        <location filename="../src/corelib/global/qglobal.cpp" line="1891"/>
+        <location filename="../src/corelib/global/qglobal.cpp" line="1941"/>
         <source>No space left on device</source>
         <translation>Kein freier Speicherplatz auf dem Gerät vorhanden</translation>
     </message>
     <message>
-        <location filename="../src/corelib/io/qiodevice.cpp" line="1484"/>
+        <location filename="../src/corelib/io/qiodevice.cpp" line="1487"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
@@ -3091,22 +3096,22 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QInputContext</name>
     <message>
-        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="204"/>
+        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="214"/>
         <source>XIM</source>
         <translation>XIM</translation>
     </message>
     <message>
-        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="227"/>
+        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="237"/>
         <source>XIM input method</source>
         <translation>XIM-Eingabemethode</translation>
     </message>
     <message>
-        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="231"/>
+        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="241"/>
         <source>Windows input method</source>
         <translation>Windows-Eingabemethode</translation>
     </message>
     <message>
-        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="235"/>
+        <location filename="../src/gui/inputmethod/qinputcontextfactory.cpp" line="245"/>
         <source>Mac OS X input method</source>
         <translation>Mac OS X-Eingabemethode</translation>
     </message>
@@ -3129,47 +3134,47 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>QLibrary::resolve_sys: Das Symbol &quot;%1&quot; ist in %2 nicht definiert (%3)</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="347"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="348"/>
         <source>Could not mmap &apos;%1&apos;: %2</source>
         <translation>Operation mmap fehlgeschlagen für &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="368"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="369"/>
         <source>Plugin verification data mismatch in &apos;%1&apos;</source>
         <translation>Die Prüfdaten des Plugins &apos;%1&apos; stimmen nicht überein</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="375"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="376"/>
         <source>Could not unmap &apos;%1&apos;: %2</source>
         <translation>Operation unmap fehlgeschlagen für &apos;%1&apos;: %2</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="640"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="673"/>
         <source>The plugin &apos;%1&apos; uses incompatible Qt library. (%2.%3.%4) [%5]</source>
         <translation>Das Plugin &apos;%1&apos; verwendet eine inkompatible Qt-Bibliothek. (%2.%3.%4) [%5]</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="656"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="689"/>
         <source>The plugin &apos;%1&apos; uses incompatible Qt library. Expected build key &quot;%2&quot;, got &quot;%3&quot;</source>
         <translation>Das Plugin &apos;%1&apos; verwendet eine inkompatible Qt-Bibliothek. Erforderlicher build-spezifischer Schlüssel &quot;%2&quot;, erhalten &quot;%3&quot;</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="990"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="1026"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="245"/>
+        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="252"/>
         <source>The shared library was not found.</source>
         <translation>Die dynamische Bibliothek konnte nicht gefunden werden.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="624"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="657"/>
         <source>The file &apos;%1&apos; is not a valid Qt plugin.</source>
         <translation>Die Datei &apos;%1&apos; ist kein gültiges Qt-Plugin.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qlibrary.cpp" line="663"/>
+        <location filename="../src/corelib/plugin/qlibrary.cpp" line="696"/>
         <source>The plugin &apos;%1&apos; uses incompatible Qt library. (Cannot mix debug and release libraries.)</source>
         <translation>Das Plugin &apos;%1&apos; verwendet eine inkompatible Qt-Bibliothek. (Im Debug- und Release-Modus erstellte Bibliotheken können nicht zusammen verwendet werden.)</translation>
     </message>
@@ -3177,37 +3182,37 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QLineEdit</name>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2549"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2584"/>
         <source>Select All</source>
         <translation>Alles auswählen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2532"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2567"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2534"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2569"/>
         <source>&amp;Redo</source>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2538"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2573"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2540"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2575"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2542"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2577"/>
         <source>&amp;Paste</source>
         <translation>Einf&amp;ügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qlineedit.cpp" line="2545"/>
+        <location filename="../src/gui/widgets/qlineedit.cpp" line="2580"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
@@ -3215,17 +3220,17 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QLocalServer</name>
     <message>
-        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="178"/>
+        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="180"/>
         <source>%1: Name error</source>
         <translation>%1: Fehlerhafter Name</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="170"/>
+        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="172"/>
         <source>%1: Permission denied</source>
         <translation>%1: Zugriff verweigert</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="182"/>
+        <location filename="../src/network/socket/qlocalserver_unix.cpp" line="184"/>
         <source>%1: Address in use</source>
         <translation>%1: Die Adresse wird bereits verwendet</translation>
     </message>
@@ -3238,12 +3243,12 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QLocalSocket</name>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="104"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="106"/>
         <source>%1: Connection refused</source>
         <translation>%1: Der Aufbau einer Verbindung wurde verweigert</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="107"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="109"/>
         <source>%1: Remote closed</source>
         <translation>%1: Die Verbindung wurde von der Gegenseite geschlossen</translation>
     </message>
@@ -3253,22 +3258,22 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>%1: Ungültiger Name</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="113"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="115"/>
         <source>%1: Socket access error</source>
         <translation>%1: Fehler beim Zugriff auf den Socket</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="116"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="118"/>
         <source>%1: Socket resource error</source>
         <translation>%1: Socketfehler (Ressourcenproblem)</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="119"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="121"/>
         <source>%1: Socket operation timed out</source>
         <translation>%1: Zeitüberschreitung bei Socketoperation</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="122"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="124"/>
         <source>%1: Datagram too large</source>
         <translation>%1: Das Datagramm ist zu groß</translation>
     </message>
@@ -3278,7 +3283,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>%1: Verbindungsfehler</translation>
     </message>
     <message>
-        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="128"/>
+        <location filename="../src/network/socket/qlocalsocket_unix.cpp" line="130"/>
         <source>%1: The socket operation is not supported</source>
         <translation>%1: Diese Socketoperation wird nicht unterstützt</translation>
     </message>
@@ -3291,27 +3296,27 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QMYSQLDriver</name>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1159"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1165"/>
         <source>Unable to open database &apos;</source>
         <translation>Die Datenbankverbindung konnte nicht geöffnet werden &apos;</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1166"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1172"/>
         <source>Unable to connect</source>
         <translation>Es kann keine Verbindung aufgebaut werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1287"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1293"/>
         <source>Unable to begin transaction</source>
         <translation>Es konnte keine Transaktion gestartet werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1304"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1310"/>
         <source>Unable to commit transaction</source>
         <translation>Die Transaktion konnte nicht durchgeführt werden (Operation &apos;commit&apos; fehlgeschlagen)</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1321"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="1327"/>
         <source>Unable to rollback transaction</source>
         <translation>Die Transaktion konnte nicht rückgängig gemacht werden (Operation &apos;rollback&apos; fehlgeschlagen)</translation>
     </message>
@@ -3319,57 +3324,57 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QMYSQLResult</name>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="443"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="449"/>
         <source>Unable to fetch data</source>
         <translation>Es konnten keine Daten abgeholt werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="593"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="599"/>
         <source>Unable to execute query</source>
         <translation>Die Abfrage konnte nicht ausgeführt werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="599"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="605"/>
         <source>Unable to store result</source>
         <translation>Das Ergebnis konnte nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="789"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="795"/>
         <source>Unable to prepare statement</source>
         <translation>Der Befehl konnte nicht initialisiert werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="820"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="826"/>
         <source>Unable to reset statement</source>
         <translation>Der Befehl konnte nicht zurückgesetzt werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="907"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="913"/>
         <source>Unable to bind value</source>
         <translation>Der Wert konnte nicht gebunden werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="918"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="924"/>
         <source>Unable to execute statement</source>
         <translation>Der Befehl konnte nicht ausgeführt werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="953"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="959"/>
         <source>Unable to bind outvalues</source>
         <translation>Die Ausgabewerte konnten nicht gebunden werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="941"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="947"/>
         <source>Unable to store statement results</source>
         <translation>Die Ergebnisse des Befehls konnten nicht gespeichert werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="698"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="704"/>
         <source>Unable to execute next query</source>
         <translation>Die folgende Abfrage kann nicht ausgeführt werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="708"/>
+        <location filename="../src/sql/drivers/mysql/qsql_mysql.cpp" line="714"/>
         <source>Unable to store next result</source>
         <translation>Das folgende Ergebnis kann nicht gespeichert werden</translation>
     </message>
@@ -3377,7 +3382,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QMdiArea</name>
     <message>
-        <location filename="../src/gui/widgets/qmdiarea.cpp" line="252"/>
+        <location filename="../src/gui/widgets/qmdiarea.cpp" line="265"/>
         <source>(Untitled)</source>
         <translation>(Unbenannt)</translation>
     </message>
@@ -3385,92 +3390,92 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QMdiSubWindow</name>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="242"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="252"/>
         <source>%1 - [%2]</source>
         <translation>%1 - [%2]</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="312"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="324"/>
         <source>Close</source>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="294"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="306"/>
         <source>Minimize</source>
         <translation>Minimieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="307"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="319"/>
         <source>Restore Down</source>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1013"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1026"/>
         <source>&amp;Restore</source>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1016"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1029"/>
         <source>&amp;Move</source>
         <translation>Ver&amp;schieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1017"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1030"/>
         <source>&amp;Size</source>
         <translation>Größe ä&amp;ndern</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1018"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1031"/>
         <source>Mi&amp;nimize</source>
         <translation>M&amp;inimieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1020"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1033"/>
         <source>Ma&amp;ximize</source>
         <translation>Ma&amp;ximieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1022"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1035"/>
         <source>Stay on &amp;Top</source>
         <translation>Im &amp;Vordergrund bleiben</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1025"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="1038"/>
         <source>&amp;Close</source>
         <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="297"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="309"/>
         <source>Maximize</source>
         <translation>Maximieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="300"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="312"/>
         <source>Unshade</source>
         <translation>Herabrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="303"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="315"/>
         <source>Shade</source>
         <translation>Aufrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="309"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="321"/>
         <source>Restore</source>
         <translation>Wiederherstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="315"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="327"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="318"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="330"/>
         <source>Menu</source>
         <translation>Menü</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="241"/>
+        <location filename="../src/gui/widgets/qmdisubwindow.cpp" line="251"/>
         <source>- [%1]</source>
         <translation>- [%1]</translation>
     </message>
@@ -3496,62 +3501,62 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QMenuBar</name>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="316"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="322"/>
         <source>About</source>
         <translation>Über</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="322"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="328"/>
         <source>Config</source>
         <translation>Konfiguration</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="323"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="329"/>
         <source>Preference</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="324"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="330"/>
         <source>Options</source>
         <translation>Optionen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="325"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="331"/>
         <source>Setting</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="326"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="332"/>
         <source>Setup</source>
         <translation>Einrichten</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="328"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="334"/>
         <source>Quit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="329"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="335"/>
         <source>Exit</source>
         <translation>Beenden</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="364"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="370"/>
         <source>About %1</source>
         <translation>Über %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="366"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="372"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="368"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="374"/>
         <source>Preferences</source>
         <translation>Einstellungen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="370"/>
+        <location filename="../src/gui/widgets/qmenu_mac.cpp" line="376"/>
         <source>Quit %1</source>
         <translation>%1 beenden</translation>
     </message>
@@ -3564,17 +3569,17 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>OK</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1504"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1631"/>
         <source>About Qt</source>
         <translation>Über Qt</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1135"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1254"/>
         <source>Help</source>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1688"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1815"/>
         <source>&lt;p&gt;This program uses Qt version %1.&lt;/p&gt;</source>
         <translation>&lt;p&gt;Dieses Programm verwendet Qt-Version %1.&lt;/p&gt;</translation>
     </message>
@@ -3589,12 +3594,12 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>Details ausblenden...</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1696"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1823"/>
         <source>&lt;p&gt;This program uses Qt Open Source Edition version %1.&lt;/p&gt;&lt;p&gt;Qt Open Source Edition is intended for the development of Open Source applications. You need a commercial Qt license for development of proprietary (closed source) applications.&lt;/p&gt;&lt;p&gt;Please see &lt;a href=&quot;http://www.trolltech.com/company/model/&quot;&gt;www.trolltech.com/company/model/&lt;/a&gt; for an overview of Qt licensing.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1687"/>
+        <location filename="../src/gui/dialogs/qmessagebox.cpp" line="1814"/>
         <source>&lt;h3&gt;About Qt&lt;/h3&gt;%1&lt;p&gt;Qt is a C++ toolkit for cross-platform application development.&lt;/p&gt;&lt;p&gt;Qt provides single-source portability across MS&amp;nbsp;Windows, Mac&amp;nbsp;OS&amp;nbsp;X, Linux, and all major commercial Unix variants. Qt is also available for embedded devices as Qt Embedded.&lt;/p&gt;&lt;p&gt;Qt is a Trolltech product. See &lt;a href=&quot;http://www.trolltech.com/qt/&quot;&gt;www.trolltech.com/qt/&lt;/a&gt; for more information.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -3828,7 +3833,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QNetworkReply</name>
     <message>
-        <location filename="../src/network/access/qnetworkaccesshttpbackend.cpp" line="531"/>
+        <location filename="../src/network/access/qnetworkaccesshttpbackend.cpp" line="532"/>
         <source>Error downloading %1 - server replied: %2</source>
         <translation>Beim Herunterladen von %1 trat ein Fehler auf - Die Antwort des Servers ist: %2</translation>
     </message>
@@ -4081,12 +4086,12 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QPPDOptionsModel</name>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1107"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1121"/>
         <source>Name</source>
         <translation>Name</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1109"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="1123"/>
         <source>Value</source>
         <translation>Wert</translation>
     </message>
@@ -4094,32 +4099,32 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QPSQLDriver</name>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="732"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="734"/>
         <source>Unable to connect</source>
         <translation>Es kann keine Verbindung aufgebaut werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="781"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="783"/>
         <source>Could not begin transaction</source>
         <translation>Es konnte keine Transaktion gestartet werden</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="798"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="800"/>
         <source>Could not commit transaction</source>
         <translation>Die Transaktion konnte nicht durchgeführt werden (Operation &apos;commit&apos; fehlgeschlagen)</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="814"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="816"/>
         <source>Could not rollback transaction</source>
         <translation>Die Transaktion konnte nicht rückgängig gemacht werden (Operation &apos;rollback&apos; fehlgeschlagen)</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="1150"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="1152"/>
         <source>Unable to subscribe</source>
         <translation>Die Registrierung schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="1182"/>
+        <location filename="../src/sql/drivers/psql/qsql_psql.cpp" line="1184"/>
         <source>Unable to unsubscribe</source>
         <translation>Die Registrierung konnte nicht aufgehoben werden</translation>
     </message>
@@ -4160,82 +4165,82 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation>Punkte (pt)</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="270"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="13"/>
         <source>Form</source>
         <translation>Formular</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="271"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="42"/>
         <source>Paper</source>
         <translation>Papier</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="272"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="48"/>
         <source>Page size:</source>
         <translation>Seitengröße:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="273"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="61"/>
         <source>Width:</source>
         <translation>Breite:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="274"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="80"/>
         <source>Height:</source>
         <translation>Höhe:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="275"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="99"/>
         <source>Paper source:</source>
         <translation>Papierquelle:</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="276"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="128"/>
         <source>Orientation</source>
         <translation>Ausrichtung</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="277"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="134"/>
         <source>Portrait</source>
         <translation>Hochformat</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="278"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="144"/>
         <source>Landscape</source>
         <translation>Querformat</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="279"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="151"/>
         <source>Reverse landscape</source>
         <translation>Umgekehrtes Querformat</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="280"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="158"/>
         <source>Reverse portrait</source>
         <translation>Umgekehrtes Hochformat</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="281"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="184"/>
         <source>Margins</source>
         <translation>Ränder</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="289"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="195"/>
         <source>top margin</source>
         <translation>Oberer Rand</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="299"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="226"/>
         <source>left margin</source>
         <translation>Linker Rand</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="309"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="258"/>
         <source>right margin</source>
         <translation>Rechter Rand</translation>
     </message>
     <message>
-        <location filename="../src/gui/ui_qpagesetupwidget.h" line="319"/>
+        <location filename="../src/gui/dialogs/qpagesetupwidget.ui" line="289"/>
         <source>bottom margin</source>
         <translation>Unterer Rand</translation>
     </message>
@@ -4301,12 +4306,12 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QPluginLoader</name>
     <message>
-        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="269"/>
+        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="276"/>
         <source>Unknown error</source>
         <translation>Unbekannter Fehler</translation>
     </message>
     <message>
-        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="203"/>
+        <location filename="../src/corelib/plugin/qpluginloader.cpp" line="208"/>
         <source>The plugin was not loaded.</source>
         <translation>Das Plugin wurde nicht geladen.</translation>
     </message>
@@ -4314,17 +4319,17 @@ Möchten sie die Datei trotzdem löschen?</translation>
 <context>
     <name>QPrintDialog</name>
     <message>
-        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="84"/>
+        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="70"/>
         <source>locally connected</source>
         <translation>direkt verbunden</translation>
     </message>
     <message>
-        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="333"/>
+        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="319"/>
         <source>Aliases: %1</source>
         <translation>Alias: %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="754"/>
+        <location filename="../src/gui/painting/qprinterinfo_unix.cpp" line="740"/>
         <source>unknown</source>
         <translation>unbekannt</translation>
     </message>
@@ -4564,7 +4569,7 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation type="obsolete">Datei</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="765"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="776"/>
         <source>Print To File ...</source>
         <translation>In Datei drucken</translation>
     </message>
@@ -4634,14 +4639,14 @@ Möchten sie die Datei trotzdem löschen?</translation>
         <translation type="obsolete">Doppelseitiger Druck</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="841"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="852"/>
         <source>File %1 is not writable.
 Please choose a different file name.</source>
         <translation>Die Datei %1 ist schreibgeschützt.
 Bitte wählen Sie einen anderen Dateinamen.</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="845"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="856"/>
         <source>%1 already exists.
 Do you want to overwrite it?</source>
         <translation>Die Datei %1 existiert bereits.
@@ -4658,7 +4663,7 @@ Soll sie überschrieben werden?</translation>
         <translation>&lt;qt&gt;Soll sie überschrieben werden?&lt;/qt&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="837"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="848"/>
         <source>%1 is a directory.
 Please choose a different file name.</source>
         <translation>%1 ist ein Verzeichnis.
@@ -4860,37 +4865,37 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Benutzerdefiniert</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="433"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="436"/>
         <source>&amp;Options &gt;&gt;</source>
         <translation>&amp;Einstellungen &gt;&gt;</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="437"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="440"/>
         <source>&amp;Options &lt;&lt;</source>
         <translation>&amp;Einstellungen &lt;&lt; </translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="662"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="673"/>
         <source>Print to File (PDF)</source>
         <translation>Druck in PDF-Datei</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="663"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="674"/>
         <source>Print to File (Postscript)</source>
         <translation>Druck in Postscript-Datei</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="698"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="708"/>
         <source>Local file</source>
         <translation>Lokale Datei</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="699"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="709"/>
         <source>Write %1 file</source>
         <translation>Schreiben der Datei %1</translation>
     </message>
     <message>
-        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="370"/>
+        <location filename="../src/gui/dialogs/qprintdialog_unix.cpp" line="373"/>
         <source>&amp;Print</source>
         <translation>&amp;Drucken</translation>
     </message>
@@ -5350,32 +5355,32 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QScrollBar</name>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="415"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="417"/>
         <source>Scroll here</source>
         <translation>Hierher scrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="418"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="420"/>
         <source>Left edge</source>
         <translation>Linker Rand</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="418"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="420"/>
         <source>Top</source>
         <translation>Anfang</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="420"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="422"/>
         <source>Right edge</source>
         <translation>Rechter Rand</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="420"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="422"/>
         <source>Bottom</source>
         <translation>Ende</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="423"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="425"/>
         <source>Page left</source>
         <translation>Eine Seite nach links</translation>
     </message>
@@ -5385,7 +5390,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Eine Seite nach oben</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="425"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="427"/>
         <source>Page right</source>
         <translation>Eine Seite nach rechts</translation>
     </message>
@@ -5395,22 +5400,22 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Eine Seite nach unten</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="428"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="430"/>
         <source>Scroll left</source>
         <translation>Nach links scrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="428"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="430"/>
         <source>Scroll up</source>
         <translation>Nach oben scrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="430"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="432"/>
         <source>Scroll right</source>
         <translation>Nach rechts scrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qscrollbar.cpp" line="430"/>
+        <location filename="../src/gui/widgets/qscrollbar.cpp" line="432"/>
         <source>Scroll down</source>
         <translation>Nach unten scrollen</translation>
     </message>
@@ -5433,17 +5438,17 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QSharedMemory</name>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="252"/>
+        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="259"/>
         <source>%1: create size is less then 0</source>
         <translation>%1: Die Größenangabe für die Erzeugung ist kleiner als Null</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_p.h" line="118"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_p.h" line="120"/>
         <source>%1: unable to lock</source>
         <translation>%1: Sperrung fehlgeschlagen</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="437"/>
+        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="444"/>
         <source>%1: unable to unlock</source>
         <translation>%1: Die Sperrung konnte nicht aufgehoben werden</translation>
     </message>
@@ -5473,17 +5478,17 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>%1: Unbekannter Fehler %2</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="88"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="89"/>
         <source>%1: key is empty</source>
         <translation>%1: Ungültige Schlüsselangabe (leer)</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="96"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="97"/>
         <source>%1: unix key file doesn&apos;t exists</source>
         <translation>%1: Die Unix-Schlüsseldatei existiert nicht</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="103"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="104"/>
         <source>%1: ftok failed</source>
         <translation>%1: ftok-Aufruf schlug fehl</translation>
     </message>
@@ -5493,12 +5498,12 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>%1: Es kann kein Schlüssel erzeugt werden</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="172"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="175"/>
         <source>%1: system-imposed size restrictions</source>
         <translation>%1: Ein systembedingtes Limit der Größe wurde erreicht</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="225"/>
+        <location filename="../src/corelib/kernel/qsharedmemory_unix.cpp" line="228"/>
         <source>%1: not attached</source>
         <translation>%1: nicht verbunden</translation>
     </message>
@@ -5518,7 +5523,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>%1: Die Abfrage der Größe schlug fehl</translation>
     </message>
     <message>
-        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="171"/>
+        <location filename="../src/corelib/kernel/qsharedmemory.cpp" line="178"/>
         <source>%1: unable to set key on lock</source>
         <translation>%1: Es kann kein Schlüssel für die Sperrung gesetzt werden</translation>
     </message>
@@ -5951,32 +5956,32 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Umdrehen</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1012"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1013"/>
         <source>Ctrl</source>
         <translation>Strg</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1016"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1017"/>
         <source>Shift</source>
         <translation>Umschalt</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1014"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1015"/>
         <source>Alt</source>
         <translation>Alt</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1010"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1011"/>
         <source>Meta</source>
         <translation>Meta</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="986"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="987"/>
         <source>+</source>
         <translation>+</translation>
     </message>
     <message>
-        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1031"/>
+        <location filename="../src/gui/kernel/qkeysequence.cpp" line="1032"/>
         <source>F%1</source>
         <translation>F%1</translation>
     </message>
@@ -6101,57 +6106,57 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QSslSocket</name>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="509"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="518"/>
         <source>Unable to write data: %1</source>
         <translation>Die Daten konnten nicht geschrieben werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="625"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="637"/>
         <source>Error while reading: %1</source>
         <translation>Beim Lesen trat ein Fehler auf: %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="713"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="729"/>
         <source>Error during SSL handshake: %1</source>
         <translation>Es trat ein Fehler im Ablauf des SSL-Protokolls auf: %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="213"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="219"/>
         <source>Error creating SSL context (%1)</source>
         <translation>Es konnte keine SSL-Kontextstruktur erzeugt werden (%1)</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="238"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="244"/>
         <source>Invalid or empty cipher list (%1)</source>
         <translation>Ungültige oder leere Schlüsselliste (%1)</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="300"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="306"/>
         <source>Error creating SSL session, %1</source>
         <translation>Es konnte keine SSL-Sitzung erzeugt werden, %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="315"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="321"/>
         <source>Error creating SSL session: %1</source>
         <translation>Es konnte keine SSL-Sitzung erzeugt werden: %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="254"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="260"/>
         <source>Cannot provide a certificate with no key, %1</source>
         <translation>Ohne Schlüssel kann kein Zertifikat zur Verfügung gestellt werden, %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="261"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="267"/>
         <source>Error loading local certificate, %1</source>
         <translation>Das lokale Zertifikat konnte nicht geladen werden, %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="273"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="279"/>
         <source>Error loading private key, %1</source>
         <translation>Der private Schlüssel konnte nicht geladen werden, %1</translation>
     </message>
     <message>
-        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="280"/>
+        <location filename="../src/network/ssl/qsslsocket_openssl.cpp" line="286"/>
         <source>Private key does not certificate public key, %1</source>
         <translation>Die Zertifizierung des öffentlichen Schlüssels durch den privaten Schlüssel schlug fehl, %1</translation>
     </message>
@@ -6211,42 +6216,42 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QTextControl</name>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1928"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1937"/>
         <source>&amp;Undo</source>
         <translation>&amp;Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1930"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1939"/>
         <source>&amp;Redo</source>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1934"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1943"/>
         <source>Cu&amp;t</source>
         <translation>&amp;Ausschneiden</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1939"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1948"/>
         <source>&amp;Copy</source>
         <translation>&amp;Kopieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1946"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1955"/>
         <source>Copy &amp;Link Location</source>
         <translation>&amp;Link-Adresse kopieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1952"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1961"/>
         <source>&amp;Paste</source>
         <translation>Einf&amp;ügen</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1955"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1964"/>
         <source>Delete</source>
         <translation>Löschen</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="1962"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="1971"/>
         <source>Select All</source>
         <translation>Alles auswählen</translation>
     </message>
@@ -6296,12 +6301,12 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QUndoStack</name>
     <message>
-        <location filename="../src/gui/util/qundostack.cpp" line="802"/>
+        <location filename="../src/gui/util/qundostack.cpp" line="806"/>
         <source>Undo</source>
         <translation>Rückgängig</translation>
     </message>
     <message>
-        <location filename="../src/gui/util/qundostack.cpp" line="829"/>
+        <location filename="../src/gui/util/qundostack.cpp" line="833"/>
         <source>Redo</source>
         <translation>Wiederherstellen</translation>
     </message>
@@ -6309,57 +6314,57 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QUnicodeControlCharacterMenu</name>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2810"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2819"/>
         <source>LRM Left-to-right mark</source>
         <translation>LRM Left-to-right mark</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2811"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2820"/>
         <source>RLM Right-to-left mark</source>
         <translation>RLM Right-to-left mark</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2812"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2821"/>
         <source>ZWJ Zero width joiner</source>
         <translation>ZWJ Zero width joiner</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2813"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2822"/>
         <source>ZWNJ Zero width non-joiner</source>
         <translation>ZWNJ Zero width non-joiner</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2814"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2823"/>
         <source>ZWSP Zero width space</source>
         <translation>ZWSP Zero width space</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2815"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2824"/>
         <source>LRE Start of left-to-right embedding</source>
         <translation>LRE Start of left-to-right embedding</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2816"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2825"/>
         <source>RLE Start of right-to-left embedding</source>
         <translation>RLE Start of right-to-left embedding</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2817"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2826"/>
         <source>LRO Start of left-to-right override</source>
         <translation>LRO Start of left-to-right override</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2818"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2827"/>
         <source>RLO Start of right-to-left override</source>
         <translation>RLO Start of right-to-left override</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2819"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2828"/>
         <source>PDF Pop directional formatting</source>
         <translation>PDF Pop directional formatting</translation>
     </message>
     <message>
-        <location filename="../src/gui/text/qtextcontrol.cpp" line="2825"/>
+        <location filename="../src/gui/text/qtextcontrol.cpp" line="2834"/>
         <source>Insert Unicode control character</source>
         <translation>Unicode-Kontrollzeichen einfügen</translation>
     </message>
@@ -6367,32 +6372,32 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QWebFrame</name>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="703"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="723"/>
         <source>Request cancelled</source>
         <translation>Anfrage wurde abgebrochen</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="720"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="740"/>
         <source>Request blocked</source>
         <translation>Anfrage wurde abgewiesen</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="727"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="747"/>
         <source>Cannot show URL</source>
         <translation>Der URL kann nicht angezeigt werden</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="733"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="753"/>
         <source>Frame load interruped by policy change</source>
         <translation>Das Laden des Rahmens wurde durch eine Änderung der Richtlinien unterbrochen</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="739"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="759"/>
         <source>Cannot show mimetype</source>
         <translation>Dieser Mime-Typ kann nicht angezeigt werden</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="745"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/FrameLoaderClientQt.cpp" line="765"/>
         <source>File does not exist</source>
         <translation>Die Datei existiert nicht</translation>
     </message>
@@ -6682,7 +6687,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Unbekannt</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/InspectorClientQt.cpp" line="177"/>
+        <location filename="../src/3rdparty/webkit/WebKit/qt/WebCoreSupport/InspectorClientQt.cpp" line="172"/>
         <source>Web Inspector - %2</source>
         <translation>Web Inspector - %2</translation>
     </message>
@@ -6693,7 +6698,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>%1 (%2x%3 Pixel)</translation>
     </message>
     <message>
-        <location filename="../src/3rdparty/webkit/WebCore/platform/network/qt/QNetworkReplyHandler.cpp" line="349"/>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/network/qt/QNetworkReplyHandler.cpp" line="355"/>
         <source>Bad HTTP request</source>
         <translation>Ungültige HTTP-Anforderung</translation>
     </message>
@@ -6707,7 +6712,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QWhatsThisAction</name>
     <message>
-        <location filename="../src/gui/kernel/qwhatsthis.cpp" line="488"/>
+        <location filename="../src/gui/kernel/qwhatsthis.cpp" line="490"/>
         <source>What&apos;s This?</source>
         <translation>Direkthilfe</translation>
     </message>
@@ -6715,7 +6720,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QWidget</name>
     <message>
-        <location filename="../src/gui/kernel/qwidget.cpp" line="4807"/>
+        <location filename="../src/gui/kernel/qwidget.cpp" line="4944"/>
         <source>*</source>
         <translation>*</translation>
     </message>
@@ -6786,37 +6791,37 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
 <context>
     <name>QWorkspace</name>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1059"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1063"/>
         <source>&amp;Restore</source>
         <translation>Wieder&amp;herstellen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1060"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1064"/>
         <source>&amp;Move</source>
         <translation>Ver&amp;schieben</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1061"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1065"/>
         <source>&amp;Size</source>
         <translation>&amp;Größe ändern</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1063"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1067"/>
         <source>Mi&amp;nimize</source>
         <translation>M&amp;inimieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1065"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1069"/>
         <source>Ma&amp;ximize</source>
         <translation>Ma&amp;ximieren</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1068"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1072"/>
         <source>&amp;Close</source>
         <translation>Schl&amp;ießen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1073"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1077"/>
         <source>Stay on &amp;Top</source>
         <translation>Im &amp;Vordergrund bleiben</translation>
     </message>
@@ -6836,17 +6841,17 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Schließen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="2156"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="2139"/>
         <source>Sh&amp;ade</source>
         <translation>&amp;Aufrollen</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="1938"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="1921"/>
         <source>%1 - [%2]</source>
         <translation>%1 - [%2]</translation>
     </message>
     <message>
-        <location filename="../src/gui/widgets/qworkspace.cpp" line="2152"/>
+        <location filename="../src/gui/widgets/qworkspace.cpp" line="2135"/>
         <source>&amp;Unshade</source>
         <translation>&amp;Herabrollen</translation>
     </message>
@@ -7003,52 +7008,52 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Überzähliger Inhalt nach Ende des Dokumentes.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="744"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="747"/>
         <source>Invalid entity value.</source>
         <translation>Ungültiger Entity-Wert.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="851"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="854"/>
         <source>Invalid XML character.</source>
         <translation>Ungültiges XML-Zeichen.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1110"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1113"/>
         <source>Sequence &apos;]]&gt;&apos; not allowed in content.</source>
         <translation>Im Inhalt ist die Zeichenfolge &apos;]]&gt;&apos; nicht erlaubt.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1419"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1422"/>
         <source>Namespace prefix &apos;%1&apos; not declared</source>
         <translation>Der Namensraum-Präfix &apos;%1&apos; wurde nicht deklariert</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1497"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1500"/>
         <source>Attribute redefined.</source>
         <translation>Redefinition eines Attributes.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1612"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1615"/>
         <source>Unexpected character &apos;%1&apos; in public id literal.</source>
         <translation>&apos;%1&apos; ist kein gültiges Zeichen in einer public-id-Angabe.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1640"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1643"/>
         <source>Invalid XML version string.</source>
         <translation>Ungültige XML-Versionsangabe.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1642"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1645"/>
         <source>Unsupported XML version.</source>
         <translation>Diese XML-Version wird nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1665"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1668"/>
         <source>%1 is an invalid encoding name.</source>
         <translation>%1 ist kein gültiger Name für das Encoding.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1672"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1675"/>
         <source>Encoding %1 is unsupported</source>
         <translation>Das Encoding %1 wird nicht unterstützt</translation>
     </message>
@@ -7058,42 +7063,42 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Der Name des XML-Encodings ist ungültig.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1688"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1691"/>
         <source>Standalone accepts only yes or no.</source>
         <translation>Der Wert für das &apos;Standalone&apos;-Attribut kann nur &apos;yes&apos; oder &apos;no&apos; sein.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1690"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1693"/>
         <source>Invalid attribute in XML declaration.</source>
         <translation>Die XML-Deklaration enthält ein ungültiges Attribut.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1706"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1709"/>
         <source>Premature end of document.</source>
         <translation>Vorzeitiges Ende des Dokuments.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1708"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1711"/>
         <source>Invalid document.</source>
         <translation>Ungültiges Dokument.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1748"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1751"/>
         <source>Expected </source>
         <translation>Es wurde </translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1759"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1762"/>
         <source>, but got &apos;</source>
         <translation>erwartet, stattdessen erhalten &apos;</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1763"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1766"/>
         <source>Unexpected &apos;</source>
         <translation>Ungültig an dieser Stelle &apos; </translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1960"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1976"/>
         <source>Expected character data.</source>
         <translation>Es wurden Zeichendaten erwartet.</translation>
     </message>
@@ -7168,7 +7173,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Es wurde Inhalt mit einer ungültigen Kodierung gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1663"/>
+        <location filename="../src/corelib/xml/qxmlstream.cpp" line="1666"/>
         <source>The standalone pseudo attribute must appear after the encoding.</source>
         <translation>Das Standalone-Pseudoattribut muss dem Encoding unmittelbar folgen.</translation>
     </message>
@@ -7517,7 +7522,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Leerzeichen werden entfernt, sofern sie nicht in Zeichenklassen erscheinen</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/functions/qpatternplatform.cpp" line="164"/>
+        <location filename="../src/xmlpatterns/functions/qpatternplatform.cpp" line="163"/>
         <source>%1 is an invalid regular expression pattern: %2</source>
         <translation>%1 ist kein gültiger regulärer Ausdruck: %2</translation>
     </message>
@@ -7532,7 +7537,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Es kann kein Präfix angegeben werden, wenn das erste Argument leer oder eine leere Zeichenkette (kein Namensraum) ist. Es wurde der Präfix %1 angegeben</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/functions/qsequencefns.cpp" line="308"/>
+        <location filename="../src/xmlpatterns/functions/qsequencefns.cpp" line="303"/>
         <source>It will not be possible to retrieve %1.</source>
         <translation>%1 kann nicht bestimmt werden.</translation>
     </message>
@@ -7582,7 +7587,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Das Element %1 entspricht nicht dem erforderlichen Typ %2.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6154"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6177"/>
         <source>%1 is an unknown schema type.</source>
         <translation>%1 ist ein unbekannter Schema-Typ.</translation>
     </message>
@@ -7597,12 +7602,12 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Die Initialisierung der Variable %1 hängt von ihrem eigenem Wert ab</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="730"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="753"/>
         <source>The variable %1 is unused</source>
         <translation>Die Variable %1 wird nicht verwendet</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3138"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3161"/>
         <source>Version %1 is not supported. The supported XQuery version is 1.0.</source>
         <translation>Die Version %1 wird nicht unterstützt. Die unterstützte Version von XQuery ist 1.0.</translation>
     </message>
@@ -7612,7 +7617,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Die Kodierung %1 ist ungültig; sie darf nur aus lateinischen Buchstaben bestehen und muss dem regulären Ausdruck %2 entsprechen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3194"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3217"/>
         <source>No function with signature %1 is available</source>
         <translation>Es existiert keine Funktion mit der Signatur %1</translation>
     </message>
@@ -7632,7 +7637,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Modul-Importe müssen vor Funktions- Variablen- oder Optionsdeklarationen stehen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3310"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3333"/>
         <source>It is not possible to redeclare prefix %1.</source>
         <translation>Der Präfix %1 kann nicht redeklariert werden.</translation>
     </message>
@@ -7642,44 +7647,44 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Es kann nur der Präfix %1 zur Bindung des Namensraums %2 deklariert werden. Er ist bereits durch Vorgabe an den Präfix %1 gebunden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3329"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3352"/>
         <source>Prefix %1 is already declared in the prolog.</source>
         <translation>Der Präfix %1 wurde bereits im Prolog deklariert.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3424"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3447"/>
         <source>The name of an option must have a prefix. There is no default namespace for options.</source>
         <translation>Der Name einer Option muss einen Präfix haben. Es gibt keine Namensraum-Vorgabe für Optionen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3594"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3617"/>
         <source>The Schema Import feature is not supported, and therefore %1 declarations cannot occur.</source>
         <translation>Die Deklaration %1 ist unzulässig, da Schema-Import nicht unterstützt wird.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3606"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3629"/>
         <source>The target namespace of a %1 cannot be empty.</source>
         <translation>Der Ziel-Namensraum von %1 darf nicht leer sein.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3613"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3636"/>
         <source>The module import feature is not supported</source>
         <translation>Modul-Import wird nicht unterstützt</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3627"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3650"/>
         <source>A variable by name %1 has already been declared in the prolog.</source>
         <translation>Eine Variable mit dem Namen %1 wurde bereits im Prolog deklariert.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3655"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3678"/>
         <source>No value is available for the external variable by name %1.</source>
         <translation>Für die externe Variable des Namens %1 ist kein Wert verfügbar.</translation>
     </message>
     <message>
         <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3735"/>
         <source>The namespace for a user defined function cannot be empty(try the predefined prefix %1 which exists for cases like this)</source>
-        <translation>Der Namensraum einer nutzerdefinierten Funktion darf nicht leer sein (für diesen Zweck gibt es den vordefinierten Präfix %1)</translation>
+        <translation type="obsolete">Der Namensraum einer nutzerdefinierten Funktion darf nicht leer sein (für diesen Zweck gibt es den vordefinierten Präfix %1)</translation>
     </message>
     <message>
         <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3671"/>
@@ -7687,22 +7692,22 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Der Namensraum %1 ist reserviert und kann daher von nutzerdefinierten Funktionen nicht verwendet werden (für diesen Zweck gibt es den vordefinierten Präfix %2)</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3757"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3780"/>
         <source>The namespace of a user defined function in a library module must be equivalent to the module namespace. In other words, it should be %1 instead of %2</source>
         <translation>Der Namensraum einer nutzerdefinierten Funktion aus einem Bibliotheksmodul muss dem Namensraum des Moduls entsprechen (%1 anstatt %2) </translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3787"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3810"/>
         <source>A function already exists with the signature %1.</source>
         <translation>Es existiert bereits eine Funktion mit der Signatur %1.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3810"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3833"/>
         <source>No external functions are supported. All supported functions can be used directly, without first declaring them as external</source>
         <translation>Externe Funktionen werden nicht unterstützt. Alle unterstützten Funktionen können direkt verwendet werden, ohne sie als extern zu deklarieren</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3848"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3871"/>
         <source>An argument by name %1 has already been declared. Every argument name must be unique.</source>
         <translation>Es existiert bereits ein Argument mit dem Namen %1. Die Namen der Argumente müssen eindeutig sein.</translation>
     </message>
@@ -7722,7 +7727,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Es muss ein fallback-Ausdruck vorhanden sein, da keine pragma-Ausdrücke unterstützt werden</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4867"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4890"/>
         <source>The %1-axis is unsupported in XQuery</source>
         <translation>Die %1-Achse wird in XQuery nicht unterstützt</translation>
     </message>
@@ -7737,22 +7742,22 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Es existiert keine Variable mit dem Namen %1</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5203"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5226"/>
         <source>No function by name %1 is available.</source>
         <translation>Es existiert keine Funktion mit dem Namen %1.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5297"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5320"/>
         <source>The namespace URI cannot be the empty string when binding to a prefix, %1.</source>
         <translation>Der Namensraum-URI darf nicht leer sein, wenn er an den Präfix %1 gebunden ist.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5303"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5326"/>
         <source>%1 is an invalid namespace URI.</source>
         <translation>%1 ist kein gültiger Namensraum-URI.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5310"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5333"/>
         <source>It is not possible to bind to the prefix %1</source>
         <translation>Der Präfix %1 kann nicht gebunden werden</translation>
     </message>
@@ -7767,17 +7772,17 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Der Präfix %1 kann nur an %2 gebunden werden. Dies ist bereits vordeklariert.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5340"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5363"/>
         <source>Two namespace declaration attributes have the same name: %1.</source>
         <translation>Es wurden zwei Namenraum-Deklarationsattribute gleichen Namens (%1) gefunden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5429"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5452"/>
         <source>The namespace URI must be a constant and cannot use enclosed expressions.</source>
         <translation>Ein Namensraum-URI muss eine Konstante sein und darf keine eingebetteten Ausdrücke verwenden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5445"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5468"/>
         <source>An attribute by name %1 has already appeared on this element.</source>
         <translation>Das Element hat bereits ein Attribut mit dem Namen %1.</translation>
     </message>
@@ -7802,7 +7807,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">%1 ist kein atomarer Typ. Es können nur &quot;cast&quot;-Operation zu atomaren Typen durchgeführt werden</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6025"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6048"/>
         <source>%1 is not a valid name for a processing-instruction. Therefore this name test will never match.</source>
         <translation>Dieser Namenstest wird nie wahr ergeben, da %1 kein gültiger Name für eine Processing-Anweisung ist.</translation>
     </message>
@@ -7812,7 +7817,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">%1 befindet sich nicht unter den Attributdeklarationen im Bereich. Schema-Import wird nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6167"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6190"/>
         <source>%1 is not in the in-scope attribute declarations. Note that the schema import feature is not supported.</source>
         <translation>%1 befindet sich nicht unter den Attributdeklarationen im Bereich. Schema-Import wird nicht unterstützt.</translation>
     </message>
@@ -7932,14 +7937,14 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Das Zeitlimit der Netzwerkoperation wurde überschritten.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/api/qxmlserializer.cpp" line="290"/>
+        <location filename="../src/xmlpatterns/api/qxmlserializer.cpp" line="287"/>
         <source>Element %1 can&apos;t be serialized because it appears outside the document element.</source>
         <translation>Das Element %1 kann nicht serialisiert werden, da es außerhalb des Dokumentenelements erscheint.</translation>
     </message>
     <message>
         <location filename="../src/xmlpatterns/api/qxmlserializer.cpp" line="350"/>
         <source>Attribute element %1 can&apos;t be serialized because it appears at the top level.</source>
-        <translation>Das Attributelement %1 kann nicht serialisiert werden, da es auf der höchsten Ebene erscheint.</translation>
+        <translation type="obsolete">Das Attributelement %1 kann nicht serialisiert werden, da es auf der höchsten Ebene erscheint.</translation>
     </message>
     <message>
         <location filename="../src/xmlpatterns/data/qabstractdatetime.cpp" line="53"/>
@@ -8178,7 +8183,7 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Leerzeichen werden entfernt, sofern sie nicht in Zeichenklassen erscheinen</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/functions/qpatternplatform.cpp" line="194"/>
+        <location filename="../src/xmlpatterns/functions/qpatternplatform.cpp" line="193"/>
         <source>%1 is an invalid flag for regular expressions. Valid flags are:</source>
         <translation>%1 ist kein gültiger Modifizierer für reguläre Ausdrücke. Gültige Modifizierer sind:</translation>
     </message>
@@ -8208,72 +8213,72 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Die erforderliche Kardinalität ist %1 (gegenwärtig %2).</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3156"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3179"/>
         <source>The encoding %1 is invalid. It must contain Latin characters only, must not contain whitespace, and must match the regular expression %2.</source>
         <translation>Die Kodierung %1 ist ungültig; sie darf nur aus lateinischen Buchstaben bestehen und muss dem regulären Ausdruck %2 entsprechen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3320"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3343"/>
         <source>Only the prefix %1 can be declared to bind the namespace %2. By default, it is already bound to the prefix %1.</source>
         <translation>Es kann nur der Präfix %1 zur Bindung des Namensraums %2 deklariert werden. Er ist bereits durch Vorgabe an den Präfix %1 gebunden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3745"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3768"/>
         <source>The namespace %1 is reserved; therefore user defined functions may not use it. Try the predefined prefix %2, which exists for these cases.</source>
         <translation>Der Namensraum %1 ist reserviert und kann daher von nutzerdefinierten Funktionen nicht verwendet werden (für diesen Zweck gibt es den vordefinierten Präfix %2).</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3946"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3969"/>
         <source>The name of a variable bound in a for-expression must be different from the positional variable. Hence, the two variables named %1 collide.</source>
         <translation>Der Name der gebundenen Variablen eines for-Ausdrucks muss sich von dem der Positionsvariable unterscheiden. Die zwei Variablen mit dem Namen %1 stehen im Konflikt.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4701"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4724"/>
         <source>The Schema Validation Feature is not supported. Hence, %1-expressions may not be used.</source>
         <translation>%1-Ausdrücke können nicht verwendet werden, da Schemavalidierung nicht unterstützt wird. </translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4740"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="4763"/>
         <source>None of the pragma expressions are supported. Therefore, a fallback expression must be present</source>
         <translation>Es muss ein fallback-Ausdruck vorhanden sein, da keine pragma-Ausdrücke unterstützt werden</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5069"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5092"/>
         <source>%1 is not a valid numeric literal.</source>
         <translation>%1 ist kein gültiger numerischer Literal.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5317"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5340"/>
         <source>Namespace %1 can only be bound to %2 (and it is, in either case, pre-declared).</source>
         <translation>Der Namensraum %1 kann nur an %2 gebunden werden. Dies ist bereits vordeklariert.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5325"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5348"/>
         <source>Prefix %1 can only be bound to %2 (and it is, in either case, pre-declared).</source>
         <translation>Der Präfix %1 kann nur an %2 gebunden werden. Dies ist bereits vordeklariert.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5507"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5530"/>
         <source>A direct element constructor is not well-formed. %1 is ended with %2.</source>
         <translation>Es wurde ein fehlerhafter direkter Element-Konstruktor gefunden. %1 endet mit %2.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5928"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5951"/>
         <source>The name %1 does not refer to any schema type.</source>
         <translation>Der Name %1 hat keinen Bezug zu einem Schematyp.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5940"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5963"/>
         <source>%1 is an complex type. Casting to complex types is not possible. However, casting to atomic types such as %2 works.</source>
         <translation>%1 ist ein komplexer Typ. Eine &quot;cast&quot;-Operation zu komplexen Typen ist nicht möglich. Es können allerdings &quot;cast&quot;-Operationen zu atomare Typen wie %2 durchgeführt werden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5948"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="5971"/>
         <source>%1 is not an atomic type. Casting is only possible to atomic types.</source>
         <translation>%1 ist kein atomarer Typ. Es können nur &quot;cast&quot;-Operation zu atomaren Typen durchgeführt werden.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6205"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="6228"/>
         <source>The name of an extension expression must be in a namespace.</source>
         <translation>Der Name eines Erweiterungsausdrucks muss sich in einem Namensraum befinden.</translation>
     </message>
@@ -8298,12 +8303,12 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation>Es wird nur Unicode Codepoint Collation unterstützt (%1). %2 wird nicht unterstützt.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/acceltree/qacceltreebuilder.cpp" line="167"/>
+        <location filename="../src/xmlpatterns/acceltree/qacceltreebuilder.cpp" line="172"/>
         <source>An %1-attribute with value %2 has already been declared.</source>
         <translation>Das Element hat bereits ein Attribut mit dem Namen %1 mit dem Wert %2.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/acceltree/qacceltreebuilder.cpp" line="181"/>
+        <location filename="../src/xmlpatterns/acceltree/qacceltreebuilder.cpp" line="185"/>
         <source>An %1-attribute must have a valid %2 as value, which %3 isn&apos;t.</source>
         <translation>Ein Attribut mit dem Namen %1 muss einen gültigen %2-Wert haben. %3 ist kein gültiger Wert.</translation>
     </message>
@@ -8384,22 +8389,22 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <translation type="obsolete">Modul-Importe müssen vor Funktions- Variablen- oder Optionsdeklarationen stehen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3698"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3758"/>
         <source>The namespace for a user defined function cannot be empty (try the predefined prefix %1 which exists for cases like this)</source>
-        <translation type="obsolete">Der Namensraum einer nutzerdefinierten Funktion darf nicht leer sein (für diesen Zweck gibt es den vordefinierten Präfix %1)</translation>
+        <translation>Der Namensraum einer nutzerdefinierten Funktion darf nicht leer sein (für diesen Zweck gibt es den vordefinierten Präfix %1)</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3255"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3278"/>
         <source>A default namespace declaration must occur before function, variable, and option declarations.</source>
         <translation>Die Deklaration des Default-Namensraums muss vor Funktions- Variablen- oder Optionsdeklaration erfolgen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3265"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3288"/>
         <source>Namespace declarations must occur before function, variable, and option declarations.</source>
         <translation>Namensraums-Deklarationen müssen vor Funktions- Variablen- oder Optionsdeklarationen stehen.</translation>
     </message>
     <message>
-        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3275"/>
+        <location filename="../src/xmlpatterns/parser/qquerytransformparser.cpp" line="3298"/>
         <source>Module imports must occur before function, variable, and option declarations.</source>
         <translation>Modul-Importe müssen vor Funktions- Variablen- oder Optionsdeklarationen stehen.</translation>
     </message>
@@ -8407,6 +8412,11 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <location filename="../src/xmlpatterns/functions/qtimezonefns.cpp" line="72"/>
         <source>%1 is not a whole number of minutes.</source>
         <translation>%1 ist keine ganzzahlige Minutenangabe.</translation>
+    </message>
+    <message>
+        <location filename="../src/xmlpatterns/api/qxmlserializer.cpp" line="347"/>
+        <source>Attribute %1 can&apos;t be serialized because it appears at the top level.</source>
+        <translation>Das Attributelement %1 kann nicht serialisiert werden, da es auf der höchsten Ebene erscheint.</translation>
     </message>
 </context>
 <context>
@@ -8477,6 +8487,74 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
         <location filename="../src/3rdparty/kdelibs/phonon/volumeslider.cpp" line="195"/>
         <source>Volume: %1%</source>
         <translation>Lautstärke: %1%</translation>
+    </message>
+</context>
+<context>
+    <name>WebCore::PlatformScrollbar</name>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="373"/>
+        <source>Scroll here</source>
+        <translation>Hierher scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="376"/>
+        <source>Left edge</source>
+        <translation>Linker Rand</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="376"/>
+        <source>Top</source>
+        <translation>Anfang</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="377"/>
+        <source>Right edge</source>
+        <translation>Rechter Rand</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="377"/>
+        <source>Bottom</source>
+        <translation>Ende</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="380"/>
+        <source>Page left</source>
+        <translation>Eine Seite nach links</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="380"/>
+        <source>Page up</source>
+        <translation>Eine Seite nach oben</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="381"/>
+        <source>Page right</source>
+        <translation>Eine Seite nach rechts</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="381"/>
+        <source>Page down</source>
+        <translation>Eine Seite nach unten</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="384"/>
+        <source>Scroll left</source>
+        <translation>Nach links scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="384"/>
+        <source>Scroll up</source>
+        <translation>Nach oben scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="385"/>
+        <source>Scroll right</source>
+        <translation>Nach rechts scrollen</translation>
+    </message>
+    <message>
+        <location filename="../src/3rdparty/webkit/WebCore/platform/qt/PlatformScrollBarQt.cpp" line="385"/>
+        <source>Scroll down</source>
+        <translation>Nach unten scrollen</translation>
     </message>
 </context>
 <context>

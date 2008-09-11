@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3gridview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3gridview.cpp -->
 <head>
   <title>Qt 4.4: Q3GridView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3GridView Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3GridView class provides an abstract base for fixed-size grids. <a href="#details">More...</a></p>
@@ -182,9 +182,9 @@
 <p>This pure virtual function is called to paint the single cell at (<i>row</i>, <i>col</i>) using painter <i>p</i>. The painter must be open when paintCell() is called and must remain open.</p>
 <p>The coordinate system is <a href="qpainter.html#translate">translated</a> so that the origin is at the top-left corner of the cell to be painted, i.e&#x2e; <i>cell</i> coordinates. Do not scale or shear the coordinate system (or if you do, restore the transformation matrix before you return).</p>
 <p>The painter is not clipped by default in order to get maximum efficiency. If you want clipping, use</p>
-<pre>   p-&gt;setClipRect(cellRect(), QPainter::CoordPainter);
-   <span class="comment">//... your drawing code</span>
-   p-&gt;setClipping(false);</pre>
+<pre> p-&gt;setClipRect(cellRect(), QPainter::CoordPainter);
+<span class="comment"> //... your drawing code</span>
+ p-&gt;setClipping(false);</pre>
 <a name="//apple_ref/cpp/instm/Q3GridView/paintEmptyArea" />
 <h3 class="fn"><a name="paintEmptyArea"></a>void Q3GridView::paintEmptyArea ( <a href="qpainter.html">QPainter</a> * <i>p</i>, int <i>cx</i>, int <i>cy</i>, int <i>cw</i>, int <i>ch</i> )&nbsp;&nbsp;<tt> [virtual protected]</tt></h3>
 <p>This function fills the <i>cw</i> pixels wide and <i>ch</i> pixels high rectangle starting at position (<i>cx</i>, <i>cy</i>) with the background color using the painter <i>p</i>.</p>
@@ -204,8 +204,8 @@
 <p>See also <a href="qwidget.html#update">QWidget::update</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

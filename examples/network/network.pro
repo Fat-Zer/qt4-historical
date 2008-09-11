@@ -2,7 +2,7 @@ TEMPLATE      = subdirs
 SUBDIRS       = blockingfortuneclient \
  		broadcastreceiver \
                 broadcastsender \
-                chat \
+                network-chat \
 		download \
 		downloadmanager \
                 fortuneclient \

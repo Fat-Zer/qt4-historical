@@ -75,7 +75,7 @@ QT_BEGIN_NAMESPACE
     widget, you can use the static
     QDesignerFormWindowInterface::findFormWindow() function:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractformwindow.cpp 0
 
     But in addition, you can access any of the current form windows
     through \QD's form window manager: Use the
@@ -85,7 +85,7 @@ QT_BEGIN_NAMESPACE
     through the QDesignerFormWindowManagerInterface::formWindow()
     function. For example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 1
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractformwindow.cpp 1
 
     The pointer to \QD's current QDesignerFormEditorInterface object
     (\c formEditor in the example above) is provided by the
@@ -101,7 +101,7 @@ QT_BEGIN_NAMESPACE
     with functions that enables you to control whether a widget should
     be managed by \QD, or not:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.sdk.abstractformwindow.cpp 2
+    \snippet doc/src/snippets/code/tools_designer_src_lib_sdk_abstractformwindow.cpp 2
 
     The complete list of functions concerning widget management is:
     isManaged(), manageWidget() and unmanageWidget(). There is also
@@ -180,22 +180,23 @@ QDesignerFormEditorInterface *QDesignerFormWindowInterface::core() const
     Returns the form window interface for the given \a widget.
 */
 
-static inline bool stopFindAtTopLevel(const QObject *w)
+static inline bool stopFindAtTopLevel(const QObject *w, bool stopAtMenu)
 {
     // Do we need to go beyond top levels when looking for the form window?
     // 1) A dialog has a window attribute at the moment it is created
     //    before it is properly embedded into a form window. The property
     //    sheet queries the layout attributes precisely at this moment.
-    // 2) In the case of floating toolbars, we also need to go beyond the top level window.
-    if (w->inherits("QDesignerDialog"))
-        return false;
-    if (const QDockWidget *dw = qobject_cast<const QDockWidget *>(w))
-        if (dw->isFloating())
-            return false;
-    if (const QToolBar *tb = qobject_cast<const QToolBar *>(w))
-        if (tb->isFloating())
-            return false;
-    return true;
+    // 2) In the case of floating docks and toolbars, we also need to go beyond the top level window.
+    // 3) In the case of menu editing, we don't want to block events from the
+    //    Designer menu, so, we say stop.
+    // Note that there must be no false positives for dialogs parented on
+    // the form (for example, the "change object name" dialog), else, its
+    // events will be blocked.
+
+    if (stopAtMenu && w->inherits("QDesignerMenu"))
+        return true;
+    const bool isFormEditorObject = w->property("_q_formEditorObject").isValid();
+    return !isFormEditorObject;
 }
 
 QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidget *w)
@@ -204,7 +205,7 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QWidg
         if (QDesignerFormWindowInterface *fw = qobject_cast<QDesignerFormWindowInterface*>(w)) {
             return fw;
         } else {
-            if (w->isWindow() && stopFindAtTopLevel(w))
+            if (w->isWindow() && stopFindAtTopLevel(w, true))
                 break;
         }
 
@@ -229,11 +230,11 @@ QDesignerFormWindowInterface *QDesignerFormWindowInterface::findFormWindow(QObje
             return fw;
         } else {
             QWidget *w = qobject_cast<QWidget *>(object);
-            // QDesignerMenu is a window so stopFindAtTopLevel(w) returns NULL.
-            // However we want to find form window for actions inside menu.
-            // If this check is inside stopFindAtTopLevel(w) then it breaks designer
-            // menu editing (e.g. broken ckicking on items inside opened menu)
-            if (w && w->isWindow() && stopFindAtTopLevel(w) && !w->inherits("QDesignerMenu"))
+            // QDesignerMenu is a window, so stopFindAtTopLevel(w) returns 0.
+            // However, we want to find the form window for QActions of a menu.
+            // If this check is inside stopFindAtTopLevel(w), it will break designer
+            // menu editing (e.g. when clicking on items inside an opened menu)
+            if (w && w->isWindow() && stopFindAtTopLevel(w, false))
                 break;
 
         }

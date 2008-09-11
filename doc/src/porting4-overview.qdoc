@@ -94,7 +94,7 @@
     situations, painting must occur within a widget's paint event
     handler.
 
-    On X11, it is possible to set the \l{WA_PaintOutsidePaintEvent}
+    On X11, it is possible to set the \l{Qt::WA_PaintOutsidePaintEvent}
     attribute on widgets to keep existing code, but we recommend
     restricting the use of painting code to within paint event handlers
     where possible.

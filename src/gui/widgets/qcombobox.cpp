@@ -748,7 +748,7 @@ QStyleOptionComboBox QComboBoxPrivateContainer::comboStyleOption() const
     adjust when new content is added or content changes.
 
     \value AdjustToContents              The combobox will always adjust to the contents
-    \value AdjustToContentsOnFirstShow   The combobox will adjust to its contents the first time it is show.
+    \value AdjustToContentsOnFirstShow   The combobox will adjust to its contents the first time it is shown.
     \value AdjustToMinimumContentsLength Use AdjustToContents or AdjustToContentsOnFirstShow instead.
     \value AdjustToMinimumContentsLengthWithIcon The combobox will adjust to \l minimumContentsLength plus space for an icon. For performance reasons use this policy on large models.
 */
@@ -1232,10 +1232,11 @@ QComboBox::~QComboBox()
 
 /*!
     \property QComboBox::maxVisibleItems
-    \brief the maximum allowed size on screen of the combobox
+    \brief the maximum allowed size on screen of the combo box, measured in items
 
-    This property is ignored for non-editable comboboxes in Mac
-    style.
+    By default, this property has a value of 10.
+
+    \note This property is ignored for non-editable comboboxes in Mac style.
 */
 int QComboBox::maxVisibleItems() const
 {
@@ -1257,6 +1258,8 @@ void QComboBox::setMaxVisibleItems(int maxItems)
 /*!
     \property QComboBox::count
     \brief the number of items in the combobox
+
+    By default, for an empty combo box, this property has a value of 0.
 */
 int QComboBox::count() const
 {
@@ -1268,10 +1271,13 @@ int QComboBox::count() const
     \property QComboBox::maxCount
     \brief the maximum number of items allowed in the combobox
 
-    Note: If you set the maximum number to be less then the current
+    \note If you set the maximum number to be less then the current
     amount of items in the combobox, the extra items will be
     truncated. This also applies if you have set an external model on
     the combobox.
+
+    By default, this property's value is derived from the highest
+    signed integer available (typically 2147483647).
 */
 void QComboBox::setMaxCount(int max)
 {
@@ -1302,6 +1308,8 @@ int QComboBox::maxCount() const
     \obsolete
 
     Use setCompleter() instead.
+
+    By default, this property is true.
 
     \sa editable
 */
@@ -1393,6 +1401,8 @@ void QComboBox::setAutoCompletionCaseSensitivity(Qt::CaseSensitivity sensitivity
 
     Note that it is always possible to programmatically insert duplicate items into the
     combobox.
+
+    By default, this property is false (duplicates are not allowed).
 */
 bool QComboBox::duplicatesEnabled() const
 {
@@ -1549,7 +1559,9 @@ void QComboBox::setIconSize(const QSize &size)
 
 /*!
     \property QComboBox::editable
-    \brief whether the combobox can be edited by the user
+    \brief whether the combo box can be edited by the user
+
+    By default, this property is false.
 */
 bool QComboBox::isEditable() const
 {
@@ -1872,9 +1884,12 @@ void QComboBox::setRootModelIndex(const QModelIndex &index)
 
 /*!
     \property QComboBox::currentIndex
-    \brief the index of the current item in the combobox. The index
-    can change when inserting or removing items. Returns -1 if no
-    current item is set or the combobox is empty.
+    \brief the index of the current item in the combobox.
+
+    The current index can change when inserting or removing items.
+
+    By default, for an empty combo box or a combo box in which no current
+    item is set, this property has a value of -1.
 */
 int QComboBox::currentIndex() const
 {
@@ -1908,6 +1923,9 @@ void QComboBoxPrivate::setCurrentIndex(const QModelIndex &mi)
 /*!
     \property QComboBox::currentText
     \brief the text of the current item
+
+    By default, for an empty combo box or a combo box in which no current
+    item is set, this property contains an empty string.
 */
 QString QComboBox::currentText() const
 {
@@ -1957,21 +1975,26 @@ QVariant QComboBox::itemData(int index, int role) const
 /*!
   \fn void QComboBox::insertItem(int index, const QString &text, const QVariant &userData)
 
-  Inserts the \a text and \a userData into the combobox at the given \a index.
+    Inserts the \a text and \a userData (stored in the Qt::UserRole)
+    into the combobox at the given \a index.
 
-  If the index is equal to or higher than the total number of items, the new item
-  is appended to the list of existing items. If the index is zero or negative, the
-  new item is prepended to the list of existing items.
+    If the index is equal to or higher than the total number of items,
+    the new item is appended to the list of existing items. If the
+    index is zero or negative, the new item is prepended to the list
+    of existing items.
 
   \sa insertItems()
 */
 
 /*!
-    Inserts the \a icon, \a text and \a userData into the combobox at the given \a index.
 
-    If the index is equal to or higher than the total number of items, the new item
-    is appended to the list of existing items. If the index is zero or negative, the
-    new item is prepended to the list of existing items.
+    Inserts the \a icon, \a text and \a userData (stored in the
+    Qt::UserRole) into the combobox at the given \a index.
+
+    If the index is equal to or higher than the total number of items,
+    the new item is appended to the list of existing items. If the
+    index is zero or negative, the new item is prepended to the list
+    of existing items.
 
     \sa insertItems()
 */
@@ -2840,6 +2863,7 @@ void QComboBox::wheelEvent(QWheelEvent *e)
 }
 #endif
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     \reimp
 */
@@ -2853,6 +2877,7 @@ void QComboBox::contextMenuEvent(QContextMenuEvent *e)
         d->lineEdit->setContextMenuPolicy(p);
     }
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \reimp
@@ -2919,17 +2944,18 @@ QVariant QComboBox::inputMethodQuery(Qt::InputMethodQuery query) const
 /*!
     \fn void QComboBox::addItem(const QString &text, const QVariant &userData)
 
-    Adds an item to the combobox with the given \a text, and containing the
-    specified \a userData. The item is appended to the list of existing items.
+    Adds an item to the combobox with the given \a text, and
+    containing the specified \a userData (stored in the Qt::UserRole).
+    The item is appended to the list of existing items.
 */
 
 /*!
     \fn void QComboBox::addItem(const QIcon &icon, const QString &text,
                                 const QVariant &userData)
 
-    Adds an item to the combobox with the given \a icon and \a text, and
-    containing the specified \a userData. The item is appended to the list of
-    existing items.
+    Adds an item to the combobox with the given \a icon and \a text,
+    and containing the specified \a userData (stored in the
+    Qt::UserRole). The item is appended to the list of existing items.
 */
 
 /*!
@@ -3030,8 +3056,11 @@ void QComboBox::setFrame(bool enable)
     \property QComboBox::modelColumn
     \brief the column in the model that is visible.
 
-    If set prior to populating the combobox, the popup view will
-    not be affected and will show the first column.
+    If set prior to populating the combo box, the pop-up view will
+    not be affected and will show the first column (using this property's
+    default value).
+
+    By default, this property has a value of 0.
 */
 int QComboBox::modelColumn() const
 {

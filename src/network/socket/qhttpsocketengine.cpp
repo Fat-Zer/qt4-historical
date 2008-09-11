@@ -528,7 +528,7 @@ void QHttpSocketEngine::slotSocketReadNotification()
             setError(QAbstractSocket::ProxyAuthenticationRequiredError, tr("Authentication required"));
             d->socket->disconnectFromHost();
         } else {
-            // close the connection if it isn't already and reconnect using the chose authentication method
+            // close the connection if it isn't already and reconnect using the chosen authentication method
             d->state = SendAuthentication;
             bool willClose = (responseHeader.value(QLatin1String("Proxy-Connection")).toLower() == QLatin1String("close"));
             if (willClose) {

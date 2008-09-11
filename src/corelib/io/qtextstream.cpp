@@ -60,13 +60,13 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
     generating text, QTextStream supports formatting options for field
     padding and alignment, and formatting of numbers. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 0
 
     It's also common to use QTextStream to read console input and write
     console output. QTextStream is locale aware, and will automatically decode
     standard input using the correct codec. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 1
 
     Note that you cannot use QTextStream::atEnd(), which returns true when you
     have reached the end of the data stream, with stdin.
@@ -122,7 +122,7 @@ static const int QTEXTSTREAM_BUFFERSIZE = 16384;
     the integer base, thereby disabling the automatic detection, by
     calling setIntegerBase(). Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 2
 
     QTextStream supports many formatting options for generating text.
     You can set the field width and pad character by calling
@@ -990,7 +990,7 @@ QTextStream::QTextStream(QByteArray *array, QIODevice::OpenMode openMode)
     This constructor is convenient for working on constant
     strings. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 3
 */
 QTextStream::QTextStream(const QByteArray &array, QIODevice::OpenMode openMode)
     : d_ptr(new QTextStreamPrivate(this))
@@ -1020,7 +1020,7 @@ QTextStream::QTextStream(const QByteArray &array, QIODevice::OpenMode openMode)
     This constructor is useful for working directly with the common
     FILE based input and output streams: stdin, stdout and stderr. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 4
 */
 
 QTextStream::QTextStream(FILE *fileHandle, QIODevice::OpenMode openMode)
@@ -1318,11 +1318,11 @@ QTextStream::FieldAlignment QTextStream::fieldAlignment() const
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 5
 
     Output:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 6
 
     \sa padChar(), setFieldWidth()
 */
@@ -1455,11 +1455,18 @@ QTextStream::RealNumberNotation QTextStream::realNumberNotation() const
     describes the number of fraction digits QTextStream should
     write when generating real numbers.
 
+    The precision cannot be a negative value. The default value is 6.
+
     \sa realNumberPrecision(), setRealNumberNotation()
 */
 void QTextStream::setRealNumberPrecision(int precision)
 {
     Q_D(QTextStream);
+    if (precision < 0) {
+        qWarning("QTextStream::setRealNumberPrecision: Invalid precision (%d)", precision);
+        d->realNumberPrecision = 6;
+        return;
+    }
     d->realNumberPrecision = precision;
 }
 
@@ -1936,7 +1943,7 @@ bool QTextStreamPrivate::getReal(double *f)
     reference to the QTextStream, so several operators can be
     nested. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 7
 
     Whitespace is \e not skipped.
 */
@@ -2474,7 +2481,7 @@ QTextStream &QTextStream::operator<<(const QByteArray &array)
     string is assumed to be in ISO-8859-1 encoding. This operator
     is convenient when working with constant string data. Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 8
 
     Warning: QTextStream assumes that \a string points to a string of
     text, terminated by a '\0' character. If there is no terminating
@@ -2782,7 +2789,7 @@ QTextStream &center(QTextStream &stream)
 
     Equivalent to
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 9
 
     Note: On Windows, all '\n' characters are written as '\r\n' if
     QTextStream's device or string is opened using the QIODevice::Text flag.
@@ -2906,7 +2913,7 @@ void QTextStream::setCodec(QTextCodec *codec)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtextstream.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_io_qtextstream.cpp 10
 
     \sa QTextCodec::codecForName()
 */

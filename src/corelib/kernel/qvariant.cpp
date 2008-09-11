@@ -1151,7 +1151,7 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
 
     Here is some example code to demonstrate the use of QVariant:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 0
 
     You can even store QList<QVariant> and QMap<QString, QVariant>
     values in a variant, so you can easily construct arbitrarily
@@ -1162,7 +1162,7 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     QVariant also supports the notion of null values, where you have
     a defined type with no value set.
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 1
 
     QVariant can be extended to support other types than those
     mentioned in the \l Type enum. See the \l QMetaType documentation
@@ -1176,13 +1176,13 @@ const QVariant::Handler *QVariant::handler = &qt_kernel_variant_handler;
     toColor() function. Instead, you can use the QVariant::value() or
     the qVariantValue() template function. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 2
 
     The inverse conversion (e.g., from QColor to QVariant) is
     automatic for all data types supported by QVariant, including
     GUI-related types:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 3
 
     \section1 Using canConvert() and convert() Consecutively
 
@@ -2493,7 +2493,7 @@ static const quint32 qCanConvertMatrix[QVariant::LastCoreType + 1] =
                          \l Font, \l Int, \l KeySequence, \l LongLong, \l StringList, \l Time, \l UInt,
                          \l ULongLong
     \row \o \l StringList \o \l List, \l String (if the list contains exactly one item)
-    \row \o \l Time \o \l DateTime, \l String
+    \row \o \l Time \o \l String
     \row \o \l UInt \o \l Bool, \l Char, \l Double, \l Int, \l LongLong, \l String, \l ULongLong
     \row \o \l ULongLong \o \l Bool, \l Char, \l Double, \l Int, \l LongLong, \l String, \l UInt
     \endtable
@@ -2866,7 +2866,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 4
 
     \warning This function is not available with MSVC 6. Use
     qVariantSetValue() instead if you need to support that version of
@@ -2887,7 +2887,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 5
 
     \warning This function is not available with MSVC 6. Use
     qVariantValue() or qvariant_cast() instead if you need to support
@@ -2903,7 +2903,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 6
 
     \warning This function is not available with MSVC 6. Use
     qVariantCanConvert() instead if you need to support that version
@@ -2919,7 +2919,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 7
 
     \note If you are working with custom types, you should use
     the Q_DECLARE_METATYPE() macro to register your custom type.
@@ -2945,7 +2945,7 @@ QDebug operator<<(QDebug dbg, const QVariant::Type p)
     For example, a QObject pointer can be stored in a variant with the
     following code:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qvariant.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_kernel_qvariant.cpp 8
 
     \sa QVariant::fromValue()
 */

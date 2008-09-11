@@ -504,6 +504,8 @@ bool QAction::autoRepeat() const
     QAction. The font will can be considered a hint as it will not be
     consulted in all cases based upon application and style.
 
+    By default, this property contains the application's default font.
+
     \sa QAction::setText() QStyle
 */
 void QAction::setFont(const QFont &font)
@@ -765,7 +767,7 @@ QString QAction::text() const
     If the icon text is not explicitly set, the action's normal text will be
     used for the icon text.
 
-    There is no default icon text.
+    By default, this property contains an empty string.
 
     \sa setToolTip(), setStatusTip()
 */
@@ -793,6 +795,8 @@ QString QAction::iconText() const
 
     This text is used for the tooltip. If no tooltip is specified,
     the action's text is used.
+
+    By default, this property contains the action's text.
 
     \sa setStatusTip() setShortcut()
 */
@@ -823,6 +827,8 @@ QString QAction::toolTip() const
 
     The status tip is displayed on all status bars provided by the
     action's top-level parent widget.
+
+    By default, this property contains an empty string.
 
     \sa setToolTip() showStatusText()
 */
@@ -962,8 +968,12 @@ bool QAction::isChecked() const
     which indicates that they are unavailable. For example, they might
     be displayed using only shades of gray.
 
-    What's this? help on disabled actions is still available, provided
+    \gui{What's This?} help on disabled actions is still available, provided
     that the QAction::whatsThis property is set.
+
+    By default, this property is true (actions are enabled).
+
+    \sa text
 */
 void QAction::setEnabled(bool b)
 {
@@ -997,6 +1007,8 @@ bool QAction::isEnabled() const
 
     Actions which are not visible are \e not grayed out; they do not
     appear at all.
+
+    By default, this property is true (actions are visible).
 */
 void QAction::setVisible(bool b)
 {
@@ -1320,7 +1332,7 @@ QAction::MenuRole QAction::menuRole() const
     the presence (or abscence) of the attribute.
 
     For example:
-    \snippet doc/src/snippets/code/src.gui.kernel.qaction.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qaction.cpp 0
 
     \sa QAction::icon QApplication::setAttribute()
 */

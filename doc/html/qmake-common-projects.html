@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qmake-manual.qdoc -->
 <head>
   <title>Qt 4.4: qmake Common Projects</title>
   <link rel="prev" href="qmake-tutorial.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qmake-tutorial.html">qmake Tutorial</a>]
 [<a href="qmake-manual.html">Contents</a>]
@@ -66,13 +66,13 @@
 <li><a href="qmake-variable-reference.html#res-file">RES_FILE</a> - Windows only: A resource file to be linked against for the application.</li>
 </ul>
 <p>You only need to use the system variables that you have values for, for instance, if you don't have any extra INCLUDEPATHs then you don't need to specify any, <tt>qmake</tt> will add in the default ones needed. For instance, an example project file might look like this:</p>
-<pre>         TEMPLATE = app
-         DESTDIR  = c:/helloapp
-         HEADERS += hello.h
-         SOURCES += hello.cpp
-         SOURCES += main.cpp
-         DEFINES += QT_DLL
-         CONFIG  += qt warn_on release</pre>
+<pre> TEMPLATE = app
+ DESTDIR  = c:/helloapp
+ HEADERS += hello.h
+ SOURCES += hello.cpp
+ SOURCES += main.cpp
+ DEFINES += QT_DLL
+ CONFIG  += qt warn_on release</pre>
 <p>For items that are single valued, e.g&#x2e; the template or the destination directory, we use &quot;=&quot;; but for multi-valued items we use &quot;+=&quot; to <i>add</i> to the existing items of that type. Using &quot;=&quot; replaces the item's value with the new value, for example if we wrote <tt>DEFINES=QT_DLL</tt>, all other definitions would be deleted.</p>
 <a name="library"></a><a name="building-a-library"></a>
 <h2>Building a Library</h2>
@@ -115,20 +115,20 @@
  }</pre>
 <p>The scope in the above snippet modifies the build target in each mode to ensure that the resulting targets have different names. Providing different names for targets ensures that one will not overwrite the other.</p>
 <p>When <tt>qmake</tt> processes the project file, it will generate a Makefile rule to allow the project to be built in both modes. This can be invoked in the following way:</p>
-<pre>         make all</pre>
+<pre> make all</pre>
 <p>The <tt>build_all</tt> option can be added to the <tt>CONFIG</tt> variable in the project file to ensure that the project is built in both modes by default:</p>
 <pre> CONFIG += build_all</pre>
 <p>This allows the Makefile to be processed using the default rule:</p>
-<pre>         make</pre>
+<pre> make</pre>
 <a name="installing-in-both-modes"></a>
 <h3>Installing in Both Modes</h3>
 <p>The <tt>build_all</tt> option also ensures that both versions of the target will be installed when the installation rule is invoked:</p>
-<pre>         make install</pre>
+<pre> make install</pre>
 <p>It is possible to customize the names of the build targets depending on the target platform. For example, a library or plugin may be named using a different convention on Windows to the one used on Unix platforms:</p>
-<pre>     CONFIG(debug, debug|release) {
-         mac: TARGET = $$join(TARGET,,,_debug)
-         win32: TARGET = $$join(TARGET,,d)
-     }</pre>
+<pre> CONFIG(debug, debug|release) {
+     mac: TARGET = $$join(TARGET,,,_debug)
+     win32: TARGET = $$join(TARGET,,d)
+ }</pre>
 <p>The default behavior in the above snippet is to modify the name used for the build target when building in debug mode. An <tt>else</tt> clause could be added to the scope to do the same for release mode; left as it is, the target name remains unmodified.</p>
 <p>
 [Previous: <a href="qmake-tutorial.html">qmake Tutorial</a>]
@@ -137,8 +137,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

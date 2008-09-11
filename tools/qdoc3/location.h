@@ -59,21 +59,21 @@ class QRegExp;
 
 class Location
 {
-public:
+ public:
     Location();
-    Location( const QString& filePath );
-    Location( const Location& other );
+    Location(const QString& filePath);
+    Location(const Location& other);
     ~Location() { delete stk; }
 
-    Location& operator=( const Location& other );
+    Location& operator=(const Location& other);
 
     void start();
-    void advance( QChar ch );
+    void advance(QChar ch);
     void advanceLines(int n) { stkTop->lineNo += n; stkTop->columnNo = 1; }
 
-    void push( const QString& filePath );
+    void push(const QString& filePath);
     void pop();
-    void setEtc( bool etc ) { etcetera = etc; }
+    void setEtc(bool etc) { etcetera = etc; }
     void setLineNo(int no) { stkTop->lineNo = no; }
     void setColumnNo(int no) { stkTop->columnNo = no; }
 
@@ -84,18 +84,21 @@ public:
     int lineNo() const { return stkTop->lineNo; }
     int columnNo() const { return stkTop->columnNo; }
     bool etc() const { return etcetera; }
-    void warning( const QString& message, const QString& details = QString() ) const;
-    void error( const QString& message, const QString& details = QString() ) const;
-    void fatal( const QString& message, const QString& details = QString() ) const;
+    void warning(const QString& message, 
+                 const QString& details = QString()) const;
+    void error(const QString& message, 
+               const QString& details = QString()) const;
+    void fatal(const QString& message, 
+               const QString& details = QString()) const;
 
     QT_STATIC_CONST Location null;
 
-    static void initialize( const Config& config );
+    static void initialize(const Config& config);
     static void terminate();
-    static void information( const QString& message );
-    static void internalError( const QString& hint );
+    static void information(const QString& message);
+    static void internalError(const QString& hint);
 
-private:
+ private:
     enum MessageType { Warning, Error };
 
     struct StackEntry
@@ -105,11 +108,13 @@ private:
 	int columnNo;
     };
 
-    void emitMessage( MessageType type, const QString& message,
-		      const QString& details ) const;
+    void emitMessage(MessageType type, 
+                     const QString& message,
+                     const QString& details) const;
     QString toString() const;
     QString top() const;
 
+ private:
     StackEntry stkBottom;
     QStack<StackEntry> *stk;
     StackEntry *stkTop;

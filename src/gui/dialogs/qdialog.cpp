@@ -528,6 +528,7 @@ bool QDialog::eventFilter(QObject *o, QEvent *e)
   Event handlers
  *****************************************************************************/
 
+#ifndef QT_NO_CONTEXTMENU
 /*! \reimp */
 void QDialog::contextMenuEvent(QContextMenuEvent *e)
 {
@@ -553,6 +554,7 @@ void QDialog::contextMenuEvent(QContextMenuEvent *e)
     }
 #endif
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*! \reimp */
 void QDialog::keyPressEvent(QKeyEvent *e)

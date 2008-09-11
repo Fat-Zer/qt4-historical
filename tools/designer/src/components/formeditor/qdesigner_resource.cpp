@@ -138,6 +138,9 @@ public:
     bool isSaveRelative() const                           { return m_saveRelative; }
     void setSaveRelative(bool relative)                   { m_saveRelative = relative; }
     QStringList usedQrcFiles() const                      { return m_usedQrcFiles.keys(); }
+#ifdef OLD_RESOURCE_FORMAT
+    QStringList loadedQrcFiles() const                    { return m_loadedQrcFiles.keys(); } // needed only for loading old resource attribute of <iconset> tag.
+#endif
 
     virtual QVariant loadResource(const QDir &workingDirectory, const DomProperty *icon) const;
 
@@ -153,6 +156,7 @@ private:
     DesignerIconCache    *m_iconCache;
     bool                  m_saveRelative;
     mutable QMap<QString, bool>   m_usedQrcFiles;
+    mutable QMap<QString, bool>   m_loadedQrcFiles;
 };
 
 QDesignerResourceBuilder::QDesignerResourceBuilder(QDesignerFormEditorInterface *core, DesignerPixmapCache *pixmapCache, DesignerIconCache *iconCache) :
@@ -174,8 +178,13 @@ QVariant QDesignerResourceBuilder::loadResource(const QDir &workingDirectory, co
         case DomProperty::Pixmap: {
             PropertySheetPixmapValue pixmap;
             DomResourcePixmap *dp = property->elementPixmap();
-            if (!dp->text().isEmpty())
+            if (!dp->text().isEmpty()) {
                 pixmap.setPath(QFileInfo(workingDirectory, dp->text()).absoluteFilePath());
+#ifdef OLD_RESOURCE_FORMAT
+                if (dp->hasAttributeResource())
+                    m_loadedQrcFiles.insert(QFileInfo(workingDirectory, dp->attributeResource()).absoluteFilePath(), false);
+#endif
+            }
             return qVariantFromValue(pixmap);
         }
 
@@ -202,6 +211,8 @@ QVariant QDesignerResourceBuilder::loadResource(const QDir &workingDirectory, co
             } else {
 #ifdef OLD_RESOURCE_FORMAT
                 setIconPixmap(QIcon::Normal, QIcon::Off, workingDirectory, di->text(), icon);
+                if (di->hasAttributeResource())
+                    m_loadedQrcFiles.insert(QFileInfo(workingDirectory, di->attributeResource()).absoluteFilePath(), false);
 #endif
             }
             return qVariantFromValue(icon);
@@ -722,6 +733,23 @@ QWidget *QDesignerResource::create(DomUI *ui, QWidget *parentWidget)
             // No explicit Geometry: perform an adjustSize() to resize the form correctly before embedding it into a container
             // (which might otherwise squeeze the form)
             mainWidget->adjustSize();
+        }
+        // Some integration wizards create forms with main containers
+        // based on derived classes of QWidget and load them into Designer
+        // without the plugin existing. This will trigger the auto-promotion
+        // mechanism of Designer, which will set container=false for
+        // QWidgets. For the main container, force container=true and warn.
+        const QDesignerWidgetDataBaseInterface *wdb = core()->widgetDataBase();
+        const int wdbIndex = wdb->indexOfObject(mainWidget);
+        if (wdbIndex != -1) {
+            QDesignerWidgetDataBaseItemInterface *item = wdb->item(wdbIndex);
+            // Promoted main container that is not of container type
+            if (item->isPromoted() && !item->isContainer()) {
+                item->setContainer(true);
+                qWarning("** WARNING The form's main container is an unknown custom widget '%s'."
+                         " Defaulting to a promoted instance of '%s', assuming container.",
+                         item->name().toUtf8().constData(), item->extends().toUtf8().constData());
+            }
         }
     }
     return mainWidget;
@@ -1988,6 +2016,22 @@ DomProperty *QDesignerResource::createProperty(QObject *object, const QString &p
     return applyProperStdSetAttribute(object, propertyName, QAbstractFormBuilder::createProperty(object, propertyName, value));
 }
 
+QStringList QDesignerResource::mergeWithLoadedPaths(const QStringList &paths) const
+{
+    QStringList newPaths = paths;
+#ifdef OLD_RESOURCE_FORMAT
+    QStringList loadedPaths = m_resourceBuilder->loadedQrcFiles();
+    QStringListIterator it(loadedPaths);
+    while (it.hasNext()) {
+        const QString path = it.next();
+        if (!newPaths.contains(path))
+            newPaths << path;
+    }
+#endif
+    return newPaths;
+}
+
+
 void QDesignerResource::createResources(DomResources *resources)
 {
     QStringList paths;
@@ -2019,6 +2063,11 @@ void QDesignerResource::createResources(DomResources *resources)
             }
         }
     }
+
+#ifdef OLD_RESOURCE_FORMAT
+    paths = mergeWithLoadedPaths(paths);
+#endif
+
     QtResourceSet *resourceSet = m_formWindow->resourceSet();
     if (resourceSet) {
         QStringList oldPaths = resourceSet->activeQrcPaths();

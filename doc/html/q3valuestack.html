@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/q3valuestack.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/q3valuestack.qdoc -->
 <head>
   <title>Qt 4.4: Q3ValueStack Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3ValueStack Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3ValueStack class is a value-based template class that provides a stack. <a href="#details">More...</a></p>
@@ -47,17 +47,17 @@
 <p>Note that Q3ValueStack does not store pointers to the members of the stack; it holds a copy of every member. That is why these kinds of classes are called &quot;value based&quot;; <a href="q3ptrstack.html">Q3PtrStack</a>, <a href="q3ptrlist.html">Q3PtrList</a>, <a href="q3dict.html">Q3Dict</a>, etc., are &quot;pointer based&quot;.</p>
 <p>A stack is a last in, first out (LIFO) structure. Items are added to the top of the stack with <a href="q3valuestack.html#push">push</a>() and retrieved from the top with <a href="q3valuestack.html#pop">pop</a>(). The <a href="q3valuestack.html#top">top</a>() function provides access to the topmost item without removing it.</p>
 <p>Example:</p>
-<pre>         Q3ValueStack&lt;int&gt; stack;
-         stack.push( 1 );
-         stack.push( 2 );
-         stack.push( 3 );
-         while ( ! stack.isEmpty() )
-             cout &lt;&lt; &quot;Item: &quot; &lt;&lt; stack.pop() &lt;&lt; endl;
+<pre> Q3ValueStack&lt;int&gt; stack;
+ stack.push( 1 );
+ stack.push( 2 );
+ stack.push( 3 );
+ while ( ! stack.isEmpty() )
+     cout &lt;&lt; &quot;Item: &quot; &lt;&lt; stack.pop() &lt;&lt; endl;
 
-         // Output:
-         //      Item: 3
-         //      Item: 2
-         //      Item: 1</pre>
+ // Output:
+ //      Item: 3
+ //      Item: 2
+ //      Item: 1</pre>
 <p>Q3ValueStack is a specialized <a href="q3valuelist.html">Q3ValueList</a> provided for convenience. All of <a href="q3valuelist.html">Q3ValueList</a>'s functionality also applies to <a href="q3ptrstack.html">Q3PtrStack</a>, for example the facility to iterate over all elements using Q3ValueStack&lt;T&gt;::Iterator. See <a href="q3valuelistiterator.html">Q3ValueListIterator</a> for further details.</p>
 <p>Some classes cannot be used within a Q3ValueStack, for example everything derived from <a href="qobject.html">QObject</a> and thus all classes that implement widgets. Only values can be used in a Q3ValueStack. To qualify as a value, the class must provide</p>
 <ul>
@@ -95,8 +95,8 @@
 <p>See also <a href="q3valuestack.html#pop">pop</a>(), <a href="q3valuestack.html#push">push</a>(), and <a href="q3valuelist.html#fromLast">Q3ValueList::fromLast</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -1055,8 +1055,14 @@ QString QCalendarModel::dayName(Qt::DayOfWeek day) const
 {
     switch (m_horizontalHeaderFormat) {
         case QCalendarWidget::SingleLetterDayNames:
-            if (m_view->locale().language() == QLocale::Chinese)
+            if (m_view->locale().language() == QLocale::Chinese) {
                 return m_view->locale().dayName(day, QLocale::ShortFormat).right(1);
+            } else if (m_view->locale().language() == QLocale::Arabic) {
+                //some Arabic locales have the same letter at beginning which
+                //makes the various days indistinguishable
+                QLocale l(QLocale::Arabic, QLocale::Egypt);
+                return l.dayName(day, QLocale::ShortFormat).left(1);
+            }
             return m_view->locale().dayName(day, QLocale::ShortFormat).left(1);
         case QCalendarWidget::ShortDayNames:
             return m_view->locale().dayName(day, QLocale::ShortFormat);
@@ -1974,7 +1980,7 @@ void QCalendarWidgetPrivate::_q_editingFinished()
     \row \o
         \image qcalendarwidget-grid.png
     \row \o
-        \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 0
+        \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 0
     \endtable
 
     Finally, the day in the first column can be altered using the
@@ -2372,7 +2378,7 @@ void QCalendarWidget::showToday()
     \o \image qcalendarwidget-minimum.png
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 1
+    \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 1
     \endtable
 
     By default, the minimum date is the earliest date that the QDate
@@ -2423,7 +2429,7 @@ void QCalendarWidget::setMinimumDate(const QDate &date)
     \o \image qcalendarwidget-maximum.png
     \row
     \o
-    \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 2
+    \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 2
     \endtable
 
     By default, the maximum date is the last day the QDate class can
@@ -2469,11 +2475,11 @@ void QCalendarWidget::setMaximumDate(const QDate &date)
     The date range restricts the user selection, i.e. the user can
     only select dates within the specified date range. Note that
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 3
+    \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 3
 
     is analogous to
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 4
+    \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 4
 
     If either the \a min or \a max parameters are not valid QDate
     objects, this function does nothing.
@@ -2598,7 +2604,7 @@ void QCalendarWidget::setVerticalHeaderFormat(QCalendarWidget::VerticalHeaderFor
         \o \inlineimage qcalendarwidget-grid.png
     \row
         \o
-        \snippet doc/src/snippets/code/src.gui.widgets.qcalendarwidget.cpp 5
+        \snippet doc/src/snippets/code/src_gui_widgets_qcalendarwidget.cpp 5
     \endtable
 
     The default value is false.
@@ -2908,6 +2914,8 @@ void QCalendarWidget::updateCells()
     \obsolete
 
     Use navigationBarVisible() instead.
+
+    By default, this property is true.
 */
 
 /*!

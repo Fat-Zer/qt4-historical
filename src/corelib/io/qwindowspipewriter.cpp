@@ -44,7 +44,7 @@
 #include "qwindowspipewriter_p.h"
 
 QT_BEGIN_NAMESPACE
-        
+
 #ifndef QT_NO_THREAD
 
 QWindowsPipeWriter::QWindowsPipeWriter(HANDLE pipe, QObject * parent)
@@ -53,10 +53,11 @@ QWindowsPipeWriter::QWindowsPipeWriter(HANDLE pipe, QObject * parent)
       quitNow(false),
       hasWritten(false)
 {
-#if !defined(Q_OS_WINCE) || (_WIN32_WCE >= 0x600) 
+#if !defined(Q_OS_WINCE) || (_WIN32_WCE >= 0x600)
     DuplicateHandle(GetCurrentProcess(), pipe, GetCurrentProcess(),
                          &writePipe, 0, FALSE, DUPLICATE_SAME_ACCESS);
 #else
+    Q_UNUSED(pipe);
     writePipe = GetCurrentProcess();
 #endif
 }
@@ -69,7 +70,7 @@ QWindowsPipeWriter::~QWindowsPipeWriter()
     lock.unlock();
     if (!wait(100))
         terminate();
-#if !defined(Q_OS_WINCE) || (_WIN32_WCE >= 0x600) 
+#if !defined(Q_OS_WINCE) || (_WIN32_WCE >= 0x600)
     CloseHandle(writePipe);
 #endif
 }

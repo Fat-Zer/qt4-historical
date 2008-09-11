@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/q3ptrlist.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/q3ptrlist.qdoc -->
 <head>
   <title>Qt 4.4: Q3PtrList Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3PtrList Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3PtrList class is a template class that provides a list. <a href="#details">More...</a></p>
@@ -90,52 +90,52 @@
 <p>The list class is indexable and has a <a href="q3ptrlist.html#at">current index</a> and a <a href="q3ptrlist.html#current">current item</a>. The first item corresponds to index position 0. The current index is -1 if the current item is 0.</p>
 <p>Items are inserted with <a href="q3ptrlist.html#prepend">prepend</a>(), <a href="q3ptrlist.html#insert">insert</a>() or <a href="q3ptrlist.html#append">append</a>(). Items are removed with <a href="q3ptrlist.html#remove">remove</a>(), <a href="q3ptrlist.html#removeRef">removeRef</a>(), <a href="q3ptrlist.html#removeFirst">removeFirst</a>() and <a href="q3ptrlist.html#removeLast">removeLast</a>(). You can search for an item using <a href="q3ptrlist.html#find">find</a>(), <a href="q3ptrlist.html#findNext">findNext</a>(), <a href="q3ptrlist.html#findRef">findRef</a>() or <a href="q3ptrlist.html#findNextRef">findNextRef</a>(). The list can be sorted with <a href="q3ptrlist.html#sort">sort</a>(). You can count the number of occurrences of an item with <a href="q3ptrlist.html#contains">contains</a>() or <a href="q3ptrlist.html#containsRef">containsRef</a>(). You can get a pointer to the current item with <a href="q3ptrlist.html#current">current</a>(), to an item at a particular index position in the list with <a href="q3ptrlist.html#at">at</a>() or to the first or last item with <a href="q3ptrlist.html#getFirst">getFirst</a>() and <a href="q3ptrlist.html#getLast">getLast</a>(). You can also iterate over the list with <a href="q3ptrlist.html#first">first</a>(), <a href="q3ptrlist.html#last">last</a>(), <a href="q3ptrlist.html#next">next</a>() and <a href="q3ptrlist.html#prev">prev</a>() (which all update <a href="q3ptrlist.html#current">current</a>()). The list's deletion property is set with <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>().</p>
 <a name="example"></a><p>Example:</p>
-<pre>     class Employee
-     {
-     public:
-         Employee() : sn( 0 ) { }
-         Employee( const QString&amp; forename, const QString&amp; surname, int salary )
-             : fn( forename ), sn( surname ), sal( salary )
-         { }
+<pre> class Employee
+ {
+ public:
+     Employee() : sn( 0 ) { }
+     Employee( const QString&amp; forename, const QString&amp; surname, int salary )
+         : fn( forename ), sn( surname ), sal( salary )
+     { }
 
-         void setSalary( int salary ) { sal = salary; }
+     void setSalary( int salary ) { sal = salary; }
 
-         QString forename() const { return fn; }
-         QString surname() const { return sn; }
-         int salary() const { return sal; }
+     QString forename() const { return fn; }
+     QString surname() const { return sn; }
+     int salary() const { return sal; }
 
-     private:
-         QString fn;
-         QString sn;
-         int sal;
-     };
+ private:
+     QString fn;
+     QString sn;
+     int sal;
+ };
 
-     Q3PtrList&lt;Employee&gt; list;
-     list.setAutoDelete( TRUE ); // the list owns the objects
+ Q3PtrList&lt;Employee&gt; list;
+ list.setAutoDelete( TRUE ); // the list owns the objects
 
-     list.append( new Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
-     list.append( new Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
-     list.append( new Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
+ list.append( new Employee(&quot;John&quot;, &quot;Doe&quot;, 50000) );
+ list.append( new Employee(&quot;Jane&quot;, &quot;Williams&quot;, 80000) );
+ list.append( new Employee(&quot;Tom&quot;, &quot;Jones&quot;, 60000) );
 
-     Employee *employee;
-     for ( employee = list.first(); employee; employee = list.next() )
-         cout &lt;&lt; employee-&gt;surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
-                 employee-&gt;forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
-                 employee-&gt;salary() &lt;&lt; endl;
-     cout &lt;&lt; endl;
+ Employee *employee;
+ for ( employee = list.first(); employee; employee = list.next() )
+     cout &lt;&lt; employee-&gt;surname().latin1() &lt;&lt; &quot;, &quot; &lt;&lt;
+             employee-&gt;forename().latin1() &lt;&lt; &quot; earns &quot; &lt;&lt;
+             employee-&gt;salary() &lt;&lt; endl;
+ cout &lt;&lt; endl;
 
-     // very inefficient for big lists
-     for ( uint i = 0; i &lt; list.count(); ++i )
-         if ( list.at(i) )
-             cout &lt;&lt; list.at( i )-&gt;surname().latin1() &lt;&lt; endl;</pre>
+ // very inefficient for big lists
+ for ( uint i = 0; i &lt; list.count(); ++i )
+     if ( list.at(i) )
+         cout &lt;&lt; list.at( i )-&gt;surname().latin1() &lt;&lt; endl;</pre>
 <p>The output is</p>
-<pre>     Doe, John earns 50000
-     Williams, Jane earns 80000
-     Jones, Tom earns 60000
+<pre> Doe, John earns 50000
+ Williams, Jane earns 80000
+ Jones, Tom earns 60000
 
-     Doe
-     Williams
-     Jones</pre>
+ Doe
+ Williams
+ Jones</pre>
 <p>Q3PtrList has several member functions for traversing the list, but using a <a href="q3ptrlistiterator.html">Q3PtrListIterator</a> can be more practical. Multiple list iterators may traverse the same list, independently of each other and of the current list item.</p>
 <p>In the example above we make the call setAutoDelete(true). Enabling auto-deletion tells the list to delete items that are removed. The default is to not delete items when they are removed but this would cause a memory leak in the example because there are no other references to the list items.</p>
 <p>When inserting an item into a list only the pointer is copied, not the item itself, i.e&#x2e; a shallow copy. It is possible to make the list copy all of the item's data (deep copy) when an item is inserted. <a href="q3ptrlist.html#insert">insert</a>(), <a href="q3ptrlist.html#inSort">inSort</a>() and <a href="q3ptrlist.html#append">append</a>() call the virtual function <a href="q3ptrcollection.html#newItem">Q3PtrCollection::newItem</a>() for the item to be inserted. Inherit a list and reimplement <a href="q3ptrcollection.html#newItem">newItem</a>() to have deep copies.</p>
@@ -361,8 +361,8 @@
 <p>Returns TRUE if successful, i.e&#x2e; if <i>item</i> is in the list; otherwise returns FALSE.</p>
 <p>The removed item is deleted if <a href="q3ptrcollection.html#setAutoDelete">auto-deletion</a> is enabled.</p>
 <p>Equivalent to:</p>
-<pre>         if ( list.findRef( item ) != -1 )
-             list.remove();</pre>
+<pre> if ( list.findRef( item ) != -1 )
+     list.remove();</pre>
 <p>The item after the removed item becomes the new current list item if the removed item is not the last item in the list. If the last item is removed, the new last item becomes the current item. The current item is set to 0 if the list becomes empty.</p>
 <p>All list iterators that refer to the removed item will be set to point to the new current item.</p>
 <p>See also <a href="q3ptrlist.html#remove">remove</a>(), <a href="q3ptrlist.html#clear">clear</a>(), <a href="q3ptrcollection.html#setAutoDelete">setAutoDelete</a>(), and <a href="q3ptrlist.html#current">current</a>().</p>
@@ -420,8 +420,8 @@
 <p>Compares this list with <i>list</i>. Returns TRUE if the lists contain the same data; otherwise returns FALSE.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

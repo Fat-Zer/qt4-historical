@@ -57,7 +57,7 @@ QT_BEGIN_NAMESPACE
     This class provides the information. For example, to compute the
     aspect ratio of a paint device:
 
-    \snippet doc/src/snippets/code/src.qt3support.painting.q3paintdevicemetrics.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_painting_q3paintdevicemetrics.cpp 0
 
     Q3PaintDeviceMetrics contains methods to provide the width and
     height of a device in both pixels (width() and height()) and

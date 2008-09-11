@@ -44,6 +44,8 @@
 #include "qlocalsocket.h"
 #include "qlocalsocket_p.h"
 
+#ifndef QT_NO_LOCALSOCKET
+
 QT_BEGIN_NAMESPACE
 
 /*!
@@ -254,7 +256,7 @@ QT_BEGIN_NAMESPACE
     The following example waits up to one second for a connection
     to be established:
 
-    \snippet doc/src/snippets/code/src.network.socket.qlocalsocket_unix.cpp 0
+    \snippet doc/src/snippets/code/src_network_socket_qlocalsocket_unix.cpp 0
 
     If msecs is -1, this function will not time out.
 
@@ -273,7 +275,7 @@ QT_BEGIN_NAMESPACE
     The following example waits up to one second for a connection
     to be closed:
 
-    \snippet doc/src/snippets/code/src.network.socket.qlocalsocket_unix.cpp 1
+    \snippet doc/src/snippets/code/src_network_socket_qlocalsocket_unix.cpp 1
 
     If msecs is -1, this function will not time out.
 
@@ -310,7 +312,7 @@ QT_BEGIN_NAMESPACE
     parameter describes the type of error that occurred.
 
     QLocalSocket::LocalSocketError is not a registered metatype, so for queued
-    connections, you will have to register it with Q_REGISTER_METATYPE.
+    connections, you will have to register it with Q_DECLARE_METATYPE.
 
     \sa error(), errorString()
 */
@@ -322,7 +324,7 @@ QT_BEGIN_NAMESPACE
     The \a socketState parameter is the new state.
 
     QLocalSocket::SocketState is not a registered metatype, so for queued
-    connections, you will have to register it with Q_REGISTER_METATYPE.
+    connections, you will have to register it with Q_DECLARE_METATYPE.
 
     \sa state()
 */
@@ -499,5 +501,7 @@ QDebug operator<<(QDebug debug, QLocalSocket::LocalSocketState state)
 #endif
 
 QT_END_NAMESPACE
+
+#endif
 
 #include "moc_qlocalsocket.cpp"

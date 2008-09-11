@@ -61,6 +61,24 @@ QT_MODULE(Core)
 
 namespace QtConcurrent {
 
+template <typename T>
+struct qValueType
+{
+    typedef typename T::value_type value_type;
+};
+
+template <typename T>
+struct qValueType<const T*>
+{
+    typedef T value_type;
+};
+
+template <typename T>
+struct qValueType<T*>
+{
+    typedef T value_type;
+};
+
 // Implementation of filter
 template <typename Sequence, typename KeepFunctor, typename ReduceFunctor>
 class FilterKernel : public IterateKernel<typename Sequence::const_iterator, void>
@@ -77,7 +95,7 @@ class FilterKernel : public IterateKernel<typename Sequence::const_iterator, voi
 
 public:
     FilterKernel(Sequence &_sequence, KeepFunctor _keep, ReduceFunctor _reduce)
-        : IterateKernelType(_sequence.constBegin(), _sequence.constEnd()), reducedResult(),
+        : IterateKernelType(const_cast<const Sequence &>(_sequence).begin(), const_cast<const Sequence &>(_sequence).end()), reducedResult(),
           sequence(_sequence),
           keep(_keep),
           reduce(_reduce),
@@ -104,13 +122,13 @@ public:
         results.end = end;
         results.vector.reserve(end - begin);
 
-        int currentIndex = begin;
-        while (currentIndex != end) {
-            typename Sequence::const_iterator currentIterator =
-                sequenceBeginIterator + currentIndex;
-            if (keep(*currentIterator))
-                results.vector.append(*currentIterator);
-            ++currentIndex;
+
+        typename Sequence::const_iterator it = sequenceBeginIterator;
+        advance(it, begin);
+        for (int i = begin; i < end; ++i) {
+            if (keep(*it))
+                results.vector.append(*it);
+            advance(it, 1);
         }
 
         reducer.runReduce(reduce, reducedResult, results);
@@ -144,7 +162,7 @@ template <typename ReducedResultType,
           typename ReduceFunctor,
           typename Reducer = ReduceKernel<ReduceFunctor,
                                           ReducedResultType,
-                                          typename Iterator::value_type> >
+                                          typename qValueType<Iterator>::value_type> >
 class FilteredReducedKernel : public IterateKernel<Iterator, ReducedResultType>
 {
     ReducedResultType reducedResult;
@@ -173,7 +191,7 @@ public:
 
     bool runIteration(Iterator it, int index, ReducedResultType *)
     {
-        IntermediateResults<typename Iterator::value_type> results;
+        IntermediateResults<typename qValueType<Iterator>::value_type> results;
         results.begin = index;
         results.end = index + 1;
 
@@ -186,17 +204,17 @@ public:
 
     bool runIterations(Iterator sequenceBeginIterator, int begin, int end, ReducedResultType *)
     {
-        IntermediateResults<typename Iterator::value_type> results;
+        IntermediateResults<typename qValueType<Iterator>::value_type> results;
         results.begin = begin;
         results.end = end;
         results.vector.reserve(end - begin);
 
-        int currentIndex = begin;
-        while (currentIndex != end) {
-            Iterator currentIterator = sequenceBeginIterator + currentIndex;
-            if (keep(*currentIterator))
-                results.vector.append(*currentIterator);
-            ++currentIndex;
+        Iterator it = sequenceBeginIterator;
+        advance(it, begin);
+        for (int i = begin; i < end; ++i) {
+            if (keep(*it))
+                results.vector.append(*it);
+            advance(it, 1);
         }
 
         reducer.runReduce(reduce, reducedResult, results);
@@ -228,9 +246,9 @@ public:
 
 // Implementation of filter that reports individual results via QFutureInterface
 template <typename Iterator, typename KeepFunctor>
-class FilteredEachKernel : public IterateKernel<Iterator, typename Iterator::value_type>
+class FilteredEachKernel : public IterateKernel<Iterator, typename qValueType<Iterator>::value_type>
 {
-    typedef typename Iterator::value_type T;
+    typedef typename qValueType<Iterator>::value_type T;
     typedef IterateKernel<Iterator, T> IterateKernelType;
 
     KeepFunctor keep;
@@ -262,17 +280,17 @@ public:
     bool runIterations(Iterator sequenceBeginIterator, int begin, int end, T *)
     {
         const int count = end - begin;
-        IntermediateResults<typename Iterator::value_type> results;
+        IntermediateResults<typename qValueType<Iterator>::value_type> results;
         results.begin = begin;
         results.end = end;
         results.vector.reserve(count);
 
-        int currentIndex = begin;
-        while (currentIndex != end) {
-            Iterator currentIterator = sequenceBeginIterator + currentIndex;
-            if (keep(*currentIterator))
-                results.vector.append(*currentIterator);
-            ++currentIndex;
+        Iterator it = sequenceBeginIterator;
+        advance(it, begin);
+        for (int i = begin; i < end; ++i) {
+            if (keep(*it))
+                results.vector.append(*it);
+            advance(it, 1);
         }
 
         this->reportResults(results.vector, begin, count);
@@ -282,7 +300,7 @@ public:
 
 template <typename Iterator, typename KeepFunctor>
 inline
-ThreadEngineStarter<typename Iterator::value_type>
+ThreadEngineStarter<typename qValueType<Iterator>::value_type>
 startFiltered(Iterator begin, Iterator end, KeepFunctor functor)
 {
     return startThreadEngine(new FilteredEachKernel<Iterator, KeepFunctor>(begin, end, functor));
@@ -305,7 +323,7 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(const Sequence & seq
                                                            ReduceOptions options)
 {
     typedef typename Sequence::const_iterator Iterator;
-    typedef ReduceKernel<ReduceFunctor, ResultType, typename Iterator::value_type> Reducer;
+    typedef ReduceKernel<ReduceFunctor, ResultType, typename qValueType<Iterator>::value_type > Reducer;
     typedef FilteredReducedKernel<ResultType, Iterator, MapFunctor, ReduceFunctor, Reducer> FilteredReduceType;
     typedef SequenceHolder2<Sequence, FilteredReduceType, MapFunctor, ReduceFunctor> SequenceHolderType;
     return startThreadEngine(new SequenceHolderType(sequence, mapFunctor, reduceFunctor, options));
@@ -317,7 +335,7 @@ inline ThreadEngineStarter<ResultType> startFilteredReduced(Iterator begin, Iter
                                                            MapFunctor mapFunctor, ReduceFunctor reduceFunctor,
                                                            ReduceOptions options)
 {
-    typedef ReduceKernel<ReduceFunctor, ResultType, typename Iterator::value_type> Reducer;
+    typedef ReduceKernel<ReduceFunctor, ResultType, typename qValueType<Iterator>::value_type> Reducer;
     typedef FilteredReducedKernel<ResultType, Iterator, MapFunctor, ReduceFunctor, Reducer> FilteredReduceType;
     return startThreadEngine(new FilteredReduceType(begin, end, mapFunctor, reduceFunctor, options));
 }

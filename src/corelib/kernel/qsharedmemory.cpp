@@ -45,10 +45,13 @@
 #include "qsharedmemory_p.h"
 #include "qsystemsemaphore.h"
 #include <qdir.h>
+#include <qcryptographichash.h>
+
 #include <qdebug.h>
 
 QT_BEGIN_NAMESPACE
 
+#if !(defined(QT_NO_SHAREDMEMORY) && defined(QT_NO_SYSTEMSEMAPHORE))
 /*!
     \internal
 
@@ -64,18 +67,22 @@ QSharedMemoryPrivate::makePlatformSafeKey(const QString &key,
     if (key.isEmpty())
         return QString();
 
-    QString allowableKey;
-    for (int i = 0; i < key.count(); ++i)
-        allowableKey += QString::number(key.at(i).unicode());
-    QString strippedKey = key;
-    strippedKey.replace(QRegExp(QLatin1String("[^A-Za-z]")), QString());
+    QString result = prefix;
+
+    QString part1 = key;
+    part1.replace(QRegExp(QLatin1String("[^A-Za-z]")), QString());
+    result.append(part1);
+
+    QByteArray hex = QCryptographicHash::hash(key.toUtf8(), QCryptographicHash::Sha1).toHex();
+    result.append(QLatin1String(hex));
 
 #ifdef Q_OS_WIN
-    return prefix + strippedKey + allowableKey;
+    return result;
 #else
-    return QDir::tempPath() + QLatin1Char('/') + prefix + strippedKey + allowableKey;
+    return QDir::tempPath() + QLatin1Char('/') + result;
 #endif
 }
+#endif // QT_NO_SHAREDMEMORY && QT_NO_SHAREDMEMORY
 
 #ifndef QT_NO_SHAREDMEMORY
 

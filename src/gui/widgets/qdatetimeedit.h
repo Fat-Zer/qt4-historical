@@ -208,7 +208,7 @@ private:
 class Q_GUI_EXPORT QTimeEdit : public QDateTimeEdit
 {
     Q_OBJECT
-    Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY timeChangedu USER true) // ### typo: timeChangedu
+    Q_PROPERTY(QTime time READ time WRITE setTime NOTIFY timeChanged USER true)
 public:
     QTimeEdit(QWidget *parent = 0);
     QTimeEdit(const QTime &time, QWidget *parent = 0);

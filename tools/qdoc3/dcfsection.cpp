@@ -64,7 +64,7 @@ void generateDcfSubSections( QString indent, QTextStream& out, const DcfSection&
 {
     QList<DcfSection>::const_iterator ss = sect.subsections.constBegin();
     while ( ss != sect.subsections.constEnd() ) {
-	out << indent << "<section ref=\"" << HtmlGenerator::protect((*ss).ref)
+	out << indent << "<section ref=\"" << HtmlGenerator::cleanRef(HtmlGenerator::protect((*ss).ref))
             << "\" title=\"" << HtmlGenerator::protect((*ss).title) << "\"";
 	if ((*ss).keywords.isEmpty() && (*ss).subsections.isEmpty()) {
 	    out << "/>\n";
@@ -73,7 +73,7 @@ void generateDcfSubSections( QString indent, QTextStream& out, const DcfSection&
 	    QString indentIndent = indent + "    ";
 	    QList<QPair<QString, QString> >::const_iterator k = (*ss).keywords.constBegin();
 	    while ( k != (*ss).keywords.constEnd() ) {
-		out << indentIndent << "<keyword ref=\"" << (*k).second << "\">"
+		out << indentIndent << "<keyword ref=\"" << HtmlGenerator::cleanRef((*k).second) << "\">"
                     << HtmlGenerator::protect((*k).first) << "</keyword>\n";
 		++k;
 	    }
@@ -98,7 +98,7 @@ void generateDcfSections( const DcfSection& rootSect, const QString& fileName,
     QString icon = QFileInfo(fileName).baseName() + ".png";
 
     out << "<!DOCTYPE DCF>\n";
-    out << "<DCF ref=\"" << HtmlGenerator::protect(rootSect.ref);
+    out << "<DCF ref=\"" << HtmlGenerator::cleanRef(HtmlGenerator::protect(rootSect.ref));
     if (icon != "qmake.png")
 	out << "\" icon=\"" << HtmlGenerator::protect(icon);
     out << "\" imagedir=\"../../gif\" title=\"" << HtmlGenerator::protect(rootSect.title) +

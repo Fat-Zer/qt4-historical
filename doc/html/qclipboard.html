@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qclipboard.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qclipboard.cpp -->
 <head>
   <title>Qt 4.4: QClipboard Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QClipboard Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QClipboard class provides access to the window system clipboard. <a href="#details">More...</a></p>
@@ -74,10 +74,10 @@
 <p>QClipboard supports the same data types that <a href="qdrag.html">QDrag</a> does, and uses similar mechanisms. For advanced clipboard usage read <a href="dnd.html">Drag and Drop</a>.</p>
 <p>There is a single QClipboard object in an application, accessible as <a href="qapplication.html#clipboard">QApplication::clipboard</a>().</p>
 <p>Example:</p>
-<pre>         QClipboard *clipboard = QApplication::clipboard();
-         QString originalText = clipboard-&gt;text();
-         ...
-         clipboard-&gt;setText(newText);</pre>
+<pre> QClipboard *clipboard = QApplication::clipboard();
+ QString originalText = clipboard-&gt;text();
+ ...
+ clipboard-&gt;setText(newText);</pre>
 <p>QClipboard features some convenience functions to access common data types: <a href="qclipboard.html#setText">setText</a>() allows the exchange of Unicode text and <a href="qclipboard.html#setPixmap">setPixmap</a>() and <a href="qclipboard.html#setImage">setImage</a>() allows the exchange of QPixmaps and QImages between applications. The <a href="qclipboard.html#setMimeData">setMimeData</a>() function is the ultimate in flexibility: it allows you to add any <a href="qmimedata.html">QMimeData</a> into the clipboard. There are corresponding getters for each of these, e.g&#x2e; <a href="qclipboard.html#text">text</a>(), <a href="qclipboard.html#image">image</a>() and <a href="qclipboard.html#pixmap">pixmap</a>(). You can clear the clipboard by calling <a href="qclipboard.html#clear">clear</a>().</p>
 <a name="notes-for-x11-users"></a>
 <h3>Notes for X11 Users</h3>
@@ -170,9 +170,9 @@
 <p>Copies the <i>image</i> into the clipboard.</p>
 <p>The <i>mode</i> argument is used to control which part of the system clipboard is used. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Clipboard</a>, the image is stored in the global clipboard. If <i>mode</i> is <a href="qclipboard.html#Mode-enum">QClipboard::Selection</a>, the data is stored in the global mouse selection.</p>
 <p>This is shorthand for:</p>
-<pre>         QMimeData *data = new QMimeData;
-         data-&gt;setImageData(image);
-         clipboard-&gt;setMimeData(data, mode);</pre>
+<pre> QMimeData *data = new QMimeData;
+ data-&gt;setImageData(image);
+ clipboard-&gt;setMimeData(data, mode);</pre>
 <p>See also <a href="qclipboard.html#image">image</a>(), <a href="qclipboard.html#setPixmap">setPixmap</a>(), and <a href="qclipboard.html#setMimeData">setMimeData</a>().</p>
 <a name="//apple_ref/cpp/instm/QClipboard/setMimeData" />
 <h3 class="fn"><a name="setMimeData"></a>void QClipboard::setMimeData ( <a href="qmimedata.html">QMimeData</a> * <i>src</i>, <a href="qclipboard.html#Mode-enum">Mode</a> <i>mode</i> = Clipboard )</h3>
@@ -210,8 +210,8 @@
 <p>See also <a href="qclipboard.html#setText">setText</a>() and <a href="qclipboard.html#mimeData">mimeData</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -173,11 +173,11 @@ public:
 
     For example, instead of writing:
 
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtvariantproperty.cpp 0
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtvariantproperty.cpp 0
 
     you can write:
 
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtvariantproperty.cpp 1
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtvariantproperty.cpp 1
 
     QtVariantProperty instances can only be created by the
     QtVariantPropertyManager class.
@@ -647,7 +647,9 @@ void QtVariantPropertyManagerPrivate::slotValueChanged(QtProperty *property, con
 
 void QtVariantPropertyManagerPrivate::slotValueChanged(QtProperty *property, const QCursor &val)
 {
+#ifndef QT_NO_CURSOR
     valueChanged(property, QVariant(val));
+#endif
 }
 
 void QtVariantPropertyManagerPrivate::slotFlagNamesChanged(QtProperty *property, const QStringList &flagNames)
@@ -1328,8 +1330,10 @@ QVariant QtVariantPropertyManager::value(const QtProperty *property) const
         return sizePolicyManager->value(internProp);
     } else if (QtFontPropertyManager *fontManager = qobject_cast<QtFontPropertyManager *>(manager)) {
         return fontManager->value(internProp);
+#ifndef QT_NO_CURSOR
     } else if (QtCursorPropertyManager *cursorManager = qobject_cast<QtCursorPropertyManager *>(manager)) {
         return cursorManager->value(internProp);
+#endif
     } else if (QtFlagPropertyManager *flagManager = qobject_cast<QtFlagPropertyManager *>(manager)) {
         return flagManager->value(internProp);
     }
@@ -1600,9 +1604,11 @@ void QtVariantPropertyManager::setValue(QtProperty *property, const QVariant &va
     } else if (QtFontPropertyManager *fontManager = qobject_cast<QtFontPropertyManager *>(manager)) {
         fontManager->setValue(internProp, qVariantValue<QFont>(val));
         return;
+#ifndef QT_NO_CURSOR
     } else if (QtCursorPropertyManager *cursorManager = qobject_cast<QtCursorPropertyManager *>(manager)) {
         cursorManager->setValue(internProp, qVariantValue<QCursor>(val));
         return;
+#endif
     } else if (QtFlagPropertyManager *flagManager = qobject_cast<QtFlagPropertyManager *>(manager)) {
         flagManager->setValue(internProp, qVariantValue<int>(val));
         return;

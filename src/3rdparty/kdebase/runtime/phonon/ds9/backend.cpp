@@ -255,7 +255,6 @@ namespace Phonon
                                 hr = S_OK;
                             }
                             m_graphState.remove(mo);
-                            break;
                         }
                     }
                 }
@@ -267,22 +266,23 @@ namespace Phonon
         bool Backend::startConnectionChange(QSet<QObject *> objects)
         {
             //start a transaction
-            HRESULT hr = E_FAIL;
+            QSet<MediaObject*> mediaObjects;
 
             //let's save the state of the graph (before we stop it)
             foreach(QObject *o, objects) {
                 if (BackendNode *node = qobject_cast<BackendNode*>(o)) {
                     if (MediaObject *mo = node->mediaObject()) {
-                        m_graphState[mo] = mo->state();
-                        mo->ensureStopped(); //we have to stop the graph..
-                        if (mo->state() != Phonon::ErrorState) {
-                            hr = S_OK;
-                        }
-                        break;
+                        mediaObjects << mo;
                     }
                 }
             }
-            return SUCCEEDED(hr);
+
+            foreach(MediaObject *mo, mediaObjects) {
+                m_graphState[mo] = mo->state();
+                mo->ensureStopped(); //we have to stop the graph..
+            }
+
+            return !mediaObjects.isEmpty();
         }
 
         bool Backend::connectNodes(QObject *_source, QObject *_sink)
@@ -297,9 +297,8 @@ namespace Phonon
             }
 
             //setting the graph if needed
-            if ((source->mediaObject() && sink->mediaObject() && source->mediaObject() != sink->mediaObject())
-                || (source->mediaObject() == 0 && sink->mediaObject() == 0)) {
-                    //error: not in the same graph or no graph at all
+            if (source->mediaObject() == 0 && sink->mediaObject() == 0) {
+                    //error: no graph selected
                     return false;
             } else if (source->mediaObject() && source->mediaObject() != sink->mediaObject()) {
                 //this' graph becomes the common one

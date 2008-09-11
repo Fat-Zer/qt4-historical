@@ -105,17 +105,22 @@ void LanguagesDialog::selectRow(int row)
 
 void LanguagesDialog::on_openFileButton_clicked()
 {
+    QString varFilt;
+
     QFileInfo mainFile(m_languagesManager->mainModel()->srcFileName());
     QString mainFileDir = mainFile.absolutePath();
-    QString mainFileTrunk = mainFile.fileName().split(QLatin1Char('_')).first();
-    QString mainFileSuffix = mainFile.suffix();
+    QString mainFileBase = mainFile.baseName();
+    int pos = mainFileBase.indexOf(QLatin1Char('_'));
+    if (pos > 0)
+        varFilt = tr("Related files (%1);;")
+            .arg(mainFileBase.left(pos) + QLatin1String("_*.") + mainFile.completeSuffix());
 
     QStringList fileNames = QFileDialog::getOpenFileNames(this, tr("Open Translation File"), mainFileDir,
-        tr("Qt translation sources (%1);;"
+        varFilt +
+        tr("Related files (%1);;"
            "Qt translation sources (*.ts);;"
            "XLIFF localization files (*.xlf);;"
-           "All files (*)").arg(
-           mainFileTrunk+QLatin1String("*.")+mainFileSuffix));
+           "All files (*)"));
     foreach (const QString &name, fileNames)
         m_languagesManager->openAuxLanguageFile(name);
 }

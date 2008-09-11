@@ -383,6 +383,7 @@ public:
     ~QHideEvent();
 };
 
+#ifndef QT_NO_CONTEXTMENU
 class Q_GUI_EXPORT QContextMenuEvent : public QInputEvent
 {
 public:
@@ -415,6 +416,7 @@ protected:
     QPoint gp;
     uint reas : 8;
 };
+#endif // QT_NO_CONTEXTMENU
 
 #ifndef QT_NO_INPUTMETHOD
 class Q_GUI_EXPORT QInputMethodEvent : public QEvent

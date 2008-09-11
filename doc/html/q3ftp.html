@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/network/q3ftp.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/network/q3ftp.cpp -->
 <head>
   <title>Qt 4.4: Q3Ftp Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3Ftp Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3Ftp class provides an implementation of the FTP protocol. <a href="#details">More...</a></p>
@@ -103,66 +103,66 @@
 <p>This class provides two different interfaces: one is the <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a> interface that allows you to use FTP through the <a href="porting4.html#qurloperator">QUrlOperator</a> abstraction. The other is a direct interface to FTP that gives you lower-level access to the FTP protocol for finer control. Using the direct interface you can also execute arbitrary FTP commands.</p>
 <p>Don't mix the two interfaces, since the behavior is not well-defined.</p>
 <p>If you want to use Q3Ftp with the <a href="porting4.html#qnetworkprotocol">QNetworkProtocol</a> interface, you do not use it directly, but rather through a <a href="porting4.html#qurloperator">QUrlOperator</a>, for example:</p>
-<pre>     QUrlOperator op( &quot;ftp:<span class="comment">//ftp.trolltech.com&quot; );</span>
-     op.listChildren(); <span class="comment">// Asks the server to provide a directory listing</span></pre>
+<pre> QUrlOperator op( &quot;ftp:<span class="comment">//ftp.trolltech.com&quot; );</span>
+ op.listChildren(); <span class="comment">// Asks the server to provide a directory listing</span></pre>
 <p>This code will only work if the Q3Ftp class is registered; to register the class, you must call <a href="q3urloperator.html#q3InitNetworkProtocols">q3InitNetworkProtocols</a>() before using a <a href="porting4.html#qurloperator">QUrlOperator</a> with Q3Ftp.</p>
 <p>The rest of this descrption describes the direct interface to FTP.</p>
 <p>The class works asynchronously, so there are no blocking functions. If an operation cannot be executed immediately, the function will still return straight away and the operation will be scheduled for later execution. The results of scheduled operations are reported via signals. This approach depends on the event loop being in operation.</p>
 <p>The operations that can be scheduled (they are called &quot;commands&quot; in the rest of the documentation) are the following: <a href="q3ftp.html#connectToHost">connectToHost</a>(), <a href="q3ftp.html#login">login</a>(), <a href="q3ftp.html#close">close</a>(), <a href="q3ftp.html#list">list</a>(), <a href="q3ftp.html#cd">cd</a>(), <a href="q3ftp.html#get">get</a>(), <a href="q3ftp.html#put">put</a>(), <a href="q3ftp.html#remove">remove</a>(), <a href="q3ftp.html#mkdir">mkdir</a>(), <a href="q3ftp.html#rmdir">rmdir</a>(), <a href="q3ftp.html#rename">rename</a>() and <a href="q3ftp.html#rawCommand">rawCommand</a>().</p>
 <p>All of these commands return a unique identifier that allows you to keep track of the command that is currently being executed. When the execution of a command starts, the <a href="q3ftp.html#commandStarted">commandStarted</a>() signal with the command's identifier is emitted. When the command is finished, the <a href="q3ftp.html#commandFinished">commandFinished</a>() signal is emitted with the command's identifier and a bool that indicates whether the command finished with an error.</p>
 <p>In some cases, you might want to execute a sequence of commands, e.g&#x2e; if you want to connect and login to a FTP server. This is simply achieved:</p>
-<pre>     Q3Ftp *ftp = new Q3Ftp( this ); <span class="comment">// this is an optional QObject parent</span>
-     ftp-&gt;connectToHost( &quot;ftp.trolltech.com&quot; );
-     ftp-&gt;login();</pre>
+<pre> Q3Ftp *ftp = new Q3Ftp( this ); <span class="comment">// this is an optional QObject parent</span>
+ ftp-&gt;connectToHost( &quot;ftp.trolltech.com&quot; );
+ ftp-&gt;login();</pre>
 <p>In this case two FTP commands have been scheduled. When the last scheduled command has finished, a <a href="q3ftp.html#done">done</a>() signal is emitted with a bool argument that tells you whether the sequence finished with an error.</p>
 <p>If an error occurs during the execution of one of the commands in a sequence of commands, all the pending commands (i.e&#x2e; scheduled, but not yet executed commands) are cleared and no signals are emitted for them.</p>
 <p>Some commands, e.g&#x2e; <a href="q3ftp.html#list">list</a>(), emit additional signals to report their results.</p>
 <p>Example: If you want to download the INSTALL file from Trolltech's FTP server, you would write this:</p>
-<pre>     ftp-&gt;connectToHost( &quot;ftp.trolltech.com&quot; );  <span class="comment">// id == 1</span>
-     ftp-&gt;login();                               <span class="comment">// id == 2</span>
-     ftp-&gt;cd( &quot;qt&quot; );                            <span class="comment">// id == 3</span>
-     ftp-&gt;get( &quot;INSTALL&quot; );                      <span class="comment">// id == 4</span>
-     ftp-&gt;close();                               <span class="comment">// id == 5</span></pre>
+<pre> ftp-&gt;connectToHost( &quot;ftp.trolltech.com&quot; );  <span class="comment">// id == 1</span>
+ ftp-&gt;login();                               <span class="comment">// id == 2</span>
+ ftp-&gt;cd( &quot;qt&quot; );                            <span class="comment">// id == 3</span>
+ ftp-&gt;get( &quot;INSTALL&quot; );                      <span class="comment">// id == 4</span>
+ ftp-&gt;close();                               <span class="comment">// id == 5</span></pre>
 <p>For this example the following sequence of signals is emitted (with small variations, depending on network traffic, etc.):</p>
-<pre>     start( 1 )
-     stateChanged( HostLookup )
-     stateChanged( Connecting )
-     stateChanged( Connected )
-     finished( 1, false )
+<pre> start( 1 )
+ stateChanged( HostLookup )
+ stateChanged( Connecting )
+ stateChanged( Connected )
+ finished( 1, false )
 
-     start( 2 )
-     stateChanged( LoggedIn )
-     finished( 2, false )
+ start( 2 )
+ stateChanged( LoggedIn )
+ finished( 2, false )
 
-     start( 3 )
-     finished( 3, false )
+ start( 3 )
+ finished( 3, false )
 
-     start( 4 )
-     dataTransferProgress( 0, 3798 )
-     dataTransferProgress( 2896, 3798 )
-     readyRead()
-     dataTransferProgress( 3798, 3798 )
-     readyRead()
-     finished( 4, false )
+ start( 4 )
+ dataTransferProgress( 0, 3798 )
+ dataTransferProgress( 2896, 3798 )
+ readyRead()
+ dataTransferProgress( 3798, 3798 )
+ readyRead()
+ finished( 4, false )
 
-     start( 5 )
-     stateChanged( Closing )
-     stateChanged( Unconnected )
-     finished( 5, false )
+ start( 5 )
+ stateChanged( Closing )
+ stateChanged( Unconnected )
+ finished( 5, false )
 
-     done( false )</pre>
+ done( false )</pre>
 <p>The <a href="q3ftp.html#dataTransferProgress">dataTransferProgress</a>() signal in the above example is useful if you want to show a <a href="qprogressbar.html">progress bar</a> to inform the user about the progress of the download. The <a href="q3ftp.html#readyRead">readyRead</a>() signal tells you that there is data ready to be read. The amount of data can be queried then with the <a href="q3ftp.html#bytesAvailable">bytesAvailable</a>() function and it can be read with the <a href="q3ftp.html#readBlock">readBlock</a>() or <a href="q3ftp.html#readAll">readAll</a>() function.</p>
 <p>If the login fails for the above example, the signals would look like this:</p>
-<pre>     start( 1 )
-     stateChanged( HostLookup )
-     stateChanged( Connecting )
-     stateChanged( Connected )
-     finished( 1, false )
+<pre> start( 1 )
+ stateChanged( HostLookup )
+ stateChanged( Connecting )
+ stateChanged( Connected )
+ finished( 1, false )
 
-     start( 2 )
-     finished( 2, true )
+ start( 2 )
+ finished( 2, true )
 
-     done( true )</pre>
+ done( true )</pre>
 <p>You can then get details about the error with the <a href="q3ftp.html#error">error</a>() and <a href="q3ftp.html#errorString">errorString</a>() functions.</p>
 <p>The functions <a href="q3ftp.html#currentId">currentId</a>() and <a href="q3ftp.html#currentCommand">currentCommand</a>() provide more information about the currently executing command.</p>
 <p>The functions <a href="q3ftp.html#hasPendingCommands">hasPendingCommands</a>() and <a href="q3ftp.html#clearPendingCommands">clearPendingCommands</a>() allow you to query and clear the list of pending commands.</p>
@@ -428,8 +428,8 @@
 <p>See also <a href="q3ftp.html#connectToHost">connectToHost</a>(), <a href="q3ftp.html#close">close</a>(), <a href="q3ftp.html#state">state</a>(), and <a href="q3ftp.html#State-enum">State</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

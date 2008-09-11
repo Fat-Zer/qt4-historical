@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qlayout.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qlayout.cpp -->
 <head>
   <title>Qt 4.4: QLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLayout Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QLayout class is the base class of geometry managers. <a href="#details">More...</a></p>
@@ -229,22 +229,22 @@
 <h3 class="fn"><a name="itemAt"></a><a href="qlayoutitem.html">QLayoutItem</a> * QLayout::itemAt ( int <i>index</i> ) const&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Must be implemented in subclasses to return the layout item at <i>index</i>. If there is no such item, the function must return 0. Items are numbered consecutively from 0. If an item is deleted, other items will be renumbered.</p>
 <p>This function can be used to iterate over a layout. The following code will draw a rectangle for each layout item in the layout structure of the widget.</p>
-<pre>         static void paintLayout(QPainter *painter, QLayoutItem *item)
-         {
-             QLayout *layout = item-&gt;layout();
-             if (layout) {
-                 for (int i = 0; i &lt; layout-&gt;count(); ++i)
-                     paintLayout(painter, layout-&gt;itemAt(i));
-             }
-             painter-&gt;drawRect(layout-&gt;geometry());
-         }
+<pre> static void paintLayout(QPainter *painter, QLayoutItem *item)
+ {
+     QLayout *layout = item-&gt;layout();
+     if (layout) {
+         for (int i = 0; i &lt; layout-&gt;count(); ++i)
+             paintLayout(painter, layout-&gt;itemAt(i));
+     }
+     painter-&gt;drawRect(layout-&gt;geometry());
+ }
 
-         void MyWidget::paintEvent(QPaintEvent *)
-         {
-             QPainter painter(this);
-             if (layout())
-                 paintLayout(&amp;painter, layout());
-         }</pre>
+ void MyWidget::paintEvent(QPaintEvent *)
+ {
+     QPainter painter(this);
+     if (layout())
+         paintLayout(&amp;painter, layout());
+ }</pre>
 <p>See also <a href="qlayout.html#count">count</a>() and <a href="qlayout.html#takeAt">takeAt</a>().</p>
 <a name="//apple_ref/cpp/instm/QLayout/maximumSize" />
 <h3 class="fn"><a name="maximumSize"></a><a href="qsize.html">QSize</a> QLayout::maximumSize () const&nbsp;&nbsp;<tt> [virtual]</tt></h3>
@@ -307,11 +307,11 @@
 <h3 class="fn"><a name="takeAt"></a><a href="qlayoutitem.html">QLayoutItem</a> * QLayout::takeAt ( int <i>index</i> )&nbsp;&nbsp;<tt> [pure virtual]</tt></h3>
 <p>Must be implemented in subclasses to remove the layout item at <i>index</i> from the layout, and return the item. If there is no such item, the function must do nothing and return 0. Items are numbered consecutively from 0. If an item is deleted, other items will be renumbered.</p>
 <p>The following code fragment shows a safe way to remove all items from a layout:</p>
-<pre>         QLayoutItem *child;
-         while ((child = layout-&gt;takeAt(0)) != 0) {
-             ...
-             delete child;
-         }</pre>
+<pre> QLayoutItem *child;
+ while ((child = layout-&gt;takeAt(0)) != 0) {
+     ...
+     delete child;
+ }</pre>
 <p>See also <a href="qlayout.html#itemAt">itemAt</a>() and <a href="qlayout.html#count">count</a>().</p>
 <a name="//apple_ref/cpp/instm/QLayout/update" />
 <h3 class="fn"><a name="update"></a>void QLayout::update ()</h3>
@@ -320,8 +320,8 @@
 <p>See also <a href="qlayout.html#activate">activate</a>() and <a href="qlayoutitem.html#invalidate">invalidate</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

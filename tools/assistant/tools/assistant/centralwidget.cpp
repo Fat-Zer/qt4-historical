@@ -366,7 +366,7 @@ void CentralWidget::setSource(const QUrl &url)
     currentPageChanged(lastTabPage);
     viewer->setFocus(Qt::OtherFocusReason);
     tabWidget->setCurrentIndex(lastTabPage);
-    tabWidget->setTabText(lastTabPage, viewer->documentTitle());
+    tabWidget->setTabText(lastTabPage, quoteTabTitle(viewer->documentTitle()));
 }
 
 void CentralWidget::setLastShownPages()
@@ -559,7 +559,7 @@ void CentralWidget::setSourceInNewTab(const QUrl &url, qreal zoom)
     viewer->installEventFilter(this);
     viewer->setSource(url);
     viewer->setFocus(Qt::OtherFocusReason);
-    tabWidget->setCurrentIndex(tabWidget->addTab(viewer, viewer->documentTitle()));
+    tabWidget->setCurrentIndex(tabWidget->addTab(viewer, quoteTabTitle(viewer->documentTitle())));
 
     QFont font = qApp->font();
     if (helpEngine->customValue(QLatin1String("useBrowserFont")).toBool()) {
@@ -571,9 +571,9 @@ void CentralWidget::setSourceInNewTab(const QUrl &url, qreal zoom)
     viewer->setFont(font);
     viewer->setTextSizeMultiplier(zoom == 0.0 ? 1.0 : zoom);
 #else
-    font.setPointSize(font.pointSize() + zoom);
+    font.setPointSize((int)(font.pointSize() + zoom));
     viewer->setFont(font);
-    viewer->setZoom(zoom);
+    viewer->setZoom((int)zoom);
 #endif
 
     connectSignals();
@@ -635,7 +635,7 @@ void CentralWidget::setTabTitle(const QUrl& url)
     Q_UNUSED(url)
     const HelpViewer* viewer = currentHelpViewer();
     if (viewer)
-        tabWidget->setTabText(lastTabPage, viewer->documentTitle().trimmed());
+        tabWidget->setTabText(lastTabPage, quoteTabTitle(viewer->documentTitle().trimmed()));
 }
 
 void CentralWidget::currentPageChanged(int index)
@@ -752,17 +752,18 @@ bool CentralWidget::eventFilter(QObject *object, QEvent *e)
 
 void CentralWidget::keyPressEvent(QKeyEvent *e)
 {
-    if (!findBar->isVisible()) {
-        QString text = e->text();
-        if (text.startsWith(QLatin1Char('/'))) {
-            findBar->show();
-            findWidget->editFind->clear();
-            findWidget->editFind->setFocus();
-            return;
-        }
-    }
-
-    QWidget::keyPressEvent(e);
+	QString text = e->text();
+	if (text.startsWith(QLatin1Char('/'))) {
+		if (!findBar->isVisible()) {
+			findBar->show();
+			findWidget->editFind->clear();
+		} else {
+			findWidget->editFind->selectAll();
+		}
+		findWidget->editFind->setFocus();
+		return;
+	}
+	QWidget::keyPressEvent(e);
 }
 
 void CentralWidget::find(QString ttf, bool forward, bool backward)
@@ -903,6 +904,12 @@ void CentralWidget::createSearchWidget(QHelpSearchEngine *searchEngine)
 void CentralWidget::removeSearchWidget()
 {
     tabWidget->removeTab(0);
+}
+
+QString CentralWidget::quoteTabTitle(const QString &title) const
+{
+    QString s = title;
+    return s.replace(QLatin1Char('&'), QLatin1String("&&"));
 }
 
 QT_END_NAMESPACE

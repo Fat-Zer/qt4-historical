@@ -548,7 +548,8 @@ void QItemDelegate::setEditorData(QWidget *editor, const QModelIndex &index) con
             n = "date";
     }
 
-    if (n.isEmpty())
+    // ### Qt 5: give QComboBox a USER property
+    if (n.isEmpty() && editor->inherits("QComboBox"))
         n = d->editorFactory()->valuePropertyName(static_cast<QVariant::Type>(v.userType()));
     if (!n.isEmpty()) {
         if (!v.isValid())

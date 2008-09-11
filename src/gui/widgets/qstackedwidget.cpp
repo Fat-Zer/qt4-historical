@@ -205,6 +205,9 @@ void QStackedWidget::removeWidget(QWidget *widget)
 
     The current index is -1 if there is no current widget.
 
+    By default, this property contains a value of -1 because the stack
+    is initially empty.
+
     \sa currentWidget(), indexOf()
 */
 
@@ -272,6 +275,8 @@ QWidget *QStackedWidget::widget(int index) const
 /*!
     \property QStackedWidget::count
     \brief the number of widgets contained by this stacked widget
+
+    By default, this property contains a value of 0.
 
     \sa currentIndex(), widget()
 */

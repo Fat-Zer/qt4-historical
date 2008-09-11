@@ -85,12 +85,12 @@
     file called, say, \c myapp.rc in which you put a single line of
     text:
 
-    \snippet doc/src/snippets/code/doc.src.appicon.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_appicon.qdoc 0
 
     Finally, assuming you are using \c qmake to generate your
     makefiles, add this line to your \c myapp.pro file:
 
-    \snippet doc/src/snippets/code/doc.src.appicon.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_appicon.qdoc 1
 
     Regenerate your makefile and your application. The \c .exe file
     will now be represented with your icon in Explorer.
@@ -124,7 +124,7 @@
     if the name of your icon file is \c{myapp.icns}, and your project
     file is \c{myapp.pro}, add this line to \c{myapp.pro}:
 
-    \snippet doc/src/snippets/code/doc.src.appicon.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_appicon.qdoc 2
 
     This will ensure that \c qmake puts your icons in the proper
     place and creates an \c{Info.plist} entry for the icon.
@@ -187,7 +187,7 @@
     by using \l{http://developer.kde.org/documentation/other/kde-config.html}{kde-config},
     for example, by typing the following in a terminal window:
 
-    \snippet doc/src/snippets/code/doc.src.appicon.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_appicon.qdoc 3
 
     Typically, the list of colon-separated paths printed to stdout includes the
     user-specific icon path and the system-wide path. Beneath these
@@ -210,7 +210,7 @@
     location can be determined by using \c gnome-config, for example
     by typing the following in a terminal window:
 
-    \snippet doc/src/snippets/code/doc.src.appicon.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_appicon.qdoc 4
 
     The path printed on stdout refers to a location that should contain a directory
     called \c{pixmaps}; the directory structure within the \c pixmaps

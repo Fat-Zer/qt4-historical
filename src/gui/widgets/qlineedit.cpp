@@ -375,6 +375,8 @@ QLineEdit::~QLineEdit()
 
     The text is truncated to maxLength() length.
 
+    By default, this property contains an empty string.
+
     \sa insert(), clear()
 */
 QString QLineEdit::text() const
@@ -404,6 +406,8 @@ void QLineEdit::setText(const QString& text)
     \l EchoMode is \l Password or \l PasswordEchoOnEdit it returns a string of asterisks
     text().length() characters long, e.g. "******"; if \l EchoMode is
     \l NoEcho returns an empty string, "".
+
+    By default, this property contains an empty string.
 
     \sa setEchoMode() text() EchoMode
 */
@@ -436,6 +440,8 @@ QString QLineEdit::displayText() const
 
     If the line edit has an input mask, the mask defines the maximum
     string length.
+
+    By default, this property contains a value of 32767.
 
     \sa inputMask
 */
@@ -504,11 +510,18 @@ void QLineEdit::setFrame(bool enable)
     \property QLineEdit::echoMode
     \brief the line edit's echo mode
 
-    The initial setting is \l Normal, but QLineEdit also supports \l
-    NoEcho, \l Password and \l PasswordEchoOnEdit modes.
+    The echo mode determines how the text entered in the line edit is
+    displayed (or echoed) to the user.
+
+    The most common setting is \l Normal, in which the text entered by the
+    user is displayed verbatim, but QLineEdit also supports modes that allow
+    the entered text to be suppressed or obscured: these include \l NoEcho,
+    \l Password and \l PasswordEchoOnEdit.
 
     The widget's display and the ability to copy or drag the text is
     affected by this setting.
+
+    By default, this property is set to \l Normal.
 
     \sa EchoMode displayText()
 */
@@ -745,6 +758,8 @@ QSize QLineEdit::minimumSizeHint() const
     \brief the current cursor position for this line edit
 
     Setting the cursor position causes a repaint when appropriate.
+
+    By default, this property contains a value of 0.
 */
 
 int QLineEdit::cursorPosition() const
@@ -807,6 +822,8 @@ bool QLineEdit::validateAndSet(const QString &newText, int newPos,
 
     Both horizontal and vertical alignment is allowed here, Qt::AlignJustify
     will map to Qt::AlignLeft.
+
+    By default, this property contains a combination of Qt::AlignLeft and Qt::AlignVCenter.
 
     \sa Qt::Alignment
 */
@@ -1021,6 +1038,8 @@ Use setModified(false) instead.
     hasSelectedText() returns true if some or all of the text has been
     selected by the user; otherwise returns false.
 
+    By default, this property is false.
+
     \sa selectedText()
 */
 
@@ -1037,6 +1056,8 @@ bool QLineEdit::hasSelectedText() const
 
     If there is no selected text this property's value is
     an empty string.
+
+    By default, this property contains an empty string.
 
     \sa hasSelectedText()
 */
@@ -1152,6 +1173,10 @@ void QLineEdit::setSelection(int start, int length)
 /*!
     \property QLineEdit::undoAvailable
     \brief whether undo is available
+
+    Undo becomes available once the user has modified the text in the line edit.
+
+    By default, this property is false.
 */
 
 bool QLineEdit::isUndoAvailable() const
@@ -1163,6 +1188,11 @@ bool QLineEdit::isUndoAvailable() const
 /*!
     \property QLineEdit::redoAvailable
     \brief whether redo is available
+
+    Redo becomes available once the user has performed one or more undo operations
+    on text in the line edit.
+
+    By default, this property is false.
 */
 
 bool QLineEdit::isRedoAvailable() const
@@ -1196,6 +1226,8 @@ void QLineEdit::setDragEnabled(bool b)
     \property QLineEdit::acceptableInput
     \brief whether the input satisfies the inputMask and the
     validator.
+
+    By default, this property is true.
 
     \sa setInputMask(), setValidator()
 */
@@ -1263,7 +1295,7 @@ bool QLineEdit::hasAcceptableInput() const
     uppercase.
     \endtable
 
-    To get range control (e.g. for an IP address) use masks together
+    To get range control (e.g., for an IP address) use masks together
     with \link setValidator() validators\endlink.
 
     \sa maxLength
@@ -1382,6 +1414,8 @@ void QLineEdit::redo()
     but cannot edit it.
 
     QLineEdit does not show a cursor in read-only mode.
+
+    By default, this property is false.
 
     \sa setEnabled()
 */
@@ -2532,7 +2566,7 @@ void QLineEditPrivate::drag()
     to extend the standard context menu, reimplement this function, call
     createStandardContextMenu() and extend the menu returned.
 
-    \snippet doc/src/snippets/code/src.gui.widgets.qlineedit.cpp 0
+    \snippet doc/src/snippets/code/src_gui_widgets_qlineedit.cpp 0
 
     The \a event parameter is used to obtain the position where
     the mouse cursor was when the event was generated.

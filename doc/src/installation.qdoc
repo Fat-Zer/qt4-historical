@@ -42,7 +42,7 @@
 ****************************************************************************/
 
 /****************************************************************************
-** Please remember to update the Qt/Mac, Qt/Windows, and Qt/X11 INSTALL file.
+** Please remember to update the corresponding INSTALL files.
 ****************************************************************************/
 
 /*! \group installation
@@ -51,20 +51,20 @@
 \ingroup topics
 \brief Installing Qt on supported platforms.
 
-The installation procedure is different for the different Qt platforms.
+The installation procedure is different on each Qt platform.
 Please follow the instructions for your platform from the following list.
 
 \generatelist{related}
 */
 
 /*! \page install-x11.html
-
-\title Installing Qt/X11
+\title Installing Qt on X11 Platforms
 \ingroup installation
 \brief How to install Qt on platforms with X11.
+\previouspage Installation
 
 \note Qt for X11 has some requirements that are given in more detail
-in the \l{Qt/X11 Requirements} document.
+in the \l{Qt for X11 Requirements} document.
 
 \list 1
 \o  If you have the commercial edition of Qt, install your license
@@ -73,12 +73,12 @@ in the \l{Qt/X11 Requirements} document.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-x11-opensource-desktop-4.4.1.tar.gz}
+    if you have the \c{qt-x11-opensource-desktop-4.4.2.tar.gz}
     package, type the following commands at a command line prompt:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 0
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 0
 
-    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.1}
+    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.2}
     containing the files from the archive. We only support the GNU version of
     the tar archiving utility. Note that on some systems it is called gtar.
 
@@ -88,25 +88,25 @@ in the \l{Qt/X11 Requirements} document.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.1} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.2} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 1
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 1
 
     Type \c{./configure -help} to get a list of all available options.
 
     To create the library and compile all the demos, examples, tools,
     and tutorials, type:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 2
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 2
 
     If you did not configure Qt using the \c{-prefix-install} option,
     you need to install the library, demos, examples, tools, and
     tutorials in the appropriate place. To do this, type:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 3
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 3
 
     and enter the root password.
 
@@ -124,25 +124,25 @@ in the \l{Qt/X11 Requirements} document.
     In order to use Qt, some environment variables needs to be
     extended.
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 4
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 4
 
     This is done like this:
 
     In \c{.profile} (if your shell is bash, ksh, zsh or sh), add the
     following lines:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 5
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 5
 
     In \c{.login} (in case your shell is csh or tcsh), add the following line:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 6
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 6
 
     If you use a different shell, please modify your environment
     variables accordingly.
 
     For compilers that do not support rpath you must also extended the
     \c LD_LIBRARY_PATH environment variable to include
-    \c{/usr/local/Trolltech/Qt-4.4.1/lib}. On Linux with GCC this step
+    \c{/usr/local/Trolltech/Qt-4.4.2/lib}. On Linux with GCC this step
     is not needed.
 
 \o  That's all. Qt is now installed.
@@ -169,13 +169,13 @@ in the \l{Qt/X11 Requirements} document.
 
 /*!
 \page install-win.html
-
-\title Installing Qt/Windows
+\title Installing Qt on Windows
 \ingroup installation
 \brief How to install Qt on Windows.
+\previouspage Installation
 
 \note Qt for Windows has some requirements that are given in more detail
-in the \l{Qt/Windows Requirements} document.
+in the \l{Qt for Windows Requirements} document.
 
 \table
 \row \o \bold{Notes:}
@@ -202,7 +202,7 @@ as part of the \l{Qt Commercial Editions}.
     For the open source version you do not need a license file.
 
 \o  Uncompress the files into the directory you want Qt installed;
-    e.g. \c{C:\Qt\4.4.1}.
+    e.g. \c{C:\Qt\4.4.2}.
 
     \note The install path must not contain any spaces or Windows specific
     file system characters.
@@ -212,9 +212,9 @@ as part of the \l{Qt Commercial Editions}.
     In order to build and use Qt, the \c PATH environment variable needs to be
     extended:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 7
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 7
 
-    This is done by adding \c{c:\Qt\4.4.1\bin} to the \c PATH variable.
+    This is done by adding \c{c:\Qt\4.4.2\bin} to the \c PATH variable.
 
     For newer versions of Windows, \c PATH can be extended through
     the \menu{Control Panel|System|Advanced|Environment variables} menu.
@@ -233,7 +233,7 @@ as part of the \l{Qt Commercial Editions}.
     To configure the Qt library for your machine, type the following command
     in a \bold{Visual Studio} command prompt:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 8
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 8
 
     Type \c{configure -help} to get a list of all available options.
 
@@ -241,7 +241,7 @@ as part of the \l{Qt Commercial Editions}.
     using a specific compiler, you must specify a \c qmake specification.
     This is done by pasing \c{-platform <spec>} to configure; for example:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 9
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 9
 
     In some cases you need to set up the compilation environment before running
     configure in order to use the right compiler. For instance, you need to do this
@@ -256,7 +256,7 @@ as part of the \l{Qt Commercial Editions}.
     system. For Microsoft Visual Studio to create the library and
     compile all the demos, examples, tools and tutorials type:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 10
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 10
 
     \note If you later need to reconfigure and rebuild Qt from the
     same location, ensure that all traces of the previous configuration are
@@ -286,20 +286,20 @@ as part of the \l{Qt Commercial Editions}.
 */
 
 /*! \page install-mac.html
-
-\title Installing Qt/Mac
+\title Installing Qt on Mac OS X
 \ingroup installation
 \brief How to install Qt on Mac OS X.
+\previouspage Installation
 
 \note Qt for Mac OS X has some requirements that are given in more detail
-in the \l{Qt/Mac Requirements} document.
+in the \l{Qt for Mac OS X Requirements} document.
 
 \bold{Note for the binary package}: If you have the binary package, simply double-click on the Qt.mpkg
 and follow the instructions to install Qt. You can later run the \c{uninstall-qt.py}
 script to uninstall the binary package. The script is located in /Developer/Tools and
 must be run as root.
 
-What follows is how to install Qt/Mac from the source package.
+The following instructions describe how to install Qt from the source package.
 
 \list 1
 \o  If you have the commercial edition of Qt, install your license
@@ -308,12 +308,12 @@ What follows is how to install Qt/Mac from the source package.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-mac-opensource-desktop-4.4.1.tar.gz}
+    if you have the \c{qt-mac-opensource-desktop-4.4.2.tar.gz}
     package, type the following commands at a command line prompt:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 11
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 11
 
-    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.1}
+    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.2}
     containing the files from the archive.
 
 \o  Building
@@ -322,12 +322,12 @@ What follows is how to install Qt/Mac from the source package.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.1} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.2} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 12
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 12
 
     Type \c{./configure -help} to get a list of all available options.
 
@@ -345,13 +345,13 @@ What follows is how to install Qt/Mac from the source package.
     To create the library and compile all the demos, examples, tools,
     and tutorials, type:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 13
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 13
 
     If you did not configure Qt using the \c{-prefix-install} option,
     you need to install the library, demos, examples, tools, and
     tutorials in the appropriate place. To do this, type:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 14
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 14
 
     and enter your password, this requires that you have administrator access
     to your machine.
@@ -366,17 +366,17 @@ What follows is how to install Qt/Mac from the source package.
     In order to use Qt, some environment variables need to be
     extended.
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 15
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 15
 
     This is done like this:
 
     In \c{.profile} (if your shell is bash), add the following lines:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 16
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 16
 
     In \c{.login} (in case your shell is csh or tcsh), add the following line:
 
-\snippet doc/src/snippets/code/doc.src.installation.qdoc 17
+\snippet doc/src/snippets/code/doc_src_installation.qdoc 17
 
     If you use a different shell, please modify your environment
     variables accordingly.
@@ -403,18 +403,18 @@ What follows is how to install Qt/Mac from the source package.
 */
 
 /*! \page install-wince.html
-
-\title Installing Qt/Windows CE
+\title Installing Qt on Windows CE
 \ingroup installation
 \ingroup qtce
 \brief How to install Qt on Windows CE.
+\previouspage Installation
 
 \note Qt for Windows CE has some requirements that are given in more detail
 in the \l{Qt for Windows CE Requirements} document.
 
 \list 1
     \o  Uncompress the files into the directory you want to install Qt into;
-        e.g., \c{C:\Qt\4.4.1}.
+        e.g., \c{C:\Qt\4.4.2}.
 
         \note The install path must not contain any spaces.
 
@@ -423,9 +423,9 @@ in the \l{Qt for Windows CE Requirements} document.
         In order to build and use Qt, the \c PATH environment variable needs
         to be extended:
 
-        \snippet doc/src/snippets/code/doc.src.installation.qdoc 18
+        \snippet doc/src/snippets/code/doc_src_installation.qdoc 18
 
-        This is done by adding \c{c:\Qt\4.4.1\bin} to the \c PATH variable.
+        This is done by adding \c{c:\Qt\4.4.2\bin} to the \c PATH variable.
 
         For newer versions of Windows, \c PATH can be extended through
         "Control Panel->System->Advanced->Environment variables" and for
@@ -440,7 +440,7 @@ in the \l{Qt for Windows CE Requirements} document.
         To configure Qt for Windows Mobile 5.0 for Pocket PC, type the
         following:
 
-        \snippet doc/src/snippets/code/doc.src.installation.qdoc 19
+        \snippet doc/src/snippets/code/doc_src_installation.qdoc 19
 
         If you want to configure Qt for another platform or with other
         options, type \c{configure -help} to get a list of all available
@@ -454,16 +454,16 @@ in the \l{Qt for Windows CE Requirements} document.
         platforms. For a default installation of the Windows Mobile 5.0
         Pocket PC SDK, this is done with the following commands:
 
-        \snippet doc/src/snippets/code/doc.src.installation.qdoc 20
+        \snippet doc/src/snippets/code/doc_src_installation.qdoc 20
 
         We provide a convenience script for this purpose, called \c{setcepaths}.
         Simply type:
 
-        \snippet doc/src/snippets/code/doc.src.installation.qdoc 21
+        \snippet doc/src/snippets/code/doc_src_installation.qdoc 21
 
         Then to build Qt type:
 
-        \snippet doc/src/snippets/code/doc.src.installation.qdoc 22
+        \snippet doc/src/snippets/code/doc_src_installation.qdoc 22
 
         \o  That's all. Qt is now installed.
 
@@ -499,20 +499,37 @@ in the \l{Qt for Windows CE Requirements} document.
     \page requirements.html
     \title General Qt Requirements
     \ingroup installation
-    \brief Outlines the general requirements and dependencies required to install Qt.
+    \brief Outlines the general requirements and dependencies needed to install Qt.
+
+    This page describes the specific requirements of libraries and components on which
+    Qt depends. For information about installing Qt, see the \l{Installation} page.
 
     \section1 OpenSSL (version 0.9.7 or later)
 
     Support for \l{SSL}{Secure Sockets Layer (SSL)} communication is provided by the
     \l{OpenSSL Toolkit}, which must be obtained separately.
+
+    \section1 Platform-Specific Requirements
+
+    Each platform has its own specific set of dependencies. Please see the relevant
+    page for more details about the components that are required to build and install
+    Qt on your platform.
+
+    \list
+    \o \l{Qt for Embedded Linux Requirements}
+    \o \l{Qt for Mac OS X Requirements}
+    \o \l{Qt for Windows CE Requirements}
+    \o \l{Qt for Windows Requirements}
+    \o \l{Qt for X11 Requirements}
+    \endlist
 */
 
 /*!
     \page requirements-win.html
-
-    \title Qt/Windows Requirements
+    \title Qt for Windows Requirements
     \ingroup installation
     \brief Setting up the Windows environment for Qt.
+    \previouspage General Qt Requirements
 
     If you are using a binary version of Qt with Visual Studio 2005, you must
     first install the Visual Studio Service Pack 1 available
@@ -529,27 +546,27 @@ in the \l{Qt for Windows CE Requirements} document.
         \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=0baf2b35-c656-4969-ace8-e4c0c0716adb&DisplayLang=en}{here}.
     \endlist
 
-    \sa {Known Issues in 4.4.1}
+    \sa {Known Issues in 4.4.2}
 */
 
 /*!
     \page requirements-mac.html
-
-    \title Qt/Mac Requirements
+    \title Qt for Mac OS X Requirements
     \ingroup installation
     \brief Setting up the Mac OS X environment for Qt.
+    \previouspage General Qt Requirements
 
-    \sa {Known Issues in 4.4.1}
+    \sa {Known Issues in 4.4.2}
 */
 
 /*!
     \page requirements-x11.html
-
-    \title Qt/X11 Requirements
+    \title Qt for X11 Requirements
     \ingroup installation
     \brief Setting up the X11 environment for Qt.
+    \previouspage General Qt Requirements
 
-    \image x11_dependencies.png Qt/X11 Dependencies
+    \image x11_dependencies.png Qt for X11 Dependencies
 
     \raw HTML
     <style type="text/css" id="colorstyles">
@@ -615,15 +632,15 @@ in the \l{Qt for Windows CE Requirements} document.
     \note You must compile with XRender support to get alpha transparency
     support for pixmaps and images.
 
-    \sa {Known Issues in 4.4.1}
+    \sa {Known Issues in 4.4.2}
 */
 
 /*!
     \page requirements-wince.html
-
     \title Qt for Windows CE Requirements
     \ingroup installation
     \brief Setting up the Windows CE environment for Qt.
+    \previouspage General Qt Requirements
 
     Qt is known to work with Visual Studio 2005 and the following SDKs for
     Windows CE development on Windows XP and Windows Vista:
@@ -645,20 +662,27 @@ in the \l{Qt for Windows CE Requirements} document.
     Windows CE using Platform Builder. In order for Qt for Windows CE to
     support a custom SDK, a build specification needs to be created.
 
-    \sa {Known Issues in 4.4.1}
+    \sa {Known Issues in 4.4.2}
 */
 
 /*!
     \page requirements-embedded-linux.html
-
     \title Qt for Embedded Linux Requirements
     \ingroup installation
     \brief Setting up the Embedded Linux environment for Qt.
+    \previouspage General Qt Requirements
+
+    \sa {Known Issues in 4.4.2}
 
     \section1 Building Qt for Embedded Linux with uclibc
 
     If you intend to use WebKit then you should use at least version 0.9.29
     of uclibc as that is the earliest version with sufficient pthread support.
 
-    \sa {Known Issues in 4.4.1}
+    \section1 Additional X11 Libraries for QVFb
+
+    The Virtual Framebuffer (QVFb) application requires the \c libxtst library
+    in addition to the libraries used to build Qt for X11. This library
+    enables the use of the Record extension to the X protocol to be used in
+    applications.
 */

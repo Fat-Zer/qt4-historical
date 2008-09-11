@@ -54,8 +54,8 @@
 
     \tableofcontents
 
-    Note that the cross-compiling procedure has the configuration
-    process in common with the installation procedure, i.e., you might
+    \note The cross-compiling procedure has the configuration
+    process in common with the installation procedure; i.e., you might
     not necessarily have to perform all the mentioned actions
     depending on your current configuration.
 
@@ -65,7 +65,7 @@
     environment variable. For example, if the current shell is bash,
     ksh, zsh or sh:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 0
 
     \section1 Step 2: Create a Target Specific qmake Specification
 
@@ -90,13 +90,13 @@
     an ARM architecture, using the GCC toolchain, run the configure
     script at the command line in the following way:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 1
 
     If neither of the provided specifications fits your target device,
     you can create your own.  To create a custom \c qmake.conf file,
     just copy and customize an already existing file. For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 2
 
     Note that it is recommended to copy the entire directory.
 
@@ -153,7 +153,7 @@
     architecture as well as the target specific hardware drivers by
     running the \c configure script:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 3
 
     It is also important to make sure that all the third party
     libraries that the application and the Qt libraries require, are
@@ -161,7 +161,7 @@
     libraries are not available, they must be included by running the
     \c configure script with the \c -L and \c -I options. For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 4
 
     The JPEG source can be downloaded from \l http://www.ijg.org/. The
     \l{Qt for Embedded Linux} distribution includes a version of the zlib source
@@ -171,7 +171,7 @@
 
     Then build the executable:
 
-    \snippet doc/src/snippets/code/doc.src.emb-crosscompiling.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_emb-crosscompiling.qdoc 5
 
     That's all. Your target specific executable is ready for deployment.
 
@@ -182,5 +182,10 @@
     \l{Qt for Embedded Linux Architecture} and \l{Deploying Qt for Embedded Linux
     Applications}.
 
+    \row
+    \o \bold{Third party resources:}
+
+    \l{http://silmor.de/29}{Cross compiling Qt/Win Apps on Linux} covers the
+    process of cross-compiling Windows applications on Linux.
     \endtable
 */

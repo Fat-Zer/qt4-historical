@@ -460,7 +460,7 @@ void QHideToolTip::maybeTip(const QPoint &pos)
     toolbar buttons then describe the facilities of Q3MainWindow
     itself.
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3mainwindow.cpp 0
 
     Q3MainWindows may be created in their own right as shown above.
     The central widget is set with setCentralWidget(). Popup menus can
@@ -561,7 +561,7 @@ void QHideToolTip::maybeTip(const QPoint &pos)
     widget inside its own movable dock window and restrict this dock
     window to only live within the \c Top or \c Bottom dock:
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3mainwindow.cpp 1
 
     An application with multiple dock windows can choose to save the
     current dock window layout in order to restore it later, e.g. in
@@ -570,12 +570,12 @@ void QHideToolTip::maybeTip(const QPoint &pos)
 
     To save the layout and positions of all the dock windows do this:
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3mainwindow.cpp 2
 
     To restore the dock window positions and sizes (normally when the
     application is next started), do the following:
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3mainwindow.cpp 3
 
     The QSettings class can be used in conjunction with the streaming
     operators to store the application's settings.
@@ -1679,7 +1679,7 @@ void Q3MainWindow::triggerLayout(bool deleteLayout)
     implemented as a main window object's slot. This way it can easily
     be used for popup menus, for example:
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3mainwindow.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3mainwindow.cpp 4
 
     \sa Q3WhatsThis::enterWhatsThisMode()
 */

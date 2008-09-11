@@ -72,7 +72,7 @@ QT_BEGIN_NAMESPACE
     cannot call any QObject member functions from a Q3Signal object.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3signal.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3signal.cpp 0
 */
 
 /*!

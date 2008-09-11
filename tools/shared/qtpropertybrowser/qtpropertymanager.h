@@ -675,7 +675,9 @@ public:
     QtCursorPropertyManager(QObject *parent = 0);
     ~QtCursorPropertyManager();
 
+#ifndef QT_NO_CURSOR
     QCursor value(const QtProperty *property) const;
+#endif
 
 public Q_SLOTS:
     void setValue(QtProperty *property, const QCursor &val);

@@ -259,13 +259,13 @@ void QGLFramebufferObjectPrivate::init(const QSize &sz, QGLFramebufferObject::At
     framebuffer objects more portable.
     \endlist
 
-    Note that QPainter antialiasing of drawing primitives will not
-    work when using a QGLFramebufferObject as a paintdevice. This is
-    because sample buffers, which are needed for antialiasing, are not
-    yet supported in application-defined framebuffer objects. However,
-    an extension to solve this has already been approved by the OpenGL
-    ARB (\c{GL_EXT_framebuffer_multisample}), and will most likely be
-    available in the near future.
+    Note that primitives drawn to a QGLFramebufferObject with QPainter
+    will only be antialiased if the QPainter::HighQualityAntialiasing
+    render hint is set. This is because there is currently no support
+    for the \c{GL_EXT_framebuffer_multisample} extension, which is
+    required to do multisample based antialiasing. Also note that the
+    QPainter::HighQualityAntialiasing render hint requires the
+    \c{GL_ARB_fragment_program} extension to work in OpenGL.
 
     \sa {Framebuffer Object Example}
 */

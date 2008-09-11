@@ -228,6 +228,11 @@ QMouseEvent *QMouseEvent::createExtendedMouseEvent(Type type, const QPointF &pos
 }
 
 /*!
+    \fn bool QMouseEvent::hasExtendedInfo() const
+    \internal
+*/
+
+/*!
     \since 4.4
 
     Returns the position of the mouse cursor as a QPointF, relative to the
@@ -558,7 +563,7 @@ QWheelEvent::QWheelEvent(const QPoint &pos, const QPoint& globalPos, int delta, 
 
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qevent.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qevent.cpp 0
 */
 
 /*!
@@ -1336,6 +1341,7 @@ QIconDragEvent::~QIconDragEvent()
     handled as a regular input event.
 */
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     Constructs a context menu event object with the accept parameter
     flag set to false.
@@ -1474,6 +1480,7 @@ Qt::ButtonState QContextMenuEvent::state() const
 
     \sa globalX(), globalPos()
 */
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     \fn Qt::ButtonState QContextMenuEvent::state() const

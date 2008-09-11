@@ -230,7 +230,9 @@ protected:
     virtual void mouseReleaseEvent(QMouseEvent *e);
     virtual void mouseDoubleClickEvent(QMouseEvent *e);
     virtual bool focusNextPrevChild(bool next);
+#ifndef QT_NO_CONTEXTMENU
     virtual void contextMenuEvent(QContextMenuEvent *e);
+#endif
 #ifndef QT_NO_DRAGANDDROP
     virtual void dragEnterEvent(QDragEnterEvent *e);
     virtual void dragLeaveEvent(QDragLeaveEvent *e);

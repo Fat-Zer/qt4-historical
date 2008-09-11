@@ -253,7 +253,7 @@ struct QGradientBrushData : public QBrushData
     QPainter's \l {QPen}{pen} combined with Qt::PenStyle and
     Qt::GlobalColor:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qbrush.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qbrush.cpp 0
 
     Note that, by default, QPainter renders the outline (using the
     currently set pen) when drawing shapes. Use \l {Qt::NoPen}{\c
@@ -327,7 +327,6 @@ void QBrush::init(const QColor &color, Qt::BrushStyle style)
         return;
     case Qt::TexturePattern:
         d = new QTexturedBrushData;
-        static_cast<QTexturedBrushData *>(d)->setPixmap(QPixmap());
         break;
     case Qt::LinearGradientPattern:
     case Qt::RadialGradientPattern:

@@ -85,7 +85,7 @@ QT_BEGIN_NAMESPACE
     Example: Starting a computation and getting a slot callback when it's
     finished:
 
-    \snippet doc/src/snippets/code/src.corelib.concurrent.qfuturewatcher.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_concurrent_qfuturewatcher.cpp 0
 
     Be aware that not all asynchronous computations can be canceled or paused.
     For example, the future returned by QtConcurrent::run() cannot be

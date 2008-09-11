@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qaxcontainer.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qaxcontainer.qdoc -->
 <head>
   <title>Qt 4.4: QAxContainer Module</title>
   <link rel="prev" href="qttest.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qttest.html">QtTest Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
@@ -60,7 +60,7 @@
 <a name="using-the-library"></a>
 <h3>Using the Library</h3>
 <p>To build Qt applications that can host COM objects and ActiveX controls link the application against the QAxContainer module by adding</p>
-<pre>         CONFIG += qaxcontainer</pre>
+<pre> CONFIG += qaxcontainer</pre>
 <p>to your application's <tt>.pro</tt> file.</p>
 <a name="distributing-qaxcontainer-applications"></a>
 <h4>Distributing QAxContainer Applications</h4>
@@ -89,7 +89,7 @@
 <a name="generating-a-c-namespace"></a>
 <h4>Generating a C++ Namespace</h4>
 <p>To generate a C++ namespace for the type library you want to access, use the <a href="activeqt-dumpcpp.html#dumpcpp">dumpcpp</a> tool. Run this tool manually on the type library you want to use, or integrate it into the build system by adding the type libraries to the <tt>TYPELIBS</tt> variable in your application's <tt>.pro</tt> file:</p>
-<pre>         TYPELIBS = file.tlb</pre>
+<pre> TYPELIBS = file.tlb</pre>
 <p>Note that <a href="activeqt-dumpcpp.html#dumpcpp">dumpcpp</a> might not be able to expose all APIs in the type library.</p>
 <p>Include the resulting header file in your code to access the object APIs through the generated C++ classes. See the Qutlook example for more information.</p>
 <a name="call-by-name"></a>
@@ -119,7 +119,7 @@
 <p>A QAxBase::dynamicCall() failed - the function prototype was correct, but the paramter at index <tt>n</tt> was of the wrong type and could not be coerced to the correct type.</p>
 <a name="qaxscriptmanager-call-no-script-provides-this-function"></a>
 <h5>QAxScriptManager::call(): No script provides this function</h5>
-<p>You try to call a function that is provided through an engine that doesn't provide introspection (ie. ActivePython or ActivePerl). You need to call the function directly on the respective QAxScript object.</p>
+<p>You try to call a function that is provided through an engine that doesn't provide introspection (ie. ActivePython or <a href="http://www.activestate.com/Products/activeperl/index.mhtml">ActivePerl</a>). You need to call the function directly on the respective QAxScript object.</p>
 <p>See also <a href="activeqt.html">ActiveQt Framework</a>.</p>
 <p>
 [Previous: <a href="qttest.html">QtTest Module</a>]
@@ -128,8 +128,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

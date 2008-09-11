@@ -89,12 +89,12 @@ QT_BEGIN_NAMESPACE
   Evaluating the following script will result in scriptUnload()
   being called immediately after evaluation has completed:
 
-  \snippet doc/src/snippets/code/src.script.qscriptengineagent.cpp 0
+  \snippet doc/src/snippets/code/src_script_qscriptengineagent.cpp 0
 
   Evaluating the following script will \b{not} result in a call to
   scriptUnload() when evaluation has completed:
 
-  \snippet doc/src/snippets/code/src.script.qscriptengineagent.cpp 1
+  \snippet doc/src/snippets/code/src_script_qscriptengineagent.cpp 1
 
   The script isn't unloaded because it defines a function (\c{cube})
   that remains in the script environment after evaluation has

@@ -152,6 +152,7 @@ private:
     DomResources *saveResources(const QStringList &qrcPaths);
     bool canCompressMargins(QObject *object) const;
     bool canCompressSpacings(QObject *object) const;
+    QStringList mergeWithLoadedPaths(const QStringList &paths) const;
 
     typedef QList<DomCustomWidget*> DomCustomWidgetList;
     void addCustomWidgetsToWidgetDatabase(DomCustomWidgetList& list);

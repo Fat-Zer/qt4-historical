@@ -135,11 +135,11 @@ rich text documents for use with a QTextEdit widget or in a custom editor.
 Although QTextEdit makes it easy to display and edit rich text, documents
 can also be used independently of any editor widget, for example:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 0
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 0
 
 Alternatively, they can be extracted from an existing editor:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 1
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 1
 
 This flexibility enables applications to handle multiple rich text
 documents without the overhead of multiple editor widgets, or requiring
@@ -591,24 +591,24 @@ be reused in your own applications.
 A text editor widget can be constructed and used to display HTML in the
 following way:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 2
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 2
 
 By default, the text editor contains a document with a root frame, inside
 which is an empty text block. This document can be obtained so that it can
 be modified directly by the application:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 3
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 3
 
 The text editor's cursor may also be used to edit a document:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 4
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 4
 
 Although a document can be edited using many cursors at once, a QTextEdit
 only displays a single cursor at a time. Therefore, if we want to update the
 editor to display a particular cursor or its selection, we need to set the
 editor's cursor after we have modified the document:
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 5
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 5
 
 \section1 Selecting Text
 
@@ -697,7 +697,7 @@ following issues:
 We give an example of the latter technique in the list. We assume that
 the text edit is visible.
 
-\snippet doc/src/snippets/code/doc.src.richtext.qdoc 6
+\snippet doc/src/snippets/code/doc_src_richtext.qdoc 6
 
 \omit
 Ideas for other sections:
@@ -824,7 +824,7 @@ Ideas for other sections:
                QTextDocument::toHtml(), the encoding is stored using
                a \c meta tag, for example:
 
-    \snippet doc/src/snippets/code/doc.src.richtext.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_richtext.qdoc 7
 
     \row    \o \c li
             \o List item

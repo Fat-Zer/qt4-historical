@@ -103,7 +103,7 @@ Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook 
   Windows file dialog, and on Mac OS X these static function will call
   the native Mac OS X file dialog.
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 0
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 0
 
   In the above example, a modal QFileDialog is created using a static
   function. The dialog initially displays the contents of the "/home/jana"
@@ -114,13 +114,13 @@ Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook 
   If you want to use multiple filters, separate each one with
   \e two semicolons. For example:
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 1
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 1
 
   You can create your own QFileDialog without using the static
   functions. By calling setFileMode(), you can specify what the user must
   select in the dialog:
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 2
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 2
 
   In the above example, the mode of the file dialog is set to
   AnyFile, meaning that the user can select any file, or even specify a
@@ -133,7 +133,7 @@ Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook 
   this indicates what types of objects the user is expected to select.
   Use setNameFilter() to set the dialog's file filter. For example:
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 3
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 3
 
   In the above example, the filter is set to \c{"Images (*.png *.xpm *.jpg)"},
   this means that only files with the extension \c png, \c xpm,
@@ -149,12 +149,12 @@ Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook 
   information alongside each name, such as the file size and modification
   date. Set the mode with setViewMode():
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 4
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 4
 
   The last important function you will need to use when creating your
   own file dialog is selectedFiles().
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 5
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 5
 
   In the above example, a modal file dialog is created and shown. If
   the user clicked OK, the file they selected is put in \c fileName.
@@ -528,7 +528,10 @@ void QFileDialog::setDirectory(const QString &directory)
         return;
     QModelIndex idx = d->model->index(directory);
 #ifndef QT_NO_COMPLETER
-    d->completer->setCompletionPrefix(directory);
+    if (directory.endsWith(QLatin1Char('/')))
+        d->completer->setCompletionPrefix(directory);
+    else
+        d->completer->setCompletionPrefix(directory + QLatin1Char('/'));
 #endif
     QModelIndex root = d->model->setRootPath(directory);
     d->qFileDialogUi->newFolderButton->setEnabled(d->model->flags(root) & Qt::ItemIsDropEnabled);
@@ -679,7 +682,7 @@ QStringList qt_make_filter_list(const QString &filter)
     text contained in the parentheses is used as the filter. This means
     that these calls are all equivalent:
 
-    \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 6
+    \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 6
 
     \sa setNameFilters()
 */
@@ -729,7 +732,7 @@ bool QFileDialog::isNameFilterDetailsVisible() const
 
     Sets the \a filters used in the file dialog.
 
-    \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 7
+    \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 7
 */
 void QFileDialog::setNameFilters(const QStringList &filters)
 {
@@ -854,6 +857,8 @@ QDir::Filters QFileDialog::filter() const
 }
 
 /*!
+    \since 4.4
+
     Sets the filter used by the model to \a filters. The filter is used
     to specify the kind of files that should be shown.
 
@@ -898,6 +903,7 @@ QFileDialog::ViewMode QFileDialog::viewMode() const
     The file mode defines the number and type of items that the user is
     expected to select in the dialog.
 
+    By default, this property is set to AnyFile.
     \sa FileMode
 */
 void QFileDialog::setFileMode(QFileDialog::FileMode mode)
@@ -943,6 +949,8 @@ QFileDialog::FileMode QFileDialog::fileMode() const
     \brief the accept mode of the dialog
 
     The action mode defines whether the dialog is for opening or saving files.
+
+    By default, this property is set to \l{AcceptOpen}.
 
     \sa AcceptMode
 */
@@ -1044,7 +1052,9 @@ bool QFileDialog::isReadOnly() const
     \brief whether the filedialog should resolve shortcuts
 
     If this property is set to true, the file dialog will resolve
-    shortcuts.
+    shortcuts or symbolic links.
+
+    By default, this property is false.
 */
 void QFileDialog::setResolveSymlinks(bool enabled)
 {
@@ -1066,6 +1076,8 @@ bool QFileDialog::resolveSymlinks() const
     If this property is set to true and the accept mode is
     AcceptSave, the filedialog will ask whether the user wants to
     overwrite the file before accepting the file.
+
+    By default, this property is true.
 */
 void QFileDialog::setConfirmOverwrite(bool enabled)
 {
@@ -1123,7 +1135,7 @@ void QFileDialogComboBox::setHistory(const QStringList &paths)
 }
 
 /*!
-    \brief returns the browsing history of the filedialog as a list of paths.
+    Returns the browsing history of the filedialog as a list of paths.
 */
 QStringList QFileDialog::history() const
 {
@@ -1152,8 +1164,7 @@ void QFileDialog::setItemDelegate(QAbstractItemDelegate *delegate)
 }
 
 /*!
-    \brief returns the item delegate used to render the items in the views in
-  the filedialog
+  Returns the item delegate used to render the items in the views in the filedialog.
 */
 QAbstractItemDelegate *QFileDialog::itemDelegate() const
 {
@@ -1162,8 +1173,7 @@ QAbstractItemDelegate *QFileDialog::itemDelegate() const
 }
 
 /*!
-    \brief set the icon provider used by the filedialog to the specified
-    \a provider
+    Sets the icon provider used by the filedialog to the specified \a provider.
 */
 void QFileDialog::setIconProvider(QFileIconProvider *provider)
 {
@@ -1172,7 +1182,7 @@ void QFileDialog::setIconProvider(QFileIconProvider *provider)
 }
 
 /*!
-    \brief returns the icon provider used by the filedialog.
+    Returns the icon provider used by the filedialog.
 */
 QFileIconProvider *QFileDialog::iconProvider() const
 {
@@ -1181,7 +1191,7 @@ QFileIconProvider *QFileDialog::iconProvider() const
 }
 
 /*!
-    \brief set the \a text shown in the filedialog in the specified \a label
+    Sets the \a text shown in the filedialog in the specified \a label.
 */
 void QFileDialog::setLabelText(DialogLabel label, const QString &text)
 {
@@ -1215,7 +1225,7 @@ void QFileDialog::setLabelText(DialogLabel label, const QString &text)
 }
 
 /*!
-    \brief returns the text shown in the filedialog in the specified \a label
+    Returns the text shown in the filedialog in the specified \a label.
 */
 QString QFileDialog::labelText(DialogLabel label) const
 {
@@ -1277,7 +1287,7 @@ extern QString qt_mac_get_save_file_name(const QFileDialogArgs &args,
   selected by the user. If the user presses Cancel, it returns a null
   string.
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 8
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 8
 
   The function creates a modal file dialog with the given \a parent widget.
   If the parent is not 0, the dialog will be shown centered over the
@@ -1357,7 +1367,7 @@ QString QFileDialog::getOpenFileName(QWidget *parent,
   This is a convenience static function that will return one or more
   existing files selected by the user.
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 9
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 9
 
   This function creates a modal file dialog with the given \a parent
   widget. If the parent is not 0, the dialog will be shown centered
@@ -1390,7 +1400,7 @@ QString QFileDialog::getOpenFileName(QWidget *parent,
   Note that if you want to iterate over the list of files, you should
   iterate over a copy. For example:
 
-    \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 10
+    \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 10
 
   \sa getOpenFileName(), getSaveFileName(), getExistingDirectory()
 */
@@ -1447,7 +1457,7 @@ QStringList QFileDialog::getOpenFileNames(QWidget *parent,
   parent is not 0, the dialog will be shown centered over the parent
   widget.
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 11
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 11
 
   The file dialog's working directory will be set to \a dir. If \a
   dir includes a file name, the file will be selected. Only files that
@@ -1527,7 +1537,7 @@ QString QFileDialog::getSaveFileName(QWidget *parent,
   This is a convenience static function that will return an existing
   directory selected by the user.
 
-  \snippet doc/src/snippets/code/src.gui.dialogs.qfiledialog.cpp 12
+  \snippet doc/src/snippets/code/src_gui_dialogs_qfiledialog.cpp 12
 
   This function creates a modal file dialog with the given \a parent
   widget. If the parent is not 0, the dialog will be shown centered over
@@ -2906,6 +2916,8 @@ QStringList QFSCompletor::splitPath(const QString &path) const
                 parts.removeFirst();
                 currentLocationList.removeLast();
             }
+            if (!currentLocationList.isEmpty() && currentLocationList.last().isEmpty())
+                currentLocationList.removeLast();
             return currentLocationList + parts;
         }
     }

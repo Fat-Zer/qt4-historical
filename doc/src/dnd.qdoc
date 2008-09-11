@@ -273,6 +273,10 @@
     The QByteArray approach is still useful in this case because it provides
     greater control over the amount of data stored in the QMimeData object.
 
+    Note that custom datatypes used in item views must be declared as
+    \l{QMetaObject}{meta objects} and that stream operators for them
+    must be implemented.
+
     \section1 Drop Actions
 
     In the clipboard model, the user can \e cut or \e copy the source
@@ -404,9 +408,9 @@
 
     On X11, the public \l{http://www.newplanetsoftware.com/xdnd/}{XDND
     protocol} is used, while on Windows Qt uses the OLE standard, and
-    Qt/Mac uses the Carbon Drag Manager. On X11, XDND uses MIME, so no
-    translation is necessary. The Qt API is the same regardless of the
-    platform. On Windows, MIME-aware applications can communicate by
+    Qt for Mac OS X uses the Carbon Drag Manager. On X11, XDND uses MIME,
+    so no translation is necessary. The Qt API is the same regardless of
+    the platform. On Windows, MIME-aware applications can communicate by
     using clipboard format names that are MIME types. Already some
     Windows applications use MIME naming conventions for their
     clipboard formats. Internally, Qt uses QWindowsMime and
@@ -471,7 +475,7 @@
     \l{Q3DragObject::}{drag()} function is called, and it receives no information
     about how the operation ended.
 
-    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_dnd.qdoc 0
 
     Similarly, in Qt 4, drag operations are also initiated when a QDrag object
     is constructed and its \l{QDrag::}{exec()} function is called. In contrast,
@@ -511,7 +515,7 @@
     indicating success or failure of these checks via the event's
     \l{QDragEnterEvent::}{accept()} function, as shown in this simple example:
 
-    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_dnd.qdoc 1
 
     In Qt 4, you can examine the MIME type describing the data to determine
     whether the widget should accept the event or, for common data types, you
@@ -530,7 +534,7 @@
     accept dropped data in the form of text or images might provide an
     implementation of \l{QWidget::}{dropEvent()} that looks like the following:
 
-    \snippet doc/src/snippets/code/doc.src.dnd.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_dnd.qdoc 2
 
     In Qt 4, the event is handled in a similar way:
 

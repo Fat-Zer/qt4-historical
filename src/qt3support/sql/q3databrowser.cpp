@@ -252,7 +252,7 @@ bool Q3DataBrowser::boundaryChecking() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3databrowser.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3databrowser.cpp 0
 */
 
 void Q3DataBrowser::setSort(const QStringList& sort)

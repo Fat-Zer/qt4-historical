@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/i18n.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/i18n.qdoc -->
 <head>
   <title>Qt 4.4: Internationalization with Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Internationalization with Qt<br /><span class="subtitle"></span>
 </h1>
 <a name="internationalization"></a><a name="i18n"></a><p>The internationalization of an application is the process of making the application usable by people in countries other than one's own.</p>
@@ -184,7 +184,7 @@
 <p>In this example, four exotic languages are supported: Danish, Finnish, Norwegian and Swedish. If you use <a href="qmake-manual.html#qmake">qmake</a>, you usually don't need an extra project file for <tt>lupdate</tt>; your <tt>qmake</tt> project file will work fine once you add the <tt>TRANSLATIONS</tt> entry.</p>
 <p>In your application, you must <a href="qtranslator.html#load">QTranslator::load</a>() the translation files appropriate for the user's language, and install them using <a href="qcoreapplication.html#installTranslator">QCoreApplication::installTranslator</a>().</p>
 <p><tt>linguist</tt>, <tt>lupdate</tt> and <tt>lrelease</tt> are installed in the <tt>bin</tt> subdirectory of the base directory Qt is installed into. Click Help|Manual in <i>Qt Linguist</i> to access the user's manual; it contains a tutorial to get you started.</p>
-<a name="qt-itself"></a><p>Qt itself contains over 400 strings that will also need to be translated into the languages that you are targeting. You will find translation files for French and German in <tt>$QTDIR/translations</tt> as well as a template for translating to other languages. (This directory also contains some additional unsupported translations which may be useful.)</p>
+<a name="qt-itself"></a><p>Qt itself contains over 400 strings that will also need to be translated into the languages that you are targeting. You will find translation files for French, German and Simplified Chinese in <tt>$QTDIR/translations</tt>, as well as a template for translating to other languages. (This directory also contains some additional unsupported translations which may be useful.)</p>
 <p>Typically, your application's <tt>main()</tt> function will look like this:</p>
 <pre> int main(int argc, char *argv[])
  {
@@ -202,6 +202,7 @@
      ...
      return app.exec();
  }</pre>
+<p>Note the use of <a href="qlibraryinfo.html#location">QLibraryInfo::location</a>() to locate the Qt translations. Developers should request the path to the translations at run-time by passing <a href="qlibraryinfo.html#LibraryLocation-enum">QLibraryInfo::TranslationsPath</a> to this function instead of using the <tt>QTDIR</tt> environment variable in their applications.</p>
 <a name="support-for-encodings"></a>
 <h4>Support for Encodings</h4>
 <p>The <a href="qtextcodec.html">QTextCodec</a> class and the facilities in <a href="qtextstream.html">QTextStream</a> make it easy to support many input and output encodings for your users' data. When an application starts, the locale of the machine will determine the 8-bit encoding used when dealing with 8-bit data: such as for font selection, text display, 8-bit text I/O, and character input.</p>
@@ -235,7 +236,7 @@
 <p>Localizing images is not recommended. Choose clear icons that are appropriate for all localities, rather than relying on local puns or stretched metaphors. The exception is for images of left and right pointing arrows which may need to be reversed for Arabic and Hebrew locales.</p>
 <a name="dynamic-translation"></a>
 <h3>Dynamic Translation</h3>
-<p>Some applications, such as Qt Linguist, must be able to support changes to the user's language settings while they are still running. To make widgets aware of changes to the system language, reimplement the widget's <a href="qwidget.html#changeEvent">changeEvent()</a> function to check whether the event is a <a href="qevent.html#Type-enum">LanguageChange</a> event, and update the text displayed by widgets using the <a href="qobject.html#tr">tr()</a> function in the usual way. For example:</p>
+<p>Some applications, such as Qt Linguist, must be able to support changes to the user's language settings while they are still running. To make widgets aware of changes to the installed QTranslators, reimplement the widget's <a href="qwidget.html#changeEvent">changeEvent()</a> function to check whether the event is a <a href="qevent.html#Type-enum">LanguageChange</a> event, and update the text displayed by widgets using the <a href="qobject.html#tr">tr()</a> function in the usual way. For example:</p>
 <pre> void QWidget::changeEvent(QEvent *event)
  {
      if (e-&gt;type() == QEvent::LanguageChange) {
@@ -246,6 +247,7 @@
          QWidget::changeEvent(event);
  }</pre>
 <p>All other change events should be passed on by calling the default implementation of the function.</p>
+<p>The list of installed translators might change in reaction to a <a href="qevent.html#Type-enum">LocaleChange</a> event, or the application might provide a user interface that allows the user to change the current application language.</p>
 <p>The default event handler for <a href="qwidget.html">QWidget</a> subclasses responds to the <a href="qevent.html#Type-enum">QEvent::LanguageChange</a> event, and will call this function when necessary; other application components can also force widgets to update themselves by posting the <a href="qevent.html#Type-enum">LanguageChange</a> event to them.</p>
 <a name="translating-non-qt-classes"></a>
 <h3>Translating Non-Qt Classes</h3>
@@ -295,8 +297,8 @@
 </table></p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

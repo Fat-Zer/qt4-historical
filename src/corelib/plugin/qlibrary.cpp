@@ -128,7 +128,7 @@ Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
     symbol is not defined, the function pointer will be 0 and won't be
     called.
 
-    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_plugin_qlibrary.cpp 0
 
     The symbol must be exported as a C function from the library for
     resolve() to work. This means that the function must be wrapped in
@@ -139,7 +139,7 @@ Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
     use if you just want to call a function in a library without
     explicitly loading the library first:
 
-    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_plugin_qlibrary.cpp 1
 
     \sa QPluginLoader
 */
@@ -168,6 +168,8 @@ Q_GLOBAL_STATIC(QMutex, qt_library_mutex)
     \sa loadHints
 */
 
+
+#ifndef QT_NO_PLUGIN_CHECK
 struct qt_token_info
 {
     qt_token_info(const char *f, const ulong fc)
@@ -286,8 +288,9 @@ static bool qt_parse_pattern(const char *s, uint *version, bool *debug, QByteArr
 
     return ret;
 }
+#endif // QT_NO_PLUGIN_CHECK
 
-#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC)
+#if defined(Q_OS_UNIX) && !defined(Q_OS_MAC) && !defined(QT_NO_PLUGIN_CHECK)
 
 #if defined(Q_OS_FREEBSD) || defined(Q_OS_LINUX)
 #  define USE_MMAP
@@ -412,7 +415,7 @@ static bool qt_unix_query(const QString &library, uint *version, bool *debug, QB
     return ret;
 }
 
-#endif // Q_OS_UNIX && !Q_OS_MAC
+#endif // Q_OS_UNIX && !Q_OS_MAC && !defined(QT_NO_PLUGIN_CHECK)
 
 typedef QMap<QString, QLibraryPrivate*> LibraryMap;
 Q_GLOBAL_STATIC(LibraryMap, libraryMap)
@@ -731,6 +734,7 @@ bool QLibraryPrivate::isPlugin(QSettings *settings)
 
     return pluginState == IsAPlugin;
 #else
+    Q_UNUSED(settings);
     return pluginState == MightBeAPlugin;
 #endif
 }
@@ -951,7 +955,7 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, const QString &ver
     not be resolved or if the library could not be loaded.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_plugin_qlibrary.cpp 2
 
     The symbol must be exported as a C function from the library. This
     means that the function must be wrapped in an \c{extern "C"} if
@@ -959,11 +963,11 @@ void QLibrary::setFileNameAndVersion(const QString &fileName, const QString &ver
     also explicitly export the function from the DLL using the
     \c{__declspec(dllexport)} compiler directive, for example:
 
-    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_plugin_qlibrary.cpp 3
 
     with \c MY_EXPORT defined as
 
-    \snippet doc/src/snippets/code/src.corelib.plugin.qlibrary.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_plugin_qlibrary.cpp 4
 
 */
 void *QLibrary::resolve(const char *symbol)

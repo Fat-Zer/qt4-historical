@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/phonon.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/phonon.qdoc -->
 <head>
   <title>Qt 4.4: Phonon Overview</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Phonon Overview<br /><span class="subtitle"></span>
 </h1>
 <ul><li><a href="#introduction">Introduction</a></li>
@@ -39,6 +39,7 @@
 <li><a href="#linux">Linux</a></li>
 <li><a href="#mac-os-x">Mac OS X</a></li>
 </ul>
+<li><a href="#deploying-phonon-applications-on-windows">Deploying Phonon Applications on Windows</a></li>
 <li><a href="#work-in-progress">Work in Progress</a></li>
 </ul>
 <a name="introduction"></a>
@@ -116,7 +117,7 @@
 <p>The effect will start immediately after being inserted into the graph if the media object is playing. To stop it, you have to detach it again using <a href="phonon-path.html#removeEffect">removeEffect()</a> of the Path.</p>
 <a name="video"></a>
 <h3>Video</h3>
-<p>For playing video, VideoWidget is provided. This class functions both as a node in the graph and as a widget upon which it draws the video stream. The widget will automatically chose an available device for playing the video, which is usually a technology between the Qt application and the graphics card, such as <tt>DirectShow</tt> on Windows.</p>
+<p>For playing video, VideoWidget is provided. This class functions both as a node in the graph and as a widget upon which it draws the video stream. The widget will automatically choose an available device for playing the video, which is usually a technology between the Qt application and the graphics card, such as <tt>DirectShow</tt> on Windows.</p>
 <p>The video widget does not play the audio (if any) in the media stream. If you want to play the audio as well, you will need an AudioOutput node. You create and connect it to the graph as shown in the previous section.</p>
 <p>The code for creating this graph is given below, after which one can play the video with <a href="phonon-mediaobject.html#play">play()</a>.</p>
 <pre>     Phonon::MediaObject *mediaObject = new Phonon::MediaObject(this);
@@ -139,7 +140,7 @@
 <h3>Querying Backends for Support</h3>
 <p>As mentioned, Phonon depends on the backend to provide its functionality. Depending on the individual backend, full support of the API may not be in place. Applications therefore need to check with the backend if functionality they require is implemented. In this section, we take look at how this is done.</p>
 <p>The backend provides the <a href="phonon-backendcapabilities.html#availableMimeTypes">availableMimeTypes()</a> and <a href="phonon-backendcapabilities.html#isMimeTypeAvailable">isMimeTypeAvailable()</a> functions to query which MIME types the backend can produce nodes for. The types are listed as strings, which for any type is equal for any backend or platform.</p>
-<p>The backend will emit a signal - <a href="phonon-backendcapabilities-notifier.html#capabilitiesChanged">Notifier::capabilitiesChanged()</a> - if it's abilities have changed. If the available audio devices have changed, the <a href="phonon-backendcapabilities-notifier.html#availableAudioOutputDevicesChanged">Notifier::availableAudioOutputDevicesChanged()</a> signal is emitted instead.</p>
+<p>The backend will emit a signal - <a href="phonon-backendcapabilities-notifier.html#capabilitiesChanged">Notifier::capabilitiesChanged()</a> - if its abilities have changed. If the available audio devices have changed, the <a href="phonon-backendcapabilities-notifier.html#availableAudioOutputDevicesChanged">Notifier::availableAudioOutputDevicesChanged()</a> signal is emitted instead.</p>
 <p>To query the actual audio devices possible, we have the <a href="phonon-backendcapabilities.html#availableAudioOutputDevices">availableAudioOutputDevices()</a> as mentioned in the <a href="#sinks">Sinks</a> section. To query information about the individual devices, you can examine its <tt>name()</tt>; this string is dependent on the operating system, and the Qt backends does not analyze the devices further.</p>
 <p>The sink for playback of video does not have a selection of devices. For convenience, the <a href="phonon-videowidget.html">VideoWidget</a> is both a node in the graph and a widget on which the video output is rendered. To query the various video formats available, use <a href="phonon-backendcapabilities.html#isMimeTypeAvailable">isMimeTypeAvailable()</a>. To add it to a path, you can use the <a href="phonon-path.html#createPath">Phonon::createPath</a>() as usual. After creating a media object, it is also possible to call its <a href="phonon-mediaobject.html#hasVideo">hasVideo()</a> function.</p>
 <p>See also the <a href="phonon-capabilities.html">Capabilities Example</a>.</p>
@@ -153,12 +154,12 @@
 <p>On Windows, building Phonon requires DirectX and DirectShow version 9 or higher. You'll need additional SDKs you can download from Microsoft.</p>
 <a name="windows-xp-and-later-windows-versions"></a>
 <h4>Windows XP and later Windows versions</h4>
-<p>If you develop for Windows XP and up, you should download the Windows SDK from <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=e6e1c3df-a74f-4207-8586-711ebe331cdc&DisplayLang=en">http://www.microsoft.com/downloads/details.aspx?FamilyID=e6e1c3df-a74f-4207-8586-711ebe331cdc&amp;DisplayLang=en</a> Before building Qt, just call the script: <tt>C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\setenv.cmd</tt></p>
+<p>If you develop for Windows XP and up, you should download the Windows SDK <a href="http://www.microsoft.com/downloads/details.aspx?FamilyID=e6e1c3df-a74f-4207-8586-711ebe331cdc&DisplayLang=en">here</a>. Before building Qt, just call the script: <tt>C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\setenv.cmd</tt></p>
 <p><b>Note:</b> Visual C++ 2008 already contains the Windows SDK and doesn't need that package and has already the environment set up for a smooth compilation of phonon.</p>
 <a name="earlier-windows-versions-than-windows-xp"></a>
 <h4>Earlier Windows versions than Windows XP</h4>
-<p>If you want to support previous Windows versions, you should download and install the Platform SDK from <a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en">http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&amp;displaylang=en</a></p>
-<p><b>Note:</b> The platform SDK provided with Visual C++ is not complete and you'll need this one to have DirectShow 9.0 support. You can download the DirectX SDK from <a href="http://www.microsoft.com/downloads/details.aspx?familyid=09F7578C-24AA-4E0A-BF91-5FEC24C8C7BF&displaylang=en">http://www.microsoft.com/downloads/details.aspx?familyid=09F7578C-24AA-4E0A-BF91-5FEC24C8C7BF&amp;displaylang=en</a></p>
+<p>If you want to support previous Windows versions, you should download and install the Platform SDK. You find it <a href="http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en">here</a>.</p>
+<p><b>Note:</b> The platform SDK provided with Visual C++ is not complete and you'll need this one to have DirectShow 9.0 support. You can download the DirectX SDK <a href="http://www.microsoft.com/downloads/details.aspx?familyid=09F7578C-24AA-4E0A-BF91-5FEC24C8C7BF&displaylang=en">here</a>.</p>
 <a name="setting-up-the-environment"></a>
 <h4>Setting up the environment</h4>
 <p>Once the SDKs are installed, please make sure to set your environment variables LIB and INCLUDE correctly. The paths to the include and lib directory of the SDKs should appear first. Typically, to setup your environment, you would execute the following script:</p>
@@ -169,7 +170,7 @@
 <p><b>Warning:</b> The MinGW version of Qt does not support building the Qt backend.</p>
 <a name="linux"></a>
 <h3>Linux</h3>
-<p>The Qt backend on Linux uses GStreamer (minimum version is 0.10), which must be installed on the system. It is a good idea to install every package available for GStreamer to get support for as many MIME types, and audio effects as possible. At a minimum, you need the GStreamer library and base plugins, which provides support for <tt>.ogg</tt> files. The package names may vary between Linux distributions; on Mandriva, they have the following names:</p>
+<p>The Qt backend on Linux uses GStreamer (minimum version is 0.10), which must be installed on the system. At a minimum, you need the GStreamer library and base plugins, which provides support for <tt>.ogg</tt> files. The package names may vary between Linux distributions; on Mandriva, they have the following names:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th>Package</th><th>Description</th></tr></thead>
 <tr valign="top" class="odd"><td>libgstreamer0.10_0.10</td><td>The GStreamer base library.</td></tr>
@@ -180,6 +181,9 @@
 <a name="mac-os-x"></a>
 <h3>Mac OS X</h3>
 <p>On Mac OS X, Qt uses QuickTime for its backend. The minimum supported version is 7.0&#x2e;</p>
+<a name="deploying-phonon-applications-on-windows"></a>
+<h2>Deploying Phonon Applications on Windows</h2>
+<p>On Windows, the Qt backend makes use of the <a href="qtopengl.html">QtOpenGL</a> module. You therefore need to deploy the <a href="qtopengl.html">QtOpenGL</a> shared library. If this is not what you want, it is possible to configure Qt without OpenGL support. In that case, you need to run <tt>configure</tt> with the <tt>-no-opengl</tt> option.</p>
 <a name="work-in-progress"></a>
 <h2>Work in Progress</h2>
 <p>Phonon and its Qt backends, though fully functional for multimedia playback, are still under development. Functionality to come is the possibility to capture media and more processors for both music and video files.</p>
@@ -188,8 +192,8 @@
 <p>Currently, the multimedia framework supports one input source. It will be possible to include several sources. This is useful in, for example, audio mixer applications where several audio sources can be sent, processed and output as a single audio stream.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

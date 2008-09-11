@@ -1786,7 +1786,7 @@ void Q3Dns::setLabel( const QHostAddress & address )
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 0
 
 */
 
@@ -1980,7 +1980,7 @@ bool Q3Dns::isWorking() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 1
 
 */
 
@@ -2023,7 +2023,7 @@ Q3ValueList<QHostAddress> Q3Dns::addresses() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 2
 
 */
 Q3ValueList<Q3Dns::MailServer> Q3Dns::mailServers() const
@@ -2069,7 +2069,7 @@ Q3ValueList<Q3Dns::MailServer> Q3Dns::mailServers() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 3
 */
 Q3ValueList<Q3Dns::Server> Q3Dns::servers() const
 {
@@ -2100,7 +2100,7 @@ Q3ValueList<Q3Dns::Server> Q3Dns::servers() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 4
 
 */
 QStringList Q3Dns::hostNames() const
@@ -2132,7 +2132,7 @@ QStringList Q3Dns::hostNames() const
 
     Note that if you want to iterate over the list, you should iterate
     over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3dns.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_network_q3dns.cpp 5
 */
 QStringList Q3Dns::texts() const
 {

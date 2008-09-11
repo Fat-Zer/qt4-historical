@@ -784,13 +784,13 @@ static void setup()
     KOI8-R encoding, and want to convert it to Unicode. The simple way
     to do it is like this:
 
-    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodec.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_codecs_qtextcodec.cpp 0
 
     After this, \c string holds the text converted to Unicode.
     Converting a string from Unicode to the local encoding is just as
     easy:
 
-    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodec.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_codecs_qtextcodec.cpp 1
 
     To read or write files in various encodings, use QTextStream and
     its \l{QTextStream::setCodec()}{setCodec()} function. See the
@@ -807,7 +807,7 @@ static void setup()
     object for the codec and use this QTextDecoder for the whole
     decoding process, as shown below:
 
-    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodec.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_codecs_qtextcodec.cpp 2
 
     The QTextDecoder object maintains state between chunks and therefore
     works correctly even if a multi-byte character is split between
@@ -953,7 +953,7 @@ QTextCodec* QTextCodec::codecForMib(int mib)
 {
     setup();
 
-    // Qt 3 used 1000 (mib for UCS2) as it's identifier for the utf16 codec. Map
+    // Qt 3 used 1000 (mib for UCS2) as its identifier for the utf16 codec. Map
     // this correctly for compatibility.
     if (mib == 1000)
         mib = 1015;
@@ -1447,7 +1447,7 @@ QString QTextDecoder::toUnicode(const QByteArray &ba)
     might use eucKR for all the text in the program, in which case the
     main() function might look like this:
 
-    \snippet doc/src/snippets/code/src.corelib.codecs.qtextcodec.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_codecs_qtextcodec.cpp 3
 
     Note that this is not the way to select the encoding that the \e
     user has chosen. For example, to convert an application containing

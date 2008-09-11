@@ -20,11 +20,18 @@
 #ifndef EDITCOMMANDQT_H
 #define EDITCOMMANDQT_H
 
-
 #include <QUndoCommand>
 #include <EditCommand.h>
 
-class EditCommandQt : public QUndoCommand {
+QT_BEGIN_NAMESPACE
+class QUndoCommand;
+QT_END_NAMESPACE
+
+class EditCommandQt
+#ifndef QT_NO_UNDOCOMMAND
+    : public QUndoCommand
+#endif
+{
     public:
         EditCommandQt(WTF::RefPtr<WebCore::EditCommand> cmd, QUndoCommand *parent = 0);
         ~EditCommandQt();

@@ -283,7 +283,7 @@ QT_BEGIN_NAMESPACE
     be at most \a maxsize bytes long including the '\0'-terminator.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3cstring.cpp 0
 
     If \a str contains a 0 byte within the first \a maxsize bytes, the
     resulting Q3CString will be terminated by this 0. If \a str is 0 a
@@ -377,7 +377,7 @@ QT_BEGIN_NAMESPACE
     returns.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3cstring.cpp 3
 
     \warning All vsprintf() implementations will write past the end of
     the target string (*this) if the \a format specification and
@@ -421,7 +421,7 @@ Q3CString &Q3CString::sprintf(const char *format, ...)
     truncate is true, then the returned string is a left(\a width).
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3cstring.cpp 4
 
     \sa rightJustify()
 */
@@ -455,7 +455,7 @@ Q3CString Q3CString::leftJustify(uint width, char fill, bool truncate) const
     truncate is true, then the returned string is a left(\a width).
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.tools.q3cstring.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_tools_q3cstring.cpp 5
 
     \sa leftJustify()
 */

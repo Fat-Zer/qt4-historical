@@ -890,7 +890,7 @@ void QtAbstractPropertyManager::uninitializeProperty(QtProperty *property)
     PropertyManager template argument class which can be any
     QtAbstractPropertyManager subclass. For example:
 
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtpropertybrowser.cpp 0
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtpropertybrowser.cpp 0
 
     Note that QtSpinBoxFactory by definition creates editing widgets
     \e only for properties created by QtIntPropertyManager.
@@ -1143,7 +1143,7 @@ QtBrowserItem *QtBrowserItem::parent() const
     reproduced from children items are always the same as
     reproduced from associated property' children, for example:
 
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtpropertybrowser.cpp 1
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtpropertybrowser.cpp 1
 
     The \e childrenItems list represents the same list as \e childrenProperties.
 */
@@ -1531,7 +1531,7 @@ void QtAbstractPropertyBrowserPrivate::slotPropertyDataChanged(QtProperty *prope
     \table 100%
     \row
     \o
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtpropertybrowser.cpp 2
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtpropertybrowser.cpp 2
     \o  \image qtpropertybrowser-duplicate.png
     \endtable
 
@@ -1563,7 +1563,7 @@ void QtAbstractPropertyBrowserPrivate::slotPropertyDataChanged(QtProperty *prope
 
     For example:
 
-    \snippet doc/src/snippets/code/tools.shared.qtpropertybrowser.qtpropertybrowser.cpp 3
+    \snippet doc/src/snippets/code/tools_shared_qtpropertybrowser_qtpropertybrowser.cpp 3
 
     In this example the \c myInteger property's value is displayed
     with a QSpinBox widget, while the \c myDouble property's value is

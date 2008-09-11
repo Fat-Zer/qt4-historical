@@ -83,12 +83,12 @@
     must have been instantiated first. To include the definitions of
     the module's classes, use the following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtsql.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtsql.qdoc 0
 
     To link against the module, add this line to your \l qmake \c
     .pro file:
 
-    \snippet doc/src/snippets/code/doc.src.qtsql.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtsql.qdoc 1
 
     The QtSql module is part of the \l{Qt Console Edition}, the \l{Qt
     Desktop Edition}, and the \l{Qt Open Source Edition}.
@@ -108,47 +108,57 @@
 
     \section1 Connecting to Databases
 
-    Before you can use QSqlQuery or QSqlQueryModel to access a
-    database, you must create at least one database connection.
+    To access a database with QSqlQuery or QSqlQueryModel, create and
+    open one or more database connections. Database connections are
+    normally identified by connection name, \e{not} by database name.
+    You can have multiple connections to the same database.
+    QSqlDatabase also supports the concept of a \e{default}
+    connection, which is an unnamed connection. When calling QSqlQuery
+    or QSqlQueryModel member functions that take a connection name
+    argument, if you don't pass a connection name, the default
+    connection will be used. Creating a default connection is
+    convenient when your application only requires one database
+    connection.
 
-    Database connections are identified by arbitrary strings.
-    QSqlDatabase also supports the concept of a \e{default
-    connection}, which is used by the Qt SQL class if no other
-    connection is specified. This mechanism is very convenient for
-    applications that use only one database connection.
-
-    The following code establishes a connection to a MySQL database
-    called \c flightdb on host \c{bigblue}:
+    Note the difference between creating a connection and opening it.
+    Creating a connection involves creating an instance of class
+    QSqlDatabase. The connection is not usable until it is opened. The
+    following snippet shows how to create a \e{default} connection
+    and then open it:
 
     \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 26
 
-    The first argument to QSqlDatabase::addDatabase() is the name of
-    the driver. See the
-    \l{QSqlDatabase::addDatabase()}{addDatabase()} documentation for
-    a list of drivers. We call
-    \l{QSqlDatabase::setHostName()}{setHostName()},
-    \l{QSqlDatabase::setDatabaseName()}{setDatabaseName()},
-    \l{QSqlDatabase::setUserName()}{setUserName()}, and
-    \l{QSqlDatabase::setPassword()}{setPassword()} to initialize the
-    connection information.
+    The first line creates the connection object, and the last line
+    opens it for use. In between, we initialize some connection
+    information, including the \l{QSqlDatabase::setDatabaseName()}
+    {database name}, the \l{QSqlDatabase::setHostName()} {host name},
+    the \l{QSqlDatabase::setUserName()} {user name}, and the
+    \l{QSqlDatabase::setPassword()} {password}. In this case, we are
+    connecting to the MySQL database \c{flightdb} on the host
+    \c{bigblue}. The \c{"QMYSQL"} argument to
+    \l{QSqlDatabase::addDatabase()} {addDatabase()} specifies the type
+    of database driver to use for the connection. The set of database
+    drivers included with Qt are shown in the table of \l{SQL Database
+    Drivers#Supported Databases} {supported database drivers}. 
 
-    Since no name was specified for the connection, the connection
-    serves as the default connection. To specify a name, pass it as
-    the second argument to QSqlDatabase::addDatabase(). For example:
+    The connection in the snippet will be the \e{default} connection,
+    because we don't pass the second argument to
+    \l{QSqlDatabase::addDatabase()} {addDatabase()}, which is the
+    connection name. For example, here we establish two MySQL database
+    connections named \c{"first"} and \c{"second"}:
 
     \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 27
 
-    Once the connection is initialized, we must call
-    QSqlDatabase::open() to open the database and give us access to
-    the data. If this call fails it will return false; error
-    information can be obtained from QSqlDatabase::lastError().
+    After these connections have been initialized, \l{QSqlDatabase::}
+    {open()} for each one to establish the live connections. If the
+    \l{QSqlDatabase::} {open()} fails, it returns false. In that case,
+    call QSqlDatabase::lastError() to get error information.
 
     Once a connection is established, we can call the static function
-    QSqlDatabase::database() from anywhere to get a pointer to a
-    database connection. If we call it without a parameter, it will
-    return the default connection. If called with the identifier used
-    for a connection, it will return a reference to the specified
-    connection. For example:
+    QSqlDatabase::database() from anywhere with a connection name to
+    get a pointer to that database connection. If we don't pass a
+    connection name, it will return the default connection. For
+    example:
 
     \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 28
     \snippet doc/src/snippets/sqldatabase/sqldatabase.cpp 29

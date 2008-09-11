@@ -66,7 +66,7 @@ QT_BEGIN_NAMESPACE
 
     \brief The QDBusConnectionInterface class provides access to the D-Bus bus daemon service.
 
-    The D-BUS bus server daemon provides one special interface \c
+    The D-Bus bus server daemon provides one special interface \c
     org.freedesktop.DBus that allows clients to access certain
     properties of the bus, such as the current list of clients
     connected. The QDBusConnectionInterface class provides access to that
@@ -113,7 +113,7 @@ QT_BEGIN_NAMESPACE
 /*!
     \enum QDBusConnectionInterface::ServiceReplacementOptions
 
-    Flags for determining if the D-BUS server should allow another
+    Flags for determining if the D-Bus server should allow another
     application to replace a name that this application has registered
     with the ReplaceExistingService option.
 
@@ -239,7 +239,7 @@ QDBusReply<void> QDBusConnectionInterface::startService(const QString &name)
 
 /*!
     Requests to register the service name \a serviceName on the
-    bus. The \a qoption flag specifies how the D-BUS server should behave
+    bus. The \a qoption flag specifies how the D-Bus server should behave
     if \a serviceName is already registered. The \a roption flag
     specifies if the server should allow another application to
     replace our registered name.
@@ -363,25 +363,25 @@ void QDBusConnectionInterface::disconnectNotify(const char *signalName)
 /*!
     \fn QDBusConnectionInterface::serviceRegistered(const QString &serviceName)
 
-    This signal is emitted by the D-BUS server when the bus service
+    This signal is emitted by the D-Bus server when the bus service
     name (unique connection name or well-known service name) given by
     \a serviceName is acquired by this application.
 
-    Acquisition happens after the application requested a name using
+    Acquisition happens after this application has requested a name using
     registerService().
 */
 
 /*!
     \fn QDBusConnectionInterface::serviceUnregistered(const QString &serviceName)
 
-    This signal is emitted by the D-BUS server when the application
+    This signal is emitted by the D-Bus server when this application
     loses ownership of the bus service name given by \a serviceName.
 */
 
 /*!
     \fn QDBusConnectionInterface::serviceOwnerChanged(const QString &name, const QString &oldOwner, const QString &newOwner)
 
-    This signal is emitted by the D-BUS server whenever a service
+    This signal is emitted by the D-Bus server whenever a service
     ownership change happens in the bus, including apparition and
     disparition of names.
 

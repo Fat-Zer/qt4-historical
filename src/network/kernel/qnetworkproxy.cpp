@@ -61,14 +61,14 @@
     that you have written should automatically support network proxy
     using the following code.
 
-    \snippet doc/src/snippets/code/src.network.kernel.qnetworkproxy.cpp 0
+    \snippet doc/src/snippets/code/src_network_kernel_qnetworkproxy.cpp 0
 
     An alternative to setting an application wide proxy is to specify
     the proxy for individual sockets using QAbstractSocket::setProxy()
     and QTcpServer::setProxy(). In this way, it is possible to disable
     the use of a proxy for specific sockets using the following code:
 
-    \snippet doc/src/snippets/code/src.network.kernel.qnetworkproxy.cpp 1
+    \snippet doc/src/snippets/code/src_network_kernel_qnetworkproxy.cpp 1
 
     Network proxy is not used if the address used in \l
     {QAbstractSocket::connectToHost()}{connectToHost()}, \l
@@ -413,6 +413,7 @@ bool QNetworkProxy::isTransparentProxy() const
     switch (type()) {
     case Socks5Proxy:
     case HttpProxy:
+    case NoProxy:
         return true;
 
     default:

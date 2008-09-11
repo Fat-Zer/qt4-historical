@@ -26,7 +26,13 @@
 
 namespace WebCore {
 
+
 PlatformWheelEvent::PlatformWheelEvent(QWheelEvent* e)
+#ifdef QT_NO_WHEELEVENT
+{
+    Q_UNUSED(e);
+}
+#else
     : m_position(e->pos())
     , m_globalPosition(e->globalPos())
     , m_isAccepted(false)
@@ -44,5 +50,6 @@ PlatformWheelEvent::PlatformWheelEvent(QWheelEvent* e)
         m_deltaY = (e->delta() / 120);
     }
 }
+#endif // QT_NO_WHEELEVENT
 
 } // namespace WebCore

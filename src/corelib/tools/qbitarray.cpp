@@ -66,7 +66,7 @@ QT_BEGIN_NAMESPACE
     The following code constructs a QBitArray containing 200 bits
     initialized to false (0):
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 0
 
     To initialize the bits to true, either pass \c true as second
     argument to the constructor, or call fill() later on.
@@ -77,13 +77,13 @@ QT_BEGIN_NAMESPACE
     bit that can be used on the left side of an assignment. For
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 1
 
     For technical reasons, it is more efficient to use testBit() and
     setBit() to access bits in the array than operator[](). For
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 2
 
     QBitArray supports \c{&} (\link operator&() AND\endlink), \c{|}
     (\link operator|() OR\endlink), \c{^} (\link operator^()
@@ -92,7 +92,7 @@ QT_BEGIN_NAMESPACE
     as the built-in C++ bitwise operators of the same name. For
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 3
 
     For historical reasons, QBitArray distinguishes between a null
     bit array and an empty bit array. A \e null bit array is a bit
@@ -101,7 +101,7 @@ QT_BEGIN_NAMESPACE
     array is always empty, but an empty bit array isn't necessarily
     null:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 4
 
     All functions except isNull() treat null bit arrays the same as
     empty bit arrays; for example, QBitArray() compares equal to
@@ -228,7 +228,7 @@ void QBitArray::resize(int size)
     Returns true if this bit array is null; otherwise returns false.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 5
 
     Qt makes a distinction between null bit arrays and empty bit
     arrays for historical reasons. For most applications, what
@@ -245,7 +245,7 @@ void QBitArray::resize(int size)
     the bit array is resized to \a size beforehand.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 6
 
     \sa resize()
 */
@@ -372,7 +372,7 @@ void QBitArray::fill(bool value, int begin, int end)
     \a i < size()).
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 7
 
     The return value is of type QBitRef, a helper class for QBitArray.
     When you get an object of type QBitRef, you can assign to
@@ -444,7 +444,7 @@ void QBitArray::fill(bool value, int begin, int end)
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 8
 
     \sa operator&(), operator|=(), operator^=(), operator~()
 */
@@ -473,7 +473,7 @@ QBitArray &QBitArray::operator&=(const QBitArray &other)
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 9
 
     \sa operator|(), operator&=(), operator^=(), operator~()
 */
@@ -499,7 +499,7 @@ QBitArray &QBitArray::operator|=(const QBitArray &other)
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 10
 
     \sa operator^(), operator&=(), operator|=(), operator~()
 */
@@ -520,7 +520,7 @@ QBitArray &QBitArray::operator^=(const QBitArray &other)
     array.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 11
 
     \sa operator&(), operator|(), operator^()
 */
@@ -552,7 +552,7 @@ QBitArray QBitArray::operator~() const
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 12
 
     \sa QBitArray::operator&=(), operator|(), operator^()
 */
@@ -575,7 +575,7 @@ QBitArray operator&(const QBitArray &a1, const QBitArray &a2)
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 13
 
     \sa QBitArray::operator|=(), operator&(), operator^()
 */
@@ -598,7 +598,7 @@ QBitArray operator|(const QBitArray &a1, const QBitArray &a2)
     taken to be 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.tools.qbitarray.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_tools_qbitarray.cpp 14
 
     \sa QBitArray::operator^=(), operator&(), operator|()
 */

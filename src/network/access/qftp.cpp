@@ -1293,6 +1293,12 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     \module network
     \mainclass
 
+    This class provides a direct interface to FTP that allows you to
+    have more control over the requests. However, for new
+    applications, it is recommended to use QNetworkAccessManager and
+    QNetworkReply, as those classes possess a simpler, yet more
+    powerful API.
+
     The class works asynchronously, so there are no blocking
     functions. If an operation cannot be executed immediately, the
     function will still return straight away and the operation will be
@@ -1317,7 +1323,7 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     e.g. if you want to connect and login to a FTP server. This is
     simply achieved:
 
-    \snippet doc/src/snippets/code/src.network.access.qftp.cpp 0
+    \snippet doc/src/snippets/code/src_network_access_qftp.cpp 0
 
     In this case two FTP commands have been scheduled. When the last
     scheduled command has finished, a done() signal is emitted with
@@ -1335,12 +1341,12 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     Example: If you want to download the INSTALL file from Trolltech's
     FTP server, you would write this:
 
-    \snippet doc/src/snippets/code/src.network.access.qftp.cpp 1
+    \snippet doc/src/snippets/code/src_network_access_qftp.cpp 1
 
     For this example the following sequence of signals is emitted
     (with small variations, depending on network traffic, etc.):
 
-    \snippet doc/src/snippets/code/src.network.access.qftp.cpp 2
+    \snippet doc/src/snippets/code/src_network_access_qftp.cpp 2
 
     The dataTransferProgress() signal in the above example is useful
     if you want to show a \link QProgressBar progress bar \endlink to
@@ -1353,7 +1359,7 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     If the login fails for the above example, the signals would look
     like this:
 
-    \snippet doc/src/snippets/code/src.network.access.qftp.cpp 3
+    \snippet doc/src/snippets/code/src_network_access_qftp.cpp 3
 
     You can then get details about the error with the error() and
     errorString() functions.
@@ -1375,10 +1381,10 @@ int QFtpPrivate::addCommand(QFtpCommand *cmd)
     commands.
 
     \warning The current version of QFtp doesn't fully support
-    non-Unix FTP servers. We hope to fix this in a future version of
-    Qt.
+    non-Unix FTP servers.
 
-    \sa QHttp, {FTP Example}
+    \sa QHttp, QNetworkAccessManager, QNetworkRequest, QNetworkReply,
+        {FTP Example}
 */
 
 

@@ -306,10 +306,10 @@ Qt::LayoutDirection QTextInlineObject::textDirection() const
     device.
 
     Here's some pseudo code that presents the layout phase:
-    \snippet doc/src/snippets/code/src.gui.text.qtextlayout.cpp 0
+    \snippet doc/src/snippets/code/src_gui_text_qtextlayout.cpp 0
 
     The text can be drawn by calling the layout's draw() function:
-    \snippet doc/src/snippets/code/src.gui.text.qtextlayout.cpp 1
+    \snippet doc/src/snippets/code/src_gui_text_qtextlayout.cpp 1
 
     The text layout's text is set in the constructor or with
     setText(). The layout can be seen as a sequence of QTextLine

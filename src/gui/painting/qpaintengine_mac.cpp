@@ -85,7 +85,6 @@ extern QPoint qt_mac_posInWindow(const QWidget *w); //qwidget_mac.cpp
 extern WindowPtr qt_mac_window_for(const QWidget *); //qwidget_mac.cpp
 extern CGContextRef qt_mac_cg_context(const QPaintDevice *); //qpaintdevice_mac.cpp
 extern void qt_mac_dispose_rgn(RgnHandle r); //qregion_mac.cpp
-extern const uchar *qt_patternForBrush(int, bool); //qbrush.cpp
 extern QPixmap qt_pixmapForBrush(int, bool); //qbrush.cpp
 
 //Implemented for qt_mac_p.h
@@ -922,12 +921,11 @@ static void drawImageReleaseData (void *info, const void *, size_t)
 
 CGImageRef qt_mac_createCGImageFromQImage(const QImage &img, const QImage **imagePtr = 0)
 {
-    const QImage *image = &img;
-    QImage *newImage = 0;
-    if (img.depth() != 32) {
-        newImage = new QImage(img.convertToFormat(QImage::Format_ARGB32_Premultiplied));
-        image = newImage;
-    }
+    QImage *image;
+    if (img.depth() != 32)
+        image = new QImage(img.convertToFormat(QImage::Format_ARGB32_Premultiplied));
+    else
+        image = new QImage(img);
 
 #if (MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_4)
     uint cgflags = kCGImageAlphaNone;
@@ -950,8 +948,8 @@ CGImageRef qt_mac_createCGImageFromQImage(const QImage &img, const QImage **imag
     if(QSysInfo::MacintoshVersion >= QSysInfo::MV_10_4)
         cgflags |= kCGBitmapByteOrder32Host;
 #endif
-    QCFType<CGDataProviderRef> dataProvider = CGDataProviderCreateWithData(newImage,
-                                                          image->bits(),
+    QCFType<CGDataProviderRef> dataProvider = CGDataProviderCreateWithData(image,
+                                                          static_cast<const QImage *>(image)->bits(),
                                                           image->numBytes(),
                                                           drawImageReleaseData);
     if (imagePtr)
@@ -1437,6 +1435,30 @@ QCoreGraphicsPaintEnginePrivate::setStrokePen(const QPen &pen)
     CGContextSetStrokeColorWithColor(hd, cgColorForQColor(pen.color(), pdev));
 }
 
+// Add our own patterns here to deal with the fact that the coordinate system
+// is flipped vertically with Quartz2D.
+static const uchar *qt_mac_patternForBrush(int brushStyle)
+{
+    Q_ASSERT(brushStyle > Qt::SolidPattern && brushStyle < Qt::LinearGradientPattern);
+    static const uchar dense1_pat[] = { 0x00, 0x00, 0x44, 0x00, 0x00, 0x00, 0x44, 0x00 };
+    static const uchar dense2_pat[] = { 0x00, 0x22, 0x00, 0x88, 0x00, 0x22, 0x00, 0x88 };
+    static const uchar dense3_pat[] = { 0x11, 0xaa, 0x44, 0xaa, 0x11, 0xaa, 0x44, 0xaa };
+    static const uchar dense4_pat[] = { 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55, 0xaa, 0x55 };
+    static const uchar dense5_pat[] = { 0xee, 0x55, 0xbb, 0x55, 0xee, 0x55, 0xbb, 0x55 };
+    static const uchar dense6_pat[] = { 0xff, 0xdd, 0xff, 0x77, 0xff, 0xdd, 0xff, 0x77 };
+    static const uchar dense7_pat[] = { 0xff, 0xff, 0xbb, 0xff, 0xff, 0xff, 0xbb, 0xff };
+    static const uchar hor_pat[]    = { 0xff, 0xff, 0xff, 0xff, 0x00, 0xff, 0xff, 0xff };
+    static const uchar ver_pat[]    = { 0xef, 0xef, 0xef, 0xef, 0xef, 0xef, 0xef, 0xef };
+    static const uchar cross_pat[]  = { 0xef, 0xef, 0xef, 0xef, 0x00, 0xef, 0xef, 0xef };
+    static const uchar fdiag_pat[]  = { 0x7f, 0xbf, 0xdf, 0xef, 0xf7, 0xfb, 0xfd, 0xfe };
+    static const uchar bdiag_pat[]  = { 0xfe, 0xfd, 0xfb, 0xf7, 0xef, 0xdf, 0xbf, 0x7f };
+    static const uchar dcross_pat[] = { 0x7e, 0xbd, 0xdb, 0xe7, 0xe7, 0xdb, 0xbd, 0x7e };
+    static const uchar *const pat_tbl[] = {
+        dense1_pat, dense2_pat, dense3_pat, dense4_pat, dense5_pat,
+        dense6_pat, dense7_pat,
+        hor_pat, ver_pat, cross_pat, bdiag_pat, fdiag_pat, dcross_pat };
+    return pat_tbl[brushStyle - Qt::Dense1Pattern];
+}
 void
 QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF &offset)
 {
@@ -1475,20 +1497,7 @@ QCoreGraphicsPaintEnginePrivate::setFillBrush(const QBrush &brush, const QPointF
         } else {
             qpattern->as_mask = true;
 
-            Qt::BrushStyle bsForPattern;
-            switch (bs) {
-            // Since the transform is flipped, we need to flip the diagonal
-            default:
-                bsForPattern = bs;
-                break;
-            case Qt::BDiagPattern:
-                bsForPattern = Qt::FDiagPattern;
-                break;
-            case Qt::FDiagPattern:
-                bsForPattern = Qt::BDiagPattern;
-                break;
-            }
-            qpattern->data.bytes = qt_patternForBrush(bsForPattern, false);
+            qpattern->data.bytes = qt_mac_patternForBrush(bs);
             const QColor &col = brush.color();
             components[0] = qt_mac_convert_color_to_cg(col.red());
             components[1] = qt_mac_convert_color_to_cg(col.green());

@@ -925,7 +925,10 @@ static void writeAdaptor(const QString &filename, const QDBusIntrospection::Inte
                 cs << "void " << className << "::" << setter << "(" << constRefType << "value)" << endl
                    << "{" << endl
                    << "    // set the value of property " << property.name << endl
-                   << "    parent()->setProperty(\"" << property.name << "\", value);" << endl
+                   << "    parent()->setProperty(\"" << property.name << "\", value";
+                if (constRefType.contains("QDBusVariant"))
+                    cs << ".variant()";
+                cs << ");" << endl
                    << "}" << endl
                    << endl;
             }

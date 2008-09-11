@@ -690,7 +690,8 @@ namespace QPatternist
                     return ValidationError::createError(NumericToDecimalCaster<false>::errorMessage()
                                                         .arg(formatType(context->namePool(), DerivedInteger<type>::itemType()))
                                                         .arg(formatType(context->namePool(), t))
-                                                        .arg(formatData(num->stringValue())));
+                                                        .arg(formatData(num->stringValue())),
+                                                        ReportContext::FOCA0002);
                 }
             }
 

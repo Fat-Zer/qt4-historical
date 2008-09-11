@@ -172,10 +172,10 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
     \inmodule QtDBus
     \since 4.2
 
-    \brief The QDBusArgument class is used to marshall and demarshall D-BUS arguments.
+    \brief The QDBusArgument class is used to marshall and demarshall D-Bus arguments.
 
-    The class is used to send arguments over D-BUS to remote
-    applications and to receive them back. D-BUS offers an extensible
+    The class is used to send arguments over D-Bus to remote
+    applications and to receive them back. D-Bus offers an extensible
     type system, based on a few primitive types and associations of
     them. See the \l {qdbustypesystem.html}{QtDBus type system} page
     for more information on the type system.
@@ -190,13 +190,13 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
     integer and a string can be constructed using the \l
     {qdbustypesystem.html}{QtDBus type system}:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 0
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 0
 
     The type has to be registered with qDBusRegisterMetaType() before
     it can be used with QDBusArgument. Therefore, somewhere in your
     program, you should add the following code:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 1
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 1
 
     Once registered, a type can be used in outgoing method calls
     (placed with QDBusAbstractInterface::call()), signal emissions
@@ -213,7 +213,7 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
     in context of a class that may contain invalid data:
 
     \badcode
-        // Wrongly marshall the MyTime data into a D-BUS argument
+        // Wrongly marshall the MyTime data into a D-Bus argument
         QDBusArgument &operator<<(QDBusArgument &argument, const MyTime &mytime)
         {
             argument.beginStructure();
@@ -243,11 +243,11 @@ bool QDBusArgumentPrivate::checkReadAndDetach(QDBusArgumentPrivate *&d)
     Attempts to demarshall the contents of \a argument into the type
     \c{T}. For example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 2
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 2
 
     Note that it is equivalent to the following:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 3
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 3
 */
 
 /*!
@@ -317,7 +317,7 @@ QDBusArgument::~QDBusArgument()
 }
 
 /*!
-    Appends the primitive value \a arg of type \c{BYTE} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{BYTE} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(uchar arg)
 {
@@ -328,7 +328,7 @@ QDBusArgument &QDBusArgument::operator<<(uchar arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{BOOLEAN} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{BOOLEAN} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(bool arg)
 {
@@ -339,7 +339,7 @@ QDBusArgument &QDBusArgument::operator<<(bool arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{INT16} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{INT16} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(short arg)
 {
@@ -350,7 +350,7 @@ QDBusArgument &QDBusArgument::operator<<(short arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{UINT16} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{UINT16} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(ushort arg)
 {
@@ -361,7 +361,7 @@ QDBusArgument &QDBusArgument::operator<<(ushort arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{INT32} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{INT32} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(int arg)
 {
@@ -372,7 +372,7 @@ QDBusArgument &QDBusArgument::operator<<(int arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{UINT32} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{UINT32} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(uint arg)
 {
@@ -383,7 +383,7 @@ QDBusArgument &QDBusArgument::operator<<(uint arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{INT64} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{INT64} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(qlonglong arg)
 {
@@ -394,7 +394,7 @@ QDBusArgument &QDBusArgument::operator<<(qlonglong arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{UINT64} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{UINT64} to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(qulonglong arg)
 {
@@ -406,7 +406,7 @@ QDBusArgument &QDBusArgument::operator<<(qulonglong arg)
 /*!
     \overload
     Appends the primitive value \a arg of type \c{DOUBLE} (double-precision
-    floating-point) to the D-BUS stream.
+    floating-point) to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(double arg)
 {
@@ -418,7 +418,7 @@ QDBusArgument &QDBusArgument::operator<<(double arg)
 /*!
     \overload
     Appends the primitive value \a arg of type \c{STRING} (Unicode character
-    string) to the D-BUS stream.
+    string) to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(const QString &arg)
 {
@@ -430,8 +430,8 @@ QDBusArgument &QDBusArgument::operator<<(const QString &arg)
 /*!
     \overload
     \internal
-    Appends the primitive value \a arg of type \c{OBJECT_PATH} (path to a D-BUS
-    object) to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{OBJECT_PATH} (path to a D-Bus
+    object) to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(const QDBusObjectPath &arg)
 {
@@ -443,8 +443,8 @@ QDBusArgument &QDBusArgument::operator<<(const QDBusObjectPath &arg)
 /*!
     \overload
     \internal
-    Appends the primitive value \a arg of type \c{SIGNATURE} (D-BUS type
-    signature) to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{SIGNATURE} (D-Bus type
+    signature) to the D-Bus stream.
 */
 QDBusArgument &QDBusArgument::operator<<(const QDBusSignature &arg)
 {
@@ -455,9 +455,9 @@ QDBusArgument &QDBusArgument::operator<<(const QDBusSignature &arg)
 
 /*!
     \overload
-    Appends the primitive value \a arg of type \c{VARIANT} to the D-BUS stream.
+    Appends the primitive value \a arg of type \c{VARIANT} to the D-Bus stream.
 
-    A D-BUS variant type can contain any type, including other
+    A D-Bus variant type can contain any type, including other
     variants. It is similar to the Qt QVariant type.
 */
 QDBusArgument &QDBusArgument::operator<<(const QDBusVariant &arg)
@@ -470,7 +470,7 @@ QDBusArgument &QDBusArgument::operator<<(const QDBusVariant &arg)
 /*!
     \overload
     Appends the QStringList given by \a arg as \c{ARRAY of STRING}
-    to the D-BUS stream.
+    to the D-Bus stream.
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
@@ -488,7 +488,7 @@ QDBusArgument &QDBusArgument::operator<<(const QStringList &arg)
 /*!
     \overload
     Appends the QByteArray given by \a arg as \c{ARRAY of BYTE}
-    to the D-BUS stream.
+    to the D-Bus stream.
 
     QStringList and QByteArray are the only two non-primitive types
     that are supported directly by QDBusArgument because of their
@@ -505,7 +505,7 @@ QDBusArgument &QDBusArgument::operator<<(const QByteArray &arg)
 
 /*!
     \internal
-    Returns the type signature of the D-BUS type this QDBusArgument
+    Returns the type signature of the D-Bus type this QDBusArgument
     object is currently pointing to.
 */
 QString QDBusArgument::currentSignature() const
@@ -519,8 +519,8 @@ QString QDBusArgument::currentSignature() const
 }
 
 /*!
-    Extracts one D-BUS primitive argument of type \c{BYTE} from the
-    D-BUS stream and puts it into \a arg.
+    Extracts one D-Bus primitive argument of type \c{BYTE} from the
+    D-Bus stream and puts it into \a arg.
 */
 const QDBusArgument &QDBusArgument::operator>>(uchar &arg) const
 {
@@ -531,8 +531,8 @@ const QDBusArgument &QDBusArgument::operator>>(uchar &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{BOOLEAN} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{BOOLEAN} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(bool &arg) const
 {
@@ -543,8 +543,8 @@ const QDBusArgument &QDBusArgument::operator>>(bool &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{UINT16} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{UINT16} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(ushort &arg) const
 {
@@ -555,8 +555,8 @@ const QDBusArgument &QDBusArgument::operator>>(ushort &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{INT16} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{INT16} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(short &arg) const
 {
@@ -567,8 +567,8 @@ const QDBusArgument &QDBusArgument::operator>>(short &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{INT32} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{INT32} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(int &arg) const
 {
@@ -579,8 +579,8 @@ const QDBusArgument &QDBusArgument::operator>>(int &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{UINT32} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{UINT32} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(uint &arg) const
 {
@@ -591,8 +591,8 @@ const QDBusArgument &QDBusArgument::operator>>(uint &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{INT64} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{INT64} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(qlonglong &arg) const
 {
@@ -603,8 +603,8 @@ const QDBusArgument &QDBusArgument::operator>>(qlonglong &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{UINT64} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{UINT64} from the
+    D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(qulonglong &arg) const
 {
@@ -615,8 +615,8 @@ const QDBusArgument &QDBusArgument::operator>>(qulonglong &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{DOUBLE}
-    (double-precision floating pount) from the D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{DOUBLE}
+    (double-precision floating pount) from the D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(double &arg) const
 {
@@ -627,8 +627,8 @@ const QDBusArgument &QDBusArgument::operator>>(double &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{STRING} (Unicode
-    character string) from the D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{STRING} (Unicode
+    character string) from the D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(QString &arg) const
 {
@@ -640,8 +640,8 @@ const QDBusArgument &QDBusArgument::operator>>(QString &arg) const
 /*!
     \overload
     \internal
-    Extracts one D-BUS primitive argument of type \c{OBJECT_PATH}
-    (D-BUS path to an object) from the D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{OBJECT_PATH}
+    (D-Bus path to an object) from the D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(QDBusObjectPath &arg) const
 {
@@ -653,8 +653,8 @@ const QDBusArgument &QDBusArgument::operator>>(QDBusObjectPath &arg) const
 /*!
     \overload
     \internal
-    Extracts one D-BUS primitive argument of type \c{SIGNATURE} (D-BUS
-    type signature) from the D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{SIGNATURE} (D-Bus
+    type signature) from the D-Bus stream.
 */
 const QDBusArgument &QDBusArgument::operator>>(QDBusSignature &arg) const
 {
@@ -665,10 +665,10 @@ const QDBusArgument &QDBusArgument::operator>>(QDBusSignature &arg) const
 
 /*!
     \overload
-    Extracts one D-BUS primitive argument of type \c{VARIANT} from the
-    D-BUS stream.
+    Extracts one D-Bus primitive argument of type \c{VARIANT} from the
+    D-Bus stream.
 
-    A D-BUS variant type can contain any type, including other
+    A D-Bus variant type can contain any type, including other
     variants. It is similar to the Qt QVariant type.
 
     In case the variant contains a type not directly supported by
@@ -685,7 +685,7 @@ const QDBusArgument &QDBusArgument::operator>>(QDBusVariant &arg) const
 
 /*!
     \overload
-    Extracts an array of strings from the D-BUS stream and return it
+    Extracts an array of strings from the D-Bus stream and return it
     as a QStringList.
 
     QStringList and QByteArray are the only two non-primitive types
@@ -703,7 +703,7 @@ const QDBusArgument &QDBusArgument::operator>>(QStringList &arg) const
 
 /*!
     \overload
-    Extracts an array of bytes from the D-BUS stream and return it
+    Extracts an array of bytes from the D-Bus stream and return it
     as a QByteArray.
 
     QStringList and QByteArray are the only two non-primitive types
@@ -720,17 +720,17 @@ const QDBusArgument &QDBusArgument::operator>>(QByteArray &arg) const
 }
 
 /*!
-    Opens a new D-BUS structure suitable for appending new arguments.
+    Opens a new D-Bus structure suitable for appending new arguments.
 
     This function is used usually in \c{operator<<} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 4
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 4
 
     Structures can contain other structures, so the following code is
     also valid:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 5
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 5
 
     \sa endStructure(), beginArray(), beginMap()
 */
@@ -741,7 +741,7 @@ void QDBusArgument::beginStructure()
 }
 
 /*!
-    Closes a D-BUS structure opened with beginStructure(). This function must be called
+    Closes a D-Bus structure opened with beginStructure(). This function must be called
     same number of times that beginStructure() is called.
 
     \sa beginStructure(), endArray(), endMap()
@@ -753,12 +753,12 @@ void QDBusArgument::endStructure()
 }
 
 /*!
-    Opens a new D-BUS array suitable for appending elements of meta-type \a id.
+    Opens a new D-Bus array suitable for appending elements of meta-type \a id.
 
     This function is used usually in \c{operator<<} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 6
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 6
 
     If the type you want to marshall is a QList, QVector or any of the
     Qt's \l {Generic Containers} that take one template parameter,
@@ -776,7 +776,7 @@ void QDBusArgument::beginArray(int id)
 }
 
 /*!
-    Closes a D-BUS array opened with beginArray(). This function must be called
+    Closes a D-Bus array opened with beginArray(). This function must be called
     same number of times that beginArray() is called.
 
     \sa beginArray(), endStructure(), endMap()
@@ -788,7 +788,7 @@ void QDBusArgument::endArray()
 }
 
 /*!
-    Opens a new D-BUS map suitable for
+    Opens a new D-Bus map suitable for
     appending elements. Maps are containers that associate one entry
     (the key) to another (the value), such as Qt's QMap or QHash. The
     ids of the map's key and value meta types must be passed in \a kid
@@ -797,7 +797,7 @@ void QDBusArgument::endArray()
     This function is used usually in \c{operator<<} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 7
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 7
 
     If the type you want to marshall is a QMap or QHash, you need not
     declare an \c{operator<<} function for it, since QtDBus provides
@@ -812,7 +812,7 @@ void QDBusArgument::beginMap(int kid, int vid)
 }
 
 /*!
-    Closes a D-BUS map opened with beginMap(). This function must be called
+    Closes a D-Bus map opened with beginMap(). This function must be called
     same number of times that beginMap() is called.
 
     \sa beginMap(), endStructure(), endArray()
@@ -824,7 +824,7 @@ void QDBusArgument::endMap()
 }
 
 /*!
-    Opens a D-BUS map entry suitable for
+    Opens a D-Bus map entry suitable for
     appending the key and value entries. This function is only valid
     when a map has been opened with beginMap().
 
@@ -839,7 +839,7 @@ void QDBusArgument::beginMapEntry()
 }
 
 /*!
-    Closes a D-BUS map entry opened with beginMapEntry(). This function must be called
+    Closes a D-Bus map entry opened with beginMapEntry(). This function must be called
     same number of times that beginMapEntry() is called.
 
     \sa beginMapEntry()
@@ -851,12 +851,12 @@ void QDBusArgument::endMapEntry()
 }
 
 /*!
-    Opens a D-BUS structure suitable for extracting elements.
+    Opens a D-Bus structure suitable for extracting elements.
 
     This function is used usually in \c{operator>>} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 8
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 8
 
     \sa endStructure(), beginArray(), beginMap()
 */
@@ -867,7 +867,7 @@ void QDBusArgument::beginStructure() const
 }
 
 /*!
-    Closes the D-BUS structure and allow extracting of the next element
+    Closes the D-Bus structure and allow extracting of the next element
     after the structure.
 
     \sa beginStructure()
@@ -879,13 +879,13 @@ void QDBusArgument::endStructure() const
 }
 
 /*!
-    Recurses into the D-BUS array to allow extraction of
+    Recurses into the D-Bus array to allow extraction of
     the array elements.
 
     This function is used usually in \c{operator>>} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 9
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 9
 
     If the type you want to demarshall is a QList, QVector or any of the
     Qt's \l {Generic Containers} that take one template parameter, you
@@ -903,7 +903,7 @@ void QDBusArgument::beginArray() const
 }
 
 /*!
-    Closes the D-BUS array and allow extracting of the next element
+    Closes the D-Bus array and allow extracting of the next element
     after the array.
 
     \sa beginArray()
@@ -915,13 +915,13 @@ void QDBusArgument::endArray() const
 }
 
 /*!
-    Recurses into the D-BUS map to allow extraction of
+    Recurses into the D-Bus map to allow extraction of
     the map's elements.
 
     This function is used usually in \c{operator>>} streaming
     operators, as in the following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusargument.cpp 10
+    \snippet doc/src/snippets/code/src_qdbus_qdbusargument.cpp 10
 
     If the type you want to demarshall is a QMap or QHash, you need not
     declare an \c{operator>>} function for it, since QtDBus provides
@@ -936,7 +936,7 @@ void QDBusArgument::beginMap() const
 }
 
 /*!
-    Closes the D-BUS map and allow extracting of the next element
+    Closes the D-Bus map and allow extracting of the next element
     after the map.
 
     \sa beginMap()
@@ -948,7 +948,7 @@ void QDBusArgument::endMap() const
 }
 
 /*!
-    Recurses into the D-BUS map entry to allow extraction
+    Recurses into the D-Bus map entry to allow extraction
     of the key and value pair.
 
     See beginMap() for an example of how this function is usually used.
@@ -962,7 +962,7 @@ void QDBusArgument::beginMapEntry() const
 }
 
 /*!
-    Closes the D-BUS map entry and allow extracting of the next element
+    Closes the D-Bus map entry and allow extracting of the next element
     on the map.
 
     \sa beginMapEntry()

@@ -92,16 +92,16 @@ QT_BEGIN_NAMESPACE
 
     This example shows a typical use case of Q_DECLARE_METATYPE():
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 0
 
     If \c MyStruct is in a namespace, the Q_DECLARE_METATYPE() macro
     has to be outside the namespace:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 1
 
     Since \c{MyStruct} is now known to QMetaType, it can be used in QVariant:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 2
 
     \sa qRegisterMetaType()
 */
@@ -206,7 +206,7 @@ QT_BEGIN_NAMESPACE
     The following code allocates and destructs an instance of
     \c{MyClass}:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 3
 
     If we want the stream operators \c operator<<() and \c
     operator>>() to work on QVariant objects that store custom types,
@@ -1249,7 +1249,7 @@ void QMetaType::destroy(int type, void *data)
 
     This example registers the class \c{MyClass}:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 4
 
     \sa qRegisterMetaTypeStreamOperators(), QMetaType::isRegistered(),
         Q_DECLARE_METATYPE()
@@ -1267,11 +1267,11 @@ void QMetaType::destroy(int type, void *data)
     QMetaType::save(). These functions are used when streaming a
     QVariant.
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 5
 
     The stream operators should have the following signatures:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 6
 
     \sa qRegisterMetaType(), QMetaType::isRegistered(), Q_DECLARE_METATYPE()
 */
@@ -1300,7 +1300,7 @@ void QMetaType::destroy(int type, void *data)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 7
 
     To use the type \c T in QVariant, using Q_DECLARE_METATYPE() is
     sufficient. To use the type \c T in queued signal and slot connections,
@@ -1326,7 +1326,7 @@ void QMetaType::destroy(int type, void *data)
 
     Typical usage:
 
-    \snippet doc/src/snippets/code/src.corelib.kernel.qmetatype.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_kernel_qmetatype.cpp 8
 
     QMetaType::type() returns the same ID as qMetaTypeId(), but does
     a lookup at runtime based on the name of the type.

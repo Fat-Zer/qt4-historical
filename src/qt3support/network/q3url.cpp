@@ -147,7 +147,7 @@ static void slashify( QString& s, bool allowMultiple = true )
 
     Q3Url is normally used like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 0
 
     You can then access and manipulate the various parts of the URL.
 
@@ -155,7 +155,7 @@ static void slashify( QString& s, bool allowMultiple = true )
     the necessary cast and assignment operators so you can do
     following:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 1
 
     Use the static functions, encode() and decode() to encode or
     decode a URL in a string. (They operate on the string in-place.)
@@ -225,16 +225,16 @@ bool Q3Url::isRelativeUrl( const QString &url )
     \a relUrl is taken as the new URL.
 
     For example, the path of
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 2
     will be "/qt/srource/qt-2.1.0.tar.gz".
 
     On the other hand,
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 3
     will result in a new URL, "ftp://ftp.trolltech.com/usr/local",
     because "/usr/local" isn't relative.
 
     Similarly,
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 4
     will result in a new URL, with "/usr/local" as the path
     and "file" as the protocol.
 
@@ -1152,7 +1152,7 @@ QString Q3Url::dirPath() const
 /*!
     Encodes the \a url in-place into UTF-8.  For example
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 5
 
   \sa decode()
 */
@@ -1204,7 +1204,7 @@ static uchar hex_to_int( uchar c )
 /*!
     Decodes the \a url in-place into UTF-8.  For example
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3url.cpp 6
+    \snippet doc/src/snippets/code/src_qt3support_network_q3url.cpp 6
 
     \sa encode()
 */

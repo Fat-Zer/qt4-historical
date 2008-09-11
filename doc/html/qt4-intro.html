@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qt4-intro.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qt4-intro.qdoc -->
 <head>
   <title>Qt 4.4: What's New in Qt 4</title>
   <link rel="next" href="qt4-tulip.html" />
@@ -13,7 +13,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Next: <a href="qt4-tulip.html">The Tulip Container Classes</a>]
 </p>
@@ -120,31 +120,31 @@
 <p><a href="qtcore.html">QtCore</a> contains tool classes like <a href="qstring.html">QString</a>, <a href="qlist.html">QList</a>, and <a href="qfile.html">QFile</a>, as well as kernel classes like <a href="qobject.html">QObject</a> and <a href="qtimer.html">QTimer</a>. The <a href="qapplication.html">QApplication</a> class has been refactored so that it can be used in non-GUI applications. It is split into <a href="qcoreapplication.html">QCoreApplication</a> (in <a href="qtcore.html">QtCore</a>) and <a href="qapplication.html">QApplication</a> (in <a href="qtgui.html">QtGui</a>).</p>
 <p>This split makes it possible to develop server applications using Qt without linking in any unnecessary GUI-related code and without requiring GUI-related system libraries to be present on the target machine (e.g&#x2e; Xlib on X11, Carbon on Mac OS X).</p>
 <p>If you use qmake to generate your makefiles, qmake will by default link your application against <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a>. To remove the dependency upon <a href="qtgui.html">QtGui</a>, add the line</p>
-<pre>         QT -= gui</pre>
+<pre> QT -= gui</pre>
 <p>to your .pro file. To enable the other libraries, add the line</p>
-<pre>         QT += network opengl sql qt3support</pre>
+<pre> QT += network opengl sql qt3support</pre>
 <p>Another change to the build system is that moc now understands preprocessor directives. qmake automatically passes the defines set for your project (using &quot;DEFINES +=&quot;) on to moc, which has its own built-in C++ preprocessor.</p>
 <p>To compile code that uses .ui files, you will also need this line in the .pro file:</p>
-<pre>         CONFIG += uic3</pre>
+<pre> CONFIG += uic3</pre>
 <a name="include-syntax"></a>
 <h2>Include Syntax</h2>
 <p>The syntax for including Qt class definitions has become</p>
-<pre>         #include &lt;QClassName&gt;</pre>
+<pre> #include &lt;QClassName&gt;</pre>
 <p>For example:</p>
-<pre>         #include &lt;QString&gt;
-         #include &lt;QApplication&gt;
-         #include &lt;QSqlTableModel&gt;</pre>
+<pre> #include &lt;QString&gt;
+ #include &lt;QApplication&gt;
+ #include &lt;QSqlTableModel&gt;</pre>
 <p>This is guaranteed to work for any public Qt class. The old syntax,</p>
-<pre>         #include &lt;qclassname.h&gt;</pre>
+<pre> #include &lt;qclassname.h&gt;</pre>
 <p>still works, but we encourage you to switch to the new syntax.</p>
 <p>If you attempt to include a header file from a library that isn't linked against the application, this will result in a compile-time warning (e.g&#x2e;, &quot;<a href="qsqlquery.html">QSqlQuery</a>: No such file or directory&quot;). You can remedy to this problem either by removing the offending include or by specifying the missing library in the QT entry of your <tt>.pro</tt> file (see <a href="buildsystem.html">Build System</a> above).</p>
 <p>To include the definitions for all the classes in a library, simply specify the name of that library. For example:</p>
-<pre>         #include &lt;QtCore&gt;</pre>
+<pre> #include &lt;QtCore&gt;</pre>
 <a name="namespaces"></a>
 <h2>Namespaces</h2>
 <p>Qt 2 introduced a class called Qt for global-like constants (e.g&#x2e;, <tt>Qt::yellow</tt>). The C++ namespace construct was not used because not all compilers understood it when it was released.</p>
 <p>With Qt 4, the Qt class has become the Qt namespace. If you want to access a constant that is part of the Qt namespace, prefix it with <tt>Qt:</tt>: (e.g&#x2e;, <tt>Qt::yellow</tt>), or add the directive</p>
-<pre>         using namespace Qt;</pre>
+<pre> using namespace Qt;</pre>
 <p>at the top of your source files, after your <tt>#include</tt> directives. If you use the <tt>using namespace</tt> syntax you don't need the prefix (e.g&#x2e;, <tt>yellow</tt> is sufficient).</p>
 <p>When porting Qt 3 applications, you may run into some source compatibility problems with some of these symbols. For example, in Qt 3, it was legal to write <tt>QWidget::yellow</tt> instead of <tt>Qt::yellow</tt>, because <a href="qwidget.html">QWidget</a> inherited from Qt. This won't work in Qt 4; you must write <tt>Qt::yellow</tt> or add the &quot;using namespace&quot; directive and drop the <tt>Qt:</tt>: prefix.</p>
 <p>The <a href="qt3to4.html">qt3to4</a> porting tool automates this conversion.</p>
@@ -153,15 +153,15 @@
 <p>In Qt 4 we have tried to simplify the constructors of <a href="qobject.html">QObject</a>/<a href="qwidget.html">QWidget</a> subclasses. This makes subclassing easier, at the same time as it helps make the Qt library more efficient.</p>
 <p>Constructors no longer take a &quot;const char *name&quot; parameter. If you want to specify a name for a <a href="qobject.html">QObject</a>, you must call <a href="qobject.html#objectName-prop">QObject::setObjectName</a>() after construction. The object name is now a <a href="qstring.html">QString</a>. The reasons for this change are:</p>
 <ul>
-<li>Code that used it looked confusing, for example:<pre>         QLabel *label1 = new QLabel(&quot;Hello&quot;, this);
-         QLabel *label2 = new QLabel(this, &quot;Hello&quot;);</pre>
+<li>Code that used it looked confusing, for example:<pre> QLabel *label1 = new QLabel(&quot;Hello&quot;, this);
+ QLabel *label2 = new QLabel(this, &quot;Hello&quot;);</pre>
 <p><tt>label1</tt> is a <a href="qlabel.html">QLabel</a> that displays the text &quot;Hello&quot;; <tt>label2</tt> is a <a href="qlabel.html">QLabel</a> with no text, with the object name &quot;Hello&quot;.</p>
 </li>
-<li>From surveys we did, most users didn't use the name, although they blindly followed Qt's convention and provided a &quot;const char *name&quot; in their subclasses's constructors. For example:<pre>         MyWidget::MyWidget(QWidget *parent, const char *name)
-             : QWidget(parent, name)
-         {
-             ...
-         }</pre>
+<li>From surveys we did, most users didn't use the name, although they blindly followed Qt's convention and provided a &quot;const char *name&quot; in their subclasses's constructors. For example:<pre> MyWidget::MyWidget(QWidget *parent, const char *name)
+     : QWidget(parent, name)
+ {
+     ...
+ }</pre>
 </li>
 <li>The name parameter was in Qt since version 1, and it always was documented as: &quot;It is not very useful in the current version of Qt, but it will become increasingly important in the future.&quot; Ten years later, it still hasn't fulfilled its promise.</li>
 </ul>
@@ -171,25 +171,25 @@
 <h2>Dynamic Casts</h2>
 <p>Qt 4 provides a qobject_cast&lt;&gt;() function that performs a dynamic cast based on the meta-information generated by moc for <a href="qobject.html">QObject</a> subclasses. Unlike the standard C++ <a href="#dynamic-casts">dynamic_cast</a>&lt;&gt;() construct, qobject_cast&lt;&gt;() works even when RTTI is disabled, and it works correctly across DLL boundaries.</p>
 <p>Here's the Qt 3 idiom to cast a type to a subtype:</p>
-<pre>         // DEPRECATED
-         if (obj-&gt;inherits(&quot;QPushButton&quot;)) {
-             QPushButton *pushButton = (QPushButton *)obj;
-             ...
-         }</pre>
+<pre> // DEPRECATED
+ if (obj-&gt;inherits(&quot;QPushButton&quot;)) {
+     QPushButton *pushButton = (QPushButton *)obj;
+     ...
+ }</pre>
 <p>The Qt 4 idiom is both cleaner and safer, because typos will always result in compiler errors:</p>
-<pre>         QPushButton *pushButton = qobject_cast&lt;QPushButton *&gt;(obj);
-         if (pushButton) {
-             ...
-         }</pre>
+<pre> QPushButton *pushButton = qobject_cast&lt;QPushButton *&gt;(obj);
+ if (pushButton) {
+     ...
+ }</pre>
 <a name="qpointer-t"></a>
 <h2>QPointer&lt;T&gt;</h2>
 <p>The <a href="qpointer.html">QPointer</a>&lt;T&gt; class provides a pointer to type T (where T inherits from <a href="qobject.html">QObject</a>) that is automatically set to 0 when the referenced object is destroyed. Guarded pointers are useful whenever you want to store a pointer to an object you do not own.</p>
 <p>Example:</p>
-<pre>         QLabel *label = new QLabel;
-         QPointer&lt;QLabel&gt; safeLabel = label;
-         safeLabel-&gt;setText(&quot;Hello world!&quot;);
-         delete label;
-         // safeLabel is now 0, whereas label is a dangling pointer</pre>
+<pre> QLabel *label = new QLabel;
+ QPointer&lt;QLabel&gt; safeLabel = label;
+ safeLabel-&gt;setText(&quot;Hello world!&quot;);
+ delete label;
+ // safeLabel is now 0, whereas label is a dangling pointer</pre>
 <p><a href="qpointer.html">QPointer</a>&lt;T&gt; is more or less the same as the old QGuardedPtr&lt;T&gt; class, except that it is now implemented in a much more lightweight manner than before. The cost of one <a href="qpointer.html">QPointer</a>&lt;T&gt; object is now approximately the same as that of a signal--slot connection.</p>
 <a name="paint-events"></a>
 <h2>Paint Events</h2>
@@ -204,23 +204,23 @@
 <li>Other classes provide compatibility functions. Most of these are implemented inline, so that they don't bloat the Qt libraries.</li>
 </ul>
 <p>To enable the Qt 3 support classes and functions, add the line</p>
-<pre>         QT += qt3support</pre>
+<pre> QT += qt3support</pre>
 <p>to your <tt>.pro</tt> file.</p>
 <p>On Visual C++ 7 and GCC 3.2+, using compatibility functions often results in a compiler warning (e.g&#x2e;, &quot;'find' is deprecated&quot;). If you want to turn off that warning, add the line</p>
-<pre>         DEFINES += QT3_SUPPORT</pre>
+<pre> DEFINES += QT3_SUPPORT</pre>
 <p>to your <tt>.pro</tt> file.</p>
 <p>If you want to use compatibility functions but don't want to link against the <a href="qt3support.html">Qt3Support</a> library, add the line</p>
-<pre>         DEFINES += QT3_SUPPORT_WARNINGS</pre>
+<pre> DEFINES += QT3_SUPPORT_WARNINGS</pre>
 <p>or</p>
-<pre>         DEFINES += QT3_SUPPORT</pre>
+<pre> DEFINES += QT3_SUPPORT</pre>
 <p>to your <tt>.pro</tt> file, depending on whether you want compatibility function calls to generate compiler warnings or not.</p>
 <p>
 [Next: <a href="qt4-tulip.html">The Tulip Container Classes</a>]
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -450,6 +450,8 @@ QLCDNumber::~QLCDNumber()
     QLCDNumber::smallDecimalPoint is false, the decimal point occupies
     one digit position.
 
+    By default, this property contains a value of 5.
+
     \sa smallDecimalPoint
 */
 
@@ -577,6 +579,8 @@ void QLCDNumber::setMode(Mode m)
 
     If the displayed value is not a number, the property has a value
     of 0.
+
+    By default, this property contains a value of 0.
 */
 
 double QLCDNumber::value() const
@@ -612,6 +616,8 @@ void QLCDNumber::display(double num)
 
     If the displayed value is not a number, the property has a value
     of 0.
+
+    By default, this property contains a value of 0.
 */
 int QLCDNumber::intValue() const
 {

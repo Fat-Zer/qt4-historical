@@ -1156,6 +1156,7 @@ bool QLayout::activate()
 
     QWidgetPrivate *md = mw->d_func();
     uint explMin = md->extra ? md->extra->explicitMinSize : 0;
+    uint explMax = md->extra ? md->extra->explicitMaxSize : 0;
 
     switch (d->constraint) {
     case SetFixedSize:
@@ -1207,8 +1208,10 @@ bool QLayout::activate()
 
     d->doResize(mw->size());
 
-    if (md->extra)
+    if (md->extra) {
         md->extra->explicitMinSize = explMin;
+        md->extra->explicitMaxSize = explMax;
+    }
     // ideally only if sizeHint() or sizePolicy() has changed
     mw->updateGeometry();
     return true;
@@ -1224,7 +1227,7 @@ bool QLayout::activate()
     This function can be used to iterate over a layout. The following
     code will draw a rectangle for each layout item in the layout structure of the widget.
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qlayout.cpp 0
+    \snippet doc/src/snippets/code/src_gui_kernel_qlayout.cpp 0
 
     \sa count(), takeAt()
 */
@@ -1241,7 +1244,7 @@ bool QLayout::activate()
     The following code fragment shows a safe way to remove all items
     from a layout:
 
-    \snippet doc/src/snippets/code/src.gui.kernel.qlayout.cpp 1
+    \snippet doc/src/snippets/code/src_gui_kernel_qlayout.cpp 1
 
     \sa itemAt(), count()
 */

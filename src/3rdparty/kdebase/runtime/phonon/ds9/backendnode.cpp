@@ -63,7 +63,9 @@ namespace Phonon
 
         void BackendNode::setMediaObject(MediaObject *mo)
         {
-            Q_ASSERT(m_mediaObject == 0);
+            if (m_mediaObject) {
+                disconnect(m_mediaObject, SIGNAL(destroyed()), this, SLOT(mediaObjectDestroyed()));
+            }
             m_mediaObject = mo;
             connect(mo, SIGNAL(destroyed()), SLOT(mediaObjectDestroyed()));
         }

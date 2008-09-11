@@ -73,7 +73,7 @@
     Edit}{demos/textedit}.  Run the application with the \c -qws
     option:
 
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 0
 
     \table 100%
     \row
@@ -113,14 +113,14 @@
     -display command line option or by setting the QWS_DISPLAY
     environment variable. For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 1
 
     See the \l {Qt for Embedded Linux Display Management}{display management}
     documentation for more details on how to specify a screen
     driver. Note that you must also specify the display (i.e., server
     process) when starting client applications:
 
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 2
 
     There is no way of moving a client from one display to another
     when running multiple server processes. Using the \c Multi screen
@@ -131,7 +131,7 @@
     screen driver by using the \c -display command line option or by
     setting the QWS_DISPLAY environment variable. For example:
 
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 3
 
     See the \l {Qt for Embedded Linux Display Management}{display management}
     documentation for details regarding arguments.
@@ -145,36 +145,36 @@
     \o \bold -fn <font>
     \o
     Defines the application font. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 4
     The font should be specified using an X logical font description.
     \row
     \o \bold -bg <color>
     \o
     Sets the default application background color. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 5
     The color-name must be one of the names recognized by the QColor constructor.
     \row
     \o \bold -btn <color> \o
     Sets the default button color. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 6
     The color-name must be one of the names recognized by the QColor constructor.
     \row
     \o \bold -fg <color> \o
     Sets the default application foreground color. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 7
     The color-name must be one of the names recognized by the QColor constructor.
     \row
     \o \bold -name <objectname> \o
     Sets the application name, i.e. the application object's object name. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 8
     \row
     \o \bold -title <title> \o
     Sets the application's title. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 9
     \row
-    \o \bold -geometry <width>+<height>+<Xoffset>+<Yoffset> \o
+    \o \bold -geometry <width>x<height>+<Xoffset>+<Yoffset> \o
     Sets the client geometry of the first window that is shown. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 10
     \row
     \o \bold -keyboard \o
     Enables the keyboard.
@@ -203,7 +203,7 @@
     \row
     \o \bold -decoration <style>\o
     Sets the application decoration. For example:
-    \snippet doc/src/snippets/code/doc.src.emb-running.qdoc 11
+    \snippet doc/src/snippets/code/doc_src_emb-running.qdoc 11
     The supported styles are \c windows, \c default and \c styled.
 
     See also QDecoration.

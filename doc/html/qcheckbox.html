@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qcheckbox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qcheckbox.cpp -->
 <head>
   <title>Qt 4.4: QCheckBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QCheckBox Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QCheckBox widget provides a checkbox with a text label. <a href="#details">More...</a></p>
@@ -87,7 +87,7 @@
 <p>Whenever a checkbox is checked or cleared it emits the signal <a href="qcheckbox.html#stateChanged">stateChanged</a>(). Connect to this signal if you want to trigger an action each time the checkbox changes state. You can use <a href="qabstractbutton.html#checked-prop">isChecked</a>() to query whether or not a checkbox is checked.</p>
 <p>In addition to the usual checked and unchecked states, QCheckBox optionally provides a third state to indicate &quot;no change&quot;. This is useful whenever you need to give the user the option of neither checking nor unchecking a checkbox. If you need this third state, enable it with <a href="qcheckbox.html#tristate-prop">setTristate</a>(), and use <a href="qcheckbox.html#checkState">checkState</a>() to query the current toggle state.</p>
 <p>Just like <a href="qpushbutton.html">QPushButton</a>, a checkbox displays text, and optionally a small icon. The icon is set with <a href="qabstractbutton.html#icon-prop">setIcon</a>(). The text can be set in the constructor or with <a href="qabstractbutton.html#text-prop">setText</a>(). A shortcut key can be specified by preceding the preferred character with an ampersand. For example:</p>
-<pre>         QCheckBox *checkbox = new QCheckBox(&quot;C&amp;ase sensitive&quot;, this);</pre>
+<pre> QCheckBox *checkbox = new QCheckBox(&quot;C&amp;ase sensitive&quot;, this);</pre>
 <p>In this example the shortcut is <i>Alt+A</i>. See the <a href="qshortcut.html#mnemonic">QShortcut</a> documentation for details (to display an actual ampersand, use '&amp;&amp;').</p>
 <p>Important inherited functions: <a href="qabstractbutton.html#text-prop">text</a>(), <a href="qabstractbutton.html#text-prop">setText</a>(), <a href="qabstractbutton.html#text-prop">text</a>(), <a href="qabstractbutton-qt3.html#pixmap">pixmap</a>(), <a href="qabstractbutton-qt3.html#setPixmap">setPixmap</a>(), <a href="qabstractbutton-qt3.html#accel">accel</a>(), <a href="qabstractbutton-qt3.html#setAccel">setAccel</a>(), <a href="qabstractbutton-qt3.html#isToggleButton">isToggleButton</a>(), <a href="qabstractbutton.html#down-prop">setDown</a>(), <a href="qabstractbutton.html#down-prop">isDown</a>(), <a href="qabstractbutton-qt3.html#isOn">isOn</a>(), <a href="qcheckbox.html#checkState">checkState</a>(), <a href="qabstractbutton.html#autoRepeat-prop">autoRepeat</a>(), isExclusiveToggle(), <a href="qabstractbutton.html#group">group</a>(), <a href="qabstractbutton.html#autoRepeat-prop">setAutoRepeat</a>(), <a href="qabstractbutton.html#toggle">toggle</a>(), <a href="qabstractbutton.html#pressed">pressed</a>(), <a href="qabstractbutton.html#released">released</a>(), <a href="qabstractbutton.html#clicked">clicked</a>(), <a href="qabstractbutton.html#toggled">toggled</a>(), <a href="qcheckbox.html#checkState">checkState</a>(), and <a href="qcheckbox.html#stateChanged">stateChanged</a>().</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
@@ -135,8 +135,8 @@
 <p><i>state</i> contains the check box's new <a href="qt.html#CheckState-enum">Qt::CheckState</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

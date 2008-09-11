@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/xml/dom/qdom.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/xml/dom/qdom.cpp -->
 <head>
   <title>Qt 4.4: QDomDocument Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDomDocument Class Reference<br /><span class="small-subtitle">[<a href="qtxml.html">QtXml</a> module]</span>
 </h1>
 <p>The QDomDocument class represents an XML document. <a href="#details">More...</a></p>
@@ -74,46 +74,46 @@
 <p>It is possible to insert a node from another document into the document using <a href="qdomdocument.html#importNode">importNode</a>().</p>
 <p>You can obtain a list of all the elements that have a particular tag with <a href="qdomdocument.html#elementsByTagName">elementsByTagName</a>() or with <a href="qdomdocument.html#elementsByTagNameNS">elementsByTagNameNS</a>().</p>
 <p>The QDom classes are typically used as follows:</p>
-<pre>     QDomDocument doc(&quot;mydocument&quot;);
-     QFile file(&quot;mydocument.xml&quot;);
-     if (!file.open(QIODevice::ReadOnly))
-         return;
-     if (!doc.setContent(&amp;file)) {
-         file.close();
-         return;
-     }
+<pre> QDomDocument doc(&quot;mydocument&quot;);
+ QFile file(&quot;mydocument.xml&quot;);
+ if (!file.open(QIODevice::ReadOnly))
+     return;
+ if (!doc.setContent(&amp;file)) {
      file.close();
+     return;
+ }
+ file.close();
 
-     <span class="comment">// print out the element names of all elements that are direct children</span>
-     <span class="comment">// of the outermost element.</span>
-     QDomElement docElem = doc.documentElement();
+<span class="comment"> // print out the element names of all elements that are direct children</span>
+<span class="comment"> // of the outermost element.</span>
+ QDomElement docElem = doc.documentElement();
 
-     QDomNode n = docElem.firstChild();
-     while(!n.isNull()) {
-         QDomElement e = n.toElement(); <span class="comment">// try to convert the node to an element.</span>
-         if(!e.isNull()) {
-             cout &lt;&lt; qPrintable(e.tagName()) &lt;&lt; endl; <span class="comment">// the node really is an element.</span>
-         }
-         n = n.nextSibling();
+ QDomNode n = docElem.firstChild();
+ while(!n.isNull()) {
+     QDomElement e = n.toElement(); <span class="comment">// try to convert the node to an element.</span>
+     if(!e.isNull()) {
+         cout &lt;&lt; qPrintable(e.tagName()) &lt;&lt; endl; <span class="comment">// the node really is an element.</span>
      }
+     n = n.nextSibling();
+ }
 
-     <span class="comment">// Here we append a new element to the end of the document</span>
-     QDomElement elem = doc.createElement(&quot;img&quot;);
-     elem.setAttribute(&quot;src&quot;, &quot;myimage.png&quot;);
-     docElem.appendChild(elem);</pre>
+<span class="comment"> // Here we append a new element to the end of the document</span>
+ QDomElement elem = doc.createElement(&quot;img&quot;);
+ elem.setAttribute(&quot;src&quot;, &quot;myimage.png&quot;);
+ docElem.appendChild(elem);</pre>
 <p>Once <tt>doc</tt> and <tt>elem</tt> go out of scope, the whole internal tree representing the XML document is deleted.</p>
 <p>To create a document using DOM use code like this:</p>
-<pre>     QDomDocument doc(&quot;MyML&quot;);
-     QDomElement root = doc.createElement(&quot;MyML&quot;);
-     doc.appendChild(root);
+<pre> QDomDocument doc(&quot;MyML&quot;);
+ QDomElement root = doc.createElement(&quot;MyML&quot;);
+ doc.appendChild(root);
 
-     QDomElement tag = doc.createElement(&quot;Greeting&quot;);
-     root.appendChild(tag);
+ QDomElement tag = doc.createElement(&quot;Greeting&quot;);
+ root.appendChild(tag);
 
-     QDomText t = doc.createTextNode(&quot;Hello World&quot;);
-     tag.appendChild(t);
+ QDomText t = doc.createTextNode(&quot;Hello World&quot;);
+ tag.appendChild(t);
 
-     QString xml = doc.toString();</pre>
+ QString xml = doc.toString();</pre>
 <p>For further information about the Document Object Model see the Document Object Model (DOM) <a href="http://www.w3.org/TR/REC-DOM-Level-1/">Level 1</a> and <a href="http://www.w3.org/TR/DOM-Level-2-Core/">Level 2 Core</a> Specifications.</p>
 <p>See also <a href="xml-dombookmarks.html">DOM Bookmarks Example</a> and <a href="itemviews-simpledommodel.html">Simple DOM Model Example</a>.</p>
 <hr />
@@ -285,8 +285,8 @@
 <p>The data of the copy is shared (shallow copy): modifying one node will also change the other. If you want to make a deep copy, use <a href="qdomnode.html#cloneNode">cloneNode</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

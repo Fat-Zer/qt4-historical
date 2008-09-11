@@ -126,11 +126,11 @@ static StringPropertyParameters textPropertyValidationMode(const QObject *object
     if (propertyName == QLatin1String("styleSheet"))
         return StringPropertyParameters(ValidationStyleSheet, false);
 
-    if (propertyName == QLatin1String("description")) // QCommandLinkButton
+    if (propertyName == QLatin1String("description") || propertyName == QLatin1String("iconText")) // QCommandLinkButton
         return StringPropertyParameters(ValidationMultiLine, true);
 
     if (propertyName == QLatin1String("toolTip")         || propertyName.endsWith(QLatin1String("ToolTip")) ||
-        propertyName == QLatin1String("whatsThis")       || propertyName == QLatin1String("iconText") ||
+        propertyName == QLatin1String("whatsThis")       ||
         propertyName == QLatin1String("windowIconText")  || propertyName == QLatin1String("html"))
         return StringPropertyParameters(ValidationRichText, true);
 
@@ -686,7 +686,7 @@ void PropertyEditor::slotSorting(bool sort)
 
 void PropertyEditor::updateColors()
 {
-    if (m_currentBrowser == m_treeBrowser) {
+    if (m_treeBrowser && m_currentBrowser == m_treeBrowser) {
         QList<QtBrowserItem *> items = m_treeBrowser->topLevelItems();
         QListIterator<QtBrowserItem *> itItem(items);
         while (itItem.hasNext()) {

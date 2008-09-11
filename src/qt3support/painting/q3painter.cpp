@@ -189,7 +189,7 @@ QRect Q3Painter::adjustedRectangle(const QRect &r)
     direction. Zero degrees is at the 3 o'clock position.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.painting.q3painter.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_painting_q3painter.cpp 0
 
     \sa drawPie(), drawChord()
 */

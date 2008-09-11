@@ -100,6 +100,15 @@
     \o \l{qtconcurrent/wordcount}{QtConcurrent Word Count}
     \endlist
 
+    \section1 D-Bus
+    \list
+    \o  \l{dbus/dbus-chat}{Chat}
+    \o  \l{dbus/complexpingpong}{Complex Ping Pong}
+    \o  \l{dbus/listnames}{List Names}
+    \o  \l{dbus/pingpong}{Ping Pong}
+    \o  \l{dbus/remotecontrolledcar}{Remote Controlled Car} 
+    \endlist
+
     \section1 Desktop
 
     \list
@@ -189,16 +198,17 @@
     \section1 Network
 
     \list
-    \o \l{network/blockingfortuneclient}{Blocking Fortune Client}\raisedaster
-    \o \l{network/broadcastreceiver}{Broadcast Receiver}
-    \o \l{network/broadcastsender}{Broadcast Sender}
-    \o \l{network/fortuneclient}{Fortune Client}\raisedaster
-    \o \l{network/fortuneserver}{Fortune Server}\raisedaster
-    \o \l{network/ftp}{FTP}
-    \o \l{network/http}{HTTP}
-    \o \l{network/loopback}{Loopback}
-    \o \l{network/threadedfortuneserver}{Threaded Fortune Server}\raisedaster
-    \o \l{network/torrent}{Torrent}
+    \o  \l{network/blockingfortuneclient}{Blocking Fortune Client}\raisedaster
+    \o  \l{network/broadcastreceiver}{Broadcast Receiver}
+    \o  \l{network/broadcastsender}{Broadcast Sender}
+    \o  \l{network/network-chat}{Network Chat}
+    \o  \l{network/fortuneclient}{Fortune Client}\raisedaster
+    \o  \l{network/fortuneserver}{Fortune Server}\raisedaster
+    \o  \l{network/ftp}{FTP}\raisedaster
+    \o  \l{network/http}{HTTP}
+    \o  \l{network/loopback}{Loopback}
+    \o  \l{network/threadedfortuneserver}{Threaded Fortune Server}\raisedaster
+    \o  \l{network/torrent}{Torrent}
     \endlist
 
     \section1 OpenGL
@@ -329,7 +339,8 @@
     \section1 WebKit
 
     \list
-    \o \l{webkit/previewer}{Previewer}
+    \o \l{webkit/previewer}{Previewer}\raisedaster
+    \o \l{webkit/formextractor}{Form Extractor}
     \endlist
 
     \section1 Widgets

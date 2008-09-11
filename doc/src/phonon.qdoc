@@ -178,7 +178,7 @@
 
     The \c .pro file for a project needs the following line to be added:
 
-    \snippet doc/src/snippets/code/doc.src.phonon.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_phonon.qdoc 0
 
     Phonon comes with several widgets that provide functionality
     commonly associated with multimedia players - notably SeekSlider
@@ -273,7 +273,7 @@
 
     For playing video, VideoWidget is provided. This class functions
     both as a node in the graph and as a widget upon which it draws
-    the video stream. The widget will automatically chose an available
+    the video stream. The widget will automatically choose an available
     device for playing the video, which is usually a technology
     between the Qt application and the graphics card, such as \c
     DirectShow on Windows.
@@ -385,7 +385,7 @@
 
     The backend will emit a signal -
     \l{Phonon::BackendCapabilities::}{Notifier::capabilitiesChanged()}
-    - if it's abilities have changed. If the available audio devices
+    - if its abilities have changed. If the available audio devices
     have changed, the
     \l{Phonon::BackendCapabilities::}{Notifier::availableAudioOutputDevicesChanged()}
     signal is emitted instead.
@@ -430,8 +430,7 @@
     \section3 Windows XP and later Windows versions
 
     If you develop for Windows XP and up, you should download the Windows SDK
-    from
-    \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=e6e1c3df-a74f-4207-8586-711ebe331cdc&DisplayLang=en}
+    \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=e6e1c3df-a74f-4207-8586-711ebe331cdc&DisplayLang=en}{here}.
     Before building Qt, just call the script: \c {C:\Program Files\Microsoft SDKs\Windows\v6.1\Bin\setenv.cmd}
 
     \note Visual C++ 2008 already contains the Windows SDK and doesn't
@@ -440,13 +439,13 @@
 
     \section3 Earlier Windows versions than Windows XP
 
-    If you want to support previous Windows versions, you should download and install the Platform SDK from
-    \l{http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en}
+    If you want to support previous Windows versions, you should download and install the Platform SDK. You find it
+    \l{http://www.microsoft.com/downloads/details.aspx?FamilyId=0BAF2B35-C656-4969-ACE8-E4C0C0716ADB&displaylang=en}{here}.
     
     \note The platform SDK provided with Visual C++ is not
     complete and
-    you'll need this one to have DirectShow 9.0 support. You can download the DirectX SDK from
-    \l{http://www.microsoft.com/downloads/details.aspx?familyid=09F7578C-24AA-4E0A-BF91-5FEC24C8C7BF&displaylang=en}
+    you'll need this one to have DirectShow 9.0 support. You can download the DirectX SDK
+    \l{http://www.microsoft.com/downloads/details.aspx?familyid=09F7578C-24AA-4E0A-BF91-5FEC24C8C7BF&displaylang=en}{here}.
 
     \section3 Setting up the environment
 
@@ -471,12 +470,10 @@
     \section2 Linux
 
     The Qt backend on Linux uses GStreamer (minimum version is 0.10),
-    which must be installed on the system. It is a good idea to
-    install every package available for GStreamer to get support for
-    as many MIME types, and audio effects as possible. At a minimum,
-    you need the GStreamer library and base plugins, which provides
-    support for \c .ogg files. The package names may vary between
-    Linux distributions; on Mandriva, they have the following names:
+    which must be installed on the system. At a minimum, you need the
+    GStreamer library and base plugins, which provides support for \c
+    .ogg files. The package names may vary between Linux
+    distributions; on Mandriva, they have the following names:
 
     \table
         \header
@@ -533,6 +530,14 @@
     On Mac OS X, Qt uses QuickTime for its backend. The minimum
     supported version is 7.0.
 
+    \section1 Deploying Phonon Applications on Windows
+
+    On Windows, the Qt backend makes use of the \l{QtOpenGL
+    Module}{QtOpenGL} module. You therefore need to deploy the
+    QtOpenGL shared library. If this is not what you want, it is
+    possible to configure Qt without OpenGL support. In that case, you
+    need to run \c configure with the \c -no-opengl option.
+
     \section1 Work in Progress
 
     Phonon and its Qt backends, though fully functional for
@@ -554,7 +559,6 @@
 */
 
 /*!
-    \module Phonon
     \namespace Phonon
     \author Matthias Kretz <kretz@kde.org>
     \brief The Phonon namespace contains classes and functions for multimedia applications.
@@ -570,6 +574,7 @@
 
 /*!
     \page phonon-module.html
+    \module Phonon
     \title Phonon Module
     \contentspage Qt's Modules
     \previouspage QtXmlPatterns
@@ -577,6 +582,8 @@
     \ingroup modules
 
     \brief The Phonon module contains namespaces and classes for multimedia functionality.
+
+    \generatelist{classesbymodule Phonon}
 
     Phonon is a cross-platform multimedia framework that enables the use of
     audio and video content in Qt applications. The \l{Phonon Overview}
@@ -589,11 +596,11 @@
     The following declaration in a \c qmake project file ensures that
     an application is compiled and linked appropriately:
 
-    \snippet doc/src/snippets/code/doc.src.phonon.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_phonon.qdoc 1
 
     To include the definitions of the module's classes, use the following directive:
 
-    \snippet doc/src/snippets/code/doc.src.phonon.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_phonon.qdoc 2
 
     The Phonon module is part of the \l{Qt Desktop Edition} and the \l{Qt Open Source Edition}.
 

@@ -69,7 +69,7 @@ QT_BEGIN_NAMESPACE
     This class is derived from QNetworkProtocol. Q3LocalFs is not
     normally used directly, but rather through a QUrlOperator, for
     example:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3localfs.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3localfs.cpp 0
 
     This code will only work if the Q3LocalFs class is registered; to
     register the class, you must call qInitNetworkProtocols() before

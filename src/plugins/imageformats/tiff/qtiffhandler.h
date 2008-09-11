@@ -70,8 +70,8 @@ public:
         LzwCompression = 1
     };
 private:
-    void convert32BitOrder(const void *source, void *destination, int width);
-    void convert32BitOrderBigEndian(const void *source, void *destination, int width);
+    void convert32BitOrder(void *buffer, int width);
+    void convert32BitOrderBigEndian(void *buffer, int width);
     int compression;
 };
 

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qthelp.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qthelp.qdoc -->
 <head>
   <title>Qt 4.4: QtHelp Module</title>
   <link rel="prev" href="qtuitools.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qtuitools.html">QtUiTools Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
@@ -40,9 +40,9 @@
 <a name="details"></a>
 <h2>Detailed Description</h2>
 <p>To include the definitions of the module's classes, use the following directive:</p>
-<pre>         #include &lt;QtHelp&gt;</pre>
+<pre> #include &lt;QtHelp&gt;</pre>
 <p>To link against the module, add this line to your <a href="qmake-manual.html#qmake">qmake</a> <tt>.pro</tt> file:</p>
-<pre>         CONFIG += help</pre>
+<pre> CONFIG += help</pre>
 <a name="topics"></a>
 <h3>Topics</h3>
 <ul><li><a href="#topics">Topics</a></li>
@@ -74,35 +74,35 @@
 <h3>Generating Qt Help</h3>
 <p>Building help files for the Qt help system assumes that the html documentation files already exist, i.e&#x2e; the Qt help system does not offer the possibility to create html files like e.g&#x2e; Doxygen.</p>
 <p>Once the html documentents are in place, a <a href="qthelpproject.html">Qt Help Project</a> file has to be created. After specifying all relevant information in this file, it needs to be compiled by calling:</p>
-<pre>     qhelpgenerator doc.qhp -o doc.qch</pre>
+<pre> qhelpgenerator doc.qhp -o doc.qch</pre>
 <p>The file 'doc.qch' contains then all html files in compressed form along with the table of contents and index keywords. To test if the generated file is correct, open Qt Assistant and install the file via the Settings|Documentation page.</p>
 <a name="qt-help-collection-project"></a><a name="creating-a-qt-help-collection"></a>
 <h4>Creating a Qt Help Collection</h4>
 <p>The first step is to create a Qt Help Collection Project file. Since a Qt help collection stores primarily references to compressed help files, the project 'mycollection.qhcp' file looks unsurprisingly simple:</p>
-<pre>     &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
-     &lt;QHelpCollectionProject version=&quot;1.0&quot;&gt;
-         &lt;docFiles&gt;
-             &lt;register&gt;
-                 &lt;file&gt;doc.qch&lt;/file&gt;
-             &lt;/register&gt;
-         &lt;/docFiles&gt;
-     &lt;/QHelpCollectionProject&gt;</pre>
-<p>For actually creating the collection file call:</p>
-<pre>     qcollectiongenerator mycollection.qhcp -o mycollection.qhc</pre>
-<p>Instead of running two tools, one for generating the compressed help and one for generating the collection file, it is also possible to just run the qcollectiongenerator tool with a slightly modified project file instructing the generator to create the compressed help first.</p>
-<pre>     ...
+<pre> &lt;?xml version=&quot;1.0&quot; encoding=&quot;utf-8&quot; ?&gt;
+ &lt;QHelpCollectionProject version=&quot;1.0&quot;&gt;
      &lt;docFiles&gt;
-         &lt;generate&gt;
-             &lt;file&gt;
-                 &lt;input&gt;doc.qhp&lt;/input&gt;
-                 &lt;output&gt;doc.qch&lt;/output&gt;
-             &lt;/file&gt;
-         &lt;/generate&gt;
          &lt;register&gt;
              &lt;file&gt;doc.qch&lt;/file&gt;
          &lt;/register&gt;
      &lt;/docFiles&gt;
-     ...</pre>
+ &lt;/QHelpCollectionProject&gt;</pre>
+<p>For actually creating the collection file call:</p>
+<pre> qcollectiongenerator mycollection.qhcp -o mycollection.qhc</pre>
+<p>Instead of running two tools, one for generating the compressed help and one for generating the collection file, it is also possible to just run the qcollectiongenerator tool with a slightly modified project file instructing the generator to create the compressed help first.</p>
+<pre> ...
+ &lt;docFiles&gt;
+     &lt;generate&gt;
+         &lt;file&gt;
+             &lt;input&gt;doc.qhp&lt;/input&gt;
+             &lt;output&gt;doc.qch&lt;/output&gt;
+         &lt;/file&gt;
+     &lt;/generate&gt;
+     &lt;register&gt;
+         &lt;file&gt;doc.qch&lt;/file&gt;
+     &lt;/register&gt;
+ &lt;/docFiles&gt;
+ ...</pre>
 <p>Of course, it is possible to specify more than one file in the 'generate' or 'register' section, so any number of compressed help files can be generated and registered in one go.</p>
 <a name="using-qt-help"></a>
 <h3>Using Qt Help</h3>
@@ -115,21 +115,21 @@
 <h4>Using QHelpEngine API</h4>
 <p>Instead of showing the help in an external application like the Qt Assistant, it is also possible to embed the online help in the application. The contents can then be retrieved via the <a href="qhelpengine.html">QHelpEngine</a> class and can be displayed in nearly any form. Showing it in a <a href="qtextbrowser.html">QTextBrowser</a> is probably the most common way, but embedding it in What's This help is also perfectly possible.</p>
 <p>Retrieving help data from the file engine does not involve a lot of code. The first step is to create an instance of the help engine. Then we ask the engine for the links assigned to the identifier, in this case &quot;MyDialog::ChangeButton&quot;. If a link was found, meaning at least one help document exists to this topic, we get the actual help contents by calling fileData() and display the document to the user.</p>
-<pre>     QHelpEngineCore helpEngine(&quot;mycollection.qhc&quot;);
-     ...
+<pre> QHelpEngineCore helpEngine(&quot;mycollection.qhc&quot;);
+ ...
 
-     // get all file references for the identifier
-     QMap&lt;QString, QUrl&gt; links =
-         helpEngine.linksForIdentifier(QLatin1String(&quot;MyDialog::ChangeButton&quot;));
+ // get all file references for the identifier
+ QMap&lt;QString, QUrl&gt; links =
+     helpEngine.linksForIdentifier(QLatin1String(&quot;MyDialog::ChangeButton&quot;));
 
-     // If help is available for this keyword, get the help data
-     // of the first file reference.
-     if (links.count()) {
-         QByteArray helpData = helpEngine-&gt;fileData(links.constBegin().value());
-         // show the documentation to the user
-         if (!helpData.isEmpty())
-             displayHelp(helpData);
-     }</pre>
+ // If help is available for this keyword, get the help data
+ // of the first file reference.
+ if (links.count()) {
+     QByteArray helpData = helpEngine-&gt;fileData(links.constBegin().value());
+     // show the documentation to the user
+     if (!helpData.isEmpty())
+         displayHelp(helpData);
+ }</pre>
 <p>For further information on how to use the API, have a look at the <a href="qhelpengine.html">QHelpEngine</a> class reference.</p>
 <a name="licensing-information"></a>
 <h4>Licensing Information</h4>
@@ -147,8 +147,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

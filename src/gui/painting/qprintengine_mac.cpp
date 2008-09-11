@@ -468,7 +468,7 @@ void QMacPrintEnginePrivate::initialize()
     }
 
     QHash<QMacPrintEngine::PrintEnginePropertyKey, QVariant>::const_iterator propC;
-    for (propC = valueCache.begin(); propC != valueCache.end(); propC++) {
+    for (propC = valueCache.constBegin(); propC != valueCache.constEnd(); propC++) {
         q->setProperty(propC.key(), propC.value());
     }
 }

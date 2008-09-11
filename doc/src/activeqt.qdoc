@@ -49,7 +49,7 @@
     \ingroup platform-notes
     \keyword ActiveQt
 
-    Qt's ActiveX and COM support allows Qt/Windows developers to:
+    Qt's ActiveX and COM support allows Qt for Windows developers to:
 
     \list 1
     \o Access and use ActiveX controls and COM objects provided by any 

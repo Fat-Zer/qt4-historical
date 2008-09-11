@@ -54,7 +54,7 @@ QT_BEGIN_NAMESPACE
 inline QNetworkReplyImplPrivate::QNetworkReplyImplPrivate()
     : copyDevice(0), networkCache(0),
       bytesDownloaded(0), lastBytesDownloaded(-1), bytesUploaded(-1),
-      state(Idle)
+      state(Idle), isEncrypted(false)
 {
 }
 

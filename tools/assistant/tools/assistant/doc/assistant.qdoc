@@ -22,7 +22,7 @@
     \chapter The One-Minute Guide to Using Qt Assistant
 
     Under Windows, \e{Qt Assistant} is available as a menu option on the Qt menu. On
-    Unix, run \c{helpviewer} from an xterm.
+    Unix, run \c{assistant} from an xterm.
 
     When you start up \e{Qt Assistant}, you will be presented with a standard
     main-window style application, with a menu bar and toolbar. Below 

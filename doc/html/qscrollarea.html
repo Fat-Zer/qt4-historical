@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qscrollarea.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qscrollarea.cpp -->
 <head>
   <title>Qt 4.4: QScrollArea Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QScrollArea Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QScrollArea class provides a scrolling view onto another widget. <a href="#details">More...</a></p>
@@ -75,13 +75,13 @@
 <h2>Detailed Description</h2>
 <p>The QScrollArea class provides a scrolling view onto another widget.</p>
 <p>A scroll area is used to display the contents of a child widget within a frame. If the widget exceeds the size of the frame, the view can provide scroll bars so that the entire area of the child widget can be viewed. The child widget must be specified with <a href="qscrollarea.html#setWidget">setWidget</a>(). For example:</p>
-<pre>         QLabel *imageLabel = new QLabel;
-         QImage image(&quot;happyguy.png&quot;);
-         imageLabel-&gt;setPixmap(QPixmap::fromImage(image));
+<pre> QLabel *imageLabel = new QLabel;
+ QImage image(&quot;happyguy.png&quot;);
+ imageLabel-&gt;setPixmap(QPixmap::fromImage(image));
 
-         scrollArea = new QScrollArea;
-         scrollArea-&gt;setBackgroundRole(QPalette::Dark);
-         scrollArea-&gt;setWidget(imageLabel);</pre>
+ scrollArea = new QScrollArea;
+ scrollArea-&gt;setBackgroundRole(QPalette::Dark);
+ scrollArea-&gt;setWidget(imageLabel);</pre>
 <p>The code above creates a scroll area (shown in the images below) containing an image label. When scaling the image, the scroll area can provide the necessary scroll bars:</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><img src="images/qscrollarea-noscrollbars.png" /></td><td><img src="images/qscrollarea-onescrollbar.png" /></td><td><img src="images/qscrollarea-twoscrollbars.png" /></td></tr>
@@ -155,8 +155,8 @@
 <p>See also <a href="qscrollarea.html#setWidget">setWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

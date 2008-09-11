@@ -48,6 +48,7 @@
 #include "qbuffer.h"
 #include "qdatastream.h"
 #include "qvariant.h"
+#include "qvarlengtharray.h"
 
 #include <qdebug.h>
 
@@ -85,7 +86,7 @@ QT_BEGIN_NAMESPACE
     rectangles.
 
     Example of using complex regions:
-    \snippet doc/src/snippets/code/src.gui.painting.qregion.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qregion.cpp 0
 
     QRegion is an \l{implicitly shared class}.
 
@@ -95,7 +96,7 @@ QT_BEGIN_NAMESPACE
 
     \section1 Additional License Information
 
-    For Qt/X11, Qt for Embedded Linux and Windows CE, parts of this class rely on
+    On Embedded Linux, Windows CE and X11 platforms, parts of this class rely on
     code obtained under the following license:
 
     \legalese
@@ -277,6 +278,12 @@ void QRegion::detach()
 {
     if (d->ref != 1)
         *this = copy();
+#if defined(Q_WS_X11)
+    else if (d->xrectangles) {
+        free(d->xrectangles);
+        d->xrectangles = 0;
+    }
+#endif
 }
 
 // duplicates in qregion_win.cpp and qregion_wce.cpp
@@ -739,7 +746,7 @@ QRegion QRegion::intersect(const QRect &r) const
     empty region is a region that contains no points.
 
     Example:
-    \snippet doc/src/snippets/code/src.gui.painting.qregion_unix.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qregion_unix.cpp 0
 */
 
 /*!
@@ -3237,6 +3244,53 @@ static void FreeStorage(register ScanLineListBlock *pSLLBlock)
     }
 }
 
+struct QRegionSpan {
+    QRegionSpan() {}
+    QRegionSpan(int x1_, int x2_) : x1(x1_), x2(x2_) {}
+
+    int x1;
+    int x2;
+    int width() const { return x2 - x1; }
+};
+
+Q_DECLARE_TYPEINFO(QRegionSpan, Q_PRIMITIVE_TYPE);
+
+static inline void flushRow(const QRegionSpan *spans, int y, int numSpans, QRegionPrivate *reg, int *lastRow, int *extendTo, bool *needsExtend)
+{
+    QRect *regRects = reg->rects.data() + *lastRow;
+    bool canExtend = reg->rects.size() - *lastRow == numSpans
+        && !(*needsExtend && *extendTo + 1 != y)
+        && (*needsExtend || regRects[0].y() + regRects[0].height() == y);
+
+    for (int i = 0; i < numSpans && canExtend; ++i) {
+        if (regRects[i].x() != spans[i].x1 || regRects[i].right() != spans[i].x2 - 1)
+            canExtend = false;
+    }
+
+    if (canExtend) {
+        *extendTo = y;
+        *needsExtend = true;
+    } else {
+        if (*needsExtend) {
+            for (int i = 0; i < reg->rects.size() - *lastRow; ++i)
+                regRects[i].setBottom(*extendTo);
+        }
+
+        *lastRow = reg->rects.size();
+        reg->rects.reserve(*lastRow + numSpans);
+        for (int i = 0; i < numSpans; ++i)
+            reg->rects << QRect(spans[i].x1, y, spans[i].width(), 1);
+
+        if (spans[0].x1 < reg->extents.left())
+            reg->extents.setLeft(spans[0].x1);
+
+        if (spans[numSpans-1].x2 - 1 > reg->extents.right())
+            reg->extents.setRight(spans[numSpans-1].x2 - 1);
+
+        *needsExtend = false;
+    }
+}
+
 /*
  *     Create an array of rectangles from a list of points.
  *     If indeed these things (POINTS, RECTS) are the same,
@@ -3248,61 +3302,62 @@ static void FreeStorage(register ScanLineListBlock *pSLLBlock)
 static void PtsToRegion(register int numFullPtBlocks, register int iCurPtBlock,
                        POINTBLOCK *FirstPtBlock, QRegionPrivate *reg)
 {
-    register QRect *rects;
-    register QPoint *pts;
-    register POINTBLOCK *CurPtBlock;
-    register int i;
-    register QRect *extents;
-    register int numRects;
+    int lastRow = 0;
+    int extendTo = 0;
+    bool needsExtend = false;
+    QVarLengthArray<QRegionSpan> row;
+    int rowSize = 0;
 
-    extents = &reg->extents;
-    numRects = ((numFullPtBlocks * NUMPTSTOBUFFER) + iCurPtBlock) >> 1;
-
-    reg->rects.resize(numRects);
-
-    CurPtBlock = FirstPtBlock;
-    rects = reg->rects.data() - 1;
-    numRects = 0;
-    extents->setLeft(INT_MAX);
-    extents->setRight(INT_MIN);
+    reg->extents.setLeft(INT_MAX);
+    reg->extents.setRight(INT_MIN);
     reg->innerArea = -1;
 
+    POINTBLOCK *CurPtBlock = FirstPtBlock;
     for (; numFullPtBlocks >= 0; --numFullPtBlocks) {
         /* the loop uses 2 points per iteration */
-        i = NUMPTSTOBUFFER >> 1;
+        int i = NUMPTSTOBUFFER >> 1;
         if (!numFullPtBlocks)
             i = iCurPtBlock >> 1;
         if(i) {
-            for (pts = CurPtBlock->pts; i--; pts += 2) {
-                if (pts->x() == pts[1].x())
-                    continue;
-                if (numRects && pts->x() == rects->left() && pts->y() == rects->bottom() + 1
-                    && pts[1].x() == rects->right()+1 && (numRects == 1 || rects[-1].top() != rects->top())
-                                                          && (i && pts[2].y() > pts[1].y())) {
-                        rects->setBottom(pts[1].y());
-                        reg->updateInnerRect(*rects);
-                        continue;
+            row.resize(qMax(row.size(), rowSize + i));
+            for (QPoint *pts = CurPtBlock->pts; i--; pts += 2) {
+                const int width = pts[1].x() - pts[0].x();
+                if (width) {
+                    if (rowSize && row[rowSize-1].x2 == pts[0].x())
+                        row[rowSize-1].x2 = pts[1].x();
+                    else
+                        row[rowSize++] = QRegionSpan(pts[0].x(), pts[1].x());
                 }
-                ++numRects;
-                ++rects;
-                rects->setCoords(pts->x(), pts->y(), pts[1].x() - 1, pts[1].y());
-                if (rects->left() < extents->left())
-                    extents->setLeft(rects->left());
-                if (rects->right() > extents->right())
-                    extents->setRight(rects->right());
-                reg->updateInnerRect(*rects);
+
+                if (rowSize) {
+                    QPoint *next = i ? &pts[2] : (numFullPtBlocks ? CurPtBlock->next->pts : 0);
+
+                    if (!next || next->y() != pts[0].y()) {
+                        flushRow(row.data(), pts[0].y(), rowSize, reg, &lastRow, &extendTo, &needsExtend);
+                        rowSize = 0;
+                    }
+                }
             }
         }
         CurPtBlock = CurPtBlock->next;
     }
 
-    if (numRects) {
-        extents->setTop(reg->rects[0].top());
-        extents->setBottom(rects->bottom());
-    } else {
-        extents->setCoords(0, 0, 0, 0);
+    if (needsExtend) {
+        for (int i = lastRow; i < reg->rects.size(); ++i)
+            reg->rects[i].setBottom(extendTo);
     }
-    reg->numRects = numRects;
+
+    reg->numRects = reg->rects.size();
+
+    if (reg->numRects) {
+        reg->extents.setTop(reg->rects[0].top());
+        reg->extents.setBottom(reg->rects[lastRow].bottom());
+
+        for (int i = 0; i < reg->rects.size(); ++i)
+            reg->updateInnerRect(reg->rects[i]);
+    } else {
+        reg->extents.setCoords(0, 0, 0, 0);
+    }
 }
 
 /*
@@ -3715,12 +3770,7 @@ void QRegion::translate(int dx, int dy)
 
     detach();
     OffsetRegion(*d->qt_rgn, dx, dy);
-#if defined(Q_WS_X11)
-    if (d->xrectangles) {
-        free(d->xrectangles);
-        d->xrectangles = 0;
-    }
-#elif defined(Q_WS_MAC)
+#if defined(Q_WS_MAC)
     if(d->rgn) {
         qt_mac_dispose_rgn(d->rgn);
         d->rgn = 0;
@@ -3967,6 +4017,9 @@ QRect QRegion::boundingRect() const
     Returns true if \a rect is guaranteed to be fully contained in \a region.
     A false return value does not guarantee the opposite.
 */
+#ifdef Q_WS_QWS
+Q_GUI_EXPORT
+#endif
 bool qt_region_strictContains(const QRegion &region, const QRect &rect)
 {
     if (isEmptyHelper(region.d->qt_rgn) || !rect.isValid())

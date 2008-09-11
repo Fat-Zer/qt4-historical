@@ -47,6 +47,8 @@
 
 QT_BEGIN_NAMESPACE
 
+#ifndef QT_NO_LOCALSERVER
+
 /*!
     \class QLocalServer
     \since 4.4
@@ -193,7 +195,7 @@ bool QLocalServer::isListening() const
 
 /*!
     Tells the server to listen for incoming connections on \a name.
-    If the server is currently listening then it will first close().
+    If the server is currently listening then it will return false.
     Return true on success otherwise false.
 
     \a name can be a single name and QLocalServer will determine
@@ -368,6 +370,8 @@ bool QLocalServer::waitForNewConnection(int msec, bool *timedOut)
 
     return !d->pendingConnections.isEmpty();
 }
+
+#endif
 
 QT_END_NAMESPACE
 

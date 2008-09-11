@@ -82,7 +82,7 @@
     variable \l QWS_DISPLAY and then run the application, or you can
     just run the application using the \c -display switch:
 
-    \snippet doc/src/snippets/code/doc.src.examples.svgalib.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_svgalib.qdoc 0
 
     \table
     \header \o SVGAlib

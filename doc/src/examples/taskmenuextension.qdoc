@@ -155,7 +155,7 @@
     target path for the project and adding it to the list of items to
     install:
 
-    \snippet doc/src/snippets/code/doc.src.examples.taskmenuextension.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_taskmenuextension.qdoc 0
 
     The task menu extension is created as a library, and will be
     installed alongside the other \QD plugins when the project is
@@ -253,7 +253,7 @@
     retrieved from the QDesignerFormEditorInterface parameter. The
     first argument is the newly created factory and the second
     argument is an extension identifier which is a string. The \c
-    Q_TYPEID() macro simply convert the string into a QLatin1String.
+    Q_TYPEID() macro simply converts the string into a QLatin1String.
 
     The \c TicTacToeTaskMenuFactory class is a subclass of
     QExtensionFactory. When the user request a task menu by clicking

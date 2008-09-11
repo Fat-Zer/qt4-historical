@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/image/qimagewriter.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/image/qimagewriter.cpp -->
 <head>
   <title>Qt 4.4: QImageWriter Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QImageWriter Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QImageWriter class provides a format independent interface for writing images to files or other devices. <a href="#details">More...</a></p>
@@ -94,7 +94,7 @@
 <p>Destructs the <a href="qimagewriter.html">QImageWriter</a> object.</p>
 <a name="//apple_ref/cpp/instm/QImageWriter/canWrite" />
 <h3 class="fn"><a name="canWrite"></a>bool QImageWriter::canWrite () const</h3>
-<p>Returns true if <a href="qimagewriter.html">QImageWriter</a> can write the image (i.e&#x2e;, the image format is supported and the assigned device is open for reading.</p>
+<p>Returns true if <a href="qimagewriter.html">QImageWriter</a> can write the image; i.e&#x2e;, the image format is supported and the assigned device is open for reading.</p>
 <p>See also <a href="qimagewriter.html#write">write</a>(), <a href="qimagewriter.html#setDevice">setDevice</a>(), and <a href="qimagewriter.html#setFormat">setFormat</a>().</p>
 <a name="//apple_ref/cpp/instm/QImageWriter/compression" />
 <h3 class="fn"><a name="compression"></a>int QImageWriter::compression () const</h3>
@@ -145,8 +145,8 @@
 <a name="//apple_ref/cpp/instm/QImageWriter/setFormat" />
 <h3 class="fn"><a name="setFormat"></a>void QImageWriter::setFormat ( const <a href="qbytearray.html">QByteArray</a> &amp; <i>format</i> )</h3>
 <p>Sets the format <a href="qimagewriter.html">QImageWriter</a> will use when writing images, to <i>format</i>. <i>format</i> is a case insensitive text string. Example:</p>
-<pre>         QImageWriter writer;
-         writer.setFormat(&quot;png&quot;); <span class="comment">// same as writer.setFormat(&quot;PNG&quot;);</span></pre>
+<pre> QImageWriter writer;
+ writer.setFormat(&quot;png&quot;); <span class="comment">// same as writer.setFormat(&quot;PNG&quot;);</span></pre>
 <p>You can call <a href="qimagewriter.html#supportedImageFormats">supportedImageFormats</a>() for the full list of formats <a href="qimagewriter.html">QImageWriter</a> supports.</p>
 <p>See also <a href="qimagewriter.html#format">format</a>().</p>
 <a name="//apple_ref/cpp/instm/QImageWriter/setGamma" />
@@ -162,10 +162,10 @@
 <a name="//apple_ref/cpp/instm/QImageWriter/setText" />
 <h3 class="fn"><a name="setText"></a>void QImageWriter::setText ( const <a href="qstring.html">QString</a> &amp; <i>key</i>, const <a href="qstring.html">QString</a> &amp; <i>text</i> )</h3>
 <p>Sets the image text associated with the key <i>key</i> to <i>text</i>. This is useful for storing copyright information or other information about the image. Example:</p>
-<pre>         QImage image(&quot;some/image.jpeg&quot;);
-         QImageWriter writer(&quot;images/outimage.png&quot;, &quot;png&quot;);
-         writer.setText(&quot;Author&quot;, &quot;John Smith&quot;);
-         writer.write(image);</pre>
+<pre> QImage image(&quot;some/image.jpeg&quot;);
+ QImageWriter writer(&quot;images/outimage.png&quot;, &quot;png&quot;);
+ writer.setText(&quot;Author&quot;, &quot;John Smith&quot;);
+ writer.write(image);</pre>
 <p>If you want to store a single block of data (e.g&#x2e;, a comment), you can pass an empty key, or use a generic key like &quot;Description&quot;.</p>
 <p>The key and text will be embedded into the image data after calling <a href="qimagewriter.html#write">write</a>().</p>
 <p>Support for this option is implemented through <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::Description</a>.</p>
@@ -192,9 +192,9 @@
 <h3 class="fn"><a name="supportsOption"></a>bool QImageWriter::supportsOption ( <a href="qimageiohandler.html#ImageOption-enum">QImageIOHandler::ImageOption</a> <i>option</i> ) const</h3>
 <p>Returns true if the writer supports <i>option</i>; otherwise returns false.</p>
 <p>Different image formats support different options. Call this function to determine whether a certain option is supported by the current format. For example, the PNG format allows you to embed text into the image's metadata (see text()).</p>
-<pre>         QImageWriter writer(fileName);
-         if (writer.supportsOption(QImageIOHandler::Description))
-             writer.setText(&quot;Author&quot;, &quot;John Smith&quot;);</pre>
+<pre> QImageWriter writer(fileName);
+ if (writer.supportsOption(QImageIOHandler::Description))
+     writer.setText(&quot;Author&quot;, &quot;John Smith&quot;);</pre>
 <p>Options can be tested after the writer has been associated with a format.</p>
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qimagereader.html#supportsOption">QImageReader::supportsOption</a>() and <a href="qimagewriter.html#setFormat">setFormat</a>().</p>
@@ -204,8 +204,8 @@
 <p>See also <a href="qimagewriter.html#canWrite">canWrite</a>(), <a href="qimagewriter.html#error">error</a>(), and <a href="qimagewriter.html#errorString">errorString</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

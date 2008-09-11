@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/kernel/qobject.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/kernel/qobject.cpp -->
 <head>
   <title>Qt 4.4: QObject Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QObject Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QObject class is the base class of all Qt objects. <a href="#details">More...</a></p>
@@ -105,6 +105,7 @@
 <h3>Macros</h3>
 <ul>
 <li><div class="fn"/><b><a href="qobject.html#Q_CLASSINFO">Q_CLASSINFO</a></b> (  <i>Name</i>,  <i>Value</i> )</li>
+<li><div class="fn"/><b><a href="qobject.html#Q_DISABLE_COPY">Q_DISABLE_COPY</a></b> (  <i>Class</i> )</li>
 <li><div class="fn"/><b><a href="qobject.html#Q_EMIT">Q_EMIT</a></b></li>
 <li><div class="fn"/><b><a href="qobject.html#Q_ENUMS">Q_ENUMS</a></b> ( ... )</li>
 <li><div class="fn"/><b><a href="qobject.html#Q_FLAGS">Q_FLAGS</a></b> ( ... )</li>
@@ -128,15 +129,20 @@
 <p>Notice that the <a href="qobject.html#Q_OBJECT">Q_OBJECT</a> macro is mandatory for any object that implements signals, slots or properties. You also need to run the <a href="moc.html#moc">Meta Object Compiler</a> on the source file. We strongly recommend the use of this macro in all subclasses of QObject regardless of whether or not they actually use signals, slots and properties, since failure to do so may lead certain functions to exhibit strange behavior.</p>
 <p>All Qt widgets inherit QObject. The convenience function <a href="qobject.html#isWidgetType">isWidgetType</a>() returns whether an object is actually a widget. It is much faster than <a href="qobject.html#qobject_cast">qobject_cast</a>&lt;<a href="qwidget.html">QWidget</a> *&gt;(<i>obj</i>) or <i>obj</i>-&gt;<a href="qobject.html#inherits">inherits</a>(&quot;<a href="qwidget.html">QWidget</a>&quot;).</p>
 <p>Some QObject functions, e.g&#x2e; <a href="qobject.html#children">children</a>(), return a <a href="qobject.html#QObjectList-typedef">QObjectList</a>. <a href="qobject.html#QObjectList-typedef">QObjectList</a> is a typedef for <a href="qlist.html">QList</a>&lt;QObject *&gt;.</p>
+<a name="no-copy-constructor"></a><a name="no-copy-constructor-or-assignment-operator"></a>
+<h3>No copy constructor or assignment operator</h3>
+<p>QObject has neither a copy constructor nor an assignment operator. This is by design. Actually, they are declared, but in a <tt>private</tt> section with the macro <a href="qobject.html#Q_DISABLE_COPY">Q_DISABLE_COPY</a>(). In fact, all Qt classes derived from QObject (direct or indirect) use this macro to declare their copy constructor and assignment operator to be private. The reasoning is found in the discussion on <a href="object.html#identity-vs-value">Identity vs Value</a> on the <a href="object.html">Qt Object Model</a> page.</p>
+<p>The main consequence is that you should use pointers to QObject (or to your QObject subclass) where you might otherwise be tempted to use your QObject subclass as a value. For example, without a copy constructor, you can't use a subclass of QObject as the value to be stored in one of the container classes. You must store pointers.</p>
 <a name="auto-connection"></a>
-<h3>Auto-Connection</h3>
+<h4>Auto-Connection</h4>
 <p>Qt's meta-object system provides a mechanism to automatically connect signals and slots between QObject subclasses and their children. As long as objects are defined with suitable object names, and slots follow a simple naming convention, this connection can be performed at run-time by the <a href="qmetaobject.html#connectSlotsByName">QMetaObject::connectSlotsByName</a>() function.</p>
 <p><a href="uic.html#uic">uic</a> generates code that invokes this function to enable auto-connection to be performed between widgets on forms created with <i>Qt Designer</i>. More information about using auto-connection with <i>Qt Designer</i> is given in the <a href="designer-using-a-component.html">Using a Component in Your Application</a> section of the <i>Qt Designer</i> manual.</p>
 <a name="dynamic-properties"></a>
-<h3>Dynamic Properties</h3>
+<h4>Dynamic Properties</h4>
 <p>From Qt 4.2, dynamic properties can be added to and removed from QObject instances at run-time. Dynamic properties do not need to be declared at compile-time, yet they provide the same advantages as static properties and are manipulated using the same API - using <a href="qobject.html#property">property</a>() to read them and <a href="qobject.html#setProperty">setProperty</a>() to write them.</p>
 <p>From Qt 4.3, dynamic properties are supported by <a href="designer-editing-mode.html#the-property-editor">Qt Designer</a>, and both standard Qt widgets and user-created forms can be given dynamic properties.</p>
-<p>See also <a href="qmetaobject.html">QMetaObject</a>, <a href="qpointer.html">QPointer</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, and <a href="objecttrees.html">Object Trees and Object Ownership</a>.</p>
+<p>{Object Trees and Object Ownership}</p>
+<p>See also <a href="qmetaobject.html">QMetaObject</a>, <a href="qpointer.html">QPointer</a>, <a href="qobjectcleanuphandler.html">QObjectCleanupHandler</a>, and <a href="qobject.html#Q_DISABLE_COPY">Q_DISABLE_COPY</a>().</p>
 <hr />
 <h2>Property Documentation</h2>
 <a name="//apple_ref/cpp/instm/QObject/objectName" />
@@ -146,6 +152,7 @@
 <p>You can find an object by name (and type) using <a href="qobject.html#findChild">findChild</a>(). You can find a set of objects with <a href="qobject.html#findChildren">findChildren</a>().</p>
 <pre>         qDebug(&quot;MyClass::setPrecision(): (%s) invalid precision %f&quot;,
                 qPrintable(objectName()), newPrecision);</pre>
+<p>By default, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString objectName () const</b></li>
@@ -672,6 +679,28 @@
              ...
          };</pre>
 <p>See also <a href="qmetaobject.html#classInfo">QMetaObject::classInfo</a>().</p>
+<a name="//apple_ref/cpp/macro//Q_DISABLE_COPY" />
+<h3 class="fn"><a name="Q_DISABLE_COPY"></a>Q_DISABLE_COPY (  <i>Class</i> )</h3>
+<p>Disables the use of copy constructors and assignment operators for the given <i>Class</i>.</p>
+<p>Instances of subclasses of <a href="qobject.html">QObject</a> should not be thought of as values that can be copied or assigned, but as unique identities. This means that when you create your own subclass of <a href="qobject.html">QObject</a> (director or indirect), you should <i>not</i> give it a copy constructor or an assignment operator. However, it may not enough to simply omit them from your class, because, if you mistakenly write some code that requires a copy constructor or an assignment operator (it's easy to do), your compiler will thoughtfully create it for you. You must do more.</p>
+<p>The curious user will have seen that the Qt classes derived from <a href="qobject.html">QObject</a> typically include this macro in a private section:</p>
+<pre> class MyClass : public QObject
+ {
+
+   private:
+     Q_DISABLE_COPY(MyClass)
+ };</pre>
+<p>It declares a copy constructor and an assignment operator in the private section, so that if you use them by mistake, the compiler will report an error.</p>
+<pre> class MyClass : public QObject
+ {
+
+   private:
+      MyClass(const MyClass &amp;);
+      MyClass &amp;operator=(const MyClass &amp;);
+ };</pre>
+<p>But even this might not catch absolutely every case. You might be tempted to do something like this:</p>
+<pre>   QWidget w = QWidget();</pre>
+<p>First of all, don't do that. Most compilers will generate code that uses the copy constructor, so the privacy violation error will be reported, but your C++ compiler is not required to generate code for this statement in a specific way. It could generate code using <i>neither</i> the copy constructor <i>nor</i> the assignment operator we made private. In that case, no error would be reported, but your application would probably crash when you called a member function of <tt>w</tt>.</p>
 <a name="//apple_ref/cpp/macro//Q_EMIT" />
 <h3 class="fn"><a name="Q_EMIT"></a>Q_EMIT</h3>
 <p>Use this macro to replace the <tt>emit</tt> keyword for emitting signals, when you want to use Qt Signals and Slots with a <a href="signalsandslots.html#3rd-party-signals-and-slots">3rd party signal/slot mechanism</a>.</p>
@@ -769,8 +798,8 @@
 <p>The macro is normally used when <tt>no_keywords</tt> is specified with the <tt>CONFIG</tt> variable in the <tt>.pro</tt> file, but it can be used even when <tt>no_keywords</tt> is <i>not</i> specified.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

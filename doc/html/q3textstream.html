@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/text/q3textstream.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/text/q3textstream.cpp -->
 <head>
   <title>Qt 4.4: Q3TextStream Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3TextStream Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3TextStream class provides basic functions for reading and writing text using a <a href="qiodevice.html">QIODevice</a>. <a href="#details">More...</a></p>
@@ -146,28 +146,28 @@
 <p>Constructs a text stream that operates on the Unicode <a href="qstring.html">QString</a>, <i>str</i>, through an internal device. The <i>filemode</i> argument is passed to the device's open() function; see <a href="qiodevice-qt3.html#mode">QIODevice::mode</a>().</p>
 <p>If you set an encoding or codec with <a href="q3textstream.html#setEncoding">setEncoding</a>() or <a href="q3textstream.html#setCodec">setCodec</a>(), this setting is ignored for text streams that operate on <a href="qstring.html">QString</a>.</p>
 <p>Example:</p>
-<pre>     QString str;
-     Q3TextStream ts( &amp;str, IO_WriteOnly );
-     ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14; <span class="comment">// str == &quot;pi = 3.14&quot;</span></pre>
+<pre> QString str;
+ Q3TextStream ts( &amp;str, IO_WriteOnly );
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14; <span class="comment">// str == &quot;pi = 3.14&quot;</span></pre>
 <p>Writing data to the text stream will modify the contents of the string. The string will be expanded when data is written beyond the end of the string. Note that the string will not be truncated:</p>
-<pre>     QString str = &quot;pi = 3.14&quot;;
-     Q3TextStream ts( &amp;str, IO_WriteOnly );
-     ts &lt;&lt;  &quot;2+2 = &quot; &lt;&lt; 2+2; <span class="comment">// str == &quot;2+2 = 414&quot;</span></pre>
+<pre> QString str = &quot;pi = 3.14&quot;;
+ Q3TextStream ts( &amp;str, IO_WriteOnly );
+ ts &lt;&lt;  &quot;2+2 = &quot; &lt;&lt; 2+2; <span class="comment">// str == &quot;2+2 = 414&quot;</span></pre>
 <p>Note that because <a href="qstring.html">QString</a> is Unicode, you should not use <a href="q3textstream.html#readRawBytes">readRawBytes</a>() or <a href="q3textstream.html#writeRawBytes">writeRawBytes</a>() on such a stream.</p>
 <h3 class="fn"><a name="Q3TextStream-5"></a>Q3TextStream::Q3TextStream ( <a href="qbytearray.html">QByteArray</a> &amp; <i>a</i>, int <i>mode</i> )</h3>
 <p>Constructs a text stream that operates on the byte array, <i>a</i>, through an internal <a href="qbuffer.html">QBuffer</a> device. The <i>mode</i> argument is passed to the device's open() function; see <a href="qiodevice-qt3.html#mode">QIODevice::mode</a>().</p>
 <p>Example:</p>
-<pre>     QByteArray array;
-     Q3TextStream ts( array, IO_WriteOnly );
-     ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span></pre>
+<pre> QByteArray array;
+ Q3TextStream ts( array, IO_WriteOnly );
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span></pre>
 <p>Writing data to the text stream will modify the contents of the array. The array will be expanded when data is written beyond the end of the string.</p>
 <p>Same example, using a <a href="qbuffer.html">QBuffer</a>:</p>
-<pre>     QByteArray array;
-     QBuffer buf( array );
-     buf.open( IO_WriteOnly );
-     Q3TextStream ts( &amp;buf );
-     ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span>
-     buf.close();</pre>
+<pre> QByteArray array;
+ QBuffer buf( array );
+ buf.open( IO_WriteOnly );
+ Q3TextStream ts( &amp;buf );
+ ts &lt;&lt; &quot;pi = &quot; &lt;&lt; 3.14 &lt;&lt; '\0'; <span class="comment">// array == &quot;pi = 3.14&quot;</span>
+ buf.close();</pre>
 <h3 class="fn"><a name="Q3TextStream-6"></a>Q3TextStream::Q3TextStream ( FILE * <i>fh</i>, int <i>mode</i> )</h3>
 <p>Constructs a text stream that operates on an existing file handle <i>fh</i> through an internal <a href="qfile.html">QFile</a> device. The <i>mode</i> argument is passed to the device's open() function; see <a href="qiodevice-qt3.html#mode">QIODevice::mode</a>().</p>
 <p>Note that if you create a <a href="q3textstream.html">Q3TextStream</a> <tt>cout</tt> or another name that is also used for another variable of a different type, some linkers may confuse the two variables, which will often cause crashes.</p>
@@ -434,8 +434,8 @@
 <p>A word consists of characters for which isspace() returns FALSE.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

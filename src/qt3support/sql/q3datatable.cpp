@@ -460,7 +460,7 @@ void Q3DataTable::setFilter( const QString& filter )
 
     Note that if you want to iterate over the sort list, you should
     iterate over a copy, e.g.
-    \snippet doc/src/snippets/code/src.qt3support.sql.q3datatable.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_sql_q3datatable.cpp 0
 
     \sa filter() refresh()
 */

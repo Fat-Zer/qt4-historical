@@ -148,7 +148,9 @@ void EffectWidgetPrivate::autogenerateUi()
 #ifndef QT_NO_TOOLTIP
         control->setToolTip(para.description());
 #endif
+#ifndef QT_NO_SHORTCUT
         label->setBuddy(control);
+#endif
         pLayout->addWidget(control);
         parameterForObject.insert(control, para);
     }

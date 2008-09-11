@@ -132,7 +132,7 @@ public:
     QFormBuilder class to create user interfaces from \c{.ui} files at
     run-time. For example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.uilib.abstractformbuilder.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_uilib_abstractformbuilder.cpp 0
 
     To override certain aspects of the form builder's behavior,
     subclass QAbstractFormBuilder and reimplement the relevant virtual
@@ -664,7 +664,15 @@ QLayout *QAbstractFormBuilder::create(DomLayout *ui_layout, QLayout *parentLayou
 
     if (tracking && layout->parent() == 0) {
         QBoxLayout *box = qobject_cast<QBoxLayout*>(parentWidget->layout());
-        Q_ASSERT(box != 0); // only QBoxLayout is supported
+        if (!box) {  // only QBoxLayout is supported
+            const QString widgetClass = QString::fromUtf8(parentWidget->metaObject()->className());
+            const QString layoutClass = QString::fromUtf8(parentWidget->layout()->metaObject()->className());
+            const QString msg = QObject::tr("Attempt to add a layout to a widget '%1' (%2) which already has a layout of non-box type %3.\n"
+                                            "This indicates an inconsistency in the ui-file.").
+                                            arg(parentWidget->objectName(), widgetClass, layoutClass);
+            uiLibWarning(msg);
+            return 0;
+        }
         box->addLayout(layout);
     }
 

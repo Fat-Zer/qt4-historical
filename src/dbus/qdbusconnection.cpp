@@ -376,7 +376,14 @@ QDBusConnection QDBusConnection::connectToBus(const QString &address,
     d = new QDBusConnectionPrivate;
     // setConnection does the error handling for us
     QDBusErrorInternal error;
-    d->setPeer(q_dbus_connection_open_private(address.toUtf8().constData(), error), error);
+    DBusConnection *c = q_dbus_connection_open_private(address.toUtf8().constData(), error);
+    if (c) {
+        if (!q_dbus_bus_register(c, error)) {
+            q_dbus_connection_unref(c);
+            c = 0;
+        }
+    }
+    d->setConnection(c, error);
     _q_manager()->setConnection(name, d);
 
     QDBusConnection retval(d);
@@ -811,7 +818,7 @@ QObject *QDBusConnection::objectRegisteredAt(const QString &path) const
 
 /*!
     Returns a QDBusConnectionInterface object that represents the
-    D-BUS server interface on this connection.
+    D-Bus server interface on this connection.
 */
 QDBusConnectionInterface *QDBusConnection::interface() const
 {
@@ -862,7 +869,7 @@ QString QDBusConnection::baseService() const
 }
 
 /*!
-    Attempts to register the \a serviceName on the D-BUS server and
+    Attempts to register the \a serviceName on the D-Bus server and
     returns true if the registration succeded. The registration will
     fail if the name is already registered by another application.
 

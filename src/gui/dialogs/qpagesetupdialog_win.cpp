@@ -139,6 +139,17 @@ int QPageSetupDialog::exec()
                                psd.rtMargin.bottom * multiplier);
         }
 
+        extern QPrinter::PaperSize mapDevmodePaperSize(int s);
+        QPrinter::PaperSize pSize;
+
+        QT_WA( {
+                pSize = mapDevmodePaperSize(ep->devModeW()->dmPaperSize);
+        }, {
+                pSize = mapDevmodePaperSize(ep->devModeA()->dmPaperSize);
+        } );
+        if (pSize != QPrinter::Custom)
+            ep->has_custom_paper_size = false;
+
         // copy from our temp DEVMODE struct
         if (!ep->globalDevMode && hDevMode) {
             void *src = GlobalLock(hDevMode);

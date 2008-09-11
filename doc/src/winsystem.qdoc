@@ -64,18 +64,18 @@
     \l{Deploying Qt Applications}.
 
     \target x11
-    \section1 Qt/X11
+    \section1 Qt for X11
 
     When compiling for this platform, the macro \c{Q_WS_X11} is defined.
 
     \e{Not documented here. Please contact Trolltech Technical Support
     if you have queries.}
 
-    See the \l{Qt/X11 Requirements} page for more information about the
+    See the \l{Qt for X11 Requirements} page for more information about the
     libraries required to build Qt with as many features as possible.
 
     \target win
-    \section1 Qt/Windows
+    \section1 Qt for Windows
 
     When compiling for this platform, the macro \c{Q_WS_WIN} is defined.
 
@@ -83,13 +83,13 @@
     if you have queries.}
 
     \target macosx
-    \section1 Qt/Mac OS X
+    \section1 Qt for Mac OS X
 
     When compiling for this platform, the macro \c{Q_WS_MAC} is defined.
 
     \list
-    \i \l{Qt/Mac-Specific Issues}
-    \i \l{Qt/Mac is Mac OS X Native}
+    \i \l{Qt for Mac OS X - Specific Issues}
+    \i \l{Qt is Mac OS X Native}
     \endlist
 
     \target qws

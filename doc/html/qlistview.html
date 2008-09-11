@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qlistview.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/itemviews/qlistview.cpp -->
 <head>
   <title>Qt 4.4: QListView Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QListView Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QListView class provides a list or icon view onto a model. <a href="#details">More...</a></p>
@@ -225,6 +225,7 @@
 <p>This property holds which direction the items layout should flow.</p>
 <p>If this property is <a href="qlistview.html#Flow-enum">LeftToRight</a>, the items will be laid out left to right. If the <a href="qlistview.html#isWrapping-prop">isWrapping</a> property is true, the layout will wrap when it reaches the right side of the visible area. If this property is <a href="qlistview.html#Flow-enum">TopToBottom</a>, the items will be laid out from the top of the visible area, wrapping when it reaches the bottom.</p>
 <p>Setting this property when the view is visible will cause the items to be laid out again.</p>
+<p>By default, this property is set to <a href="qlistview.html#Flow-enum">TopToBottom</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Flow flow () const</b></li>
@@ -249,6 +250,7 @@
 <p>This property holds whether the items layout should wrap.</p>
 <p>This property holds whether the layout should wrap when there is no more space in the visible area. The point at which the layout wraps depends on the <a href="qlistview.html#flow-prop">flow</a> property.</p>
 <p>Setting this property when the view is visible will cause the items to be laid out again.</p>
+<p>By default, this property is false.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isWrapping () const</b></li>
@@ -270,6 +272,7 @@
 <a name="//apple_ref/cpp/instm/QListView/setModelColumn" />
 <h3 class="fn"><a name="modelColumn-prop"></a>modelColumn : int</h3>
 <p>This property holds the column in the model that is visible.</p>
+<p>By default, this property contains 0, indicating that the first column in the model will be shown.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int modelColumn () const</b></li>
@@ -281,28 +284,32 @@
 <p>This property holds whether the items can be moved freely, are snapped to a grid, or cannot be moved at all.</p>
 <p>This property determines how the user can move the items in the view. <a href="qlistview.html#Movement-enum">Static</a> means that the items can't be moved the user. <a href="qlistview.html#Movement-enum">Free</a> means that the user can drag and drop the items to any position in the view. <a href="qlistview.html#Movement-enum">Snap</a> means that the user can drag and drop the items, but only to the positions in a notional grid signified by the <a href="qlistview.html#gridSize-prop">gridSize</a> property.</p>
 <p>Setting this property when the view is visible will cause the items to be laid out again.</p>
+<p>By default, this property is set to <a href="qlistview.html#Movement-enum">Static</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Movement movement () const</b></li>
 <li><div class="fn"/><b>void setMovement ( Movement <i>movement</i> )</b></li>
 </ul>
-<p>See also <a href="qlistview.html#gridSize-prop">gridSize</a> and <a href="qlistview.html#viewMode-prop">viewMode</a>.</p>
+<p>See also <a href="qlistview.html#gridSize-prop">gridSize</a>, <a href="qlistview.html#resizeMode-prop">resizeMode</a>, and <a href="qlistview.html#viewMode-prop">viewMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QListView/resizeMode" />
 <a name="//apple_ref/cpp/instm/QListView/setResizeMode" />
 <h3 class="fn"><a name="resizeMode-prop"></a>resizeMode : <a href="qlistview.html#ResizeMode-enum">ResizeMode</a></h3>
 <p>This property holds whether the items are laid out again when the view is resized.</p>
 <p>If this property is <a href="qlistview.html#ResizeMode-enum">Adjust</a>, the items will be laid out again when the view is resized. If the value is <a href="qlistview.html#ResizeMode-enum">Fixed</a>, the items will not be laid out when the view is resized.</p>
+<p>By default, this property is set to <a href="qlistview.html#ResizeMode-enum">Fixed</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>ResizeMode resizeMode () const</b></li>
 <li><div class="fn"/><b>void setResizeMode ( ResizeMode <i>mode</i> )</b></li>
 </ul>
-<p>See also <a href="qlistview.html#viewMode-prop">viewMode</a>.</p>
+<p>See also <a href="qlistview.html#movement-prop">movement</a>, <a href="qlistview.html#gridSize-prop">gridSize</a>, and <a href="qlistview.html#viewMode-prop">viewMode</a>.</p>
 <a name="//apple_ref/cpp/instm/QListView/isSelectionRectVisible" />
 <a name="//apple_ref/cpp/instm/QListView/setSelectionRectVisible" />
 <h3 class="fn"><a name="selectionRectVisible-prop"></a>selectionRectVisible : bool</h3>
 <p>This property holds if the selection rectangle should be visible.</p>
-<p>If this property is true then the selection rectangle is visible; otherwise it will be hidden. Note that the selection rectangle will only be visible if the selection mode is in a mode where more than one item can be selected, i.e&#x2e; it will not draw a selection rectangle if the selection mode is <a href="qabstractitemview.html#SelectionMode-enum">QAbstractItemView::SingleSelection</a>.</p>
+<p>If this property is true then the selection rectangle is visible; otherwise it will be hidden.</p>
+<p><b>Note:</b> The selection rectangle will only be visible if the selection mode is in a mode where more than one item can be selected; i.e&#x2e;, it will not draw a selection rectangle if the selection mode is <a href="qabstractitemview.html#SelectionMode-enum">QAbstractItemView::SingleSelection</a>.</p>
+<p>By default, this property is false.</p>
 <p>This property was introduced in Qt 4.3.</p>
 <p>Access functions:</p>
 <ul>
@@ -315,6 +322,7 @@
 <p>This property holds the space between items in the layout.</p>
 <p>This property is the size of the empty space that is padded around an item in the layout.</p>
 <p>Setting this property when the view is visible will cause the items to be laid out again.</p>
+<p>By default, this property contains a value of 0.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int spacing () const</b></li>
@@ -325,7 +333,8 @@
 <a name="//apple_ref/cpp/instm/QListView/setUniformItemSizes" />
 <h3 class="fn"><a name="uniformItemSizes-prop"></a>uniformItemSizes : bool</h3>
 <p>This property holds whether all items in the listview have the same size.</p>
-<p>This property should only be set to true if it is guaranteed that all items in the view have the same size. This enables the view to do some optimizations.</p>
+<p>This property should only be set to true if it is guaranteed that all items in the view have the same size. This enables the view to do some optimizations for performance purposes.</p>
+<p>By default, this property is false.</p>
 <p>This property was introduced in Qt 4.1.</p>
 <p>Access functions:</p>
 <ul>
@@ -389,8 +398,8 @@
 <p>See also <a href="qlistview.html#isRowHidden">isRowHidden</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

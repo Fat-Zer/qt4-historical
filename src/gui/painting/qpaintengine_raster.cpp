@@ -976,6 +976,78 @@ bool QRasterPaintEngine::end()
     return true;
 }
 
+#ifdef Q_WS_QWS
+bool QRasterPaintEngine::prepare(QPaintDevice *device)
+{
+    Q_D(QRasterPaintEngine);
+
+    QImage *image = 0;
+
+    switch (device->devType()) {
+    case QInternal::Pixmap: {
+        QPixmap *pixmap = static_cast<QPixmap*>(device);
+        if (pixmap->isNull()) {
+            qWarning("QRasterPaintEngine::prepare: "
+                     "Cannot paint on a null pixmap");
+            return false;
+        }
+        d->rasterBuffer->prepare(pixmap);
+        image = static_cast<QPixmap*>(device)->pixmapData()->buffer();
+        break;
+    }
+    case QInternal::Image: {
+        image = static_cast<QImage *>(device);
+        d->flushOnEnd = false;
+        d->rasterBuffer->prepare(image);
+        break;
+    }
+#ifdef Q_WS_QWS
+    case QInternal::CustomRaster: {
+        QCustomRasterPaintDevice *dev = static_cast<QCustomRasterPaintDevice*>(device);
+        d->rasterBuffer->prepare(dev);
+        break;
+    }
+#endif
+    default:
+        d->rasterBuffer->prepare(d->deviceRect.width(),
+                                 d->deviceRect.height());
+        break;
+    }
+
+    if (image) {
+        QImage::Format format = image->format();
+
+        switch (format) {
+        case QImage::Format_MonoLSB:
+        case QImage::Format_Mono:
+            d->mono_surface = true;
+            break;
+        case QImage::Format_ARGB8565_Premultiplied:
+        case QImage::Format_ARGB8555_Premultiplied:
+        case QImage::Format_ARGB6666_Premultiplied:
+        case QImage::Format_ARGB4444_Premultiplied:
+        case QImage::Format_ARGB32_Premultiplied:
+        case QImage::Format_ARGB32:
+            gccaps |= PorterDuff;
+            break;
+        case QImage::Format_RGB32:
+        case QImage::Format_RGB444:
+        case QImage::Format_RGB555:
+        case QImage::Format_RGB666:
+        case QImage::Format_RGB888:
+        case QImage::Format_RGB16:
+            break;
+        default:
+            qWarning("QRasterPaintEngine::prepare: "
+                     "Unsupported image format (%d)", format);
+            return false;
+        }
+    }
+
+    return true;
+}
+#endif // Q_WS_QWS
+
 /*!
     \internal
 */
@@ -3209,9 +3281,9 @@ void QRasterPaintEngine::drawTextItem(const QPointF &p, const QTextItem &textIte
     QCoreGraphicsPaintEngine pe;
     reinterpret_cast<QRasterPaintEngine *>(&pe)->state = state;
     pe.begin(&pd);
-    pe.setDirty(QPaintEngine::DirtyFlags(QPaintEngine::AllDirty 
-                                         & ~(QPaintEngine::DirtyHints 
-                                             | QPaintEngine::DirtyClipPath 
+    pe.setDirty(QPaintEngine::DirtyFlags(QPaintEngine::AllDirty
+                                         & ~(QPaintEngine::DirtyHints
+                                             | QPaintEngine::DirtyClipPath
                                              | QPaintEngine::DirtyClipRegion
                                              | QPaintEngine::DirtyClipEnabled)));
     pe.updateState(*state);
@@ -3246,7 +3318,7 @@ void QRasterPaintEngine::drawPoints(const QPointF *points, int pointCount)
 {
     Q_D(QRasterPaintEngine);
 
-    double pw = d->pen.widthF();
+    qreal pw = d->pen.widthF();
 
     if (!d->fast_pen && (d->txop > QTransform::TxTranslate || pw > 1)) {
         QBrush oldBrush = d->brush;
@@ -3330,8 +3402,8 @@ void QRasterPaintEngine::drawLines(const QLine *lines, int lineCount)
 
         int m11 = int(d->matrix.m11());
         int m22 = int(d->matrix.m22());
-        int dx = int(d->matrix.dx() + aliasedCoordinateDelta);
-        int dy = int(d->matrix.dy() + aliasedCoordinateDelta);
+        int dx = qFloor(d->matrix.dx() + aliasedCoordinateDelta);
+        int dy = qFloor(d->matrix.dy() + aliasedCoordinateDelta);
         int dashOffset = int(d->pen.dashOffset());
         for (int i=0; i<lineCount; ++i) {
             if (d->int_xform) {
@@ -3580,7 +3652,7 @@ QPoint QRasterPaintEngine::coordinateOffset() const
 
     \sa drawBufferSpan()
 */
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 void QRasterPaintEngine::drawColorSpans(const QSpan *spans, int count, uint color)
 {
     Q_UNUSED(spans);
@@ -4160,7 +4232,7 @@ void QRasterBuffer::prepare(QPixmap *pixmap)
     bytes_per_line = image->bytesPerLine();
     drawHelper = qDrawHelper + format;
 #endif
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
     if (!m_buffer)
         drawHelper = qDrawHelperCallback + format;
 #endif
@@ -4283,7 +4355,12 @@ void QRasterBuffer::prepare(QCustomRasterPaintDevice *device)
     bytes_per_pixel = device->depth() / 8;
     bytes_per_line = device->bytesPerLine();
     format = device->format();
-    drawHelper = (m_buffer ? qDrawHelper : qDrawHelperCallback) + format;
+#ifndef QT_NO_RASTERCALLBACKS
+    if (!m_buffer)
+        drawHelper = qDrawHelperCallback + format;
+    else
+#endif
+        drawHelper = qDrawHelper + format;
 }
 
 void QRasterBuffer::prepareBuffer(int /*width*/, int /*height*/)
@@ -5195,9 +5272,11 @@ void QSpanData::adjustSpanMethods()
         break;
     case Texture:
 #ifdef Q_WS_QWS
+#ifndef QT_NO_RASTERCALLBACKS
         if (!rasterBuffer->buffer())
             unclipped_blend = qBlendTextureCallback;
         else
+#endif
             unclipped_blend = qBlendTexture;
 #else
         unclipped_blend = qBlendTexture;

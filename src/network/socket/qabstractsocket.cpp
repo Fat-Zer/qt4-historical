@@ -1418,7 +1418,7 @@ static int qt_timeout_value(int msecs, int elapsed)
     The following example waits up to one second for a connection
     to be established:
 
-    \snippet doc/src/snippets/code/src.network.socket.qabstractsocket.cpp 0
+    \snippet doc/src/snippets/code/src_network_socket_qabstractsocket.cpp 0
 
     If msecs is -1, this function will not time out.
 
@@ -1512,7 +1512,7 @@ bool QAbstractSocket::waitForConnected(int msecs)
     This function blocks until data is available for reading and the
     \l{QIODevice::}{readyRead()} signal has been emitted. The function
     will timeout after \a msecs milliseconds; the default timeout is
-    3000 milliseconds.
+    30000 milliseconds.
 
     The function returns true if the readyRead() signal is emitted and
     there is data available for reading; otherwise it returns false
@@ -1654,7 +1654,7 @@ bool QAbstractSocket::waitForBytesWritten(int msecs)
     The following example waits up to one second for a connection
     to be closed:
 
-    \snippet doc/src/snippets/code/src.network.socket.qabstractsocket.cpp 1
+    \snippet doc/src/snippets/code/src_network_socket_qabstractsocket.cpp 1
 
     If msecs is -1, this function will not time out.
 
@@ -1762,7 +1762,7 @@ bool QAbstractSocket::isSequential() const
      This function is most commonly used when reading data from the
      socket in a loop. For example:
 
-     \snippet doc/src/snippets/code/src.network.socket.qabstractsocket.cpp 2
+     \snippet doc/src/snippets/code/src_network_socket_qabstractsocket.cpp 2
 
      \sa bytesAvailable(), readyRead()
  */
@@ -2265,7 +2265,7 @@ void QAbstractSocket::setSocketError(SocketError socketError)
     To disable the use of a proxy for this socket, use the
     QNetworkProxy::NoProxy proxy type:
 
-    \snippet doc/src/snippets/code/src.network.socket.qabstractsocket.cpp 3
+    \snippet doc/src/snippets/code/src_network_socket_qabstractsocket.cpp 3
 
 
     \sa proxy(), QNetworkProxy
@@ -2356,13 +2356,13 @@ QNetworkProxy QAbstractSocket::proxy() const
 /*!
     \fn void QAbstractSocket::connectionClosed()
 
-    Use closed() instead.
+    Use disconnected() instead.
 */
 
 /*!
     \fn void QAbstractSocket::delayedCloseFinished()
 
-    Use closed() instead.
+    Use disconnected() instead.
 */
 #endif // QT3_SUPPORT
 

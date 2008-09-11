@@ -72,6 +72,7 @@ QT_BEGIN_NAMESPACE
 bool qt_mac_no_native_menubar = false;
 bool qt_mac_no_menubar_merge = false;
 bool qt_mac_quit_menu_item_enabled = true;
+int qt_mac_menus_open_count = 0;
 
 static uint qt_mac_menu_static_cmd_id = 'QT00';
 struct QMenuMergeItem
@@ -194,6 +195,11 @@ static int qt_mac_CountMenuItems(MenuRef menu)
         return ret;
     }
     return 0;
+}
+
+bool qt_mac_menubar_is_open()
+{
+    return qt_mac_menus_open_count > 0;
 }
 
 //lookup a QMacMenuAction in a menu
@@ -642,18 +648,19 @@ OSStatus qt_mac_menu_event(EventHandlerCallRef er, EventRef event, void *)
         MenuRef menu;
         GetEventParameter(event, kEventParamDirectObject, typeMenuRef, NULL, sizeof(menu), NULL, &menu);
         if (ekind == kEventMenuMatchKey) {
-            // Don't activate any actions if we are showing a native modal dialog, 
+            // Don't activate any actions if we are showing a native modal dialog,
             // the key events should go to the dialog in this case.
             if (QApplicationPrivate::native_modal_dialog_active)
                 return menuItemNotFoundErr;
 
-             handled_event = false;  
+             handled_event = false;
         } else if (ekind == kEventMenuTargetItem) {
             MenuCommand command;
             GetEventParameter(event, kEventParamMenuCommand, typeMenuCommand,
                               0, sizeof(command), 0, &command);
             handled_event = qt_mac_activate_action(menu, command, QAction::Hover, false);
         } else if (ekind == kEventMenuOpening || ekind == kEventMenuClosed) {
+            qt_mac_menus_open_count += (ekind == kEventMenuOpening) ? 1 : -1;
             MenuRef mr;
             GetEventParameter(event, kEventParamDirectObject, typeMenuRef,
                               0, sizeof(mr), 0, &mr);
@@ -750,7 +757,7 @@ static MenuRef qt_mac_create_menu(QWidget *w)
         qt_mac_create_menu_event_handler();
         SetMenuItemProperty(ret, 0, kMenuCreatorQt, kMenuPropertyQWidget, sizeof(w), &w);
 
-        // kEventMenuMatchKey is only sent to the menu itself and not to 
+        // kEventMenuMatchKey is only sent to the menu itself and not to
         // the application, install a separate handler for that event.
         EventHandlerRef eventHandlerRef;
         InstallMenuEventHandler(ret, qt_mac_menu_event,
@@ -1347,10 +1354,10 @@ static bool qt_mac_should_disable_menu(QMenuBar *menuBar, QWidget *modalWidget)
         return true;
     } else if (modality == Qt::WindowModal) {
         QWidget * parent = menuBar->parentWidget();
-        
+
         // Special case for the global menu bar: It's not associated
         // with a window so don't disable it.
-        if (parent == 0) 
+        if (parent == 0)
             return false;
 
         // Disable menu entries in menu bars that belong to ancestors of

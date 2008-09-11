@@ -110,10 +110,12 @@ namespace QPatternist
     public:
         /**
          * AccelTreeResourceLoader does not own @p networkManager.
+         *
+         * AccelTreeResourceLoader does not own @p context.
          */
         AccelTreeResourceLoader(const NamePool::Ptr &np,
                                 QNetworkAccessManager *const networkManager,
-                                const ReportContext::Ptr &context);
+                                ReportContext *const context);
 
         virtual Item openDocument(const QUrl &uri,
                                   const ReportContext::Ptr &context);
@@ -148,7 +150,12 @@ namespace QPatternist
         QHash<QUrl, AccelTree::Ptr>     m_loadedDocuments;
         const NamePool::Ptr             m_namePool;
         QNetworkAccessManager *const    m_networkAccessManager;
-        const ReportContext::Ptr        m_context;
+        /**
+         * We don't store a reference pointer here because then we get a
+         * circular reference with GenericStaticContext, when it stores us as a
+         * member.
+         */
+        ReportContext *const            m_context;
     };
 }
 

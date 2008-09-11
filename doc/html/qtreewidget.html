@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/itemviews/qtreewidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/itemviews/qtreewidget.cpp -->
 <head>
   <title>Qt 4.4: QTreeWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QTreeWidget Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QTreeWidget class provides a tree view that uses a predefined tree model. <a href="#details">More...</a></p>
@@ -156,12 +156,12 @@
 <p>The QTreeWidget class is a convenience class that provides a standard tree widget with a classic item-based interface similar to that used by the <a href="qlistview.html">QListView</a> class in Qt 3. This class is based on Qt's Model/View architecture and uses a default model to hold items, each of which is a <a href="qtreewidgetitem.html">QTreeWidgetItem</a>.</p>
 <p>Developers who do not need the flexibility of the Model/View framework can use this class to create simple hierarchical lists very easily. A more flexible approach involves combining a <a href="qtreeview.html">QTreeView</a> with a standard item model. This allows the storage of data to be separated from its representation.</p>
 <p>In its simplest form, a tree widget can be constructed in the following way:</p>
-<pre>     QTreeWidget *treeWidget = new QTreeWidget();
-     treeWidget-&gt;setColumnCount(1);
-     QList&lt;QTreeWidgetItem *&gt; items;
-     for (int i = 0; i &lt; 10; ++i)
-         items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString(&quot;item: %1&quot;).arg(i))));
-     treeWidget-&gt;insertTopLevelItems(0, items);</pre>
+<pre> QTreeWidget *treeWidget = new QTreeWidget();
+ treeWidget-&gt;setColumnCount(1);
+ QList&lt;QTreeWidgetItem *&gt; items;
+ for (int i = 0; i &lt; 10; ++i)
+     items.append(new QTreeWidgetItem((QTreeWidget*)0, QStringList(QString(&quot;item: %1&quot;).arg(i))));
+ treeWidget-&gt;insertTopLevelItems(0, items);</pre>
 <p>Before items can be added to the tree widget, the number of columns must be set with <a href="qtreewidget.html#columnCount-prop">setColumnCount</a>(). This allows each item to have one or more labels or other decorations. The number of columns in use can be found with the <a href="qtreewidget.html#columnCount-prop">columnCount</a>() function.</p>
 <p>The tree can have a header that contains a section for each column in the widget. It is easiest to set up the labels for each section by supplying a list of strings with <a href="qtreewidget.html#setHeaderLabels">setHeaderLabels</a>(), but a custom header can be constructed with a <a href="qtreewidgetitem.html">QTreeWidgetItem</a> and inserted into the tree with the <a href="qtreewidget.html#setHeaderItem">setHeaderItem</a>() function.</p>
 <p>The items in the tree can be sorted by column according to a predefined sort order. If sorting is enabled, the user can sort the items by clicking on a column header. Sorting can be enabled or disabled by calling <a href="qtreeview.html#sortingEnabled-prop">setSortingEnabled()</a>. The <a href="qtreeview.html#sortingEnabled-prop">isSortingEnabled()</a> function indicates whether sorting is enabled.</p>
@@ -176,6 +176,7 @@
 <a name="//apple_ref/cpp/instm/QTreeWidget/setColumnCount" />
 <h3 class="fn"><a name="columnCount-prop"></a>columnCount : int</h3>
 <p>This property holds the number of columns displayed in the tree widget.</p>
+<p>By default, this property has a value of 1.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int columnCount () const</b></li>
@@ -184,6 +185,7 @@
 <a name="//apple_ref/cpp/instm/QTreeWidget/topLevelItemCount" />
 <h3 class="fn"><a name="topLevelItemCount-prop"></a>topLevelItemCount : const int</h3>
 <p>This property holds the number of top-level items.</p>
+<p>By default, this property has a value of 0.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>int topLevelItemCount () const</b></li>
@@ -306,7 +308,7 @@
 <a name="//apple_ref/cpp/instm/QTreeWidget/itemClicked" />
 <h3 class="fn"><a name="itemClicked"></a>void QTreeWidget::itemClicked ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i>, int <i>column</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the user clicks inside the widget.</p>
-<p>The specified <i>item</i> is the item that was clicked, or 0 if no item was clicked. The <i>column</i> is the item's column that was clicked. If no item was clicked, no signal will be emitted.</p>
+<p>The specified <i>item</i> is the item that was clicked. The <i>column</i> is the item's column that was clicked. If no item was clicked, no signal will be emitted.</p>
 <a name="//apple_ref/cpp/instm/QTreeWidget/itemCollapsed" />
 <h3 class="fn"><a name="itemCollapsed"></a>void QTreeWidget::itemCollapsed ( <a href="qtreewidgetitem.html">QTreeWidgetItem</a> * <i>item</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the specified <i>item</i> is collapsed so that none of its children are displayed.</p>
@@ -434,8 +436,8 @@
 <p>See also <a href="qtreewidget.html#itemAt">itemAt</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

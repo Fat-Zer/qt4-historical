@@ -61,7 +61,7 @@
     in a \c qmake project file to ensure that the application is compiled
     and linked appropriately.
 
-    \snippet doc/src/snippets/code/doc.src.qtuiloader.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtuiloader.qdoc 0
 
     A form loader object, provided by the QUiLoader class, is used to
     construct the user interface. This user interface can
@@ -73,7 +73,7 @@
     To include the definitions of the module's classes, use the following
     directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtuiloader.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qtuiloader.qdoc 1
 
     \sa{Calculator Builder Example}, {World Time Clock Builder Example}
 

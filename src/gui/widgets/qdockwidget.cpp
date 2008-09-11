@@ -294,6 +294,7 @@ QSize QDockWidgetLayout::sizeFromContent(const QSize &content, bool floating) co
         result.setHeight(-1);
 
     QSize min = w->minimumSize();
+    QSize max = w->maximumSize();
 
     /* A floating dockwidget will automatically get its minimumSize set to the layout's
        minimum size + deco. We're *not* interested in this, we only take minimumSize()
@@ -302,14 +303,23 @@ QSize QDockWidgetLayout::sizeFromContent(const QSize &content, bool floating) co
        minimum size + window decorations. */
 
     uint explicitMin = 0;
-    if (w->d_func()->extra != 0)
+    uint explicitMax = 0;
+    if (w->d_func()->extra != 0) {
         explicitMin = w->d_func()->extra->explicitMinSize;
+        explicitMax = w->d_func()->extra->explicitMaxSize;
+    }
 
     if (!(explicitMin & Qt::Horizontal) || min.width() == 0)
         min.setWidth(-1);
     if (!(explicitMin & Qt::Vertical) || min.height() == 0)
         min.setHeight(-1);
-    return result.boundedTo(w->maximumSize()).expandedTo(min);
+
+    if (!(explicitMax & Qt::Horizontal))
+        max.setWidth(QWIDGETSIZE_MAX);
+    if (!(explicitMax & Qt::Vertical))
+        max.setHeight(QWIDGETSIZE_MAX);
+
+    return result.boundedTo(max).expandedTo(min);
 }
 
 QSize QDockWidgetLayout::sizeHint() const
@@ -524,12 +534,10 @@ QDockWidgetItem::QDockWidgetItem(QDockWidget *dockWidget)
 
 QSize QDockWidgetItem::minimumSize() const
 {
-    if (QLayoutItem *item = dockWidgetChildItem()) {
-        return dockWidgetLayout()->sizeFromContent(item->minimumSize(), false)
-            .expandedTo( QWidgetItem::minimumSize() );
-    } else {
-        return QWidgetItem::minimumSize();
-    }
+    QSize widgetMin(0, 0);
+    if (QLayoutItem *item = dockWidgetChildItem())
+        widgetMin = item->minimumSize();
+    return dockWidgetLayout()->sizeFromContent(widgetMin, false);
 }
 
 QSize QDockWidgetItem::maximumSize() const
@@ -540,6 +548,7 @@ QSize QDockWidgetItem::maximumSize() const
         return QSize(QWIDGETSIZE_MAX, QWIDGETSIZE_MAX);
     }
 }
+
 
 QSize QDockWidgetItem::sizeHint() const
 {
@@ -559,7 +568,7 @@ void QDockWidgetPrivate::init()
     Q_Q(QDockWidget);
 
     QDockWidgetLayout *layout = new QDockWidgetLayout(q);
-    layout->setSizeConstraint(QLayout::SetMaximumSize);
+    layout->setSizeConstraint(QLayout::SetMinAndMaxSize);
 
     QAbstractButton *button = new QDockWidgetTitleButton(q);
     button->setObjectName(QLatin1String("qt_dockwidget_floatbutton"));
@@ -1127,6 +1136,8 @@ void QDockWidgetPrivate::setWindowState(bool floating, bool unplug, const QRect 
 /*!
     \property QDockWidget::windowTitle
     \internal
+
+    By default, this property contains an empty string.
 */
 
 /*!
@@ -1199,6 +1210,9 @@ void QDockWidget::setWidget(QWidget *widget)
     \property QDockWidget::features
     \brief whether the dock widget is movable, closable, and floatable
 
+    By default, this property is set to a combination of DockWidgetClosable,
+    DockWidgetMovable and DockWidgetFloatable.
+
     \sa DockWidgetFeature
 */
 
@@ -1232,6 +1246,7 @@ QDockWidget::DockWidgetFeatures QDockWidget::features() const
     window "on top" of its parent QMainWindow, instead of being
     docked in the QMainWindow.
 
+    By default, this property is true.
 
     \sa isWindow()
 */
@@ -1526,7 +1541,7 @@ QAction * QDockWidget::toggleViewAction() const
     \i When DockWidgetVerticalTitleBar is set on QDockWidget, the title
        bar widget is repositioned accordingly. In resizeEvent(), the title
        bar should check what orientation it should assume:
-       \snippet doc/src/snippets/code/src.gui.widgets.qdockwidget.cpp 0
+       \snippet doc/src/snippets/code/src_gui_widgets_qdockwidget.cpp 0
 
     \i The title bar widget must have a valid QWidget::sizeHint() and
        QWidget::minimumSizeHint(). These functions should take into account

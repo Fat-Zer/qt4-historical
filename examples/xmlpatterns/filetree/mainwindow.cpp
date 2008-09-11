@@ -53,7 +53,7 @@ MainWindow::MainWindow() : m_fileTree(m_namePool)
 
     /* Setup the font. */
     {
-        QFont font("Courier");
+        QFont font("Courier",10);
         font.setFixedPitch(true);
 
         fileTree->setFont(font);

@@ -57,6 +57,11 @@
 
 QT_BEGIN_NAMESPACE
 
+QHelpEngineCorePrivate::QHelpEngineCorePrivate()
+{
+    QHelpGlobal::uniquifyConnectionName(QString(), this);
+}
+
 void QHelpEngineCorePrivate::init(const QString &collectionFile,
                                   QHelpEngineCore *helpEngineCore)
 {
@@ -105,16 +110,18 @@ bool QHelpEngineCorePrivate::setup()
         collectionHandler->registeredDocumentations();
     QFileInfo fi(collectionHandler->collectionFile());
     QString absFileName;
-    foreach(const QHelpCollectionHandler::DocInfo info, docList) {
-        if (QDir::isAbsolutePath(info.fileName))
+    foreach(const QHelpCollectionHandler::DocInfo &info, docList) {
+        if (QDir::isAbsolutePath(info.fileName)) {
             absFileName = info.fileName;
-        else
-            absFileName = fi.absolutePath() + QDir::separator() + info.fileName;
+        } else {
+            absFileName = QFileInfo(fi.absolutePath() + QDir::separator() + info.fileName)
+                .absoluteFilePath();
+        }
         QHelpDBReader *reader = new QHelpDBReader(absFileName,
-            uniquifyConnectionName(info.fileName, this), this);
+            QHelpGlobal::uniquifyConnectionName(info.fileName, this), this);
         if (!reader->init()) {
-            emit q->warning(tr("Cannot open documentation file %1!")
-                .arg(absFileName));
+            emit q->warning(tr("Cannot open documentation file %1: %2!")
+                .arg(absFileName, reader->errorMessage()));
             continue;
         }
 
@@ -264,6 +271,9 @@ void QHelpEngineCore::setCollectionFile(const QString &fileName)
     explicitely, since getter functions which depend on a set up
     help engine do that themselves. If the set up was successful, 
     true is returned otherwise false.
+
+    \note \c{qsqlite4.dll} needs to be deployed with the application as the
+    help system uses the sqlite driver when loading help collections.
 */
 bool QHelpEngineCore::setupData()
 {
@@ -288,15 +298,15 @@ bool QHelpEngineCore::copyCollectionFile(const QString &fileName)
 
 /*!
     Returns the namespace name defined for the Qt compressed help file (.qch)
-    specified by its file name. If the file is not valid, an empty string is
-    returned.
+    specified by its \a documentationFileName. If the file is not valid, an
+    empty string is returned.
 
     \sa documentationFileName()
 */
 QString QHelpEngineCore::namespaceName(const QString &documentationFileName)
 {
     QHelpDBReader reader(documentationFileName,
-        uniquifyConnectionName(QLatin1String("GetNamespaceName"), QThread::currentThread()), 0);
+        QHelpGlobal::uniquifyConnectionName(QLatin1String("GetNamespaceName"), QThread::currentThread()), 0);
     if (reader.init())
         return reader.namespaceName();
     return QString();
@@ -566,7 +576,7 @@ QUrl QHelpEngineCore::findFile(const QUrl &url) const
     Returns the data of the file specified by \a url. If the
     file does not exist, an empty QByteArray is returned.
 
-    /sa findFile()
+    \sa findFile()
 */
 QByteArray QHelpEngineCore::fileData(const QUrl &url) const
 {

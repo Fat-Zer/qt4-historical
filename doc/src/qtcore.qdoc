@@ -56,7 +56,7 @@
     All other Qt modules rely on this module. To include the
     definitions of the module's classes, use the following directive:
 
-    \snippet doc/src/snippets/code/doc.src.qtcore.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtcore.qdoc 0
 
     The QtCore module is part of all \l{Qt editions}.
 */

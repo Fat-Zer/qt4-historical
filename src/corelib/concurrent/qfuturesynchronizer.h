@@ -79,12 +79,15 @@ public:
 
     void waitForFinished()
     {
-        for (int i = 0; i < m_futures.count(); ++i) {
-            QFuture<T> future = m_futures.at(i);
-            if (m_cancelOnWait)
-                future.cancel();
-            future.waitForFinished();
+        if (m_cancelOnWait) {
+            for (int i = 0; i < m_futures.count(); ++i) {
+                 m_futures[i].cancel();
+            }
         }
+        
+        for (int i = 0; i < m_futures.count(); ++i) {
+             m_futures[i].waitForFinished();
+         }
     }
 
     void clearFutures()

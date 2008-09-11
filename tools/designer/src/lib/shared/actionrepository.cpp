@@ -229,10 +229,11 @@ void  ActionModel::setItems(QDesignerFormEditorInterface *core, QAction *action,
     item->setToolTip(shortcut);
     // checkable
     sl[CheckedColumn]->setCheckState(action->isCheckable() ?  Qt::Checked : Qt::Unchecked);
-    const QString toolTip = action->toolTip();
+    // ToolTip. This might be multi-line, rich text
+    QString toolTip = action->toolTip();
     item = sl[ToolTipColumn];
-    item->setText(toolTip);
     item->setToolTip(toolTip);
+    item->setText(toolTip.replace(QLatin1Char('\n'), QLatin1Char(' ')));
 }
 
 QMimeData *ActionModel::mimeData(const QModelIndexList &indexes ) const

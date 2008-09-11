@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qmake-manual.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qmake-manual.qdoc -->
 <head>
   <title>Qt 4.4: Running qmake</title>
   <link rel="prev" href="qmake-project-files.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qmake-project-files.html">qmake Project Files</a>]
 [<a href="qmake-manual.html">Contents</a>]
@@ -35,7 +35,7 @@
 <a name="syntax"></a>
 <h3>Syntax</h3>
 <p>The syntax used to run <tt>qmake</tt> takes the following simple form:</p>
-<pre>         qmake [mode] [options] files</pre>
+<pre> qmake [mode] [options] files</pre>
 <p><tt>qmake</tt> supports two different modes of operation: In the default mode, <tt>qmake</tt> will use the description in a project file to generate a Makefile, but it is also possible to use <tt>qmake</tt> to generate project files. If you want to explicitly set the mode, you must specify it before all other options. The <tt>mode</tt> can be either of the following two values:</p>
 <ul>
 <li><tt>-makefile</tt> <br /> <tt>qmake</tt> output will be a Makefile.</li>
@@ -71,7 +71,7 @@
 </ul>
 <a name="makefilemode"></a><a name="makefile-mode-options"></a>
 <h3>Makefile Mode Options</h3>
-<pre>         qmake -makefile [options] files</pre>
+<pre> qmake -makefile [options] files</pre>
 <p>In Makefile mode, <tt>qmake</tt> will generate a Makefile that is used to build the project. Additionally, the following options may be used in this mode to influence the way the project file is generated:</p>
 <ul>
 <li><tt>-after</tt> <br /> <tt>qmake</tt> will process assignments given on the command line after the specified files.</li>
@@ -81,13 +81,13 @@
 <li><tt>-spec</tt> spec <br /> <tt>qmake</tt> will use <i>spec</i> as a path to platform and compiler information, and the value of <tt>QMAKESPEC</tt> will be ignored.</li>
 </ul>
 <p>You may also pass <tt>qmake</tt> assignments on the command line; they will be processed before all of the files specified. For example:</p>
-<pre>         qmake -makefile -unix -o Makefile &quot;CONFIG+=test&quot; test.pro</pre>
+<pre> qmake -makefile -unix -o Makefile &quot;CONFIG+=test&quot; test.pro</pre>
 <p>This will generate a Makefile, from test.pro with Unix pathnames. However many of the specified options aren't necessary as they are the default. Therefore, the line can be simplified on Unix to:</p>
-<pre>         qmake &quot;CONFIG+=test&quot; test.pro</pre>
+<pre> qmake &quot;CONFIG+=test&quot; test.pro</pre>
 <p>If you are certain you want your variables processed after the files specified, then you may pass the <tt>-after</tt> option. When this is specified, all assignments on the command line after the <tt>-after</tt> option will be postponed until after the specified files are parsed.</p>
 <a name="projectmode"></a><a name="project-mode-options"></a>
 <h3>Project Mode Options</h3>
-<pre>         qmake -project [options] files</pre>
+<pre> qmake -project [options] files</pre>
 <p>In project mode, <tt>qmake</tt> will generate a project file. Additionally, you may supply the following options in this mode:</p>
 <ul>
 <li><tt>-r</tt> <br /> <tt>qmake</tt> will look through supplied directories recursively</li>
@@ -102,8 +102,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

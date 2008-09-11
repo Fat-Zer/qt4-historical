@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3datetimeedit.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3datetimeedit.cpp -->
 <head>
   <title>Qt 4.4: Q3TimeEdit Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3TimeEdit Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3TimeEdit class provides a time editor. <a href="#details">More...</a></p>
@@ -110,9 +110,9 @@
 <h2>Detailed Description</h2>
 <p>The Q3TimeEdit class provides a time editor.</p>
 <p>Q3TimeEdit allows the user to edit times by using the keyboard or the arrow keys to increase/decrease time values. The arrow keys can be used to move from section to section within the Q3TimeEdit box. The user can automatically be moved to the next section once they complete a section using <a href="q3timeedit.html#autoAdvance-prop">setAutoAdvance</a>(). Times appear in hour, minute, second order. It is recommended that the Q3TimeEdit is initialised with a time, e.g&#x2e;</p>
-<pre>     QTime timeNow = QTime::currentTime();
-     Q3TimeEdit *timeEdit = new Q3TimeEdit(timeNow, this);
-     timeEdit-&gt;setRange(timeNow, timeNow.addSecs(60 * 60));</pre>
+<pre> QTime timeNow = QTime::currentTime();
+ Q3TimeEdit *timeEdit = new Q3TimeEdit(timeNow, this);
+ timeEdit-&gt;setRange(timeNow, timeNow.addSecs(60 * 60));</pre>
 <p>Here we've created a Q3TimeEdit widget set to the current time. We've also set the minimum value to the current time and the maximum time to one hour from now.</p>
 <p>The maximum and minimum values for a time value in the time editor default to the maximum and minimum values for a <a href="qtime.html">QTime</a>. You can change this by calling <a href="q3timeedit.html#minValue-prop">setMinValue</a>(), <a href="q3timeedit.html#maxValue-prop">setMaxValue</a>() or <a href="q3timeedit.html#setRange">setRange</a>().</p>
 <p>Terminology: A QTimeWidget consists of three sections, one each for the hour, minute and second. You can change the separator character using <a href="q3timeedit.html#setSeparator">setSeparator</a>(), by default the separator is read from the system's settings.</p>
@@ -226,8 +226,8 @@
 <p>This signal is emitted whenever the editor's value changes. The <i>time</i> parameter is the new value.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

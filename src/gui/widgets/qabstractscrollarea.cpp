@@ -74,7 +74,7 @@ QT_BEGIN_NAMESPACE
     QAbstractScrollArea is a low-level abstraction of a scrolling
     area. The area provides a central widget called the viewport, in
     which the contents of the area is to be scrolled (i.e, the
-    visible parts of the contents are rendered in the viewport). 
+    visible parts of the contents are rendered in the viewport).
 
     Next to the viewport is a vertical scroll bar, and below is a
     horizontal scroll bar. When all of the area contents fits in the
@@ -113,14 +113,14 @@ QT_BEGIN_NAMESPACE
     receives a resize event or the size of the contents changes.
     The viewport also needs to be updated when the scroll bars
     values change. The initial values of the scroll bars are often
-    set when the area receives new contents. 
+    set when the area receives new contents.
 
     We give a simple example, in which we have implemented a scroll area
     that can scroll any QWidget. We make the widget a child of the
     viewport; this way, we do not have to calculate which part of
     the widget to draw but can simply move the widget with
     QWidget::move(). When the area contents or the viewport size
-    changes, we do the following: 
+    changes, we do the following:
 
     \snippet doc/src/snippets/myscrollarea.cpp 1
 
@@ -369,9 +369,9 @@ void QAbstractScrollAreaPrivate::layoutChildren()
         QRect frameRect = widgetRect;
         frameRect.adjust(0, 0, -cornerOffset.x() - cornerExtra.x(), -cornerOffset.y() - cornerExtra.y());
         q->setFrameRect(QStyle::visualRect(opt.direction, opt.rect, frameRect));
-        // The frame rect needs to be in logical coords, however we need to flip 
+        // The frame rect needs to be in logical coords, however we need to flip
         // the contentsRect back before passing it on to the viewportRect
-        // since the viewportRect has it's logical coords calculated later.
+        // since the viewportRect has its logical coords calculated later.
         viewportRect = QStyle::visualRect(opt.direction, opt.rect, q->contentsRect());
     } else {
         q->setFrameRect(QStyle::visualRect(opt.direction, opt.rect, widgetRect));
@@ -814,7 +814,7 @@ QWidgetList QAbstractScrollArea::scrollBarWidgets(Qt::Alignment alignment)
     Note that this function is frequently called by QTreeView and
     QTableView, so margins must be implemented by QAbstractScrollArea
     subclasses. Also, if the subclasses are to be used in item views,
-    they should not call this function. 
+    they should not call this function.
 
     By default all margins are zero.
 
@@ -877,11 +877,13 @@ bool QAbstractScrollArea::event(QEvent *e)
 #endif
         QFrame::paintEvent((QPaintEvent*)e);
         break;
+#ifndef QT_NO_CONTEXTMENU
     case QEvent::ContextMenu:
         if (static_cast<QContextMenuEvent *>(e)->reason() == QContextMenuEvent::Keyboard)
            return QFrame::event(e);
         e->ignore();
         break;
+#endif // QT_NO_CONTEXTMENU
     case QEvent::MouseButtonPress:
     case QEvent::MouseButtonRelease:
     case QEvent::MouseButtonDblClick:
@@ -1050,6 +1052,7 @@ void QAbstractScrollArea::wheelEvent(QWheelEvent *e)
 }
 #endif
 
+#ifndef QT_NO_CONTEXTMENU
 /*!
     This event handler can be reimplemented in a subclass to receive
     context menu events for the viewport() widget. The event is passed
@@ -1061,6 +1064,7 @@ void QAbstractScrollArea::contextMenuEvent(QContextMenuEvent *e)
 {
     e->ignore();
 }
+#endif // QT_NO_CONTEXTMENU
 
 /*!
     This function is called with key event \a e when key presses

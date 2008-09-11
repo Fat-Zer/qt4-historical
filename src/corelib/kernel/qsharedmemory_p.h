@@ -58,12 +58,14 @@
 #include "qsharedmemory.h"
 
 #ifdef QT_NO_SHAREDMEMORY
+# ifndef QT_NO_SYSTEMSEMAPHORE
 namespace QSharedMemoryPrivate
 {
     int createUnixKeyFile(const QString &fileName);
     QString makePlatformSafeKey(const QString &key,
             const QString &prefix = QLatin1String("qipc_sharedmemory_"));
 }
+#endif
 #else
 
 #include "qsystemsemaphore.h"

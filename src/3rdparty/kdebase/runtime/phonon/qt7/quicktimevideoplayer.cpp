@@ -112,15 +112,11 @@ bool QuickTimeVideoPlayer::setGLContext(AGLContext aglContext, AGLPixelFormat ag
         BACKEND_ASSERT3(cglContext, "Could not get current CoreVideo GL context (OpenGL)", FATAL_ERROR, false)
 
         Q_UNUSED(aglPixelFormat);
-#if MAC_OS_X_VERSION_MAX_ALLOWED >= MAC_OS_X_VERSION_10_5
-        GLint attributeCount = 2;
-#else
         long attributeCount = 2;
-#endif
         CGLPixelFormatAttribute pfa[attributeCount];
         pfa[0] = kCGLPFAWindow;
         pfa[1] = (CGLPixelFormatAttribute) 0;
-        err = CGLChoosePixelFormat(pfa, &cglPixelFormat, &attributeCount);
+        err = CGLChoosePixelFormat(pfa, &cglPixelFormat, (GLint *)&attributeCount);
         BACKEND_ASSERT3(err == noErr, "Could not create pixel format (OpenGL)", FATAL_ERROR, false)
     }
 

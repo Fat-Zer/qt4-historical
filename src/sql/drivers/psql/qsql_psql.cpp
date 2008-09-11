@@ -121,9 +121,9 @@ void QPSQLDriverPrivate::appendTables(QStringList &tl, QSqlQuery &t, QChar type)
                   "and (pg_class.relname !~ '^pg_') "
                   "and (pg_namespace.nspname != 'information_schema') ").arg(type);
     } else {
-        query = QString::fromLatin1("select relname, null from pg_class where (relkind = 'r') "
+        query = QString::fromLatin1("select relname, null from pg_class where (relkind = '%1') "
                   "and (relname !~ '^Inv') "
-                  "and (relname !~ '^pg_') ");
+                  "and (relname !~ '^pg_') ").arg(type);
     }
     t.exec(query);
     while (t.next()) {
@@ -471,7 +471,7 @@ void QPSQLResult::virtual_hook(int id, void *data)
         d->precisionPolicy = *reinterpret_cast<QSql::NumericalPrecisionPolicy *>(data);
         break;
     default:
-        Q_ASSERT(false);
+        QSqlResult::virtual_hook(id, data);
     }
 }
 
@@ -650,7 +650,7 @@ static QPSQLDriver::Protocol getPSQLVersion(PGconn* connection)
         }
     }
 
-    if (serverVersion < QPSQLDriver::Version73)
+    if (serverVersion < QPSQLDriver::Version71)
         qWarning("This version of PostgreSQL is not supported and may not work.");
 
     return serverVersion;

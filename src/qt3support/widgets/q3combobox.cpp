@@ -94,11 +94,11 @@ QT_BEGIN_NAMESPACE
     Q3ComboBox provides two different constructors. The simplest
     constructor creates an "old-style" combobox in Motif (or Aqua)
     style:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3combobox.cpp 0
 
     The other constructor creates a new-style combobox in Motif style,
     and can create both read-only and editable comboboxes:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3combobox.cpp 1
 
     New-style comboboxes use a list box in both Motif and Windows
     styles, and both the content size and the on-screen size of the
@@ -729,7 +729,7 @@ void Q3ComboBox::insertStringList( const QStringList &list, int index )
     terminated with 0.
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3combobox.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3combobox.cpp 2
 
     \sa insertStringList()
 */

@@ -269,7 +269,8 @@ namespace WTF {
     {
         const bool canReplaceDeletedKey = !KeyTraits::needsDestruction || KeyStorageTraits::needsDestruction;
         typedef HashMapTranslator<canReplaceDeletedKey, ValueType, ValueTraits, ValueStorageTraits, HashFunctions> TranslatorType;
-        return m_impl.template add<KeyType, MappedType, TranslatorType>(key, mapped);
+        pair<typename HashTableType::iterator, bool> retval = m_impl.template add<KeyType, MappedType, TranslatorType>(key, mapped);
+        return make_pair(iterator(retval.first), retval.second);
     }
 
     template<typename T, typename U, typename V, typename W, typename X>

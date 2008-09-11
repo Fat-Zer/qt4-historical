@@ -156,7 +156,7 @@
     server or connects to an existing server. All system generated
     events, including keyboard and mouse events, are passed to the
     server application which then propagates the event to the
-    appropiate client. When rendering, the default behavior is for
+    appropriate client. When rendering, the default behavior is for
     each client to render its widgets into memory while the server is
     responsible for putting the contents of the memory onto the
     screen.

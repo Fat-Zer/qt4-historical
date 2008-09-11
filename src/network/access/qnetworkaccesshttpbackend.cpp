@@ -64,7 +64,7 @@ enum {
 static QByteArray makeCacheKey(const QUrl &url)
 {
     QUrl copy = url;
-    bool isEncrypted = url.scheme() == QLatin1String("https");
+    bool isEncrypted = url.scheme().toLower() == QLatin1String("https");
     copy.setPort(url.port(isEncrypted ? DefaultHttpsPort : DefaultHttpPort));
     return "http-connection:" + copy.toEncoded(QUrl::RemovePassword | QUrl::RemovePath |
                                                QUrl::RemoveQuery | QUrl::RemoveFragment);
@@ -88,7 +88,8 @@ QNetworkAccessHttpBackendFactory::create(QNetworkAccessManager::Operation op,
     }
 
     QUrl url = request.url();
-    if (url.scheme() == QLatin1String("http") || url.scheme() == QLatin1String("https"))
+    QString scheme = url.scheme().toLower();
+    if (scheme == QLatin1String("http") || scheme == QLatin1String("https"))
         return new QNetworkAccessHttpBackend;
 
     return 0;
@@ -119,7 +120,7 @@ static QNetworkReply::NetworkError statusCodeFromHttp(int httpStatusCode, const 
         if (httpStatusCode > 500) {
             // some kind of server error
             code = QNetworkReply::ProtocolUnknownError;
-        } else if (httpStatusCode > 400) {
+        } else if (httpStatusCode >= 400) {
             // content error we did not handle above
             code = QNetworkReply::UnknownContentError;
         } else {
@@ -309,7 +310,7 @@ void QNetworkAccessHttpBackend::postRequest()
 void QNetworkAccessHttpBackend::open()
 {
     QUrl url = request().url();
-    bool encrypt = url.scheme() == QLatin1String("https");
+    bool encrypt = url.scheme().toLower() == QLatin1String("https");
     setAttribute(QNetworkRequest::ConnectionEncryptedAttribute, encrypt);
 
     // set the port number in the reply if it wasn't set
@@ -324,10 +325,14 @@ void QNetworkAccessHttpBackend::open()
 
 #ifndef QT_NO_NETWORKPROXY
         QNetworkProxy networkProxy = proxy();
-        if (encrypt || networkProxy.type() == QNetworkProxy::HttpProxy)
-            http->setTransparentProxy(networkProxy);
-        else
+        if (!encrypt && (networkProxy.type() == QNetworkProxy::HttpCachingProxy
+                         || networkProxy.type() == QNetworkProxy::HttpProxy)) {
             http->setCacheProxy(networkProxy);
+            http->setTransparentProxy(QNetworkProxy::NoProxy);
+        } else {
+            http->setTransparentProxy(networkProxy);
+            http->setCacheProxy(QNetworkProxy::NoProxy);
+        }
 #endif
 
         cache->addEntry(cacheKey, http);

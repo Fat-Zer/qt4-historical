@@ -60,6 +60,7 @@ QT_BEGIN_NAMESPACE
 #define COMMAND_NONREENTRANT            Doc::alias(QLatin1String("nonreentrant"))
 #define COMMAND_OBSOLETE                Doc::alias(QLatin1String("obsolete"))
 #define COMMAND_PRELIMINARY             Doc::alias(QLatin1String("preliminary"))
+#define COMMAND_INPUBLICGROUP           Doc::alias(QLatin1String("inpublicgroup"))
 #define COMMAND_REENTRANT               Doc::alias(QLatin1String("reentrant"))
 #define COMMAND_SINCE                   Doc::alias(QLatin1String("since"))
 #define COMMAND_SUBTITLE                Doc::alias(QLatin1String("subtitle"))
@@ -136,6 +137,7 @@ QSet<QString> CodeParser::commonMetaCommands()
     return QSet<QString>() << COMMAND_COMPAT << COMMAND_DEPRECATED << COMMAND_INGROUP
                            << COMMAND_INMODULE << COMMAND_INTERNAL << COMMAND_MAINCLASS
                            << COMMAND_NONREENTRANT << COMMAND_OBSOLETE << COMMAND_PRELIMINARY
+                           << COMMAND_INPUBLICGROUP
                            << COMMAND_REENTRANT << COMMAND_SINCE << COMMAND_SUBTITLE
                            << COMMAND_THREADSAFE << COMMAND_TITLE;
 }
@@ -149,6 +151,8 @@ void CodeParser::processCommonMetaCommand(const Location &location, const QStrin
 	node->setStatus( Node::Deprecated );
     } else if ( command == COMMAND_INGROUP ) {
 	tree->addToGroup(node, arg);
+    } else if ( command == COMMAND_INPUBLICGROUP ) {
+        tree->addToPublicGroup(node, arg);
     } else if ( command == COMMAND_INMODULE ) {
 	node->setModuleName(arg);
     } else if (command == COMMAND_MAINCLASS) {

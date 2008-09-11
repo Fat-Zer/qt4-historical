@@ -121,7 +121,7 @@ QT_BEGIN_NAMESPACE
     Qt::Alignment parameter, which means that any combination of
     Qt::AlignmentFlag values is legal:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 0
 
     If you try to pass a value from another enum, the compiler will
     report an error.
@@ -130,7 +130,7 @@ QT_BEGIN_NAMESPACE
     the Q_DECLARE_FLAGS() and Q_DECLARE_OPERATORS_FOR_FLAGS().
     For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 1
 
     You can then use the \c MyClass::Options type to store
     combinations of \c MyClass::Option values.
@@ -307,11 +307,58 @@ QT_BEGIN_NAMESPACE
     QFlags object is 0); otherwise returns false.
 */
 
+// ### Qt 5: Consider changing the implementation to "return (i & f) == f", see task 221702.
 /*!
     \fn bool QFlags::testFlag(Enum flag) const
     \since 4.2
 
-    Returns true if the \a flag is set, otherwise false.
+    Returns true if the \a flag is set, otherwise false. However, in the case
+    that \a flag contains multiple bits, it will return true if any of the bits
+    are set. For instance, if testFlag(Qt::Dialog) is invoked on an instance of
+    Qt::WindowFlags and only Qt::Window is set, \c true will be returned.
+*/
+
+/*!
+  \macro Q_DISABLE_COPY(Class)
+  \relates QObject
+
+  Disables the use of copy constructors and assignment operators
+  for the given \a Class.
+
+  Instances of subclasses of QObject should not be thought of as
+  values that can be copied or assigned, but as unique identities.
+  This means that when you create your own subclass of QObject
+  (director or indirect), you should \e not give it a copy constructor
+  or an assignment operator.  However, it may not enough to simply
+  omit them from your class, because, if you mistakenly write some code
+  that requires a copy constructor or an assignment operator (it's easy
+  to do), your compiler will thoughtfully create it for you. You must
+  do more.
+
+  The curious user will have seen that the Qt classes derived
+  from QObject typically include this macro in a private section:
+
+  \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 43
+
+  It declares a copy constructor and an assignment operator in the
+  private section, so that if you use them by mistake, the compiler
+  will report an error.
+
+  \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 44
+
+  But even this might not catch absolutely every case. You might be
+  tempted to do something like this:
+
+  \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 45
+
+  First of all, don't do that. Most compilers will generate code that
+  uses the copy constructor, so the privacy violation error will be
+  reported, but your C++ compiler is not required to generate code for
+  this statement in a specific way. It could generate code using
+  \e{neither} the copy constructor \e{nor} the assignment operator we
+  made private. In that case, no error would be reported, but your
+  application would probably crash when you called a member function
+  of \c{w}.
 */
 
 /*!
@@ -320,7 +367,7 @@ QT_BEGIN_NAMESPACE
 
     The Q_DECLARE_FLAGS() macro expands to
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 2
 
     \a Enum is the name of an existing enum type, whereas \a Flags is
     the name of the QFlags<\e{Enum}> typedef.
@@ -393,14 +440,14 @@ QT_BEGIN_NAMESPACE
     return a corresponding template type; the template types can be
     replaced by any other type. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 3
 
     <QtGlobal> also contains functions that generate messages from the
     given string argument: qCritical(), qDebug(), qFatal() and
     qWarning(). These functions call the message handler with the
     given message. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 4
 
     The remaining functions are qRound() and qRound64(), which both
     accept a \l qreal value as their argument returning the value
@@ -546,7 +593,7 @@ QT_BEGIN_NAMESPACE
 
     Literals of this type can be created using the Q_INT64_C() macro:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 5
 
     \sa Q_INT64_C(), quint64, qlonglong
 */
@@ -562,7 +609,7 @@ QT_BEGIN_NAMESPACE
     Literals of this type can be created using the Q_UINT64_C()
     macro:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 6
 
     \sa Q_UINT64_C(), qint64, qulonglong
 */
@@ -608,7 +655,7 @@ QT_BEGIN_NAMESPACE
     This is a typedef for a pointer to a function with the following
     signature:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 7
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 7
 
     \sa QtMsgType, qInstallMsgHandler()
 */
@@ -642,7 +689,7 @@ QT_BEGIN_NAMESPACE
     Wraps the signed 64-bit integer \a literal in a
     platform-independent way. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 8
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 8
 
     \sa qint64, Q_UINT64_C()
 */
@@ -653,7 +700,7 @@ QT_BEGIN_NAMESPACE
     Wraps the unsigned 64-bit integer \a literal in a
     platform-independent way. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 9
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 9
 
     \sa quint64, Q_INT64_C()
 */
@@ -682,7 +729,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the absolute value of \a value. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 10
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 10
 */
 
 /*! \fn int qRound(qreal value)
@@ -690,7 +737,7 @@ QT_BEGIN_NAMESPACE
 
     Rounds \a value to the nearest integer. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 11
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 11
 */
 
 /*! \fn qint64 qRound64(qreal value)
@@ -698,7 +745,7 @@ QT_BEGIN_NAMESPACE
 
     Rounds \a value to the nearest 64-bit integer. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 12
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 12
 */
 
 /*! \fn const T &qMin(const T &value1, const T &value2)
@@ -706,7 +753,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the minimum of \a value1 and \a value2. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 13
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 13
 
     \sa qMax(), qBound()
 */
@@ -716,7 +763,7 @@ QT_BEGIN_NAMESPACE
 
     Returns the maximum of \a value1 and \a value2. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 14
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 14
 
     \sa qMin(), qBound()
 */
@@ -727,7 +774,7 @@ QT_BEGIN_NAMESPACE
     Returns \a value bounded by \a min and \a max. This is equivalent
     to qMax(\a min, qMin(\a value, \a max)). For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 15
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 15
 
     \sa qMin(), qMax()
 */
@@ -873,7 +920,7 @@ QT_BEGIN_NAMESPACE
     You can use QT_VERSION to use the latest Qt features where
     available. For example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 16
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 16
 
     \sa QT_VERSION_STR, qVersion()
 */
@@ -1744,12 +1791,12 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = QSysInfo::windowsVersion()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 17
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 17
 
     If \c b is zero, the Q_ASSERT statement will output the following
     message using the qFatal() function:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 18
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 18
 
     \sa Q_ASSERT_X(), qFatal(), {Debugging Techniques}
 */
@@ -1767,12 +1814,12 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = QSysInfo::windowsVersion()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 19
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 19
 
     If \c b is zero, the Q_ASSERT_X statement will output the following
     message using the qFatal() function:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 20
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 20
 
     \sa Q_ASSERT(), qFatal(), {Debugging Techniques}
 */
@@ -1790,7 +1837,7 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = QSysInfo::windowsVersion()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 21
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 21
 
     \sa qWarning(), {Debugging Techniques}
 */
@@ -1805,7 +1852,7 @@ const QSysInfo::WinVersion QSysInfo::WindowsVersion = QSysInfo::windowsVersion()
 
     Q_FUNC_INFO can be conveniently used with qDebug(). For example, this function:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 22
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 22
 
     when instantiated with the integer type, will with the GCC compiler produce:
 
@@ -1996,7 +2043,7 @@ QString qt_error_string(int errorCode)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 23
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 23
 
     \sa qDebug(), qWarning(), qCritical(), qFatal(), QtMsgType,
     {Debugging Techniques}
@@ -2081,12 +2128,12 @@ void qt_message_output(QtMsgType msgType, const char *buf)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 24
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 24
 
     If you include \c <QtDebug>, a more convenient syntax is also
     available:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 25
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 25
 
     This syntax automatically puts a single space between each item,
     and outputs a newline at the end. It supports many C++ and Qt
@@ -2126,12 +2173,12 @@ void qDebug(const char *msg, ...)
     similar to the C printf() function.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 26
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 26
 
     If you include <QtDebug>, a more convenient syntax is
     also available:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 27
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 27
 
     This syntax inserts a space between each item, and
     appends a newline at the end.
@@ -2166,12 +2213,12 @@ void qWarning(const char *msg, ...)
     to the C printf() function.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 28
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 28
 
     If you include <QtDebug>, a more convenient syntax is
     also available:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 29
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 29
 
     A space is inserted between the items, and a newline is
     appended at the end.
@@ -2232,17 +2279,16 @@ void qErrnoWarning(int code, const char *msg, ...)
     message handler has been installed, the message is printed to
     stderr. Under Windows, the message is sent to the debugger.
 
-    For a release library this function will exit the application
-    with return value 1. For the debug version this function will
-    abort on Unix systems to create a core dump, and report a
-    _CRT_ERROR on Windows allowing to connect a debugger to the
-    application.
+    If you are using the \bold{default message handler} this function will
+    abort on Unix systems to create a core dump. On Windows, for debug builds,
+    this function will report a _CRT_ERROR enabling you to connect a debugger
+    to the application.
 
     This function takes a format string and a list of arguments,
     similar to the C printf() function.
 
     Example:
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 30
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 30
 
     \warning The internal buffer is limited to 8192 bytes, including
     the '\0'-terminator.
@@ -2298,7 +2344,8 @@ bool qputenv(const char *varName, const QByteArray& value)
 
 #if defined(Q_OS_UNIX) && !defined(QT_NO_THREAD)
 
-#  if defined(Q_OS_INTEGRITY)
+#  if defined(Q_OS_INTEGRITY) && defined(__GHS_VERSION_NUMBER) && (__GHS_VERSION_NUMBER < 500)
+// older versions of INTEGRITY used a long instead of a uint for the seed.
 typedef long SeedStorageType;
 #  else
 typedef uint SeedStorageType;
@@ -2380,14 +2427,14 @@ int qrand()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 31
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 31
 
     It is equivalent to \c{for (;;)}.
 
     If you're worried about namespace pollution, you can disable this
     macro by adding the following line to your \c .pro file:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 32
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 32
 
     \sa Q_FOREVER
 */
@@ -2417,7 +2464,7 @@ int qrand()
     If you're worried about namespace pollution, you can disable this
     macro by adding the following line to your \c .pro file:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 33
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 33
 
     \sa Q_FOREACH()
 */
@@ -2446,7 +2493,7 @@ int qrand()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 34
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 34
 
     \sa QT_TRANSLATE_NOOP(), {Internationalization with Qt}
 */
@@ -2464,7 +2511,7 @@ int qrand()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 35
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 35
 
     \sa QT_TR_NOOP(), QT_TRANSLATE_NOOP3(), {Internationalization with Qt}
 */
@@ -2485,7 +2532,7 @@ int qrand()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 36
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 36
 
     \sa QT_TR_NOOP(), QT_TRANSLATE_NOOP(), {Internationalization with Qt}
 */
@@ -2558,7 +2605,7 @@ int qrand()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 37
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 37
 
     \sa qDebug(), qWarning(), qCritical(), qFatal()
 */
@@ -2586,11 +2633,11 @@ int qrand()
 
     Example of a "primitive" type:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 38
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 38
 
     Example of a movable type:
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 39
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 39
 */
 
 /*!
@@ -2768,7 +2815,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
     Use this macro as in the following examples.
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 40
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 40
 
     \sa Q_BIG_ENDIAN, Q_LITTLE_ENDIAN
 */
@@ -2783,7 +2830,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
     lowest address. The other bytes follow in increasing order of
     significance.
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 41
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 41
 
     \sa Q_BYTE_ORDER, Q_BIG_ENDIAN
 */
@@ -2798,7 +2845,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
     lowest address. The other bytes follow in decreasing order of
     significance.
 
-    \snippet doc/src/snippets/code/src.corelib.global.qglobal.cpp 42
+    \snippet doc/src/snippets/code/src_corelib_global_qglobal.cpp 42
 
     \sa Q_BYTE_ORDER, Q_LITTLE_ENDIAN
 */
@@ -2881,7 +2928,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
     This macro expands to
 
-    \snippet snippets/code/src.corelib.global.qglobal.cpp begin namespace macro
+    \snippet snippets/code/src_corelib_global_qglobal.cpp begin namespace macro
 
     if \c QT_NAMESPACE is defined and nothing otherwise. If should always
     appear in the file-level scope and be followed by \c QT_END_NAMESPACE
@@ -2915,7 +2962,7 @@ bool QInternal::callFunction(InternalFunction func, void **args)
 
     This macro expands to
 
-    \snippet snippets/code/src.corelib.global.qglobal.cpp end namespace macro
+    \snippet snippets/code/src_corelib_global_qglobal.cpp end namespace macro
 
     if \c QT_NAMESPACE is defined and nothing otherwise. It is used to cancel
     the effect of \c QT_BEGIN_NAMESPACE.
@@ -2990,5 +3037,24 @@ bool QInternal::callFunction(InternalFunction func, void **args)
  \threadsafe
  \overload
  */
+
+/*!
+    \macro QT_REQUIRE_VERSION(int argc, char **argv, const char *version)
+    \relates <QtGlobal>
+
+    This macro can be used to ensure that the application is run
+    against a recent enough version of Qt. This is especially useful
+    if your application depends on a specific bug fix introduced in a
+    bug-fix release (e.g., 4.0.2).
+
+    The \a argc and \a argv parameters are the \c main() function's
+    \c argc and \c argv parameters. The \a version parameter is a
+    string literal that specifies which version of Qt the application
+    requires (e.g., "4.0.2").
+
+    Example:
+
+    \snippet doc/src/snippets/code/src_gui_dialogs_qmessagebox.cpp 4
+*/
 
 QT_END_NAMESPACE

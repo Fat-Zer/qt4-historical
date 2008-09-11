@@ -711,6 +711,12 @@ void QUnixPrintWidgetPrivate::updateWidget()
             widget.printers->removeItem(widget.printers->count()-1); // remove separator
         filePrintersAdded = false;
     }
+    if (printer && filePrintersAdded && printer->printerName().isEmpty()) {
+        if (printer->outputFormat() == QPrinter::PdfFormat)
+            widget.printers->setCurrentIndex(widget.printers->count() - 2);
+        else if (printer->outputFormat() == QPrinter::PostScriptFormat)
+            widget.printers->setCurrentIndex(widget.printers->count() - 1);
+    }
 
     widget.filename->setVisible(printToFile);
     widget.lOutput->setVisible(printToFile);
@@ -728,6 +734,7 @@ QUnixPrintWidgetPrivate::~QUnixPrintWidgetPrivate()
 
 void QUnixPrintWidgetPrivate::_q_printerChanged(int index)
 {
+    Q_ASSERT(index >= 0);
     const int printerCount = widget.printers->count();
     widget.filename->setEnabled(false);
     widget.lOutput->setEnabled(false);
@@ -817,7 +824,8 @@ void QUnixPrintWidgetPrivate::_q_btnBrowseClicked()
         widget.printers->setCurrentIndex(prevPrinter);
 }
 
-void QUnixPrintWidgetPrivate::applyPrinterProperties(QPrinter *p) {
+void QUnixPrintWidgetPrivate::applyPrinterProperties(QPrinter *p)
+{
     if (p == 0)
         return;
     printer = p;
@@ -855,10 +863,7 @@ void QUnixPrintWidgetPrivate::applyPrinterProperties(QPrinter *p) {
             }
         }
     }
-    else if(p->outputFormat() == QPrinter::PdfFormat)
-        widget.printers->setCurrentIndex(widget.printers->count()-2);
-    else if(p->outputFormat() == QPrinter::PostScriptFormat)
-        widget.printers->setCurrentIndex(widget.printers->count()-1);
+    // PDF and PS printers are not added to the dialog yet, we'll handle those cases in QUnixPrintWidgetPrivate::updateWidget
 
     if (propertiesDialog)
         propertiesDialog->applyPrinterProperties(p);
@@ -923,6 +928,7 @@ void QUnixPrintWidgetPrivate::setupPrinter()
     const int index = widget.printers->currentIndex();
 
     if (filePrintersAdded && index > printerCount - 3) { // PDF or postscript
+        printer->setPrinterName(QString());
         Q_ASSERT(index != printerCount - 3); // separator
         if (index == printerCount - 2)
             printer->setOutputFormat(QPrinter::PdfFormat);

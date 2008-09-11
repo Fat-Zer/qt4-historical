@@ -50,7 +50,7 @@
     A \l{Qt for Embedded Linux} application requires a server
     application to be running, or to be the server application itself.
     Any \l{Qt for Embedded Linux} application can act as the server.
-    When more than one application are running, the subsequent
+    When more than one application is running, the subsequent
     applications connect to the existing server application as clients.
 
     The server and client processes have different responsibilities:
@@ -68,7 +68,7 @@
 
     All system generated events, including keyboard and mouse events,
     are passed to the server application which then propagates the
-    event to the appropiate client.
+    event to the appropriate client.
 
     When rendering, the default behavior is for each client to render
     its widgets into memory while the server is responsible for
@@ -94,7 +94,7 @@
     position. Each window can identify the client application that
     created it, and returns its ID to the server upon
     request. Finally, the server forwards the event, encapsulated by
-    an instance of the QWSEvent class, to the appropiate client.
+    an instance of the QWSEvent class, to the appropriate client.
 
     \image qt-embedded-clientservercommunication.png
 

@@ -208,15 +208,15 @@ QGLSignalProxy *QGLSignalProxy::instance()
     There are different ways to define the display characteristics of
     a rendering context. One is to create a QGLFormat and make it the
     default for the entire application:
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 0
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 0
 
     Or you can specify the desired format when creating an object of
     your QGLWidget subclass:
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 1
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 1
 
     After the widget has been created, you can find out which of the
     requested features the system was able to provide:
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 2
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 2
 
     \legalese
         OpenGL is a trademark of Silicon Graphics, Inc. in the
@@ -301,7 +301,7 @@ QGLFormat::QGLFormat()
 
     This constructor makes it easy to specify a certain desired format
     in classes derived from QGLWidget, for example:
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 3
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 3
 
     Note that there are \c FormatOption values to turn format settings
     both on and off, e.g. \c DepthBuffer and \c NoDepthBuffer,
@@ -1138,7 +1138,7 @@ QGLFormat QGLFormat::defaultFormat()
     Sets a new default QGLFormat for the application to \a f. For
     example, to set single buffering as the default instead of double
     buffering, your main() might contain code like this:
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 4
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 4
 
     \sa defaultFormat()
 */
@@ -1182,13 +1182,13 @@ QGLFormat QGLFormat::defaultOverlayFormat()
     For example, to get a double buffered overlay context (if
     available), use code like this:
 
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 5
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 5
 
     As usual, you can find out after widget creation whether the
     underlying OpenGL system was able to provide the requested
     specification:
 
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 6
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 6
 
     \sa defaultOverlayFormat()
 */
@@ -2095,7 +2095,7 @@ int QGLContext::textureCacheLimit()
     Call create() to create a new GL context that tries to match the
     new format.
 
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 7
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 7
 
     \sa format(), reset(), create()
 */
@@ -2451,7 +2451,7 @@ const QGLContext* QGLContext::currentContext()
 
     Here is a rough outline of how a QGLWidget subclass might look:
 
-    \snippet doc/src/snippets/code/src.opengl.qgl.cpp 8
+    \snippet doc/src/snippets/code/src_opengl_qgl.cpp 8
 
     If you need to trigger a repaint from places other than paintGL()
     (a typical example is when using \link QTimer timers\endlink to
@@ -3329,11 +3329,8 @@ void QGLWidget::glDraw()
     }
     paintGL();
     if (doubleBuffer()) {
-#ifndef Q_WS_QWS
-        // on QWS we don't do an extra flush() here because this will anyway happen after the paintEvent.
         if (d->autoSwap)
             swapBuffers();
-#endif
     } else {
         glFlush();
     }

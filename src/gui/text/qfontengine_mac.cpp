@@ -874,7 +874,7 @@ void QFontEngineMac::addGlyphsToPath(glyph_t *glyphs, QFixedPoint *positions, in
 QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
 {
     const glyph_metrics_t br = boundingBox(glyph);
-    QImage im(qRound(br.width)+2, qRound(br.height)+2, QImage::Format_RGB32);
+    QImage im(qRound(br.width)+2, qRound(br.height)+4, QImage::Format_RGB32);
     im.fill(0);
 
     CGColorSpaceRef colorspace = QCoreGraphicsPaintEngine::macGenericColorSpace();
@@ -892,6 +892,8 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
                                              cgflags);
     CGContextSetFontSize(ctx, fontDef.pixelSize);
     CGContextSetShouldAntialias(ctx, fontDef.pointSize > qt_antialiasing_threshold && !(fontDef.styleStrategy & QFont::NoAntialias));
+    // turn off sub-pixel hinting - no support for that in OpenGL
+    CGContextSetShouldSmoothFonts(ctx, false);
     CGAffineTransform oldTextMatrix = CGContextGetTextMatrix(ctx);
     CGAffineTransform cgMatrix = CGAffineTransformMake(1, 0, 0, 1, 0, 0);
     CGAffineTransformConcat(cgMatrix, oldTextMatrix);
@@ -906,7 +908,8 @@ QImage QFontEngineMac::alphaMapForGlyph(glyph_t glyph)
     CGContextSetTextDrawingMode(ctx, kCGTextFill);
     CGContextSetFont(ctx, cgFont);
 
-    qreal pos_x = -br.x.toReal()+1, pos_y = im.height()+br.y.toReal();
+    qreal pos_x = -br.x.toReal() + 1;
+    qreal pos_y = im.height() + br.y.toReal() - 2;
     CGContextSetTextPosition(ctx, pos_x, pos_y);
 
     CGSize advance;

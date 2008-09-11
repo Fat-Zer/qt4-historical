@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/svg/qgraphicssvgitem.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/svg/qgraphicssvgitem.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsSvgItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGraphicsSvgItem Class Reference<br /><span class="small-subtitle">[<a href="qtsvg.html">QtSvg</a> module]</span>
 </h1>
 <p>The QGraphicsSvgItem class is a <a href="qgraphicsitem.html">QGraphicsItem</a> that can be used to render the contents of SVG files. <a href="#details">More...</a></p>
@@ -56,15 +56,15 @@
 <p>QGraphicsSvgItem provides a way of rendering SVG files onto <a href="qgraphicsview.html">QGraphicsView</a>. QGraphicsSvgItem can be created by passing the SVG file to be rendered to its constructor or by explicit setting a shared <a href="qsvgrenderer.html">QSvgRenderer</a> on it.</p>
 <p>Note that setting <a href="qsvgrenderer.html">QSvgRenderer</a> on a QGraphicsSvgItem doesn't make the item take ownership of the renderer, therefore if using <a href="qgraphicssvgitem.html#setSharedRenderer">setSharedRenderer</a>() method one has to make sure that the lifetime of the <a href="qsvgrenderer.html">QSvgRenderer</a> object will be at least as long as that of the QGraphicsSvgItem.</p>
 <p>QGraphicsSvgItem provides a way of rendering only parts of the SVG files via the setElementId. If <a href="qgraphicssvgitem.html#setElementId">setElementId</a>() method is called, only the SVG element (and its children) with the passed id will be renderer. This provides a convenient way of selectively rendering large SVG files that contain a number of discrete elements. For example the following code renders only jokers from a SVG file containing a whole card deck:</p>
-<pre>     QSvgRenderer *renderer = new QSvgRenderer(QLatin1String(&quot;SvgCardDeck.svg&quot;));
-     QGraphicsSvgItem *black = new QGraphicsSvgItem();
-     QGraphicsSvgItem *red   = new QGraphicsSvgItem();
+<pre> QSvgRenderer *renderer = new QSvgRenderer(QLatin1String(&quot;SvgCardDeck.svg&quot;));
+ QGraphicsSvgItem *black = new QGraphicsSvgItem();
+ QGraphicsSvgItem *red   = new QGraphicsSvgItem();
 
-     black-&gt;setSharedRenderer(renderer);
-     black-&gt;setElementId(QLatin1String(&quot;black_joker&quot;));
+ black-&gt;setSharedRenderer(renderer);
+ black-&gt;setElementId(QLatin1String(&quot;black_joker&quot;));
 
-     red-&gt;setSharedRenderer(renderer);
-     red-&gt;setElementId(QLatin1String(&quot;red_joker&quot;));</pre>
+ red-&gt;setSharedRenderer(renderer);
+ red-&gt;setElementId(QLatin1String(&quot;red_joker&quot;));</pre>
 <p>Size of the item can be set via the setSize() method or via direct manipulation of the items transformation matrix.</p>
 <p>By default the SVG rendering is cached using <a href="qgraphicsitem.html#CacheMode-enum">QGraphicsItem::DeviceCoordinateCache</a> mode to speedup the display of items. Caching can be disabled by passing <a href="qgraphicsitem.html#CacheMode-enum">QGraphicsItem::NoCache</a> to the <a href="qgraphicsitem.html#setCacheMode">QGraphicsItem::setCacheMode</a>() method.</p>
 <p>See also <a href="qsvgwidget.html">QSvgWidget</a>, <a href="qtsvg.html">QtSvg Module</a>, <a href="qgraphicsitem.html">QGraphicsItem</a>, and <a href="qgraphicsview.html">QGraphicsView</a>.</p>
@@ -105,8 +105,8 @@
 <p>Sets <i>renderer</i> to be a shared <a href="qsvgrenderer.html">QSvgRenderer</a> on the item. By using this method one can share the same <a href="qsvgrenderer.html">QSvgRenderer</a> on a number of items. This means that the SVG file will be parsed only once. <a href="qsvgrenderer.html">QSvgRenderer</a> passed to this method has to exist for as long as this item is used.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

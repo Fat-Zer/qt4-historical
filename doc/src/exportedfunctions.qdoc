@@ -57,7 +57,7 @@
     application, you must declare them before calling them. For
     example:
 
-    \snippet doc/src/snippets/code/doc.src.exportedfunctions.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_exportedfunctions.qdoc 0
 
     These functions will remain as part of Qt for the lifetime of Qt
     4.
@@ -107,7 +107,7 @@
     Specifies whether icons associated to menu items for the
     application's menu bar should be shown on Mac OS X. By default,
     icons are shown on Mac OS X just like on the other platforms.
-    
+
     In Qt 4.4, this is equivalent to
     \c { QApplication::instance()->setAttribute(Qt::AA_DontShowIconsInMenus); }.
 
@@ -116,7 +116,7 @@
     Specifies whether Qt should attempt to relocate standard menu
     items (such as \gui Quit, \gui Preferences, and \gui About) to
     the application menu on Mac OS X. This feature is on by default.
-    See \l{Qt/Mac-Specific Issues} for the list of menu items for
+    See \l{Qt for Mac OS X - Specific Issues} for the list of menu items for
     which this applies.
 
     \section1 void qt_mac_set_native_menubar(bool \e{enable})

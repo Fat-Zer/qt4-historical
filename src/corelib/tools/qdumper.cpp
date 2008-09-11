@@ -41,8 +41,6 @@
 **
 ****************************************************************************/
 
-#ifndef Q_OS_WINCE
-
 #include <qdatetime.h>
 #include <qdebug.h>
 #include <qdir.h>
@@ -54,6 +52,8 @@
 #include <qstring.h>
 #include <qvariant.h>
 #include <qvector.h>
+
+#if !defined(Q_OS_WINCE) && !defined(QT_NO_DUMPER)
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -1156,4 +1156,4 @@ extern "C" Q_CORE_EXPORT void qDumpObjectData(
 
 QT_END_NAMESPACE
 
-#endif // Q_OS_WINCE
+#endif // !Q_OS_WINCE && !QT_NO_QDUMPER

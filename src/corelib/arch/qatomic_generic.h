@@ -194,9 +194,9 @@ inline int QBasicAtomicInt::fetchAndAddRelease(int valueToAdd)
 template <typename T>
 Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetOrdered(T *expectedValue, T *newValue)
 {
-    return QBasicAtomicPointer_testAndSetOrdered(reinterpret_cast<void * volatile *>(&_q_value),
-                                                 expectedValue,
-                                                 newValue);
+    union { T * volatile * typed; void * volatile * voidp; } pointer;
+    pointer.typed = &_q_value;
+    return QBasicAtomicPointer_testAndSetOrdered(pointer.voidp, expectedValue, newValue);
 }
 
 template <typename T>
@@ -222,9 +222,11 @@ Q_INLINE_TEMPLATE bool QBasicAtomicPointer<T>::testAndSetRelease(T *expectedValu
 template <typename T>
 Q_INLINE_TEMPLATE T *QBasicAtomicPointer<T>::fetchAndStoreOrdered(T *newValue)
 {
-    return reinterpret_cast<T *>
-        (QBasicAtomicPointer_fetchAndStoreOrdered(&reinterpret_cast<void * volatile *>(&_q_value),
-                                                  newValue));
+    union { T * volatile * typed; void * volatile * voidp; } pointer;
+    union { T *typed; void *voidp; } returnValue;
+    pointer.typed = &_q_value;
+    returnValue.voidp = QBasicAtomicPointer_fetchAndStoreOrdered(pointer.voidp, newValue);
+    return returnValue.typed;
 }
 
 template <typename T>
@@ -250,9 +252,11 @@ Q_INLINE_TEMPLATE T *QBasicAtomicPointer<T>::fetchAndStoreRelease(T *newValue)
 template <typename T>
 Q_INLINE_TEMPLATE T *QBasicAtomicPointer<T>::fetchAndAddOrdered(qptrdiff valueToAdd)
 {
-    return reinterpret_cast<T *>
-        (QBasicAtomicPointer_fetchAndAddOrdered(reinterpret_cast<void * volatile *>(&_q_value),
-                                                valueToAdd));
+    union { T * volatile *typed; void * volatile *voidp; } pointer;
+    union { T *typed; void *voidp; } returnValue;
+    pointer.typed = &_q_value;
+    returnValue.voidp = QBasicAtomicPointer_fetchAndAddOrdered(pointer.voidp, valueToAdd * sizeof(T));
+    return returnValue.typed;
 }
 
 template <typename T>

@@ -160,7 +160,7 @@ QT_BEGIN_NAMESPACE
     represents a fully transparent color, while 255 represents a fully
     opaque color. For example:
 
-    \snippet doc/src/snippets/code/src.gui.painting.qcolor.cpp 0
+    \snippet doc/src/snippets/code/src_gui_painting_qcolor.cpp 0
 
     The code above produces the following output:
 
@@ -503,7 +503,9 @@ QString QColor::name() const
     \i #RRRRGGGGBBBB
     \i A name from the list of colors defined in the list of \l{SVG color keyword names}
        provided by the World Wide Web Consortium; for example, "steelblue" or "gainsboro".
-       These color names work on all platforms.
+       These color names work on all platforms. Note that these color names are \i not the
+       same as defined by the Qt::GlobalColor enums, e.g. "green" and Qt::green does not
+       refer to the same color.
     \i \c transparent - representing the absence of a color.
     \i \e{X11 only}: If allowX11ColorNames() returns true, any valid X11 color name. See
        the documentation for \c XParseColor() for information about valid X11 color names.
@@ -1906,8 +1908,7 @@ QColor QColor::dark(int factor) const
 }
 
 /*!
-    Assigns a copy of the color \a color to this color, and returns a
-    reference to it.
+    Assigns a copy of \a color to this color, and returns a reference to it.
 */
 QColor &QColor::operator=(const QColor &color)
 {
@@ -1917,7 +1918,7 @@ QColor &QColor::operator=(const QColor &color)
 }
 
 /*! \overload
-    Assigns a copy of the \a color and returns a reference to this color.
+    Assigns a copy of \a color and returns a reference to this color.
  */
 QColor &QColor::operator=(Qt::GlobalColor color)
 {
@@ -1925,8 +1926,8 @@ QColor &QColor::operator=(Qt::GlobalColor color)
 }
 
 /*!
-    Returns true if this color has the same RGB value as the color \a
-    color; otherwise returns false.
+    Returns true if this color has the same RGB and alpha values
+    as \a color; otherwise returns false.
 */
 bool QColor::operator==(const QColor &color) const
 {
@@ -1939,8 +1940,8 @@ bool QColor::operator==(const QColor &color) const
 }
 
 /*!
-    Returns true if this color has a different RGB value from the
-    color \a color; otherwise returns false.
+    Returns true if this color has a different RGB and alpha values from
+    \a color; otherwise returns false.
 */
 bool QColor::operator!=(const QColor &color) const
 { return !operator==(color); }

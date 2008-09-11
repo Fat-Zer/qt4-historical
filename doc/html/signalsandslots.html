@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/signalsandslots.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/signalsandslots.qdoc -->
 <head>
   <title>Qt 4.4: Signals and Slots</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,7 +11,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Signals and Slots<br /><span class="subtitle"></span>
 </h1>
 <p>Signals and slots are used for communication between objects. The signals and slots mechanism is a central feature of Qt and probably the part that differs most from the features provided by other frameworks.</p>
@@ -168,27 +168,23 @@
 <a name="advanced-signals-and-slots-usage"></a>
 <h3>Advanced Signals and Slots Usage</h3>
 <p>For cases where you may require information on the sender of the signal, Qt provides the <a href="qobject.html#sender">QObject::sender</a>() function, which returns a pointer to the object that sent the signal.</p>
-<p>The <a href="qsignalmapper.html">QSignalMapper</a> class is also provided for situations where many signals are connected to the same slot and the slot needs to handle each signal differently. Suppose you have three <a href="qpushbutton.html">QPushButton</a> objects that determine which file you will open, and you connect their <a href="qabstractbutton.html#clicked">QPushButton::clicked</a>() signal to <tt>mySlot()</tt>, you can use <a href="qsignalmapper.html">QSignalMapper</a>'s <a href="qsignalmapper.html#setMapping">setMapping()</a> to map all the <a href="qabstractbutton.html#clicked">clicked()</a> signals to a <a href="qsignalmapper.html">QSignalMapper</a> object.</p>
-<pre> int main(int argc, char * argv[])
- {
-     QPushButton *button1 = new QPushButton;
-     QPushButton *button2 = new QPushButton;
-     QPushButton *button3 = new QPushButton;
+<p>The <a href="qsignalmapper.html">QSignalMapper</a> class is provided for situations where many signals are connected to the same slot and the slot needs to handle each signal differently.</p>
+<p>Suppose you have three push buttons that determine which file you will open: &quot;Tax File&quot;, &quot;Accounts File&quot;, or &quot;Report File&quot;.</p>
+<p>In order to open the correct file, you connect their <a href="qabstractbutton.html#clicked">QPushButton::clicked</a>() signal to <tt>readFile()</tt>. Then, use <a href="qsignalmapper.html">QSignalMapper</a>'s <a href="qsignalmapper.html#setMapping">setMapping()</a> to map all the <a href="qabstractbutton.html#clicked">clicked()</a> signals to a <a href="qsignalmapper.html">QSignalMapper</a> object.</p>
+<pre>     signalMapper = new QSignalMapper(this);
+     signalMapper-&gt;setMapping(taxFileButton, QString(&quot;taxfile.txt&quot;));
+     signalMapper-&gt;setMapping(accountFileButton, QString(&quot;accountsfile.txt&quot;));
+     signalMapper-&gt;setMapping(reportFileButton, QString(&quot;reportfile.txt&quot;));
 
-     QSignalMapper *signalMapper = new QSignalMapper(this);
-     signalMapper-&gt;setMapping(button1, QString(&quot;File1&quot;));
-     signalMapper-&gt;setMapping(button2, QString(&quot;File2&quot;));
-     signalMapper-&gt;setMapping(button3, QString(&quot;File3&quot;));
-
-     connect(signalMapper, SIGNAL(mapped(const QString &amp;)),
-         this, SLOT(mySlot(const QString&amp;)));
- }</pre>
-<p>Then, you connect the <a href="qsignalmapper.html#mapped">mapped()</a> signal to <tt>mySlot()</tt> where a different file will be opened, depending on which push button is pressed.</p>
-<pre> void mySlot(const QString &amp;fileName)
- {
-     QFile file(fileName);
-     file.open(QIODevice::ReadOnly);
- }</pre>
+     connect(taxFileButton, SIGNAL(clicked()),
+         signalMapper, SLOT (map()));
+     connect(accountFileButton, SIGNAL(clicked()),
+         signalMapper, SLOT (map()));
+     connect(reportFileButton, SIGNAL(clicked()),
+         signalMapper, SLOT (map()));</pre>
+<p>Then, you connect the <a href="qsignalmapper.html#mapped">mapped()</a> signal to <tt>readFile()</tt> where a different file will be opened, depending on which push button is pressed.</p>
+<pre>     connect(signalMapper, SIGNAL(mapped(const QString &amp;)),
+         this, SLOT(readFile(const QString &amp;)));</pre>
 <a name="3rd-party-signals-and-slots"></a><a name="using-qt-with-3rd-party-signals-and-slots"></a>
 <h4>Using Qt with 3rd Party Signals and Slots</h4>
 <p>It is possible to use Qt with a 3rd party signal/slot mechanism. You can even use both mechanisms in the same project. Just add the following line to your qmake project (.pro) file.</p>
@@ -197,8 +193,8 @@
 <p>See also <a href="metaobjects.html">Meta-Object System</a> and <a href="properties.html">Qt's Property System</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qnetworkaccessmanager.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/network/access/qnetworkaccessmanager.cpp -->
 <head>
   <title>Qt 4.4: QNetworkAccessManager Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,12 +12,11 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QNetworkAccessManager Class Reference<br /><span class="small-subtitle">[<a href="qtnetwork.html">QtNetwork</a> module]</span>
 </h1>
 <p>The QNetworkAccessManager class allows the application to post network requests and receive replies <a href="#details">More...</a></p>
 <pre> #include &lt;QNetworkAccessManager&gt;</pre><p>Inherits <a href="qobject.html">QObject</a>.</p>
-<p>Inherited by </p>
 <p><b>Note:</b> All the functions in this class are <a href="threads.html#reentrant">reentrant</a>.</p>
 <p>This class was introduced in Qt 4.4.</p>
 <ul>
@@ -79,24 +78,24 @@
 <p>The Network Access API is constructed around one QNetworkAccessManager object, which holds the common configuration and settings for the requests sent. It contains the proxy and cache configuration, as well as the signals related to such issues and reply signals.</p>
 <p>Once a QNetworkAccessManager object has been created, the application can send requests over the network through that object. The methods in QNetworkAccessManager take a request and optionally some data to be uploaded and return a <a href="qnetworkreply.html">QNetworkReply</a> object. The returned object is where most of the signals as well as the downloaded data are posted.</p>
 <p>A simple download off the network could be accomplished with:</p>
-<pre>         QNetworkAccessManager *manager = new QNetworkAccessManager(this);
-         connect(manager, SIGNAL(finished(QNetworkReply*)),
-                 this, SLOT(replyFinished(QNetworkReply*)));
+<pre> QNetworkAccessManager *manager = new QNetworkAccessManager(this);
+ connect(manager, SIGNAL(finished(QNetworkReply*)),
+         this, SLOT(replyFinished(QNetworkReply*)));
 
-         manager-&gt;get(QNetworkRequest(&quot;http:<span class="comment">//www.trolltech.com&quot;));</span></pre>
+ manager-&gt;get(QNetworkRequest(QUrl(&quot;http:<span class="comment">//www.trolltech.com&quot;)));</span></pre>
 <p>When the <tt>replyFinished</tt> slot above is called, the parameter it takes is the <a href="qnetworkreply.html">QNetworkReply</a> object containing the downloaded data as well as meta-data (headers, etc.)&#x2e;</p>
 <p><b>Note:</b> The slot is responsible for deleting the object at that point.</p>
 <p>A more involved example, assuming the manager is already existent, can be:</p>
-<pre>         QNetworkRequest request;
-         request.setUrl(&quot;http:<span class="comment">//www.trolltech.com&quot;);</span>
-         request.setRawHeader(&quot;User-Agent&quot;, &quot;MyOwnBrowser 1.0&quot;);
+<pre> QNetworkRequest request;
+ request.setUrl(&quot;http:<span class="comment">//www.trolltech.com&quot;);</span>
+ request.setRawHeader(&quot;User-Agent&quot;, &quot;MyOwnBrowser 1.0&quot;);
 
-         QNetworkReply *reply = manager-&gt;get(request);
-         connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
-         connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
-                 this, SLOT(slotError(QNetworkReply::NetworkError)));
-         connect(reply, SIGNAL(sslErrors(QList&lt;QSslError&gt;)),
-                 this, SLOT(slotSslErrors(QList&lt;QSslError)));</pre>
+ QNetworkReply *reply = manager-&gt;get(request);
+ connect(reply, SIGNAL(readyRead()), this, SLOT(slotReadyRead()));
+ connect(reply, SIGNAL(error(QNetworkReply::NetworkError)),
+         this, SLOT(slotError(QNetworkReply::NetworkError)));
+ connect(reply, SIGNAL(sslErrors(QList&lt;QSslError&gt;)),
+         this, SLOT(slotSslErrors(QList&lt;QSslError)));</pre>
 <p>See also <a href="qnetworkrequest.html">QNetworkRequest</a>, <a href="qnetworkreply.html">QNetworkReply</a>, and <a href="qnetworkproxy.html">QNetworkProxy</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
@@ -198,8 +197,8 @@
 <p>See also <a href="qsslsocket.html#sslErrors">QSslSocket::sslErrors</a>(), <a href="qnetworkreply.html#sslErrors">QNetworkReply::sslErrors</a>(), <a href="qnetworkreply.html#sslConfiguration">QNetworkReply::sslConfiguration</a>(), and <a href="qnetworkreply.html#ignoreSslErrors">QNetworkReply::ignoreSslErrors</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/widgets/qdockwidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/widgets/qdockwidget.cpp -->
 <head>
   <title>Qt 4.4: QDockWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QDockWidget Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QDockWidget class provides a widget that can be docked inside a <a href="qmainwindow.html">QMainWindow</a> or floated as a top-level window on the desktop. <a href="#details">More...</a></p>
@@ -145,6 +145,7 @@
 <a name="//apple_ref/cpp/instm/QDockWidget/setFeatures" />
 <h3 class="fn"><a name="features-prop"></a>features : <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetFeatures</a></h3>
 <p>This property holds whether the dock widget is movable, closable, and floatable.</p>
+<p>By default, this property is set to a combination of <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetClosable</a>, <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetMovable</a> and <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetFloatable</a>.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>DockWidgetFeatures features () const</b></li>
@@ -156,6 +157,7 @@
 <h3 class="fn"><a name="floating-prop"></a>floating : bool</h3>
 <p>This property holds whether the dock widget is floating.</p>
 <p>A floating dock widget is presented to the user as an independent window &quot;on top&quot; of its parent <a href="qmainwindow.html">QMainWindow</a>, instead of being docked in the <a href="qmainwindow.html">QMainWindow</a>.</p>
+<p>By default, this property is true.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>bool isFloating () const</b></li>
@@ -198,12 +200,12 @@
 <p>Here are some tips for implementing custom title bars:</p>
 <ul>
 <li>Mouse events that are not explicitly handled by the title bar widget must be ignored by calling <a href="qevent.html#ignore">QMouseEvent::ignore</a>(). These events then propagate to the <a href="qdockwidget.html">QDockWidget</a> parent, which handles them in the usual manner, moving when the title bar is dragged, docking and undocking when it is double-clicked, etc.</li>
-<li>When <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetVerticalTitleBar</a> is set on <a href="qdockwidget.html">QDockWidget</a>, the title bar widget is repositioned accordingly. In <a href="qwidget.html#resizeEvent">resizeEvent</a>(), the title bar should check what orientation it should assume:<pre>        QDockWidget *dockWidget = qobject_cast&lt;QDockWidget*&gt;(parentWidget());
-        if (dockWidget-&gt;features() &amp; QDockWidget::DockWidgetVerticalTitleBar) {
-            <span class="comment">// I need to be vertical</span>
-        } else {
-            <span class="comment">// I need to be horizontal</span>
-        }</pre>
+<li>When <a href="qdockwidget.html#DockWidgetFeature-enum">DockWidgetVerticalTitleBar</a> is set on <a href="qdockwidget.html">QDockWidget</a>, the title bar widget is repositioned accordingly. In <a href="qwidget.html#resizeEvent">resizeEvent</a>(), the title bar should check what orientation it should assume:<pre> QDockWidget *dockWidget = qobject_cast&lt;QDockWidget*&gt;(parentWidget());
+ if (dockWidget-&gt;features() &amp; QDockWidget::DockWidgetVerticalTitleBar) {
+     <span class="comment">// I need to be vertical</span>
+ } else {
+     <span class="comment">// I need to be horizontal</span>
+ }</pre>
 </li>
 <li>The title bar widget must have a valid <a href="qwidget.html#sizeHint-prop">QWidget::sizeHint</a>() and <a href="qwidget.html#minimumSizeHint-prop">QWidget::minimumSizeHint</a>(). These functions should take into account the current orientation of the title bar.</li>
 </ul>
@@ -240,8 +242,8 @@
 <p>See also <a href="qdockwidget.html#setWidget">setWidget</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

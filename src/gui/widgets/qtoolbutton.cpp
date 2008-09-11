@@ -481,6 +481,8 @@ QSize QToolButton::minimumSizeHint() const
     \brief whether the button displays an arrow instead of a normal icon
 
     This displays an arrow as the icon for the QToolButton.
+
+    By default, this property is set to Qt::NoArrow.
 */
 
 Qt::ToolButtonStyle QToolButton::toolButtonStyle() const
@@ -992,6 +994,8 @@ int QToolButton::popupDelay() const
 /*!
     \property QToolButton::popupMode
     \brief describes the way that popup menus are used with tool buttons
+
+    By default, this property is set to \l DelayedPopup.
 */
 
 void QToolButton::setPopupMode(ToolButtonPopupMode mode)

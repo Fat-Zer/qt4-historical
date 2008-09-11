@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/q3ptrdict.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/q3ptrdict.qdoc -->
 <head>
   <title>Qt 4.4: Q3PtrDict Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3PtrDict Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3PtrDict class is a template class that provides a dictionary based on void* keys. <a href="#details">More...</a></p>
@@ -60,31 +60,31 @@
 <p>Q3PtrDict is implemented as a template class. Define a template instance Q3PtrDict&lt;X&gt; to create a dictionary that operates on pointers to X (X*).</p>
 <p>A dictionary is a collection of key-value pairs. The key is a void* used for insertion, removal and lookup. The value is a pointer. Dictionaries provide very fast insertion and lookup.</p>
 <p>Example:</p>
-<pre>     Q3PtrDict&lt;char&gt; fields; // void* keys, char* values
+<pre> Q3PtrDict&lt;char&gt; fields; // void* keys, char* values
 
-     QLineEdit *le1 = new QLineEdit( this );
-     le1-&gt;setText( &quot;Simpson&quot; );
-     QLineEdit *le2 = new QLineEdit( this );
-     le2-&gt;setText( &quot;Homer&quot; );
-     QLineEdit *le3 = new QLineEdit( this );
-     le3-&gt;setText( &quot;45&quot; );
+ QLineEdit *le1 = new QLineEdit( this );
+ le1-&gt;setText( &quot;Simpson&quot; );
+ QLineEdit *le2 = new QLineEdit( this );
+ le2-&gt;setText( &quot;Homer&quot; );
+ QLineEdit *le3 = new QLineEdit( this );
+ le3-&gt;setText( &quot;45&quot; );
 
-     fields.insert( le1, &quot;Surname&quot; );
-     fields.insert( le2, &quot;Forename&quot; );
-     fields.insert( le3, &quot;Age&quot; );
+ fields.insert( le1, &quot;Surname&quot; );
+ fields.insert( le2, &quot;Forename&quot; );
+ fields.insert( le3, &quot;Age&quot; );
 
-     Q3PtrDictIterator&lt;char&gt; it( fields );
-     for( ; it.current(); ++it )
-         cout &lt;&lt; it.current() &lt;&lt; endl;
-     cout &lt;&lt; endl;
+ Q3PtrDictIterator&lt;char&gt; it( fields );
+ for( ; it.current(); ++it )
+     cout &lt;&lt; it.current() &lt;&lt; endl;
+ cout &lt;&lt; endl;
 
-     if ( fields[le1] ) // Prints &quot;Surname: Simpson&quot;
-         cout &lt;&lt; fields[le1] &lt;&lt; &quot;: &quot; &lt;&lt; le1-&gt;text() &lt;&lt; endl;
-     if ( fields[le2] ) // Prints &quot;Forename: Homer&quot;
-         cout &lt;&lt; fields[le2] &lt;&lt; &quot;: &quot; &lt;&lt; le2-&gt;text() &lt;&lt; endl;
+ if ( fields[le1] ) // Prints &quot;Surname: Simpson&quot;
+     cout &lt;&lt; fields[le1] &lt;&lt; &quot;: &quot; &lt;&lt; le1-&gt;text() &lt;&lt; endl;
+ if ( fields[le2] ) // Prints &quot;Forename: Homer&quot;
+     cout &lt;&lt; fields[le2] &lt;&lt; &quot;: &quot; &lt;&lt; le2-&gt;text() &lt;&lt; endl;
 
-     fields.remove( le1 ); // Removes le1 from the dictionary
-     cout &lt;&lt; le1-&gt;text() &lt;&lt; endl; // Prints &quot;Simpson&quot;</pre>
+ fields.remove( le1 ); // Removes le1 from the dictionary
+ cout &lt;&lt; le1-&gt;text() &lt;&lt; endl; // Prints &quot;Simpson&quot;</pre>
 <p>In this example we use a dictionary to add an extra property (a char*) to the line edits we're using.</p>
 <p>See <a href="q3dict.html">Q3Dict</a> for full details, including the choice of dictionary size, and how deletions are handled.</p>
 <p>See also <a href="q3ptrdictiterator.html">Q3PtrDictIterator</a>, <a href="q3dict.html">Q3Dict</a>, <a href="q3asciidict.html">Q3AsciiDict</a>, and <a href="q3intdict.html">Q3IntDict</a>.</p>
@@ -147,11 +147,11 @@
 <p>If the dictionary has key <i>key</i>, this key's item is replaced with <i>item</i>. If the dictionary doesn't contain key <i>key</i>, <i>item</i> is inserted into the dictionary using key <i>key</i>.</p>
 <p><i>item</i> may not be 0.</p>
 <p>Equivalent to</p>
-<pre>         Q3PtrDict&lt;ItemType&gt; dict;
-             ...
-         if ( dict.find( key ) )
-             dict.remove( key );
-         dict.insert( key, item );</pre>
+<pre> Q3PtrDict&lt;ItemType&gt; dict;
+     ...
+ if ( dict.find( key ) )
+     dict.remove( key );
+ dict.insert( key, item );</pre>
 <p>If there are two or more items with equal keys, then the most recently inserted item will be replaced.</p>
 <p>See also <a href="q3ptrdict.html#insert">insert</a>().</p>
 <a name="//apple_ref/cpp/instm/Q3PtrDict/resize" />
@@ -187,8 +187,8 @@
 <p>See also <a href="q3ptrdict.html#find">find</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

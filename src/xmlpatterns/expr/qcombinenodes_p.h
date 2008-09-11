@@ -86,6 +86,7 @@ namespace QPatternist
                      const Expression::Ptr &operand2);
 
         virtual Item::Iterator::Ptr evaluateSequence(const DynamicContext::Ptr &context) const;
+        virtual Item evaluateSingleton(const DynamicContext::Ptr &context) const;
         virtual bool evaluateEBV(const DynamicContext::Ptr &context) const;
         virtual SequenceType::Ptr staticType() const;
         virtual SequenceType::List expectedOperandTypes() const;

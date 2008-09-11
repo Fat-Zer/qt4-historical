@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/corelib/io/qfile.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/io/qfile.cpp -->
 <head>
   <title>Qt 4.4: QFile Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFile Class Reference<br /><span class="small-subtitle">[<a href="qtcore.html">QtCore</a> module]</span>
 </h1>
 <p>The QFile class provides an interface for reading from and writing to files. <a href="#details">More...</a></p>
@@ -159,19 +159,19 @@
 <p>Unlike other <a href="qiodevice.html">QIODevice</a> implementations, such as <a href="qtcpsocket.html">QTcpSocket</a>, QFile does not emit the <a href="qiodevice.html#aboutToClose">aboutToClose</a>(), <a href="qiodevice.html#bytesWritten">bytesWritten</a>(), or <a href="qiodevice.html#readyRead">readyRead</a>() signals. This implementation detail means that QFile is not suitable for reading and writing certain types of files, such as device files on Unix platforms.</p>
 <a name="platform-specific-issues"></a>
 <h3>Platform Specific Issues</h3>
-<p>File permissions are handled differently on Linux/Mac OS X and Windows. In a non writeable directory on Linux, files cannot be created. This is not always the case on Windows, where, for instance, the 'My Documents' directory usually is not writable, but it is still possible to create files in it.</p>
+<p>File permissions are handled differently on Linux/Mac OS X and Windows. In a non <a href="qiodevice.html#isWritable">writable</a> directory on Linux, files cannot be created. This is not always the case on Windows, where, for instance, the 'My Documents' directory usually is not writable, but it is still possible to create files in it.</p>
 <p>See also <a href="qtextstream.html">QTextStream</a>, <a href="qdatastream.html">QDataStream</a>, <a href="qfileinfo.html">QFileInfo</a>, <a href="qdir.html">QDir</a>, and <a href="resources.html">The Qt Resource System</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tdef/QFile/DecoderFn" />
 <h3 class="fn"><a name="DecoderFn-typedef"></a>typedef QFile::DecoderFn</h3>
 <p>This is a typedef for a pointer to a function with the following signature:</p>
-<pre>         QString myDecoderFunc(const QByteArray &amp;localFileName);</pre>
+<pre> QString myDecoderFunc(const QByteArray &amp;localFileName);</pre>
 <p>See also <a href="qfile.html#setDecodingFunction">setDecodingFunction</a>().</p>
 <a name="//apple_ref/cpp/tdef/QFile/EncoderFn" />
 <h3 class="fn"><a name="EncoderFn-typedef"></a>typedef QFile::EncoderFn</h3>
 <p>This is a typedef for a pointer to a function with the following signature:</p>
-<pre>         QByteArray myEncoderFunc(const QString &amp;fileName);</pre>
+<pre> QByteArray myEncoderFunc(const QString &amp;fileName);</pre>
 <p>See also <a href="qfile.html#setEncodingFunction">setEncodingFunction</a>() and <a href="qfile.html#encodeName">encodeName</a>().</p>
 <a name="//apple_ref/cpp/tag/QFile/FileError" />
 <a name="//apple_ref/cpp/econst/QFile/NoError" />
@@ -356,21 +356,26 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Opens the existing file handle <i>fh</i> in the given <i>mode</i>. Returns true if successful; otherwise returns false.</p>
 <p>Example:</p>
-<pre>         #include &lt;stdio.h&gt;
+<pre> #include &lt;stdio.h&gt;
 
-         void printError(const char* msg)
-         {
-             QFile file;
-             file.open(stderr, QIODevice::WriteOnly);
-             file.write(msg, qstrlen(msg));        <span class="comment">// write to stderr</span>
-             file.close();
-         }</pre>
+ void printError(const char* msg)
+ {
+     QFile file;
+     file.open(stderr, QIODevice::WriteOnly);
+     file.write(msg, qstrlen(msg));        <span class="comment">// write to stderr</span>
+     file.close();
+ }</pre>
 <p>When a <a href="qfile.html">QFile</a> is opened using this function, <a href="qiodevice.html#close">close</a>() does not actually close the file, but only flushes it.</p>
-<p><b>Warning:</b> If <i>fh</i> is <tt>stdin</tt>, <tt>stdout</tt>, or <tt>stderr</tt>, you may not be able to <a href="qiodevice.html#seek">seek</a>(). See <a href="qiodevice-qt3.html#isSequentialAccess">QIODevice::isSequentialAccess</a>() for more information.</p>
-<p><b>Note:</b> On Windows, you need to enable support for console applications in order to use the stdin, stdout and stderr streams at the console. To do this, add the following declaration to your application's project file:</p>
-<pre>     CONFIG += console</pre>
-<p><b>Note:</b> On Windows, <i>fh</i> must be opened in binary mode (i.e&#x2e;, the mode string must contain 'b', as in &quot;rb&quot; or &quot;wb&quot;) when accessing files and other random-access devices. Qt will translate the end-of-line characters if you pass <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Text</a> to <i>mode</i>. Sequential devices, such as stdin and stdout, are unaffected by this limitation.</p>
-<p><b>Warning:</b> For Windows CE you may not be able to call <a href="qiodevice.html#seek">seek</a>(), setSize(), fileTime(). Also, <a href="qfile.html#size">size</a>() is set to <tt>0</tt>.</p>
+<p><b>Warning:</b></p>
+<ol type="1">
+<li>If <i>fh</i> is <tt>stdin</tt>, <tt>stdout</tt>, or <tt>stderr</tt>, you may not be able to <a href="qiodevice.html#seek">seek</a>(). See <a href="qiodevice-qt3.html#isSequentialAccess">QIODevice::isSequentialAccess</a>() for more information.</li>
+<li>Since this function opens the file without specifying the file name, you cannot use this <a href="qfile.html">QFile</a> with a <a href="qfileinfo.html">QFileInfo</a>.</li>
+</ol>
+<p><b>Note:</b> For Windows CE you may not be able to call <a href="qiodevice.html#seek">seek</a>() and <a href="qfile.html#resize">resize</a>(). Also, <a href="qfile.html#size">size</a>() is set to <tt>0</tt>.</p>
+<p><b>Note for the Windows Platform</b></p>
+<p><i>fh</i> must be opened in binary mode (i.e&#x2e;, the mode string must contain 'b', as in &quot;rb&quot; or &quot;wb&quot;) when accessing files and other random-access devices. Qt will translate the end-of-line characters if you pass <a href="qiodevice.html#OpenModeFlag-enum">QIODevice::Text</a> to <i>mode</i>. Sequential devices, such as stdin and stdout, are unaffected by this limitation.</p>
+<p>You need to enable support for console applications in order to use the stdin, stdout and stderr streams at the console. To do this, add the following declaration to your application's project file:</p>
+<pre> CONFIG += console</pre>
 <p>See also <a href="qiodevice.html#close">close</a>() and <a href="qmake-variable-reference.html#config">qmake Variable Reference</a>.</p>
 <h3 class="fn"><a name="open-5"></a>bool QFile::open ( int <i>fd</i>, <a href="qiodevice.html#OpenModeFlag-enum">OpenMode</a> <i>mode</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -379,6 +384,7 @@
 <p>The <a href="qfile.html">QFile</a> that is opened using this function is automatically set to be in raw mode; this means that the file input/output functions are slow. If you run into performance issues, you should try to use one of the other open functions.</p>
 <p><b>Warning:</b> If <i>fd</i> is 0 (<tt>stdin</tt>), 1 (<tt>stdout</tt>), or 2 (<tt>stderr</tt>), you may not be able to <a href="qiodevice.html#seek">seek</a>(). <a href="qfile.html#size">size</a>() is set to <tt>LLONG_MAX</tt> (in <tt>&lt;climits&gt;</tt>).</p>
 <p><b>Warning:</b> For Windows CE you may not be able to call <a href="qiodevice.html#seek">seek</a>(), setSize(), fileTime(). <a href="qfile.html#size">size</a>() is set to <tt>0</tt>.</p>
+<p><b>Warning:</b> Since this function opens the file without specifying the file name, you cannot use this <a href="qfile.html">QFile</a> with a <a href="qfileinfo.html">QFileInfo</a>.</p>
 <p>See also <a href="qiodevice.html#close">close</a>().</p>
 <a name="//apple_ref/cpp/instm/QFile/permissions" />
 <h3 class="fn"><a name="permissions"></a><a href="qfile.html#Permission-enum">Permissions</a> QFile::permissions () const</h3>
@@ -432,11 +438,11 @@
 <p>Do not call this function if the file has already been opened.</p>
 <p>If the file name has no path or a relative path, the path used will be the application's current directory path <i>at the time of the <a href="qfile.html#open">open</a>()</i> call.</p>
 <p>Example:</p>
-<pre>         QFile file;
-         QDir::setCurrent(&quot;/tmp&quot;);
-         file.setFileName(&quot;readme.txt&quot;);
-         QDir::setCurrent(&quot;/home&quot;);
-         file.open(QIODevice::ReadOnly);      <span class="comment">// opens &quot;/home/readme.txt&quot; under Unix</span></pre>
+<pre> QFile file;
+ QDir::setCurrent(&quot;/tmp&quot;);
+ file.setFileName(&quot;readme.txt&quot;);
+ QDir::setCurrent(&quot;/home&quot;);
+ file.open(QIODevice::ReadOnly);      <span class="comment">// opens &quot;/home/readme.txt&quot; under Unix</span></pre>
 <p>Note that the directory separator &quot;/&quot; works for all operating systems supported by Qt.</p>
 <p>See also <a href="qfile.html#fileName">fileName</a>(), <a href="qfileinfo.html">QFileInfo</a>, and <a href="qdir.html">QDir</a>.</p>
 <a name="//apple_ref/cpp/instm/QFile/setPermissions" />
@@ -474,8 +480,8 @@
 <p>See also <a href="qfile.html#error">error</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

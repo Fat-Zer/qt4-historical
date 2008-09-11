@@ -44,6 +44,7 @@
 #ifndef ABOUTDIALOG_H
 #define ABOUTDIALOG_H
 
+#include <QtGui/QTextBrowser>
 #include <QtGui/QDialog>
 
 QT_BEGIN_NAMESPACE
@@ -52,20 +53,37 @@ class QLabel;
 class QPushButton;
 class QGridLayout;
 
+class AboutLabel : public QTextBrowser
+{
+    Q_OBJECT
+
+public:
+    AboutLabel(QWidget *parent = 0);
+    void setText(const QString &text, const QByteArray &resources);
+    QSize minimumSizeHint() const;
+    
+private:
+    QVariant loadResource(int type, const QUrl &name);
+    void setSource(const QUrl &url);
+
+    QMap<QString, QByteArray> m_resourceMap;
+};
+
 class AboutDialog : public QDialog
 {
     Q_OBJECT
 
 public:
     AboutDialog(QWidget *parent = 0);
-    void setText(const QString &text);
+    void setText(const QString &text, const QByteArray &resources);
     void setPixmap(const QPixmap &pixmap);
+    QString documentTitle() const;
 
 private:
     void updateSize();
 
     QLabel *m_pixmapLabel;
-    QLabel *m_textLabel;
+    AboutLabel *m_aboutLabel;
     QPushButton *m_closeButton;
     QGridLayout *m_layout;
 };

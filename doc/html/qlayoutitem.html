@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/kernel/qlayoutitem.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qlayoutitem.cpp -->
 <head>
   <title>Qt 4.4: QLayoutItem Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QLayoutItem Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QLayoutItem class provides an abstract item that a <a href="qlayout.html">QLayout</a> manipulates. <a href="#details">More...</a></p>
@@ -86,17 +86,17 @@
 <p>Returns the preferred height for this layout item, given the width <i>w</i>.</p>
 <p>The default implementation returns -1, indicating that the preferred height is independent of the width of the item. Using the function <a href="qlayoutitem.html#hasHeightForWidth">hasHeightForWidth</a>() will typically be much faster than calling this function and testing for -1.</p>
 <p>Reimplement this function in layout managers that support height for width. A typical implementation will look like this:</p>
-<pre>         int MyLayout::heightForWidth(int w) const
-         {
-             if (cache_dirty || cached_width != w) {
-                 <span class="comment">// not all C++ compilers support &quot;mutable&quot;</span>
-                 MyLayout *that = (MyLayout*)this;
-                 int h = calculateHeightForWidth(w);
-                 that-&gt;cached_hfw = h;
-                 return h;
-             }
-             return cached_hfw;
-         }</pre>
+<pre> int MyLayout::heightForWidth(int w) const
+ {
+     if (cache_dirty || cached_width != w) {
+         <span class="comment">// not all C++ compilers support &quot;mutable&quot;</span>
+         MyLayout *that = (MyLayout*)this;
+         int h = calculateHeightForWidth(w);
+         that-&gt;cached_hfw = h;
+         return h;
+     }
+     return cached_hfw;
+ }</pre>
 <p>Caching is strongly recommended; without it layout will take exponential time.</p>
 <p>See also <a href="qlayoutitem.html#hasHeightForWidth">hasHeightForWidth</a>().</p>
 <a name="//apple_ref/cpp/instm/QLayoutItem/invalidate" />
@@ -137,8 +137,8 @@
 <p>If this item is a <a href="qwidget.html">QWidget</a>, it is returned as a <a href="qwidget.html">QWidget</a>; otherwise 0 is returned. This function provides type-safe casting.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

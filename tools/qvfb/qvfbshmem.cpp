@@ -66,7 +66,7 @@
 QT_BEGIN_NAMESPACE
 
 #ifdef Q_WS_QWS
-#error qvfb must be compiled with  the Qt/X11 package
+#error qvfb must be compiled with  the Qt for X11 package
 #endif
 
 // Get the name of the directory where Qtopia Core temporary data should

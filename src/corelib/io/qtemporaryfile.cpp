@@ -104,7 +104,7 @@ QT_BEGIN_NAMESPACE
 static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 {
 	char *start, *trv, *suffp;
-	struct stat sbuf;
+	QT_STATBUF sbuf;
 	int rval;
 #if defined(Q_OS_WIN)
     int pid;
@@ -171,10 +171,10 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
                                     // call for this.
 									char drive[] = "c:\\";
                                     drive[0] = path[0];
-                                    rval = stat(drive, &sbuf);
+                                    rval = QT_STAT(drive, &sbuf);
                                 } else
 #endif
-				rval = stat(path, &sbuf);
+				rval = QT_STAT(path, &sbuf);
 				*trv = '/';
 				if (rval != 0)
 					return(0);
@@ -234,7 +234,7 @@ static int _gettemp(char *path, int *doopen, int domkdir, int slen)
 				return(0);
             }
 #ifndef Q_OS_WIN
-            else if (lstat(path, &sbuf))
+            else if (QT_LSTAT(path, &sbuf))
 			return(errno == ENOENT ? 1 : 0);
 #endif
 
@@ -383,7 +383,7 @@ QTemporaryFilePrivate::~QTemporaryFilePrivate()
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.io.qtemporaryfile.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_io_qtemporaryfile.cpp 0
 
     Reopening a QTemporaryFile after calling close() is safe. For as long as
     the QTemporaryFile object itself is not destroyed, the unique temporary
@@ -393,9 +393,18 @@ QTemporaryFilePrivate::~QTemporaryFilePrivate()
     Note that this is only defined while the file is open; the function returns
     an empty string before the file is opened and after it is closed.
 
-    A temporary file will have some static part of the name and some part that
-    is calculated to be unique. The default filename qt_temp will be placed
-    into the temporary path as returned by QDir::tempPath().
+    A temporary file will have some static part of the name and some
+    part that is calculated to be unique. The default filename \c
+    qt_temp will be placed into the temporary path as returned by
+    QDir::tempPath(). If you specify your own filename, a relative
+    file path will not be placed in the temporary directory by
+    default, but be relative to the current working directory.
+
+    Specified filenames can contain the following template \c XXXXXX,
+    which will be replaced by the auto-generated portion of the
+    filename. Note that the template is case sensitive. If the
+    template is not present in the filename, QTemporaryFile appends
+    the generated part to the filename given.
 
     \sa QDir::tempPath(), QFile
 */

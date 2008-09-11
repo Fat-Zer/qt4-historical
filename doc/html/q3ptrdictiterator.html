@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/q3ptrdict.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/q3ptrdict.qdoc -->
 <head>
   <title>Qt 4.4: Q3PtrDictIterator Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3PtrDictIterator Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3PtrDictIterator class provides an iterator for <a href="q3ptrdict.html">Q3PtrDict</a> collections. <a href="#details">More...</a></p>
@@ -41,30 +41,30 @@
 <p>The Q3PtrDictIterator class provides an iterator for <a href="q3ptrdict.html">Q3PtrDict</a> collections.</p>
 <p>Q3PtrDictIterator is implemented as a template class. Define a template instance Q3PtrDictIterator&lt;X&gt; to create a dictionary iterator that operates on <a href="q3ptrdict.html">Q3PtrDict</a>&lt;X&gt; (dictionary of X*).</p>
 <p>Example:</p>
-<pre>     Q3PtrDict&lt;char&gt; fields;
+<pre> Q3PtrDict&lt;char&gt; fields;
 
-     QLineEdit *le1 = new QLineEdit( this );
-     le1-&gt;setText( &quot;Simpson&quot; );
-     QLineEdit *le2 = new QLineEdit( this );
-     le2-&gt;setText( &quot;Homer&quot; );
-     QLineEdit *le3 = new QLineEdit( this );
-     le3-&gt;setText( &quot;45&quot; );
+ QLineEdit *le1 = new QLineEdit( this );
+ le1-&gt;setText( &quot;Simpson&quot; );
+ QLineEdit *le2 = new QLineEdit( this );
+ le2-&gt;setText( &quot;Homer&quot; );
+ QLineEdit *le3 = new QLineEdit( this );
+ le3-&gt;setText( &quot;45&quot; );
 
-     fields.insert( le1, &quot;Surname&quot; );
-     fields.insert( le2, &quot;Forename&quot; );
-     fields.insert( le3, &quot;Age&quot; );
+ fields.insert( le1, &quot;Surname&quot; );
+ fields.insert( le2, &quot;Forename&quot; );
+ fields.insert( le3, &quot;Age&quot; );
 
-     Q3PtrDictIterator&lt;char&gt; it( fields );
-     for( ; it.current(); ++it ) {
-         QLineEdit *le = (QLineEdit)it.currentKey();
-         cout &lt;&lt; it.current() &lt;&lt; &quot;: &quot; &lt;&lt; le-&gt;text() &lt;&lt; endl;
-     }
-     cout &lt;&lt; endl;
+ Q3PtrDictIterator&lt;char&gt; it( fields );
+ for( ; it.current(); ++it ) {
+     QLineEdit *le = (QLineEdit)it.currentKey();
+     cout &lt;&lt; it.current() &lt;&lt; &quot;: &quot; &lt;&lt; le-&gt;text() &lt;&lt; endl;
+ }
+ cout &lt;&lt; endl;
 
-     // Output (random order):
-     //  Forename: Homer
-     //  Age: 45
-     //  Surname: Simpson</pre>
+ // Output (random order):
+ //  Forename: Homer
+ //  Age: 45
+ //  Surname: Simpson</pre>
 <p>In the example we insert some line edits into a dictionary, associating a string with each. We then iterate over the dictionary printing the associated strings.</p>
 <p>Multiple iterators may independently traverse the same dictionary. A <a href="q3ptrdict.html">Q3PtrDict</a> knows about all the iterators that are operating on the dictionary. When an item is removed from the dictionary, <a href="q3ptrdict.html">Q3PtrDict</a> updates all iterators that refer the removed item to point to the next item in the traversing order.</p>
 <p>See also <a href="q3ptrdict.html">Q3PtrDict</a>.</p>
@@ -110,8 +110,8 @@
 <p>If that item is beyond the last item or if the dictionary is empty, it sets the current item to 0 and returns 0.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

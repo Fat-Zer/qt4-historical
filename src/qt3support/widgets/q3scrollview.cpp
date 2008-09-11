@@ -388,10 +388,10 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     reliable size on X11 servers). In this usage, you just make one
     large child in the Q3ScrollView. The child should be a child of the
     viewport() of the scrollview and be added with addChild():
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3scrollview.cpp 0
     You can go on to add arbitrary child widgets to the single child
     in the scrollview as you would with any widget:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3scrollview.cpp 1
 
     Here the Q3ScrollView has four children: the viewport(), the
     verticalScrollBar(), the horizontalScrollBar() and a small
@@ -412,7 +412,7 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     add some widgets by making them children of the viewport() and
     adding them with addChild() (this is the same as the process for
     the single large widget in the previous example):
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3scrollview.cpp 2
     Here, the Q3ScrollView has the same four children: the viewport(),
     the verticalScrollBar(), the horizontalScrollBar() and a small
     cornerWidget(). The viewport() has the three QLabel objects as
@@ -430,7 +430,7 @@ void Q3ScrollViewData::viewportResized(int w, int h)
     reimplement drawContents() to paint the contents. You then call
     enableClipper(true) and add widgets, again by making them children
     of the viewport(), and adding them with addChild():
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3scrollview.cpp 3
 
     Here, the Q3ScrollView has four children:  the clipper() (not the
     viewport() this time), the verticalScrollBar(), the
@@ -1292,7 +1292,7 @@ void Q3ScrollView::setCornerWidget(QWidget* corner)
     if (oldcorner != corner) {
         if (oldcorner) oldcorner->hide();
         d->corner = corner;
-        corner->setParent(this);
+        if (corner) corner->setParent(this);
         updateScrollBars();
         if (corner) corner->show();
     }
@@ -2286,7 +2286,7 @@ void Q3ScrollView::repaintContents(bool erase)
 
     \sa updateContents()
 */
-void Q3ScrollView::repaintContents(int x, int y, int w, int h, bool erase)
+void Q3ScrollView::repaintContents(int x, int y, int w, int h, bool /*erase*/)
 {
     if (!isVisible() || !updatesEnabled())
         return;
@@ -2319,7 +2319,7 @@ void Q3ScrollView::repaintContents(int x, int y, int w, int h, bool erase)
         y -= d->clipped_viewport->y();
     }
 
-    vp->repaint(x, y, w, h, erase);
+    vp->update(x, y, w, h);
 }
 
 
@@ -2349,7 +2349,7 @@ void Q3ScrollView::drawContentsOffset(QPainter* p, int offsetx, int offsety, int
     rectangle is in the scrollview's coordinates.
 
     For example:
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3scrollview.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3scrollview.cpp 4
 
     The clip rectangle and translation of the painter \a p is already
     set appropriately.

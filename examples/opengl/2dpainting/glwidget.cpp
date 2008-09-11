@@ -51,6 +51,7 @@ GLWidget::GLWidget(Helper *helper, QWidget *parent)
 {
     elapsed = 0;
     setFixedSize(200, 200);
+    setAutoFillBackground(false);
 }
 //! [0]
 

@@ -739,7 +739,7 @@ void Q3IconDragData::setTextRect(const QRect &r)
     Q3IconView is to construct the item passing the constructor a
     pointer to the icon view, a string and an icon:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 0
 
     By default the text of an icon view item may not be edited by the
     user but calling setRenameEnabled(true) will allow the user to
@@ -751,7 +751,7 @@ void Q3IconDragData::setTextRect(const QRect &r)
     The Q3IconView::firstItem() and Q3IconViewItem::nextItem() functions
     provide a means of iterating over all the items in a Q3IconView:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 1
 
     The item's icon view is available from iconView(), and its
     position in the icon view from index().
@@ -1291,7 +1291,7 @@ Q3IconViewItem *Q3IconViewItem::prevItem() const
     To find the first item use Q3IconView::firstItem().
 
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 2
 
     \sa prevItem()
 */
@@ -1679,7 +1679,7 @@ void Q3IconViewItem::rename()
     different values and a different comparison function. Here is a
     reimplementation that uses plain Unicode comparison:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 3
 
     \sa key() QString::localeAwareCompare() QString::compare()
 */
@@ -2159,7 +2159,7 @@ void Q3IconViewItem::checkRect()
     object and create some Q3IconViewItems with the Q3IconView as their
     parent, set the icon view's geometry and show it.
     For example:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 4
 
     The Q3IconViewItem call passes a pointer to the Q3IconView we wish to
     populate, along with the label text and a QPixmap.
@@ -2215,7 +2215,7 @@ void Q3IconViewItem::checkRect()
     Instead we iterate by getting the first item from the \e{icon view}
     and then each subsequent (\l Q3IconViewItem::nextItem()) from each
     \e item in turn:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 5
     Q3IconView also provides currentItem(). You can search for an item
     using findItem() (searching by position or for label text) and
     with findFirstVisibleItem() and findLastVisibleItem(). The number
@@ -2240,7 +2240,7 @@ void Q3IconViewItem::checkRect()
     The simple approach to dragging items out of the icon view is to
     subclass Q3IconView and reimplement Q3IconView::dragObject().
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 6
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 6
 
     In this example we create a Q3TextDrag object, (derived from
     Q3DragObject), containing the item's label and return it as the drag
@@ -2255,7 +2255,7 @@ void Q3IconViewItem::checkRect()
     reimplement Q3IconViewItem::acceptDrop() and
     Q3IconViewItem::dropped().
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 7
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 7
 
     If you want to use extended drag-and-drop or have drag shapes drawn
     you must take a more sophisticated approach.
@@ -2739,7 +2739,7 @@ Q3IconView::~Q3IconView()
     \e{You should never need to call this function.} Instead create
     Q3IconViewItem's and associate them with your icon view like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3iconview.cpp 8
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3iconview.cpp 8
 */
 
 void Q3IconView::insertItem(Q3IconViewItem *item, Q3IconViewItem *after)
@@ -5012,7 +5012,7 @@ void Q3IconView::keyPressEvent(QKeyEvent *e)
   Finds the closest item in the Direction \a dir relative from the point \a relativeTo
   which intersects with the searchRect.
 
-  The function choses the closest item with its center in the searchRect.
+  The function chooses the closest item with its center in the \a searchRect.
 */
 Q3IconViewItem* Q3IconView::findItem(Direction dir,
                                     const QPoint &relativeTo,

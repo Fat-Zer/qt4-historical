@@ -89,9 +89,9 @@
 typedef BOOL (WINAPI *PtrGetCharWidthI)(HDC, UINT, UINT, LPWORD, LPINT);
 
 // common DC for all fonts
-    
+
 QT_BEGIN_NAMESPACE
-        
+
 class QtHDC
 {
     HDC _hdc;
@@ -576,6 +576,7 @@ void QFontEngineWin::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::
 
                     designAdvances[glyph] = QFixed(width) / designToDevice;
                 } else {
+#ifndef Q_OS_WINCE
                     GLYPHMETRICS gm;
                     DWORD res = GDI_ERROR;
                     MAT2 mat;
@@ -583,16 +584,16 @@ void QFontEngineWin::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::
                     mat.eM11.fract = mat.eM22.fract = 0;
                     mat.eM21.value = mat.eM12.value = 0;
                     mat.eM21.fract = mat.eM12.fract = 0;
-#ifndef Q_OS_WINCE
                     QT_WA({
                         res = GetGlyphOutlineW(hdc, glyph, GGO_METRICS|GGO_GLYPH_INDEX|GGO_NATIVE, &gm, 0, 0, &mat);
                     } , {
                         res = GetGlyphOutlineA(hdc, glyph, GGO_METRICS|GGO_GLYPH_INDEX|GGO_NATIVE, &gm, 0, 0, &mat);
                     });
-#endif
+
                     if (res != GDI_ERROR) {
                         designAdvances[glyph] = QFixed(gm.gmCellIncX) / designToDevice;
                     }
+#endif
                 }
             }
             glyphs[i].advance.x = designAdvances[glyph];
@@ -637,6 +638,7 @@ void QFontEngineWin::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::
 
                     width -= overhang;
                 } else {
+#ifndef Q_OS_WINCE
                     GLYPHMETRICS gm;
                     DWORD res = GDI_ERROR;
                     MAT2 mat;
@@ -644,16 +646,16 @@ void QFontEngineWin::recalcAdvances(int len, QGlyphLayout *glyphs, QTextEngine::
                     mat.eM11.fract = mat.eM22.fract = 0;
                     mat.eM21.value = mat.eM12.value = 0;
                     mat.eM21.fract = mat.eM12.fract = 0;
-#ifndef Q_OS_WINCE
                     QT_WA({
                         res = GetGlyphOutlineW(hdc, glyph, GGO_METRICS|GGO_GLYPH_INDEX, &gm, 0, 0, &mat);
                     } , {
                         res = GetGlyphOutlineA(hdc, glyph, GGO_METRICS|GGO_GLYPH_INDEX, &gm, 0, 0, &mat);
                     });
-#endif
+
                     if (res != GDI_ERROR) {
                         width = gm.gmCellIncX;
                     }
+#endif
                 }
                 glyphs[i].advance.x = width;
                 // if glyph's within cache range, store it for later
@@ -822,8 +824,8 @@ qreal QFontEngineWin::minRightBearing() const
             ABC *abc = 0;
             int n = QT_WA_INLINE(tm.w.tmLastChar - tm.w.tmFirstChar, tm.a.tmLastChar - tm.a.tmFirstChar);
             if (n <= max_font_count) {
-                abc = new ABC[n+1];               
-                GetCharABCWidths(hdc, tm.w.tmFirstChar, tm.w.tmLastChar, abc);                             
+                abc = new ABC[n+1];
+                GetCharABCWidths(hdc, tm.w.tmFirstChar, tm.w.tmLastChar, abc);
             } else {
                 abc = new ABC[char_table_entries+1];
                 for(int i = 0; i < char_table_entries; i++)
@@ -842,7 +844,7 @@ qreal QFontEngineWin::minRightBearing() const
         } else {
             ml = 0;
             mr = -tm.a.tmOverhang;
-        } 
+        }
         lbearing = ml;
         rbearing = mr;
     }

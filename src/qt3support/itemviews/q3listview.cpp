@@ -316,7 +316,7 @@ static QString qEllipsisText(const QString &org, const QFontMetrics &fm, int wid
     The easiest way to use Q3ListViewItem is to construct one with a
     few constant strings, and either a Q3ListView or another
     Q3ListViewItem as parent.
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 0
     We've discarded the pointers to the items since we can still access
     them via their parent \e listView. By default, Q3ListView sorts its
     items; this can be switched off with Q3ListView::setSorting(-1).
@@ -351,14 +351,14 @@ static QString qEllipsisText(const QString &org, const QFontMetrics &fm, int wid
     Here's how to traverse all of an item's children (but not its
     children's children, etc.):
     Example:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 1
 
     If you want to iterate over every item, to any level of depth use
     an iterator. To iterate over the entire tree, initialize the
     iterator with the list view itself; to iterate over an item's
     children (and children's children to any depth), initialize the
     iterator with the item:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 2
 
     Note that the order of the children will change when the sorting
     order changes and is undefined if the items are not visible. You
@@ -1289,7 +1289,7 @@ QString Q3ListViewItem::key(int column, bool) const
     different values and a different comparison function. Here is a
     reimplementation that uses plain Unicode comparison:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 3
     We don't recommend using \a ascending so your code can safely
     ignore it.
 
@@ -5039,7 +5039,7 @@ void Q3ListView::keyPressEvent(QKeyEvent * e)
     item. To check whether or not \a viewPos is on the root decoration
     of the item, you can do something like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 4
 
     This might be interesting if you use this function to find out
     where the user clicked and if you want to start a drag (which you
@@ -5380,7 +5380,7 @@ Q3ListViewItem * Q3ListView::currentItem() const
     Q3ListViewItem::totalHeight()). If you want the rectangle to
     include children you can use something like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 5
 
     Note the way it avoids too-high rectangles. totalHeight() can be
     much larger than the window system's coordinate system allows.
@@ -7183,10 +7183,10 @@ bool Q3ListView::isRenaming() const
     The following example creates a list of all the items that have
     been selected by the user, storing pointers to the items in a
     QList:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 6
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 6
 
     An alternative approach is to use an \c IteratorFlag:
-    \snippet doc/src/snippets/code/src.qt3support.itemviews.q3listview.cpp 7
+    \snippet doc/src/snippets/code/src_qt3support_itemviews_q3listview.cpp 7
 
     A Q3ListViewItemIterator provides a convenient and easy way to
     traverse a hierarchical Q3ListView.

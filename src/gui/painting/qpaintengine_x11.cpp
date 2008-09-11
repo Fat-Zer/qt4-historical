@@ -145,7 +145,7 @@ static inline int qpainterOpToXrender(QPainter::CompositionMode mode)
 
 // hack, so we don't have to make QRegion::clipRectangles() public or include
 // X11 headers in qregion.h
-void *qt_getClipRects(const QRegion &r, int &num)
+Q_AUTOTEST_EXPORT void *qt_getClipRects(const QRegion &r, int &num)
 {
     return r.clipRectangles(num);
 }
@@ -1251,6 +1251,7 @@ void QX11PaintEngine::updateBrush(const QBrush &brush, const QPointF &origin)
             if (X11->use_xrender) {
                 d->bitmap_texture = QPixmap(d->brush_pm.size());
                 d->bitmap_texture.fill(Qt::transparent);
+                d->bitmap_texture.x11SetScreen(d->scrn);
 
                 ::Picture src  = X11->getSolidFill(d->scrn, d->cbrush.color());
                 XRenderComposite(d->dpy, PictOpSrc, src, d->brush_pm.x11PictureHandle(),

@@ -322,7 +322,6 @@ const QString::Null QString::null = { };
     \ingroup shared
     \ingroup text
     \mainclass
-    \reentrant
 
     QString stores a string of 16-bit \l{QChar}s, where each QChar
     corresponds one Unicode 4.0 character. (Unicode characters
@@ -533,14 +532,14 @@ const QString::Null QString::null = { };
     application is to add the following entry to your
     \l{qmake Project Files}{qmake project file}:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 0
 
     You then need to explicitly call fromAscii(), fromLatin1(),
     fromUtf8(), or fromLocal8Bit() to construct a QString from an
     8-bit string, or use the lightweight QLatin1String class, for
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 1
 
     Similarly, you must call toAscii(), toLatin1(), toUtf8(), or
     toLocal8Bit() explicitly to convert the QString to an 8-bit
@@ -1568,6 +1567,12 @@ QString &QString::replace(int pos, int len, QChar after)
     Example:
 
     \snippet doc/src/snippets/qstring/main.cpp 41
+
+    \note The replacement text is not rescanned after it is inserted.
+
+    Example:
+
+    \snippet doc/src/snippets/qstring/main.cpp 86
 */
 QString &QString::replace(const QString &before, const QString &after, Qt::CaseSensitivity cs)
 {
@@ -4410,8 +4415,8 @@ QString QString::toLower() const
 }
 
 /*!
-Returns the case folded equivalent of the string. For most Unicode characters this
-is the same as toLowerCase().
+    Returns the case folded equivalent of the string. For most Unicode
+    characters this is the same as toLower().
 */
 QString QString::toCaseFolded() const
 {
@@ -5238,6 +5243,8 @@ float QString::toFloat(bool *ok) const
     other than 10, \a n is treated as an unsigned integer.
 
     \snippet doc/src/snippets/qstring/main.cpp 56
+
+   The formatting follows the current locale.
 */
 
 /*! \fn QString &QString::setNum(uint n, int base)
@@ -6064,7 +6071,7 @@ QString QString::arg(char a, int fieldWidth, const QChar &fillChar) const
     the decimal point. With 'g' and 'G', \a precision is the maximum
     number of significant digits (trailing zeroes are omitted).
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 2
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 2
 
     The '%' can be followed by an 'L', in which case the sequence is
     replaced with a localized representation of \a a. The conversion uses
@@ -6172,7 +6179,7 @@ QString QString::multiArg(int numArgs, const QString **args) const
 
     // assign an argument number to each of the %n's
     QMap<int, int>::iterator j = numbersUsed.begin();
-    QMap<int, int>::const_iterator jend = numbersUsed.constEnd();
+    QMap<int, int>::iterator jend = numbersUsed.end();
     int arg = 0;
     while (j != jend && arg < numArgs) {
         *j = arg++;
@@ -6321,7 +6328,8 @@ void QString::updateProperties() const
     Appends the given \a ch character onto the end of this string.
 */
 
-/*! \fn std::string QString::toStdString() const
+/*! 
+    \fn std::string QString::toStdString() const
 
     Returns a std::string object with the data contained in this
     QString. The Unicode data is converted into 8-bit characters using
@@ -6397,11 +6405,11 @@ QString QString::fromRawData(const QChar *unicode, int size)
     the \c{const char *} data. For example, assuming \c str is a
     QString,
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 3
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 3
 
     is much faster than
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 4
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 4
 
     because it doesn't construct four temporary QString objects and
     make a deep copy of the character data.
@@ -6413,7 +6421,7 @@ QString QString::fromRawData(const QChar *unicode, int size)
     just a very thin wrapper around a \c{const char *}. Using
     QLatin1String, the example code above becomes
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 5
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 5
 
     This is a bit longer to type, but it provides exactly the same
     benefits as the first version of the code, and is faster than
@@ -6423,7 +6431,7 @@ QString QString::fromRawData(const QChar *unicode, int size)
     QLatin1String can be used everywhere a QString is expected. For
     example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qstring.cpp 6
+    \snippet doc/src/snippets/code/src_corelib_tools_qstring.cpp 6
 
     \sa QString, QLatin1Char
 */

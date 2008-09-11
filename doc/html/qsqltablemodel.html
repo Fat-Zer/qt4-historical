@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/sql/models/qsqltablemodel.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/sql/models/qsqltablemodel.cpp -->
 <head>
   <title>Qt 4.4: QSqlTableModel Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QSqlTableModel Class Reference<br /><span class="small-subtitle">[<a href="qtsql.html">QtSql</a> module]</span>
 </h1>
 <p>The QSqlTableModel class provides an editable data model for a single database table. <a href="#details">More...</a></p>
@@ -157,13 +157,13 @@
 <p>Destroys the object and frees any allocated resources.</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/beforeDelete" />
 <h3 class="fn"><a name="beforeDelete"></a>void QSqlTableModel::beforeDelete ( int <i>row</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted before the <i>row</i> is deleted.</p>
+<p>This signal is emitted by <a href="qsqltablemodel.html#deleteRowFromTable">deleteRowFromTable</a>() before the <i>row</i> is deleted from the currently active database table.</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/beforeInsert" />
 <h3 class="fn"><a name="beforeInsert"></a>void QSqlTableModel::beforeInsert ( <a href="qsqlrecord.html">QSqlRecord</a> &amp; <i>record</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted before a new row is inserted. The values that are about to be inserted are stored in <i>record</i> and can be modified before they will be inserted.</p>
+<p>This signal is emitted by <a href="qsqltablemodel.html#insertRowIntoTable">insertRowIntoTable</a>() before a new row is inserted into the currently active database table. The values that are about to be inserted are stored in <i>record</i> and can be modified before they will be inserted.</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/beforeUpdate" />
 <h3 class="fn"><a name="beforeUpdate"></a>void QSqlTableModel::beforeUpdate ( int <i>row</i>, <a href="qsqlrecord.html">QSqlRecord</a> &amp; <i>record</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted before the <i>row</i> is updated with the values from <i>record</i>.</p>
+<p>This signal is emitted by <a href="qsqltablemodel.html#updateRowInTable">updateRowInTable</a>() before the <i>row</i> is updated in the currently active database table with the values from <i>record</i>.</p>
 <p>Note that only values that are marked as generated will be updated. The generated flag can be set with <a href="qsqlrecord.html#setGenerated">QSqlRecord::setGenerated</a>() and checked with <a href="qsqlrecord.html#isGenerated">QSqlRecord::isGenerated</a>().</p>
 <p>See also <a href="qsqlrecord.html#isGenerated">QSqlRecord::isGenerated</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/database" />
@@ -225,7 +225,7 @@
 <p>See also <a href="qsqltablemodel.html#setTable">setTable</a>(), <a href="qsqltablemodel.html#setPrimaryKey">setPrimaryKey</a>(), and <a href="qsqldatabase.html#primaryIndex">QSqlDatabase::primaryIndex</a>().</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/primeInsert" />
 <h3 class="fn"><a name="primeInsert"></a>void QSqlTableModel::primeInsert ( int <i>row</i>, <a href="qsqlrecord.html">QSqlRecord</a> &amp; <i>record</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
-<p>This signal is emitted when an insertion is initiated in the given <i>row</i>. The <i>record</i> parameter can be written to (since it is a reference), for example to populate some fields with default values.</p>
+<p>This signal is emitted by <a href="qsqltablemodel.html#insertRows">insertRows</a>(), when an insertion is initiated in the given <i>row</i> of the currently active database table. The <i>record</i> parameter can be written to (since it is a reference), for example to populate some fields with default values.</p>
 <a name="//apple_ref/cpp/instm/QSqlTableModel/removeColumns" />
 <h3 class="fn"><a name="removeColumns"></a>bool QSqlTableModel::removeColumns ( int <i>column</i>, int <i>count</i>, const <a href="qmodelindex.html">QModelIndex</a> &amp; <i>parent</i> = QModelIndex() )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <p>Removes <i>count</i> columns from the <i>parent</i> model, starting at index <i>column</i>.</p>
@@ -333,8 +333,8 @@
 <p>See also <a href="qsqlrecord.html#isGenerated">QSqlRecord::isGenerated</a>() and <a href="qsqltablemodel.html#setData">setData</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

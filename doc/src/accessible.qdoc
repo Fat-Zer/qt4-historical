@@ -267,14 +267,12 @@
     accessibility, you will need to consider the following:
 
     \list
-        \o Qt already supports accessibility for its own widgets.
-           A good way to ensure accessibility compliance is to use
-           Qt's widgets as much as possible.
-        \o You need to send accessibility events from the custom
-           user interface elements that you implement, which are
-           usually custom widgets.
-        \o QAccessibleInterface needs to be implemented for widgets
+        \o Qt already implements accessibility for its own widgets.
+           We therefore recommend that you use Qt widgets where possible.
+        \o A QAccessibleInterface needs to be implemented for each element
            that you want to make available to accessibility clients.
+        \o You need to send accessibility events from the custom
+           user interface elements that you implement.
     \endlist
 
     In general, it is recommended that you are somewhat familiar with

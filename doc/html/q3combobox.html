@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3combobox.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3combobox.cpp -->
 <head>
   <title>Qt 4.4: Q3ComboBox Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3ComboBox Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3ComboBox widget is a combined button and popup list. <a href="#details">More...</a></p>
@@ -154,10 +154,10 @@
 <p>Comboboxes provide a means of showing the user's current choice out of a list of options in a way that takes up the minimum amount of screen space.</p>
 <p>Q3ComboBox supports three different display styles: Aqua/Motif 1.x, Motif 2.0 and Windows. In Motif 1.x, a combobox was called XmOptionMenu. In Motif 2.0, OSF introduced an improved combobox and named that XmComboBox. Q3ComboBox provides both.</p>
 <p>Q3ComboBox provides two different constructors. The simplest constructor creates an &quot;old-style&quot; combobox in Motif (or Aqua) style:</p>
-<pre>         Q3ComboBox *c = new Q3ComboBox(this, tr(&quot;read-only combobox&quot;));</pre>
+<pre> Q3ComboBox *c = new Q3ComboBox(this, tr(&quot;read-only combobox&quot;));</pre>
 <p>The other constructor creates a new-style combobox in Motif style, and can create both read-only and editable comboboxes:</p>
-<pre>         Q3ComboBox *c1 = new Q3ComboBox(false, this, tr(&quot;read-only combobox&quot;));
-         Q3ComboBox *c2 = new Q3ComboBox(true, this, tr(&quot;editable combobox&quot;));</pre>
+<pre> Q3ComboBox *c1 = new Q3ComboBox(false, this, tr(&quot;read-only combobox&quot;));
+ Q3ComboBox *c2 = new Q3ComboBox(true, this, tr(&quot;editable combobox&quot;));</pre>
 <p>New-style comboboxes use a list box in both Motif and Windows styles, and both the content size and the on-screen size of the list box can be limited with <a href="q3combobox.html#sizeLimit-prop">sizeLimit</a>() and <a href="q3combobox.html#maxCount-prop">setMaxCount</a>() respectively. Old-style comboboxes use a popup in Aqua and Motif style, and that popup will happily grow larger than the desktop if you put enough data into it.</p>
 <p>The two constructors create identical-looking comboboxes in Windows style.</p>
 <p>Comboboxes can contain pixmaps as well as strings; the <a href="q3combobox.html#insertItem">insertItem</a>() and <a href="q3combobox.html#changeItem">changeItem</a>() functions are suitably overloaded. For editable comboboxes, the function <a href="q3combobox.html#clearEdit">clearEdit</a>() is provided, to clear the displayed string without changing the combobox's contents.</p>
@@ -364,8 +364,8 @@
 <p>Inserts the array of char * <i>strings</i> at position <i>index</i> in the combobox.</p>
 <p>The <i>numStrings</i> argument is the number of strings. If <i>numStrings</i> is -1 (default), the <i>strings</i> array must be terminated with 0.</p>
 <p>Example:</p>
-<pre>         static const char* items[] = { &quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, 0 };
-         combo-&gt;insertStrList( items );</pre>
+<pre> static const char* items[] = { &quot;red&quot;, &quot;green&quot;, &quot;blue&quot;, 0 };
+ combo-&gt;insertStrList( items );</pre>
 <p>See also <a href="q3combobox.html#insertStringList">insertStringList</a>().</p>
 <h3 class="fn"><a name="insertStrList-2"></a>void Q3ComboBox::insertStrList ( const <a href="q3strlist.html">Q3StrList</a> &amp; <i>list</i>, int <i>index</i> = -1 )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
@@ -447,8 +447,8 @@
 <p>See also <a href="q3combobox.html#setValidator">setValidator</a>(), <a href="q3combobox.html#clearValidator">clearValidator</a>(), and <a href="qvalidator.html">QValidator</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

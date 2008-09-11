@@ -71,7 +71,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutexPool, globalMutexPool, (true))
 
     For example, consider this simple class:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutexpool.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutexpool.cpp 0
 
     Adding a QMutex member to the Number class does not make sense,
     because it is so small. However, in order to ensure that access to
@@ -81,7 +81,7 @@ Q_GLOBAL_STATIC_WITH_ARGS(QMutexPool, globalMutexPool, (true))
     Code to calculate the square of a number would then look something
     like this:
 
-    \snippet doc/src/snippets/code/src.corelib.thread.qmutexpool.cpp 1
+    \snippet doc/src/snippets/code/src_corelib_thread_qmutexpool.cpp 1
 
     This function will safely calculate the square of a number, since
     it uses a mutex from a QMutexPool. The mutex is locked and

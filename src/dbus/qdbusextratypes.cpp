@@ -68,7 +68,19 @@ void QDBusSignature::check()
     \since 4.2
 
     \brief The QDBusVariant class enables the programmer to identify
-    the variant type provided by the D-BUS typesystem.
+    the variant type provided by the D-Bus typesystem.
+
+    A D-Bus function that takes an integer, a D-Bus variant and a string as parameters
+    can be called with the following argument list (see QDBusMessage::setArguments()):
+
+    \snippet doc/src/snippets/qdbusextratypes/qdbusextratypes.cpp 0
+
+    When a D-Bus function returns a D-Bus variant, it can be retrieved as follows:
+
+    \snippet doc/src/snippets/qdbusextratypes/qdbusextratypes.cpp 1
+
+    The QVariant within a QDBusVariant is required to distinguish between a normal
+    D-Bus value and a value within a D-Bus variant.
 
     \sa {The QtDBus type system}
 */
@@ -76,13 +88,13 @@ void QDBusSignature::check()
 /*!
     \fn QDBusVariant::QDBusVariant()
 
-    Constructs a new variant.
+    Constructs a new D-Bus variant.
 */
 
 /*!
     \fn QDBusVariant::QDBusVariant(const QVariant &variant)
 
-    Constructs a new variant from the given \a variant.
+    Constructs a new D-Bus variant from the given Qt \a variant.
 
     \sa setVariant()
 */
@@ -90,7 +102,7 @@ void QDBusSignature::check()
 /*!
     \fn QVariant QDBusVariant::variant() const
 
-    Returns this variant as a QVariant object.
+    Returns this D-Bus variant as a QVariant object.
 
     \sa setVariant()
 */
@@ -98,7 +110,7 @@ void QDBusSignature::check()
 /*!
     \fn void QDBusVariant::setVariant(const QVariant &variant)
 
-    Assigns the value of the given \a variant to this variant.
+    Assigns the value of the given Qt \a variant to this D-Bus variant.
 
     \sa variant()
 */
@@ -109,7 +121,7 @@ void QDBusSignature::check()
     \since 4.2
 
     \brief The QDBusObjectPath class enables the programmer to
-    identify the \c OBJECT_PATH type provided by the D-BUS typesystem.
+    identify the \c OBJECT_PATH type provided by the D-Bus typesystem.
 
     \sa {The QtDBus type system}
 */
@@ -171,7 +183,7 @@ void QDBusSignature::check()
     \since 4.2
 
     \brief The QDBusSignature class enables the programmer to
-    identify the \c SIGNATURE type provided by the D-BUS typesystem.
+    identify the \c SIGNATURE type provided by the D-Bus typesystem.
 
     \sa {The QtDBus type system}
 */

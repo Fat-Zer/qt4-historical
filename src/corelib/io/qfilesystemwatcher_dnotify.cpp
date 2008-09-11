@@ -235,11 +235,8 @@ QStringList QDnotifyFileSystemWatcherEngine::addPaths(const QStringList &paths, 
             continue; // Skip monitored files
         }
 
-        QString fileName;
-        if(!isDir) {
-            path = fi.path();
-            fileName = fi.fileName();
-        }
+        if(!isDir)
+            path = fi.canonicalPath();
 
         // Locate the directory entry (creating if needed)
         int fd = pathToFD[path];
@@ -294,7 +291,7 @@ QStringList QDnotifyFileSystemWatcherEngine::addPaths(const QStringList &paths, 
             directory.isMonitored = true;
         } else {
             Directory::File file;
-            file.name = fileName;
+            file.path = fi.filePath();
             file.lastWrite = fi.lastModified();
             directory.files.append(file);
             pathToFD.insert(fi.filePath(), fd);
@@ -335,7 +332,7 @@ QStringList QDnotifyFileSystemWatcherEngine::removePaths(const QStringList &path
             directory.isMonitored = false;
         } else {
             for(int ii = 0; ii < directory.files.count(); ++ii) {
-                if(directory.files.at(ii).name == path) {
+                if(directory.files.at(ii).path == path) {
                     directory.files.removeAt(ii);
                     break;
                 }
@@ -385,15 +382,15 @@ void QDnotifyFileSystemWatcherEngine::refresh(int fd)
             Directory::File &file = directory.files[ii];
             if(file.updateInfo()) {
                 // Emit signal
-                QString filename = file.name;
-                bool removed = !QFileInfo(file.name).exists();
+                QString filePath = file.path;
+                bool removed = !QFileInfo(filePath).exists();
 
                 if(removed) {
                     directory.files.removeAt(ii);
                     --ii;
                 }
 
-                emit fileChanged(filename, removed);
+                emit fileChanged(filePath, removed);
             }
         }
     }
@@ -425,7 +422,7 @@ void QDnotifyFileSystemWatcherEngine::stop()
 
 bool QDnotifyFileSystemWatcherEngine::Directory::File::updateInfo()
 {
-    QFileInfo fi(name);
+    QFileInfo fi(path);
     QDateTime nLastWrite = fi.lastModified();
     uint nOwnerId = fi.ownerId();
     uint nGroupId = fi.groupId();

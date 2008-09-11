@@ -652,14 +652,14 @@ bool QChar::isSymbol() const
   \fn bool QChar::isHighSurrogate() const
 
   Returns true if the QChar is the high part of a utf16 surrogate
-  (ie. if it's code point is between 0xd800 and 0xdbff).
+  (ie. if its code point is between 0xd800 and 0xdbff).
 */
 
 /*!
   \fn bool QChar::isLowSurrogate() const
 
   Returns true if the QChar is the low part of a utf16 surrogate
-  (ie. if it's code point is between 0xdc00 and 0xdfff).
+  (ie. if its code point is between 0xdc00 and 0xdfff).
 */
 
 /*!
@@ -672,7 +672,7 @@ bool QChar::isSymbol() const
 /*!
   \fn static uint QChar::surrogateToUcs4(QChar high, QChar low)
 
-  Converts a utf16 surrogate pair (\a high, \a low) to it's ucs4 code
+  Converts a utf16 surrogate pair (\a high, \a low) to its ucs4 code
   point.
 */
 

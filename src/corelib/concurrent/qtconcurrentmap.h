@@ -673,28 +673,27 @@ D blockingMappedReduced(Iterator begin,
         .startBlocking();
 }
 
-// mapped() for sequences
+// mapped() for sequences with a different putput sequence type.
 template <typename OutputSequence, typename InputSequence, typename MapFunctor>
 OutputSequence blockingMapped(const InputSequence &sequence, MapFunctor map)
 {
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
 template <typename OutputSequence, typename InputSequence, typename T, typename U>
 OutputSequence blockingMapped(const InputSequence &sequence, T (map)(U))
 {
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
 template <typename OutputSequence, typename InputSequence, typename T, typename C>
 OutputSequence blockingMapped(const InputSequence &sequence, T (C::*map)() const)
 {
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
-
 #ifndef QT_NO_TEMPLATE_TEMPLATE_PARAMETERS
 
 // overloads for changing the container value type:
@@ -702,7 +701,7 @@ template <template <typename> class Sequence, typename MapFunctor, typename T>
 Sequence<typename MapFunctor::result_type> blockingMapped(const Sequence<T> &sequence, MapFunctor map)
 {
     typedef Sequence<typename MapFunctor::result_type> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                                QtConcurrent::OrderedReduce);
 }
 
@@ -710,7 +709,7 @@ template <template <typename> class Sequence, typename T, typename U, typename V
 Sequence<U> blockingMapped(const Sequence<T> &sequence, U (map)(V))
 {
     typedef Sequence<U> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                                QtConcurrent::OrderedReduce);
 }
 
@@ -718,7 +717,7 @@ template <template <typename> class Sequence, typename T, typename U, typename C
 Sequence<U> blockingMapped(const Sequence<T> &sequence, U (C::*map)() const)
 {
     typedef Sequence<U> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                                QtConcurrent::OrderedReduce);
 }
 
@@ -729,7 +728,7 @@ template <typename MapFunctor>
 QList<typename MapFunctor::result_type> blockingMapped(const QStringList &sequence, MapFunctor map)
 {
     typedef QList<typename MapFunctor::result_type> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
@@ -737,7 +736,7 @@ template <typename U, typename V>
 QList<U> blockingMapped(const QStringList &sequence, U (map)(V))
 {
     typedef QList<U> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
@@ -745,7 +744,7 @@ template <typename U, typename C>
 QList<U> blockingMapped(const QStringList &sequence, U (C::*map)() const)
 {
     typedef QList<U> OutputSequence;
-    return blockingMappedReduced(sequence, map, &OutputSequence::append,
+    return blockingMappedReduced(sequence, map, &OutputSequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
@@ -753,21 +752,21 @@ QList<U> blockingMapped(const QStringList &sequence, U (C::*map)() const)
 template <typename Sequence, typename Iterator, typename MapFunctor>
 Sequence blockingMapped(Iterator begin, Iterator end, MapFunctor map)
 {
-    return blockingMappedReduced(begin, end, map, &Sequence::append,
+    return blockingMappedReduced(begin, end, map, &Sequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
 template <typename Sequence, typename Iterator, typename T, typename U>
 Sequence blockingMapped(Iterator begin, Iterator end, T (map)(U))
 {
-    return blockingMappedReduced(begin, end, map, &Sequence::append,
+    return blockingMappedReduced(begin, end, map, &Sequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 
 template <typename Sequence, typename Iterator, typename T, typename C>
 Sequence blockingMapped(Iterator begin, Iterator end, T (C::*map)() const)
 {
-    return blockingMappedReduced(begin, end, map, &Sequence::append,
+    return blockingMappedReduced(begin, end, map, &Sequence::push_back,
                                  QtConcurrent::OrderedReduce);
 }
 

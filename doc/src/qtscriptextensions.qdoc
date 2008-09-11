@@ -74,7 +74,8 @@
 
     The (dot-qualified) extension name is used to determine the path (relative to
     the application's plugin path) where QScriptEngine will look for the script
-    file that will initialize the extension; if a file called \c{__init__.js} is
+    file that will initialize the extension; if a file called \c{__init__.js}
+    (usually located in \c{[application plugin path]/script/foo/}) is
     found in the corresponding folder, its contents will be evaluated by the engine
     when the extension is imported.
     As an example, if the extension is called \c{"foo.bar.baz"}, the engine will look
@@ -96,7 +97,7 @@
 
     An example of a simple \c{__init__.js}:
 
-    \snippet doc/src/snippets/code/doc.src.qtscriptextensions.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qtscriptextensions.qdoc 0
 
     QScriptEngine will look for a QScriptExtensionPlugin that provides
     the relevant extension by querying each plugin for its keys()

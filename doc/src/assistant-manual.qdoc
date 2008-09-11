@@ -373,7 +373,7 @@
 
     We use documentation filters to solve this issue. A filter is identified by its
     name, and contains a list of filter attributes. An attribute is just a string and
-    can be freely choosen. Attributes are defined by the documentation itself, this
+    can be freely chosen. Attributes are defined by the documentation itself, this
     means that every documentation set usually has one or more attributes.
 
     For example, the Qt 4.4.0 \QA documentation defines the attributes \c {assistant},
@@ -458,6 +458,11 @@
     techniques described in this document to show how to use \QA as a custom
     help viewer for an application.
 
+    \warning In order to ship Qt Assistant in your application, it is crucial
+    that you include the sqlite plugin. For more information on how to include
+    plugins in your application, refer to the \l{Deploying Qt Applications}
+    {deployment documentation}.
+
     \section1 Qt Help Collection Files
 
     The first important point to know about \QA is that it stores all
@@ -471,7 +476,7 @@
     To apply a certain help collection to \QA, specify the respective
     collection file on the command line when starting it. For example:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 8
 
     However, storing all settings in one collection file raises some problems.
     The collection file is usually installed in the same directory as the
@@ -492,15 +497,15 @@
     within this user-specific location, can be defined in the help collection
     project file. For example:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 7
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 7
 
     So, when calling
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 8
 
     \QA actually uses the collection file:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 9
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 9
 
     There is no need ever to start \QA with the user specific collection
     file. Instead, the collection file shipped with the application should
@@ -518,7 +523,7 @@
     collection file. So, when creating a new collection file you can list
     all compressed help files \QA should display.
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 5
 
     Sometimes, depending on the application for which \QA acts as a
     help viewer, more documentation needs to be added over time; for
@@ -536,7 +541,7 @@
     exit right away displaying a message if the registration was successful
     or not.
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 6
 
     The \c{-quiet} flag can be passed on to \QA to prevent it from writing
     out the status message.
@@ -631,15 +636,15 @@
 
     An example of a help collection file that uses all the available tags is shown below:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 1
 
     To create the binary collection file, run the \c qcollectiongenerator tool:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 10
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 10
 
     To test the generated collection file, start \QA in the following way:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 8
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 8
 
     \section1 Using Qt Assistant Remotely
 
@@ -657,13 +662,13 @@
     functionality by passing the \c{-enableRemoteControl} command line option.
     The following example shows how this can be done:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 2
 
     Once \QA is running, you can send commands by using the stdin channel of
     the process. The code snippet below shows how to tell \QA to show a certain
     page in the documentation.
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 3
 
     The following commands can be used to control \QA:
 
@@ -712,7 +717,7 @@
     instead of one line for every command. The commands have to be separated by
     a semicolon, as shown in the following example:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 4
 
     \section1 Compatibility with Old Formats
 
@@ -742,7 +747,7 @@
     Different help collections can be shown by simply passing the help collection
     path to \QA. For example:
 
-    \snippet doc/src/snippets/code/doc.src.assistant-manual.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 0
 
     Other available options the can be passed on the command line.
 

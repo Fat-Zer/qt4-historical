@@ -51,17 +51,29 @@
     to custom layouts.
 
     The Qt layout system provides a simple and powerful way of
-    specifying the layout of child widgets.
+    automatically arranging child widgets within a widget to ensure
+    that they make good use of the available space.
 
-    By specifying the logical layout once, you get the following
-    benefits:
+    \tableofcontents
+
+    \section1 Introduction
+
+    Qt includes a set of layout management classes that are used to describe
+    how widgets are laid out in an application's user interface. These layouts
+    automatically position and resize widgets when the available space for
+    them changes, ensuring that they are consistently arranged and that the
+    user interface as a whole remains usable.
+
+    All QWidget subclasses can use layouts to manage their children. The
+    QWidget::setLayout() function applies a layout to a widget. When a layout
+    is set on a widget in this way, it takes charge of the following tasks:
 
     \list
     \o Positioning of child widgets.
     \o Sensible default sizes for windows.
     \o Sensible minimum sizes for windows.
     \o Resize handling.
-    \o Automatic update when contents change:
+    \o Automatic updates when contents change:
         \list
         \o Font size, text or other contents of child widgets.
         \o Hiding or showing a child widget.
@@ -69,20 +81,13 @@
         \endlist
     \endlist
 
-    The disadvantage of hand-written layout code is that it isn't
-    very convenient when you're experimenting with the design of a
-    form and you have to go through the compile, link and run cycle
-    for each change. Our solution is \l{Qt Designer}, a GUI visual
-    design tool which makes it fast and easy to experiment with
-    layouts and which generates the C++ layout code for you.
-
-    Qt's layout classes were designed for hand-written C++ code, so
-    they're easy to understand and use. The code generated for forms
-    created using \l{Qt Designer} also uses the layout classes.
-
-    Topics:
-
-    \tableofcontents
+    Qt's layout classes were designed for hand-written C++ code, allowing
+    measurements to be specified in pixels for simplicity, so they're easy
+    to understand and use. The code generated for forms created using
+    \l{Qt Designer} also uses the layout classes. \QD is also useful to
+    use when experimenting with the design of a form since it avoids the
+    compile, link and run cycle usually involved in user interface
+    development.
 
     \section1 Horizontal, Vertical, and Grid Layouts
 
@@ -304,11 +309,11 @@
 
     \section2 The Header File (\c card.h)
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 0
 
     \section2 The Implementation File (\c card.cpp)
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 1
 
     First we define two functions that iterate over the layout: 
     itemAt() and takeAt(). These functions are used internally by the
@@ -321,7 +326,7 @@
     data structure, we may have to spend more effort defining a linear
     order for the items.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 2
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 2
 
     addItem() implements the default placement strategy for layout items.
     It must be implemented. It is used by QLayout::add(), by the QLayout
@@ -330,26 +335,26 @@
     provide extra access functions such as the row and column spanning
     overloads of \l QGridLayout::addItem(), addWidget(), and addLayout().
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 3
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 3
 
     The layout takes over responsibility of the items added. Since
     QLayoutItem does not inherit QObject, we must delete the items
     manually. The function QLayout::deleteAllItems() uses takeAt()
     defined above to delete all the items in the layout.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 4
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 4
 
     The setGeometry() function actually performs the layout. The rectangle
     supplied as an argument does not include margin(). If relevant, use
     spacing() as the distance between items.
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 5
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 5
 
     sizeHint() and minimumSize() are normally very similar in
     implementation. The sizes returned by both functions should include
     spacing(), but not margin().
 
-    \snippet doc/src/snippets/code/doc.src.layout.qdoc 6
+    \snippet doc/src/snippets/code/doc_src_layout.qdoc 6
 
     \section2 Further Notes
 

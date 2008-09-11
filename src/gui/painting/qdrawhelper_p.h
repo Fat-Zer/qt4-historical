@@ -117,7 +117,7 @@ struct DrawHelper {
 
 extern DrawHelper qDrawHelper[QImage::NImageFormats];
 void qBlendTexture(int count, const QSpan *spans, void *userData);
-#ifdef Q_WS_QWS
+#if defined(Q_WS_QWS) && !defined(QT_NO_RASTERCALLBACKS)
 extern DrawHelper qDrawHelperCallback[QImage::NImageFormats];
 void qBlendTextureCallback(int count, const QSpan *spans, void *userData);
 #endif

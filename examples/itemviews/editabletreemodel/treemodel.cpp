@@ -91,7 +91,7 @@ QVariant TreeModel::data(const QModelIndex &index, int role) const
 Qt::ItemFlags TreeModel::flags(const QModelIndex &index) const
 {
     if (!index.isValid())
-        return Qt::ItemIsEnabled;
+        return 0;
 
     return Qt::ItemIsEditable | Qt::ItemIsEnabled | Qt::ItemIsSelectable;
 }
@@ -216,8 +216,12 @@ bool TreeModel::setData(const QModelIndex &index, const QVariant &value,
         return false;
 
     TreeItem *item = getItem(index);
+    bool result = item->setData(index.column(), value);
 
-    return item->setData(index.column(), value);
+    if (result)
+        emit dataChanged(index, index);
+
+    return result;
 }
 
 bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
@@ -226,7 +230,12 @@ bool TreeModel::setHeaderData(int section, Qt::Orientation orientation,
     if (role != Qt::EditRole || orientation != Qt::Horizontal)
         return false;
 
-    return rootItem->setData(section, value);
+    bool result = rootItem->setData(section, value);
+
+    if (result)
+        emit headerDataChanged(orientation, section, section);
+
+    return result;
 }
 
 void TreeModel::setupModelData(const QStringList &lines, TreeItem *parent)

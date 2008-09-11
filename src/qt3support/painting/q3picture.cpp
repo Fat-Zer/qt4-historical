@@ -153,7 +153,7 @@ bool Q3Picture::load(const QString &fileName, const char *format)
     Note that when using the load() function to read SVG files, the
     format must be specified. For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.painting.q3picture.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_painting_q3picture.cpp 0
 
     \sa save()
 */
@@ -212,7 +212,7 @@ bool Q3Picture::save(const QString &fileName, const char *format)
     Note that when using the save() function to save SVG files, the
     format must be specified. For example:
 
-    \snippet doc/src/snippets/code/src.qt3support.painting.q3picture.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_painting_q3picture.cpp 1
 
     \sa load()
 */

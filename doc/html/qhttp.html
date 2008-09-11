@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/network/access/qhttp.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/network/access/qhttp.cpp -->
 <head>
   <title>Qt 4.4: QHttp Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QHttp Class Reference<br /><span class="small-subtitle">[<a href="qtnetwork.html">QtNetwork</a> module]</span>
 </h1>
 <p>The QHttp class provides an implementation of the HTTP protocol. <a href="#details">More...</a></p>
@@ -104,62 +104,62 @@
 <hr />
 <h2>Detailed Description</h2>
 <p>The QHttp class provides an implementation of the HTTP protocol.</p>
-<p>This class provides a direct interface to HTTP that allows you to have more control over the requests and that allows you to access the response header fields.</p>
+<p>This class provides a direct interface to HTTP that allows you to have more control over the requests and that allows you to access the response header fields. However, for new applications, it is recommended to use <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a> and <a href="qnetworkreply.html">QNetworkReply</a>, as those classes possess a simpler, yet more powerful API.</p>
 <p>The class works asynchronously, so there are no blocking functions. If an operation cannot be executed immediately, the function will still return straight away and the operation will be scheduled for later execution. The results of scheduled operations are reported via signals. This approach depends on the event loop being in operation.</p>
 <p>The operations that can be scheduled (they are called &quot;requests&quot; in the rest of the documentation) are the following: <a href="qhttp.html#setHost">setHost</a>(), <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>() and <a href="qhttp.html#request">request</a>().</p>
 <p>All of these requests return a unique identifier that allows you to keep track of the request that is currently executed. When the execution of a request starts, the <a href="qhttp.html#requestStarted">requestStarted</a>() signal with the identifier is emitted and when the request is finished, the <a href="qhttp.html#requestFinished">requestFinished</a>() signal is emitted with the identifier and a bool that indicates if the request finished with an error.</p>
 <p>To make an HTTP request you must set up suitable HTTP headers. The following example demonstrates, how to request the main HTML page from the Trolltech home page (i.e&#x2e;, the URL <tt>http:<span class="comment">//www.trolltech.com/index.html</span></tt>):</p>
-<pre>     QHttpRequestHeader header(&quot;GET&quot;, QUrl::toPercentEncoding(&quot;/index.html&quot;));
-     header.setValue(&quot;Host&quot;, &quot;www.trolltech.com&quot;);
-     http-&gt;setHost(&quot;www.trolltech.com&quot;);
-     http-&gt;request(header);</pre>
+<pre> QHttpRequestHeader header(&quot;GET&quot;, QUrl::toPercentEncoding(&quot;/index.html&quot;));
+ header.setValue(&quot;Host&quot;, &quot;www.trolltech.com&quot;);
+ http-&gt;setHost(&quot;www.trolltech.com&quot;);
+ http-&gt;request(header);</pre>
 <p>For the common HTTP requests <tt>GET</tt>, <tt>POST</tt> and <tt>HEAD</tt>, QHttp provides the convenience functions <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>() and <a href="qhttp.html#head">head</a>(). They already use a reasonable header and if you don't have to set special header fields, they are easier to use. The above example can also be written as:</p>
-<pre>     http-&gt;setHost(&quot;www.trolltech.com&quot;);                <span class="comment">// id == 1</span>
-     http-&gt;get(QUrl::toPercentEncoding(&quot;/index.html&quot;)); <span class="comment">// id == 2</span></pre>
+<pre> http-&gt;setHost(&quot;www.trolltech.com&quot;);                <span class="comment">// id == 1</span>
+ http-&gt;get(QUrl::toPercentEncoding(&quot;/index.html&quot;)); <span class="comment">// id == 2</span></pre>
 <p>For this example the following sequence of signals is emitted (with small variations, depending on network traffic, etc.):</p>
-<pre>     requestStarted(1)
-     requestFinished(1, false)
+<pre> requestStarted(1)
+ requestFinished(1, false)
 
-     requestStarted(2)
-     stateChanged(Connecting)
-     stateChanged(Sending)
-     dataSendProgress(77, 77)
-     stateChanged(Reading)
-     responseHeaderReceived(responseheader)
-     dataReadProgress(5388, 0)
-     readyRead(responseheader)
-     dataReadProgress(18300, 0)
-     readyRead(responseheader)
-     stateChanged(Connected)
-     requestFinished(2, false)
+ requestStarted(2)
+ stateChanged(Connecting)
+ stateChanged(Sending)
+ dataSendProgress(77, 77)
+ stateChanged(Reading)
+ responseHeaderReceived(responseheader)
+ dataReadProgress(5388, 0)
+ readyRead(responseheader)
+ dataReadProgress(18300, 0)
+ readyRead(responseheader)
+ stateChanged(Connected)
+ requestFinished(2, false)
 
-     done(false)
+ done(false)
 
-     stateChanged(Closing)
-     stateChanged(Unconnected)</pre>
+ stateChanged(Closing)
+ stateChanged(Unconnected)</pre>
 <p>The <a href="qhttp.html#dataSendProgress">dataSendProgress</a>() and <a href="qhttp.html#dataReadProgress">dataReadProgress</a>() signals in the above example are useful if you want to show a <a href="qprogressbar.html">progress bar</a> to inform the user about the progress of the download. The second argument is the total size of data. In certain cases it is not possible to know the total amount in advance, in which case the second argument is 0. (If you connect to a <a href="qprogressbar.html">QProgressBar</a> a total of 0 results in a busy indicator.)</p>
 <p>When the response header is read, it is reported with the <a href="qhttp.html#responseHeaderReceived">responseHeaderReceived</a>() signal.</p>
 <p>The <a href="qhttp.html#readyRead">readyRead</a>() signal tells you that there is data ready to be read. The amount of data can then be queried with the <a href="qhttp.html#bytesAvailable">bytesAvailable</a>() function and it can be read with the <a href="qhttp.html#read">read</a>() or <a href="qhttp.html#readAll">readAll</a>() functions.</p>
 <p>If an error occurs during the execution of one of the commands in a sequence of commands, all the pending commands (i.e&#x2e; scheduled, but not yet executed commands) are cleared and no signals are emitted for them.</p>
 <p>For example, if you have the following sequence of requests</p>
-<pre>     http-&gt;setHost(&quot;www.foo.bar&quot;);       <span class="comment">// id == 1</span>
-     http-&gt;get(&quot;/index.html&quot;);           <span class="comment">// id == 2</span>
-     http-&gt;post(&quot;register.html&quot;, data);  <span class="comment">// id == 3</span></pre>
+<pre> http-&gt;setHost(&quot;www.foo.bar&quot;);       <span class="comment">// id == 1</span>
+ http-&gt;get(&quot;/index.html&quot;);           <span class="comment">// id == 2</span>
+ http-&gt;post(&quot;register.html&quot;, data);  <span class="comment">// id == 3</span></pre>
 <p>and the <a href="qhttp.html#get">get</a>() request fails because the host lookup fails, then the <a href="qhttp.html#post">post</a>() request is never executed and the signals would look like this:</p>
-<pre>     requestStarted(1)
-     requestFinished(1, false)
+<pre> requestStarted(1)
+ requestFinished(1, false)
 
-     requestStarted(2)
-     stateChanged(HostLookup)
-     requestFinished(2, true)
+ requestStarted(2)
+ stateChanged(HostLookup)
+ requestFinished(2, true)
 
-     done(true)
+ done(true)
 
-     stateChanged(Unconnected)</pre>
+ stateChanged(Unconnected)</pre>
 <p>You can then get details about the error with the <a href="qhttp.html#error">error</a>() and <a href="qhttp.html#errorString">errorString</a>() functions. Note that only unexpected behavior, like network failure is considered as an error. If the server response contains an error status, like a 404 response, this is reported as a normal response case. So you should always check the <a href="qhttpresponseheader.html#statusCode">status code</a> of the response header.</p>
 <p>The functions <a href="qhttp.html#currentId">currentId</a>() and <a href="qhttp.html#currentRequest">currentRequest</a>() provide more information about the currently executing request.</p>
 <p>The functions <a href="qhttp.html#hasPendingRequests">hasPendingRequests</a>() and <a href="qhttp.html#clearPendingRequests">clearPendingRequests</a>() allow you to query and clear the list of pending requests.</p>
-<p>See also <a href="qftp.html">QFtp</a>, <a href="network-http.html">HTTP Example</a>, and <a href="network-torrent.html">Torrent Example</a>.</p>
+<p>See also <a href="qftp.html">QFtp</a>, <a href="qnetworkaccessmanager.html">QNetworkAccessManager</a>, <a href="qnetworkrequest.html">QNetworkRequest</a>, <a href="qnetworkreply.html">QNetworkReply</a>, <a href="network-http.html">HTTP Example</a>, and <a href="network-torrent.html">Torrent Example</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QHttp/ConnectionMode" />
@@ -417,19 +417,19 @@
 <h3 class="fn"><a name="setProxy"></a>int QHttp::setProxy ( const <a href="qstring.html">QString</a> &amp; <i>host</i>, int <i>port</i>, const <a href="qstring.html">QString</a> &amp; <i>username</i> = QString(), const <a href="qstring.html">QString</a> &amp; <i>password</i> = QString() )</h3>
 <p>Enables HTTP proxy support, using the proxy server <i>host</i> on port <i>port</i>. <i>username</i> and <i>password</i> can be provided if the proxy server requires authentication.</p>
 <p>Example:</p>
-<pre>       void Ticker::getTicks()
-       {
-         http = new QHttp(this);
-         connect(http, SIGNAL(done(bool)), this, SLOT(showPage()));
-         http-&gt;setProxy(&quot;proxy.example.com&quot;, 3128);
-         http-&gt;setHost(&quot;ticker.example.com&quot;);
-         http-&gt;get(&quot;/ticks.asp&quot;);
-       }
+<pre> void Ticker::getTicks()
+ {
+   http = new QHttp(this);
+   connect(http, SIGNAL(done(bool)), this, SLOT(showPage()));
+   http-&gt;setProxy(&quot;proxy.example.com&quot;, 3128);
+   http-&gt;setHost(&quot;ticker.example.com&quot;);
+   http-&gt;get(&quot;/ticks.asp&quot;);
+ }
 
-       void Ticker::showPage()
-       {
-         display(http-&gt;readAll());
-       }</pre>
+ void Ticker::showPage()
+ {
+   display(http-&gt;readAll());
+ }</pre>
 <p><a href="qhttp.html">QHttp</a> supports non-transparent web proxy servers only, such as the Squid Web proxy cache server (from <a href="http://www.squid.org/">http://www.squid.org/</a>). For transparent proxying, such as SOCKS5, use <a href="qnetworkproxy.html">QNetworkProxy</a> instead.</p>
 <p>See also <a href="qftp.html#setProxy">QFtp::setProxy</a>().</p>
 <h3 class="fn"><a name="setProxy-2"></a>int QHttp::setProxy ( const <a href="qnetworkproxy.html">QNetworkProxy</a> &amp; <i>proxy</i> )</h3>
@@ -464,8 +464,8 @@
 <p>See also <a href="qhttp.html#get">get</a>(), <a href="qhttp.html#post">post</a>(), <a href="qhttp.html#head">head</a>(), <a href="qhttp.html#request">request</a>(), <a href="qhttp.html#close">close</a>(), <a href="qhttp.html#state">state</a>(), and <a href="qhttp.html#State-enum">State</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

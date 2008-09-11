@@ -43,7 +43,6 @@
 
 #include "qplatformdefs.h"
 
-#ifndef QT_NO_DRAGANDDROP
 #include "qbitmap.h"
 #include "qdrag.h"
 #include "qpixmap.h"
@@ -62,6 +61,8 @@
 #include "qimagewriter.h"
 #include "qdebug.h"
 #include <ctype.h>
+
+#ifndef QT_NO_DRAGANDDROP
 
 QT_BEGIN_NAMESPACE
 
@@ -484,6 +485,18 @@ QWidget *QDragManager::currentTarget()
 
 #endif
 
+QDropData::QDropData()
+    : QInternalMimeData()
+{
+}
+
+QDropData::~QDropData()
+{
+}
+#endif // QT_NO_DRAGANDDROP
+
+#if !(defined(QT_NO_DRAGANDDROP) && defined(QT_NO_CLIPBOARD))
+
 static QStringList imageReadMimeFormats()
 {
     QStringList formats;
@@ -681,14 +694,6 @@ QByteArray QInternalMimeData::renderDataHelper(const QString &mimeType, const QM
     return ba;
 }
 
-QDropData::QDropData()
-    : QInternalMimeData()
-{
-}
-
-QDropData::~QDropData()
-{
-}
-#endif // QT_NO_DRAGANDDROP
+#endif // QT_NO_DRAGANDDROP && QT_NO_CLIPBOARD
 
 QT_END_NAMESPACE

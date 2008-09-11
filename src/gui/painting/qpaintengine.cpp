@@ -69,10 +69,11 @@ QT_BEGIN_NAMESPACE
 /*!
   \enum QTextItem::RenderFlag
 
-  \value  RightToLeft         Indicates that the text should be rendered from right to left.
-  \value  Overline               Indicates that QPainter has painted a line above the text.
-  \value  Underline             Indicates that QPainter has painted a line under the text.
-  \value  StrikeOut            Indicates that QPainter has painted a line through the text.
+  \value  RightToLeft Render the text from right to left.
+  \value  Overline    Paint a line above the text.
+  \value  Underline   Paint a line under the text.
+  \value  StrikeOut   Paint a line through the text.
+  \omitvalue Dummy
 */
 
 

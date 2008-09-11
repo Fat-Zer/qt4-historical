@@ -125,7 +125,7 @@ public:
 
     A Q3UrlOperator can be used like this, for example to download a
     file (and assuming that the FTP protocol is registered):
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 0
 
     If you want to be notified about success/failure, progress, etc.,
     you can connect to Q3UrlOperator's signals, e.g. to start(),
@@ -737,18 +737,18 @@ bool Q3UrlOperator::isDir( bool *ok )
 
     For example, to get a web page you might do something like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 1
 
     For most other operations, the path of the Q3UrlOperator must point
     to a directory. If you want to download a file you could do the
     following:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 2
 
     This will get the data of ftp://ftp.whatever.org/pub/a_file.txt.
 
     \e Never do anything like this:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 3
 
     If \a location is not empty and relative it must not contain any
     queries or references, just the name of a child. So if you need to
@@ -796,13 +796,13 @@ const Q3NetworkOperation *Q3UrlOperator::get( const QString &location )
 
     For putting some data to a file you can do the following:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 4
 
     For most other operations, the path of the Q3UrlOperator must point
     to a directory. If you want to upload data to a file you could do
     the following:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3urloperator.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_network_q3urloperator.cpp 5
 
     This will upload the data to ftp://ftp.whatever.com/home/me/filename.dat.
 

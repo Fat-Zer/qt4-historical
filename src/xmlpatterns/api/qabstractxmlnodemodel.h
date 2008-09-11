@@ -82,11 +82,16 @@ namespace QPatternist
     public:
         typedef qint64 Data;
 
+        /*!
+          \note Changing merely the order of these two members, ptr and data,
+                is a binary incompatible change on Mac Power PC.
+         */
         union
         {
-            void *ptr;
+            void *ptr; // Do not use ptr directy, use pointer() instead.
             Data data;
         };
+        void *pointer() const { return (void *)(data); }
 
         Data additionalData;
         const QAbstractXmlNodeModel *model;
@@ -162,7 +167,7 @@ public:
 
     inline void *internalPointer() const
     {
-        return m_storage.ptr;
+        return m_storage.pointer();
     }
 
     inline const QAbstractXmlNodeModel *model() const

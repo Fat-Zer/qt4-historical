@@ -1099,7 +1099,7 @@ static void delete_d( const Q3Ftp* foo )
     do not use it directly, but rather through a QUrlOperator, for
     example:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3ftp.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3ftp.cpp 0
 
     This code will only work if the Q3Ftp class is registered; to
     register the class, you must call q3InitNetworkProtocols() before
@@ -1131,7 +1131,7 @@ static void delete_d( const Q3Ftp* foo )
     e.g. if you want to connect and login to a FTP server. This is
     simply achieved:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3ftp.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3ftp.cpp 1
 
     In this case two FTP commands have been scheduled. When the last
     scheduled command has finished, a done() signal is emitted with
@@ -1149,12 +1149,12 @@ static void delete_d( const Q3Ftp* foo )
     Example: If you want to download the INSTALL file from Trolltech's
     FTP server, you would write this:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3ftp.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_network_q3ftp.cpp 2
 
     For this example the following sequence of signals is emitted
     (with small variations, depending on network traffic, etc.):
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3ftp.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_network_q3ftp.cpp 3
 
     The dataTransferProgress() signal in the above example is useful
     if you want to show a \link QProgressBar progress bar \endlink to
@@ -1167,7 +1167,7 @@ static void delete_d( const Q3Ftp* foo )
     If the login fails for the above example, the signals would look
     like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3ftp.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_network_q3ftp.cpp 4
 
     You can then get details about the error with the error() and
     errorString() functions.

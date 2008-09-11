@@ -323,28 +323,29 @@ QRect QTableViewPrivate::visualSpanRect(const Span &span) const
   \internal
   Draws the spanning cells within rect \a area, and clips them off as
   preparation for the main drawing loop.
+  \a drawn is a QBitArray of visualRowCountxvisualCoulumnCount which say wether or not a particular cell has been drawn
 */
-QBitArray QTableViewPrivate::drawAndClipSpans(const QRect &area, QPainter *painter,
-                                              const QStyleOptionViewItemV4 &option)
+void QTableViewPrivate::drawAndClipSpans(const QRect &area, QPainter *painter,
+                                              const QStyleOptionViewItemV4 &option,
+                                              QBitArray *drawn)
 {
-    int rowCount = model->rowCount(root);
-    int columnCount = model->columnCount(root);
-    QBitArray cells(rowCount * columnCount);
-
+    Q_Q(QTableView);
     bool alternateBase = false;
     QRegion region = viewport->rect();
+
+    int firstVisualRow = qMax(verticalHeader->visualIndexAt(0),0);
+    int lastVisualRow = verticalHeader->visualIndexAt(q->height());
+    if (lastVisualRow == -1)
+        lastVisualRow = model->rowCount(root);
+    int firstVisualColumn = qMax(horizontalHeader->visualIndexAt(0),0);
+    int lastVisualColumn = horizontalHeader->visualIndexAt(q->width());
+    if (lastVisualColumn == -1)
+        lastVisualColumn = model->columnCount(root);
+
     QList<Span>::const_iterator it;
     for (it = spans.constBegin(); it != spans.constEnd(); ++it) {
         Span span = *it;
-        for (int r = span.top(); r <= span.bottom(); ++r) {
-            if (r < 0  || r >= rowCount)
-                continue;
-            for (int c = span.left(); c <= span.right(); ++c) {
-                if (c < 0  || c >= columnCount)
-                    continue;
-                cells.setBit(r * columnCount + c);
-            }
-        }
+
         int row = span.top();
         int col = span.left();
         if (isHidden(row, col))
@@ -365,9 +366,21 @@ QBitArray QTableViewPrivate::drawAndClipSpans(const QRect &area, QPainter *paint
             opt.features &= ~QStyleOptionViewItemV2::Alternate;
         drawCell(painter, opt, index);
         region -= rect;
+        for (int r = span.top(); r <= span.bottom(); ++r) {
+            const int vr = visualRow(r);
+            if (vr < firstVisualRow || vr > lastVisualRow)
+                continue;
+            for (int c = span.left(); c <= span.right(); ++c) {
+                const int vc = visualColumn(c);
+                if (vc < firstVisualColumn  || vc > lastVisualColumn)
+                    continue;
+                drawn->setBit((vr - firstVisualRow) * (lastVisualColumn - firstVisualColumn + 1)
+                             + vc - firstVisualColumn);
+            }
+        }
+
     }
     painter->setClipRegion(region);
-    return cells;
 }
 
 /*!
@@ -746,7 +759,6 @@ void QTableView::paintEvent(QPaintEvent *event)
     const QStyle::State state = option.state;
     const bool alternate = d->alternatingColors;
     const bool rightToLeft = isRightToLeft();
-    const int columnCount = d->model->columnCount(d->root);
 
     QPainter painter(d->viewport);
 
@@ -762,7 +774,13 @@ void QTableView::paintEvent(QPaintEvent *event)
     int lastVisualRow = verticalHeader->visualIndexAt(height());
     if (lastVisualRow == -1)
         lastVisualRow = d->model->rowCount(d->root);
-    QBitArray drawn((lastVisualRow - firstVisualRow) * columnCount);
+
+    int firstVisualColumn = qMax(horizontalHeader->visualIndexAt(0),0);
+    int lastVisualColumn = horizontalHeader->visualIndexAt(width());
+    if (lastVisualColumn == -1)
+        lastVisualColumn = d->model->columnCount(d->root);
+
+    QBitArray drawn((lastVisualRow - firstVisualRow + 1) * (lastVisualColumn - firstVisualColumn + 1));
 
     for (int i = 0; i < rects.size(); ++i) {
         QRect dirtyArea = rects.at(i);
@@ -774,9 +792,8 @@ void QTableView::paintEvent(QPaintEvent *event)
             dirtyArea.setRight(qMin((uint)dirtyArea.right(), x));
         }
 
-        QBitArray paintedCells;
         if (d->hasSpans())
-            paintedCells = d->drawAndClipSpans(dirtyArea, &painter, option);
+            d->drawAndClipSpans(dirtyArea, &painter, option, &drawn);
 
         // get the horizontal start and end visual sections
         int left = horizontalHeader->visualIndexAt(dirtyArea.left());
@@ -809,8 +826,8 @@ void QTableView::paintEvent(QPaintEvent *event)
             continue;
 
         // Paint each row item
-        for (int visualIndex = top; visualIndex <= bottom; ++visualIndex) {
-            int row = verticalHeader->logicalIndex(visualIndex);
+        for (int visualRowIndex = top; visualRowIndex <= bottom; ++visualRowIndex) {
+            int row = verticalHeader->logicalIndex(visualRowIndex);
             if (verticalHeader->isSectionHidden(row))
                 continue;
             int rowY = rowViewportPosition(row);
@@ -818,20 +835,21 @@ void QTableView::paintEvent(QPaintEvent *event)
             int rowh = rowHeight(row) - gridSize;
 
             // Paint each column item
-            for (int h = left; h <= right; ++h) {
-                int col = horizontalHeader->logicalIndex(h);
-                if (horizontalHeader->isSectionHidden(col))
+            for (int visualColumnIndex = left; visualColumnIndex <= right; ++visualColumnIndex) {
+                int currentBit = (visualRowIndex - firstVisualRow) * (lastVisualColumn - firstVisualColumn + 1)
+                        + visualColumnIndex - firstVisualColumn;
+
+                if (currentBit < 0 || currentBit >= drawn.size() || drawn.testBit(currentBit))
                     continue;
-                if (d->hasSpans() && paintedCells.testBit(row * columnCount + col))
+                drawn.setBit(currentBit);
+
+                int col = horizontalHeader->logicalIndex(visualColumnIndex);
+                if (horizontalHeader->isSectionHidden(col))
                     continue;
                 int colp = columnViewportPosition(col);
                 colp += offset.x();
                 int colw = columnWidth(col) - gridSize;
 
-                int currentBit = (visualIndex - firstVisualRow) * columnCount + col;
-                if (currentBit < 0 || currentBit >= drawn.size() || drawn.testBit(currentBit))
-                    continue;
-                drawn.setBit(currentBit);
                 const QModelIndex index = d->model->index(row, col, d->root);
                 if (index.isValid()) {
                     option.rect = QRect(colp + (showGrid && rightToLeft ? 1 : 0), rowY, colw, rowh);
@@ -991,6 +1009,10 @@ QModelIndex QTableView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifi
 
     switch (cursorAction) {
     case MoveUp:
+#ifdef QT_KEYPAD_NAVIGATION
+        if (QApplication::keypadNavigationEnabled() && visualRow == 0)
+            visualRow = d->visualRow(model()->rowCount() - 1) + 1;
+#endif
         --visualRow;
         while (visualRow > 0 && isRowHidden(d->logicalRow(visualRow)))
             --visualRow;
@@ -1006,6 +1028,10 @@ QModelIndex QTableView::moveCursor(CursorAction cursorAction, Qt::KeyboardModifi
             QTableViewPrivate::Span span = d->span(current.row(), current.column());
             visualRow = d->visualRow(d->rowSpanEndLogical(span.top(), span.height()));
         }
+#ifdef QT_KEYPAD_NAVIGATION
+        if (QApplication::keypadNavigationEnabled() && visualRow >= bottom)
+            visualRow = -1;
+#endif
         ++visualRow;
         while (visualRow < bottom && isRowHidden(d->logicalRow(visualRow)))
             ++visualRow;
@@ -2347,7 +2373,7 @@ int QTableView::columnSpan(int row, int column) const
 /*!
   \since 4.4
 
-  Removes all row and column spanns in the table view.
+  Removes all row and column spans in the table view.
 
   \sa setSpan()
 */

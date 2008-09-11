@@ -121,7 +121,7 @@ public:
     elements. For example the following code renders only jokers from a SVG file
     containing a whole card deck:
 
-    \snippet doc/src/snippets/code/src.svg.qgraphicssvgitem.cpp 0
+    \snippet doc/src/snippets/code/src_svg_qgraphicssvgitem.cpp 0
 
     Size of the item can be set via the setSize() method or via
     direct manipulation of the items transformation matrix.

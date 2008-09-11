@@ -64,9 +64,9 @@ static inline uint qHash(const QUrl &uri)
 
 AccelTreeResourceLoader::AccelTreeResourceLoader(const NamePool::Ptr &np,
                                                  QNetworkAccessManager *const manager,
-                                                 const ReportContext::Ptr &context) : m_namePool(np)
-                                                                                    , m_networkAccessManager(manager)
-                                                                                    , m_context(context)
+                                                 ReportContext *const context) : m_namePool(np)
+                                                                               , m_networkAccessManager(manager)
+                                                                               , m_context(context)
 {
     Q_ASSERT(m_namePool);
     Q_ASSERT(m_networkAccessManager);

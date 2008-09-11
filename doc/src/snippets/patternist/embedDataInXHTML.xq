@@ -1,4 +1,4 @@
-declare default element namespace "http://www.w3.org/1999/xhtml/";
+declare default element namespace "http://www.w3.org/1999/xhtml";
 <html>
     <body>
         {

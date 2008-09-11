@@ -61,6 +61,7 @@ namespace Phonon
 
             bool hasVideo() const { return m_hasVideo; }
             void grabNode(BackendNode *node);
+            void grabFilter(Filter filter);
 
             //connections of the nodes
             bool connectNodes(BackendNode *source, BackendNode *sink);

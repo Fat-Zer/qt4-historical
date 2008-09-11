@@ -159,8 +159,8 @@ void QAuServerMac::play(QSound *qSound)
 
 void QAuServerMac::stop(QSound *qSound)
 {
-    Sounds::const_iterator it = sounds.find(qSound);
-    if (it != sounds.end())
+    Sounds::const_iterator it = sounds.constFind(qSound);
+    if (it != sounds.constEnd())
         [*it stop];
 }
 

@@ -106,7 +106,7 @@ QT_BEGIN_NAMESPACE
 #define QD3DFVF_CSVERTEX (D3DFVF_XYZ | D3DFVF_DIFFUSE | D3DFVF_TEX2 | D3DFVF_TEXCOORDSIZE4(0) |  D3DFVF_TEXCOORDSIZE4(1))
 
 // this is a different usage of the effect framework than intended,
-// but it's convinient for us to use (See effect file)
+// but it's convenient for us to use (See effect file)
 #define PASS_STENCIL_ODDEVEN                0
 #define PASS_STENCIL_WINDING                1
 #define PASS_STENCIL_DRAW                   2

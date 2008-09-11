@@ -2,7 +2,7 @@ TEMPLATE = subdirs
 SUBDIRS = listnames \
 	  pingpong \
 	  complexpingpong \
-	  chat \
+	  dbus-chat \
 	  remotecontrolledcar
 
 # install

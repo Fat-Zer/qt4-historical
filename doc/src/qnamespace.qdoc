@@ -520,7 +520,7 @@
     in an event behind the scenes. If you try to use a queued connection and
     get the error message
 
-    \snippet doc/src/snippets/code/doc.src.qnamespace.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_qnamespace.qdoc 0
 
     call qRegisterMetaType() to register the data type before you
     establish the connection.
@@ -531,7 +531,8 @@
 /*!
     \enum Qt::DateFormat
 
-    \value TextDate The default Qt format.
+    \value TextDate The default Qt format. The day and month names will be localized names.
+    See QDate::toString() for more information.
 
     \value ISODate ISO 8601 extended format: either \c{YYYY-MM-DD} for dates or
     \c{YYYY-MM-DDTHH:MM:SS} for combined dates and times.
@@ -1796,7 +1797,7 @@
     \value WidgetShortcut The shortcut is active when its
     parent widget has focus.
     \value WidgetWithChildrenShortcut The shortcut is active
-    when its parent widget, or any of it's children has focus.
+    when its parent widget, or any of its children has focus.
     Children which are top-level widgets, except pop-ups, are
     not affected by this shortcut context.
     \value WindowShortcut The shortcut is active when its
@@ -2210,14 +2211,14 @@
         string.
 
     \value RichText The text string is interpreted as a rich text
-        string using the current Q3StyleSheet::defaultSheet().
+        string.
 
     \value AutoText The text string is interpreted as for
         Qt::RichText if Qt::mightBeRichText() returns true, otherwise
         as Qt::PlainText.
 
     \value LogText A special, limited text format which is only used
-    by QTextEdit in an optimized mode.
+    by Q3TextEdit in an optimized mode.
 */
 
 /*!
@@ -2286,7 +2287,8 @@
                           indicate that a dragging operation is in progress that
                           involves scrolling.
     \value WhatsThisCursor  \inlineimage cursor-whatsthis.png
-                          An arrow with a question mark, typically used
+                          An arrow with a question mark, typically used to indicate
+                          the presence of What's This? help for a widget.
     \value BusyCursor     \inlineimage cursor-wait.png
                           An hourglass or watch cursor, usually shown during
                           operations that allow the user to interact with
@@ -2538,7 +2540,7 @@
     INT_MIN, inclusive. For example, you can define custom priorities
     as being relative to each other:
 
-    \snippet doc/src/snippets/code/doc.src.qnamespace.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_qnamespace.qdoc 1
 
     \sa QCoreApplication::postEvent()
 */

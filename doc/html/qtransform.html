@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/painting/qtransform.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/painting/qtransform.cpp -->
 <head>
   <title>Qt 4.4: QTransform Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QTransform Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QTransform class specifies 2D transformations of a coordinate system. <a href="#details">More...</a></p>
@@ -105,8 +105,8 @@
 <li><div class="fn"/>QPolygonF <b><a href="qtransform.html#operator-2a-6">operator*</a></b> ( const QPolygonF &amp; <i>polygon</i>, const QTransform &amp; <i>matrix</i> )</li>
 <li><div class="fn"/>QRegion <b><a href="qtransform.html#operator-2a-7">operator*</a></b> ( const QRegion &amp; <i>region</i>, const QTransform &amp; <i>matrix</i> )</li>
 <li><div class="fn"/>QPainterPath <b><a href="qtransform.html#operator-2a-8">operator*</a></b> ( const QPainterPath &amp; <i>path</i>, const QTransform &amp; <i>matrix</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtransform.html#operator-lt-lt-15">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QTransform &amp; <i>matrix</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qtransform.html#operator-gt-gt-10">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QTransform &amp; <i>matrix</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtransform.html#operator-lt-lt-2">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QTransform &amp; <i>matrix</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qtransform.html#operator-gt-gt-2">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QTransform &amp; <i>matrix</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -166,8 +166,8 @@
 <h3>Basic Matrix Operations</h3>
 <p align="center"><img src="images/qmatrix-representation.png" /></p><p>A QTransform object contains a 3 x 3 matrix. The <tt>dx</tt> and <tt>dy</tt> elements specify horizontal and vertical translation. The <tt>m11</tt> and <tt>m22</tt> elements specify horizontal and vertical scaling. And finally, the <tt>m21</tt> and <tt>m12</tt> elements specify horizontal and vertical <i>shearing</i>.</p>
 <p>QTransform transforms a point in the plane to another point using the following formulas:</p>
-<pre>         x' = m11*x + m21*y + dx
-         y' = m22*y + m12*x + dy</pre>
+<pre> x' = m11*x + m21*y + dx
+ y' = m22*y + m12*x + dy</pre>
 <p>The point <i>(x, y)</i> is the original point, and <i>(x', y')</i> is the transformed point. <i>(x', y')</i> can be transformed back to <i>(x, y)</i> by performing the same operation on the <a href="qtransform.html#inverted">inverted</a>() matrix.</p>
 <p>The various matrix elements can be set when constructing the matrix, or by using the <a href="qtransform.html#setMatrix">setMatrix</a>() function later on. They also be manipulated using the <a href="qtransform.html#translate">translate</a>(), <a href="qtransform.html#rotate">rotate</a>(), <a href="qtransform.html#scale">scale</a>() and <a href="qtransform.html#shear">shear</a>() convenience functions, The currently set values can be retrieved using the <a href="qtransform.html#m11">m11</a>(), <a href="qtransform.html#m12">m12</a>(), <a href="qtransform.html#m21">m21</a>(), <a href="qtransform.html#m22">m22</a>(), <a href="qtransform.html#dx">dx</a>() and <a href="qtransform.html#dy">dy</a>() functions.</p>
 <p>Translation is the simplest transformation. Setting <tt>dx</tt> and <tt>dy</tt> will move the coordinate system <tt>dx</tt> units along the X axis and <tt>dy</tt> units along the Y axis. Scaling can be done by setting <tt>m11</tt> and <tt>m22</tt>. For example, setting <tt>m11</tt> to 2 and <tt>m22</tt> to 1.5 will double the height and increase the width by 50%. The identity matrix has <tt>m11</tt> and <tt>m22</tt> set to 1 (all others are set to 0) mapping a point to itself. Shearing is controlled by <tt>m12</tt> and <tt>m21</tt>. Setting these elements to values different from zero will twist the coordinate system. Rotation is achieved by carefully setting both the shearing factors and the scaling factors.</p>
@@ -320,8 +320,8 @@
 <h3 class="fn"><a name="map"></a>void QTransform::map ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>x</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> <i>y</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>tx</i>, <a href="qtglobal.html#qreal-typedef">qreal</a> * <i>ty</i> ) const</h3>
 <p>Maps the given coordinates <i>x</i> and <i>y</i> into the coordinate system defined by this matrix. The resulting values are put in *<i>tx</i> and *<i>ty</i>, respectively.</p>
 <p>The coordinates are transformed using the following formulas:</p>
-<pre>         x' = m11*x + m21*y + dx
-         y' = m22*y + m12*x + dy</pre>
+<pre> x' = m11*x + m21*y + dx
+ y' = m22*y + m12*x + dy</pre>
 <p>The point (x, y) is the original point, and (x', y') is the transformed point.</p>
 <p>See also <a href="qtransform.html#basic-matrix-operations">Basic Matrix Operations</a>.</p>
 <h3 class="fn"><a name="map-2"></a><a href="qpointf.html">QPointF</a> QTransform::map ( const <a href="qpointf.html">QPointF</a> &amp; <i>p</i> ) const</h3>
@@ -356,13 +356,13 @@
 <h3 class="fn"><a name="mapRect"></a><a href="qrectf.html">QRectF</a> QTransform::mapRect ( const <a href="qrectf.html">QRectF</a> &amp; <i>rectangle</i> ) const</h3>
 <p>Creates and returns a <a href="qrectf.html">QRectF</a> object that is a copy of the given <i>rectangle</i>, mapped into the coordinate system defined by this matrix.</p>
 <p>The rectangle's coordinates are transformed using the following formulas:</p>
-<pre>         x' = m11*x + m21*y + dx
-         y' = m22*y + m12*x + dy
-         if (is not affine) {
-             w' = m13*x + m23*y + m33
-             x' /= w'
-             y' /= w'
-         }</pre>
+<pre> x' = m11*x + m21*y + dx
+ y' = m22*y + m12*x + dy
+ if (is not affine) {
+     w' = m13*x + m23*y + m33
+     x' /= w'
+     y' /= w'
+ }</pre>
 <p>If rotation or shearing has been specified, this function returns the <i>bounding</i> rectangle. To retrieve the exact region the given <i>rectangle</i> maps to, use the <a href="qtransform.html#mapToPolygon">mapToPolygon</a>() function instead.</p>
 <p>See also <a href="qtransform.html#mapToPolygon">mapToPolygon</a>() and <a href="qtransform.html#basic-matrix-operations">Basic Matrix Operations</a>.</p>
 <h3 class="fn"><a name="mapRect-2"></a><a href="qrect.html">QRect</a> QTransform::mapRect ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> ) const</h3>
@@ -372,13 +372,13 @@
 <h3 class="fn"><a name="mapToPolygon"></a><a href="qpolygon.html">QPolygon</a> QTransform::mapToPolygon ( const <a href="qrect.html">QRect</a> &amp; <i>rectangle</i> ) const</h3>
 <p>Creates and returns a <a href="qpolygon.html">QPolygon</a> representation of the given <i>rectangle</i>, mapped into the coordinate system defined by this matrix.</p>
 <p>The rectangle's coordinates are transformed using the following formulas:</p>
-<pre>         x' = m11*x + m21*y + dx
-         y' = m22*y + m12*x + dy
-         if (is not affine) {
-             w' = m13*x + m23*y + m33
-             x' /= w'
-             y' /= w'
-         }</pre>
+<pre> x' = m11*x + m21*y + dx
+ y' = m22*y + m12*x + dy
+ if (is not affine) {
+     w' = m13*x + m23*y + m33
+     x' /= w'
+     y' /= w'
+ }</pre>
 <p>Polygons and rectangles behave slightly differently when transformed (due to integer rounding), so <tt>matrix.map(QPolygon(rectangle))</tt> is not always the same as <tt>matrix.mapToPolygon(rectangle)</tt>.</p>
 <p>See also <a href="qtransform.html#mapRect">mapRect</a>() and <a href="qtransform.html#basic-matrix-operations">Basic Matrix Operations</a>.</p>
 <a name="//apple_ref/cpp/clm/QTransform/quadToQuad" />
@@ -502,20 +502,20 @@
 <p>This is the same as <i>matrix</i>.map(<i>path</i>).</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="qtransform.html#map">QTransform::map</a>().</p>
-<h3 class="fn"><a name="operator-lt-lt-15"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QTransform &amp; <i>matrix</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-2"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QTransform &amp; <i>matrix</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>matrix</i> to the given <i>stream</i> and returns a reference to the stream.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-10"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QTransform &amp; <i>matrix</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-2"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QTransform &amp; <i>matrix</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads the given <i>matrix</i> from the given <i>stream</i> and returns a reference to the stream.</p>
 <p>This function was introduced in Qt 4.3.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -74,7 +74,7 @@
 
     Example:
 
-    \snippet doc/src/snippets/code/src.network.socket.qudpsocket.cpp 0
+    \snippet doc/src/snippets/code/src_network_socket_qudpsocket.cpp 0
 
     With QUdpSocket, you can also establish a virtual connection to a
     UDP server using connectToHost() and then use read() and write()

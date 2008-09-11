@@ -63,6 +63,16 @@ QT_MODULE(Core)
 
 namespace QtConcurrent {
 
+#ifndef QT_NO_STL
+    using std::advance;
+#else
+    template <typename It, typename T>
+    void advance(It &it, T value)
+    {
+        it+=value;
+    }
+#endif
+
 /*
     The BlockSizeManager class manages how many iterations a thread should
     reserve and process at a time. This is done by measuring the time spent

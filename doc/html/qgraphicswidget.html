@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/gui/graphicsview/qgraphicswidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/graphicsview/qgraphicswidget.cpp -->
 <head>
   <title>Qt 4.4: QGraphicsWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QGraphicsWidget Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QGraphicsWidget class is the base class for all widget items in a <a href="qgraphicsscene.html">QGraphicsScene</a>. <a href="#details">More...</a></p>
@@ -178,6 +178,7 @@
 <h3 class="fn"><a name="enabled-prop"></a>enabled : const bool</h3>
 <p>This property holds whether the item is enabled or not.</p>
 <p>This property is declared in <a href="qgraphicsitem.html">QGraphicsItem</a>.</p>
+<p>By default, this property is true.</p>
 <p>See also <a href="qgraphicsitem.html#isEnabled">QGraphicsItem::isEnabled</a>() and <a href="qgraphicsitem.html#setEnabled">QGraphicsItem::setEnabled</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/focusPolicy" />
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/setFocusPolicy" />
@@ -199,6 +200,7 @@
 <p>This property provides the widget's font.</p>
 <p><a href="qfont.html">QFont</a> consists of font properties that have been explicitly defined and properties implicitly inherited from the widget's parent. Hence, font() can return a different font compared to the one set with setFont(). This scheme allows you to define single entries in a font without affecting the font's inherited entries.</p>
 <p>When a widget's font changes, it resolves its entries against its parent widget. If the widget does not have a parent widget, it resolves its entries against the scene. The widget then sends itself a <a href="qevent.html#Type-enum">FontChange</a> event and notifies all its descendants so that they can resolve their fonts as well.</p>
+<p>By default, this property contains the application's default font.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QFont font () const</b></li>
@@ -223,10 +225,11 @@
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/palette" />
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/setPalette" />
 <h3 class="fn"><a name="palette-prop"></a>palette : <a href="qpalette.html">QPalette</a></h3>
-<p>This property holds the widgets' palette.</p>
+<p>This property holds the widget's palette.</p>
 <p>This property provides the widget's palette. The palette provides colors and brushes for color groups (e.g&#x2e;, <a href="qpalette.html#ColorRole-enum">QPalette::Button</a>) and states (e.g&#x2e;, <a href="qpalette.html#ColorGroup-enum">QPalette::Inactive</a>), loosely defining the general look of the widget and its children.</p>
 <p><a href="qpalette.html">QPalette</a> consists of color groups that have been explicitly defined, and groups that are implicitly inherited from the widget's parent. Because of this, palette() can return a different palette than what has been set with setPalette(). This scheme allows you to define single entries in a palette without affecting the palette's inherited entries.</p>
 <p>When a widget's palette changes, it resolves its entries against its parent widget, or if it doesn't have a parent widget, it resolves against the scene. It then sends itself a <a href="qevent.html#Type-enum">PaletteChange</a> event, and notifies all its descendants so they can resolve their palettes as well.</p>
+<p>By default, this property contains the application's default palette.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QPalette palette () const</b></li>
@@ -239,7 +242,8 @@
 <p>This property holds the size of the widget.</p>
 <p>Calling setSize() resizes the widget to <i>size</i> bounded by <a href="qgraphicslayoutitem.html#minimumSize">minimumSize</a>() and <a href="qgraphicslayoutitem.html#maximumSize">maximumSize</a>(). This property only affects the widget's width and height (e.g&#x2e;, its right and bottom edges); the widget's position and top-left corner remains unaffected.</p>
 <p>Resizing a widget triggers the widget to immediately receive a <a href="qevent.html#Type-enum">GraphicsSceneResize</a> event with the widget's old and new size. If the widget has a layout assigned when this event arrives, the layout will be activated and it will automatically update any child widgets's geometry.</p>
-<p>This property does not affect any layout of the parent widget. If the widget itself is managed by a parent layout, e.g&#x2e;, it has a parent widget with a layout assigned, that layout will not activate.</p>
+<p>This property does not affect any layout of the parent widget. If the widget itself is managed by a parent layout; e.g&#x2e;, it has a parent widget with a layout assigned, that layout will not activate.</p>
+<p>By default, this property contains a size with zero width and height.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QSizeF size () const</b></li>
@@ -250,12 +254,14 @@
 <h3 class="fn"><a name="visible-prop"></a>visible : const bool</h3>
 <p>This property holds whether the item is visible or not.</p>
 <p>This property is declared in <a href="qgraphicsitem.html">QGraphicsItem</a>.</p>
+<p>By default, this property is true.</p>
 <p>See also <a href="qgraphicsitem.html#isVisible">QGraphicsItem::isVisible</a>(), <a href="qgraphicsitem.html#setVisible">QGraphicsItem::setVisible</a>(), <a href="qgraphicsitem.html#show">show</a>(), and <a href="qgraphicsitem.html#hide">hide</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/windowFlags" />
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/setWindowFlags" />
 <h3 class="fn"><a name="windowFlags-prop"></a>windowFlags : <a href="qt.html#WindowType-enum">Qt::WindowFlags</a></h3>
-<p>This property holds this propery holds the widget's window flags.</p>
-<p>Window flags are a combination a window type (e.g&#x2e; <a href="qt.html#WindowType-enum">Qt::Dialog</a>) and several flags giving hints on the behaviour of the window. The behaviour is platform dependent.</p>
+<p>This property holds the widget's window flags.</p>
+<p>Window flags are a combination of a window type (e.g&#x2e;, <a href="qt.html#WindowType-enum">Qt::Dialog</a>) and several flags giving hints on the behavior of the window. The behavior is platform-dependent.</p>
+<p>By default, this property contains no window flags.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>Qt::WindowFlags windowFlags () const</b></li>
@@ -265,7 +271,8 @@
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/setWindowTitle" />
 <h3 class="fn"><a name="windowTitle-prop"></a>windowTitle : <a href="qstring.html">QString</a></h3>
 <p>This property holds this property holds the window title (caption).</p>
-<p>This property is only used for windows. If no title has been set, the title is an empty string.</p>
+<p>This property is only used for windows.</p>
+<p>By default, if no title has been set, this property contains an empty string.</p>
 <p>Access functions:</p>
 <ul>
 <li><div class="fn"/><b>QString windowTitle () const</b></li>
@@ -347,15 +354,15 @@
 </table></p>
 <p>Subclasses of <a href="qgraphicswidget.html">QGraphicsWidget</a> should call the base implementation, and then test the type of <i>option</i> using qstyleoption_cast&lt;&gt;() or test <a href="qstyleoption.html#StyleOptionType-enum">QStyleOption::Type</a> before storing widget-specific options.</p>
 <p>For example:</p>
-<pre>         void MyGroupBoxWidget::initStyleOption(QStyleOption *option) const
-         {
-             QGraphicsWidget::initStyleOption(option);
-             if (QStyleOptionGroupBox *box = qstyleoption_cast&lt;QStyleOptionGroupBox *&gt;(option)) {
-                 <span class="comment">// Add group box specific state.</span>
-                 box-&gt;flat = isFlat();
-                 ...
-             }
-         }</pre>
+<pre> void MyGroupBoxWidget::initStyleOption(QStyleOption *option) const
+ {
+     QGraphicsWidget::initStyleOption(option);
+     if (QStyleOptionGroupBox *box = qstyleoption_cast&lt;QStyleOptionGroupBox *&gt;(option)) {
+         <span class="comment">// Add group box specific state.</span>
+         box-&gt;flat = isFlat();
+         ...
+     }
+ }</pre>
 <p>See also <a href="qstyleoption.html#initFrom">QStyleOption::initFrom</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsWidget/isActiveWindow" />
 <h3 class="fn"><a name="isActiveWindow"></a>bool QGraphicsWidget::isActiveWindow () const</h3>
@@ -433,14 +440,14 @@
 <h3 class="fn"><a name="setTabOrder"></a>void QGraphicsWidget::setTabOrder ( QGraphicsWidget * <i>first</i>, QGraphicsWidget * <i>second</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Moves the <i>second</i> widget around the ring of focus widgets so that keyboard focus moves from the <i>first</i> widget to the <i>second</i> widget when the Tab key is pressed.</p>
 <p>Note that since the tab order of the <i>second</i> widget is changed, you should order a chain like this:</p>
-<pre>         setTabOrder(a, b); <span class="comment">// a to b</span>
-         setTabOrder(b, c); <span class="comment">// a to b to c</span>
-         setTabOrder(c, d); <span class="comment">// a to b to c to d</span></pre>
+<pre> setTabOrder(a, b); <span class="comment">// a to b</span>
+ setTabOrder(b, c); <span class="comment">// a to b to c</span>
+ setTabOrder(c, d); <span class="comment">// a to b to c to d</span></pre>
 <p><i>not</i> like this:</p>
-<pre>         <span class="comment">// WRONG</span>
-         setTabOrder(c, d); <span class="comment">// c to d</span>
-         setTabOrder(a, b); <span class="comment">// a to b AND c to d</span>
-         setTabOrder(b, c); <span class="comment">// a to b to c, but not c to d</span></pre>
+<pre><span class="comment"> // WRONG</span>
+ setTabOrder(c, d); <span class="comment">// c to d</span>
+ setTabOrder(a, b); <span class="comment">// a to b AND c to d</span>
+ setTabOrder(b, c); <span class="comment">// a to b to c, but not c to d</span></pre>
 <p>If <i>first</i> is 0, this indicates that <i>second</i> should be the first widget to receive input focus should the scene gain Tab focus (i.e&#x2e;, the user hits Tab so that focus passes into the scene). If <i>second</i> is 0, this indicates that <i>first</i> should be the first widget to gain focus if the scene gained BackTab focus.</p>
 <p>By default, tab order is defined implicitly using widget creation order.</p>
 <p>See also <a href="qgraphicswidget.html#focusPolicy-prop">focusPolicy</a> and <a href="focus.html">Keyboard Focus</a>.</p>
@@ -506,8 +513,8 @@
 <p>Returns the widgets window type.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

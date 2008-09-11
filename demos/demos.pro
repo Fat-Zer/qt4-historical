@@ -20,8 +20,12 @@ wince*|embedded: SUBDIRS += embedded
 
 !contains(QT_EDITION, Console):!cross_compile:!embedded:!wince*:SUBDIRS += demos_arthurplugin
 
-!cross_compile:!wince*:contains(QT_BUILD_PARTS, tools):SUBDIRS += demos_sqlbrowser demos_qtdemo
-
+!cross_compile:{
+contains(QT_BUILD_PARTS, tools):{
+!wince*:SUBDIRS += demos_sqlbrowser demos_qtdemo
+wince*: SUBDIRS += demos_sqlbrowser
+}
+}
 contains(QT_CONFIG, phonon):SUBDIRS += demos_mediaplayer
 contains(QT_CONFIG, webkit):SUBDIRS += demos_browser
 

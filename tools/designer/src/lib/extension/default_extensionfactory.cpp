@@ -82,13 +82,13 @@ QT_BEGIN_NAMESPACE
     You can either create a new QExtensionFactory and reimplement the
     QExtensionFactory::createExtension() function. For example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.default_extensionfactory.cpp 0
+    \snippet doc/src/snippets/code/tools_designer_src_lib_extension_default_extensionfactory.cpp 0
 
     Or you can use an existing factory, expanding the
     QExtensionFactory::createExtension() function to make the factory
     able to create your extension as well. For example:
 
-    \snippet doc/src/snippets/code/tools.designer.src.lib.extension.default_extensionfactory.cpp 1
+    \snippet doc/src/snippets/code/tools_designer_src_lib_extension_default_extensionfactory.cpp 1
 
     For a complete example using the QExtensionFactory class, see the
     \l {designer/taskmenuextension}{Task Menu Extension example}. The

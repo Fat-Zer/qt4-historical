@@ -179,12 +179,12 @@ public:
     void removeBookmarkItem(QTreeView *treeView, const QModelIndex& index);
     void showBookmarkDialog(QWidget* parent, const QString &name, const QString &url);
     void addNewBookmark(const QModelIndex& index, const QString &name, const QString &url);
+    void setupBookmarkModels();
 
 private slots:
     void itemChanged(QStandardItem *item);
 
-private:
-    void setupBookmarkModels();
+private:    
     QString uniqueFolderName() const;
     void removeBookmarkFolderItems(QStandardItem *item);
     void readBookmarksRecursive(const QStandardItem *item, QDataStream &stream,
@@ -193,8 +193,7 @@ private:
 private:
     QString oldText;
     QIcon folderIcon;
-    QByteArray m_bookmarks;
-
+    
     BookmarkModel *treeModel;
     BookmarkModel *listModel;
     QStandardItem *renameItem;

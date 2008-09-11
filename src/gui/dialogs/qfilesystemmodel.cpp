@@ -788,7 +788,7 @@ bool QFileSystemModel::setData(const QModelIndex &idx, const QVariant &value, in
 
     if (newName.isEmpty()
         || newName.contains(QDir::separator())
-        || !d->rootDir.rename(oldName, newName)) {
+        || !QDir(filePath(parent(idx))).rename(oldName, newName)) {
 #ifndef QT_NO_MESSAGEBOX
         QMessageBox::information(0, QFileSystemModel::tr("Invalid filename"),
                                 QFileSystemModel::tr("<b>The name \"%1\" can not be used.</b><p>Try using another name, with fewer characters or no punctuations marks.")
@@ -1393,6 +1393,8 @@ QDir::Filters QFileSystemModel::filter() const
     \brief Whether the directory model should resolve symbolic links
 
     This is only relevant on operating systems that support symbolic links.
+
+    By default, this property is false.
 */
 void QFileSystemModel::setResolveSymlinks(bool enable)
 {
@@ -1532,10 +1534,10 @@ void QFileSystemModelPrivate::_q_directoryChanged(const QString &directory, cons
     // Ignore files we already have and cleanup filtered files that were removed.
     // non-filtered files will be removed in a fileSystemChanged()
     for (int i = parentNode->children.count() - 1;  i >= 0; --i) {
-        QStringList::const_iterator iterator;
+        QStringList::iterator iterator;
         iterator = qBinaryFind(newFiles.begin(), newFiles.end(),
                        parentNode->children.at(i).fileName);
-        if (iterator == newFiles.constEnd()) {
+        if (iterator == newFiles.end()) {
            removeNode(parentNode, i);
         }
     }
@@ -1654,7 +1656,7 @@ void QFileSystemModelPrivate::addVisibleFiles(QFileSystemNode *parentNode, const
         QList<int> visibleLocation;
         do {
             vf.location = locations[i + visibleLocation.count()];
-            QList<int>::const_iterator iterator;
+            QList<int>::iterator iterator;
             iterator = qUpperBound(parentNode->visibleChildren.begin(),
                     parentNode->visibleChildren.end(),
                     newFiles.at(i + visibleLocation.count()), vf);

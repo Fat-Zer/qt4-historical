@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/src/qt3support/widgets/q3dockwindow.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/qt3support/widgets/q3dockwindow.cpp -->
 <head>
   <title>Qt 4.4: Q3DockWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -12,7 +12,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Q3DockWindow Class Reference<br /><span class="small-subtitle">[<a href="qt3support.html">Qt3Support</a> module]</span>
 </h1>
 <p>The Q3DockWindow class provides a widget which can be docked inside a <a href="q3dockarea.html">Q3DockArea</a> or floated as a top level window on the desktop. <a href="#details">More...</a></p>
@@ -142,8 +142,8 @@
 <p>If the user drags the dock window into the dock area the dock window will be docked. If the user drags the dock area outside any dock areas the dock window will be undocked (floated) and will become a top level window. Double clicking a floating dock window's title bar will dock the dock window to the last dock area it was docked in. Double clicking a docked dock window's handle will undock (float) the dock window. If the user clicks the close button (which appears on floating dock windows by default) the dock window will disappear. You can control whether or not a dock window has a close button with <a href="q3dockwindow.html#closeMode-prop">setCloseMode</a>().</p>
 <p><a href="q3mainwindow.html">Q3MainWindow</a> provides four dock areas (top, left, right and bottom) which can be used by dock windows. For many applications using the dock areas provided by <a href="q3mainwindow.html">Q3MainWindow</a> is sufficient. (See the <a href="q3dockarea.html">Q3DockArea</a> documentation if you want to create your own dock areas.) In <a href="q3mainwindow.html">Q3MainWindow</a> a right-click popup menu (the dock window menu) is available which lists dock windows and can be used to show or hide them. (The popup menu only lists dock windows that have a <a href="qwidget.html#windowTitle-prop">caption</a>.)</p>
 <p>When you construct a dock window you <i>must</i> pass it a <a href="q3dockarea.html">Q3DockArea</a> or a <a href="q3mainwindow.html">Q3MainWindow</a> as its parent if you want it docked. Pass 0 for the parent if you want it floated.</p>
-<pre>     Q3ToolBar *fileTools = new Q3ToolBar(this, &quot;File Actions&quot;);
-     moveDockWindow(fileTools, Left);</pre>
+<pre> Q3ToolBar *fileTools = new Q3ToolBar(this, &quot;File Actions&quot;);
+ moveDockWindow(fileTools, Left);</pre>
 <p>In the example above we create a new <a href="q3toolbar.html">Q3ToolBar</a> in the constructor of a <a href="q3mainwindow.html">Q3MainWindow</a> subclass (so that the <i>this</i> pointer points to the <a href="q3mainwindow.html">Q3MainWindow</a>). By default the toolbar will be added to the <tt>Top</tt> dock area, but we've moved it to the <tt>Left</tt> dock area.</p>
 <p>A dock window is often used to contain a single widget. In these cases the widget can be set by calling <a href="q3dockwindow.html#setWidget">setWidget</a>(). If you're constructing a dock window that contains multiple widgets, e.g&#x2e; a toolbar, arrange the widgets within a box layout inside the dock window. To do this use the <a href="q3dockwindow.html#boxLayout">boxLayout</a>() function to get a pointer to the dock window's box layout, then add widgets to the layout using the box layout's <a href="qboxlayout.html#addWidget">QBoxLayout::addWidget</a>() function. The dock window will dynamically set the orientation of the layout to be vertical or horizontal as necessary, although you can control this yourself with <a href="q3dockwindow.html#setOrientation">setOrientation</a>().</p>
 <p>Although a common use of dock windows is for toolbars, they can be used with any widgets. When using larger widgets it may make sense for the dock window to be resizable by calling <a href="q3dockwindow.html#resizeEnabled-prop">setResizeEnabled</a>(). Resizable dock windows are given splitter-like handles to allow the user to resize them within their dock area. When resizable dock windows are undocked they become top level windows and can be resized like any other top level windows, e.g&#x2e; by dragging a corner or edge.</p>
@@ -384,8 +384,8 @@
 <p>Returns the dock window's title.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

@@ -128,18 +128,22 @@ QIcon QtCursorDatabase::cursorToShapeIcon(const QCursor &cursor) const
 
 int QtCursorDatabase::cursorToValue(const QCursor &cursor) const
 {
+#ifndef QT_NO_CURSOR
     Qt::CursorShape shape = cursor.shape();
     if (m_cursorShapeToValue.contains(shape))
         return m_cursorShapeToValue[shape];
+#endif
     return -1;
 }
 
+#ifndef QT_NO_CURSOR
 QCursor QtCursorDatabase::valueToCursor(int value) const
 {
     if (m_valueToCursorShape.contains(value))
         return QCursor(m_valueToCursorShape[value]);
     return QCursor();
 }
+#endif
 
 QPixmap QtPropertyBrowserUtils::brushValuePixmap(const QBrush &b)
 {

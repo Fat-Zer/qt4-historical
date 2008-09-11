@@ -855,6 +855,8 @@ bool QPrinter::isValid() const
   Returns the name of the output file. By default, this is an empty string
   (indicating that the printer shouldn't print to file).
 
+  \sa QPrintEngine::PrintEnginePropertyKey
+
 */
 
 QString QPrinter::outputFileName() const
@@ -940,7 +942,7 @@ void QPrinter::setPrintProgram(const QString &printProg)
 /*!
   Returns the document name.
 
-  \sa setDocName()
+  \sa setDocName(), QPrintEngine::PrintEnginePropertyKey
 */
 QString QPrinter::docName() const
 {
@@ -952,8 +954,12 @@ QString QPrinter::docName() const
 /*!
   Sets the document name to \a name.
 
-  On X11, the document name is for example used as the
-  default output filename in QPrintDialog.
+  On X11, the document name is for example used as the default
+  output filename in QPrintDialog. Note that the document name does
+  not affect the file name if the printer is printing to a file.
+  Use the setOutputFile() function for this.
+
+  \sa docName(), QPrintEngine::PrintEnginePropertyKey
 */
 void QPrinter::setDocName(const QString &name)
 {

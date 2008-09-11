@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/qtxml.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/qtxml.qdoc -->
 <head>
   <title>Qt 4.4: QtXml Module</title>
   <link rel="prev" href="qtsvg.html" />
@@ -14,7 +14,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Previous: <a href="qtsvg.html">QtSvg Module</a>]
 [<a href="modules.html">Qt's Modules</a>]
@@ -88,9 +88,9 @@
 <h3>Configuring the Build Process</h3>
 <p>Applications that use Qt's XML classes need to be configured to be built against the QtXml module. The following declaration in a <tt>qmake</tt> project file ensures that an application is compiled and linked appropriately:</p>
 <p>To include the definitions of the module's classes, use the following directive:</p>
-<pre>         #include &lt;QtXml&gt;</pre>
+<pre> #include &lt;QtXml&gt;</pre>
 <p>To link against the module, add this line to your <a href="qmake-manual.html#qmake">qmake</a> <tt>.pro</tt> file:</p>
-<pre>         QT += xml</pre>
+<pre> QT += xml</pre>
 <p>This line is necessary because only the <a href="qtcore.html">QtCore</a> and <a href="qtgui.html">QtGui</a> modules are used in the default build process.</p>
 <a name="the-qtxml-stream-classes"></a>
 <h3>The QtXml Stream Classes</h3>
@@ -152,7 +152,7 @@
 <h4>Introduction to SAX2</h4>
 <p>The SAX2 interface is an event-driven mechanism to provide the user with document information. An &quot;event&quot; in this context means something reported by the parser, for example, it has encountered a start tag, or an end tag, etc.</p>
 <p>To make it less abstract consider the following example:</p>
-<pre>     &lt;quote&gt;A quotation.&lt;/quote&gt;</pre>
+<pre> &lt;quote&gt;A quotation.&lt;/quote&gt;</pre>
 <p>Whilst reading (a SAX2 parser is usually referred to as &quot;reader&quot;) the above document three events would be triggered:</p>
 <ol type="1">
 <li>A start tag occurs (<tt>&lt;quote&gt;</tt>).</li>
@@ -187,8 +187,8 @@
 <p>The behavior of an XML reader depends on its support for certain optional features. For example, a reader may have the feature &quot;report attributes used for namespace declarations and prefixes along with the local name of a tag&quot;. Like every other feature this has a unique name represented by a URI: it is called <i>http://xml.org/sax/features/namespace-prefixes</i>.</p>
 <p>The Qt SAX2 implementation can report whether the reader has particular functionality using the <a href="qxmlreader.html#hasFeature">QXmlReader::hasFeature</a>() function. Available features can be tested with <a href="qxmlreader.html#feature">QXmlReader::feature</a>(), and switched on or off using <a href="qxmlreader.html#setFeature">QXmlReader::setFeature</a>().</p>
 <p>Consider the example</p>
-<pre>     &lt;document xmlns:book = 'http://trolltech.com/fnord/book/'
-               xmlns      = 'http://trolltech.com/fnord/' &gt;</pre>
+<pre> &lt;document xmlns:book = 'http://trolltech.com/fnord/book/'
+           xmlns      = 'http://trolltech.com/fnord/' &gt;</pre>
 <p>A reader that does not support the <i>http://xml.org/sax/features/namespace-prefixes</i> feature would report the element name <i>document</i> but not its attributes <i>xmlns:book</i> and <i>xmlns</i> with their values. A reader with the feature <i>http://xml.org/sax/features/namespace-prefixes</i> reports the namespace attributes if the <a href="qxmlreader.html#feature">feature</a> is switched on.</p>
 <p>Other features include <i>http://xml.org/sax/features/namespace</i> (namespace processing, implies <i>http://xml.org/sax/features/namespace-prefixes</i>) and <i>http://xml.org/sax/features/validation</i> (the ability to report validation errors).</p>
 <p>Whilst SAX2 leaves it to the user to define and implement whatever features are required, support for <i>http://xml.org/sax/features/namespace</i> (and thus <i>http://xml.org/sax/features/namespace-prefixes</i>) is mandantory. The <a href="qxmlsimplereader.html">QXmlSimpleReader</a> implementation of <a href="qxmlreader.html">QXmlReader</a>, supports them, and can do namespace processing.</p>
@@ -204,10 +204,10 @@
 <li>Attributes that declare namespaces (i.e&#x2e; the attribute <i>xmlns</i> and attributes starting with <i>xmlns:</i>) are reported.</li>
 </ol>
 <p>Consider the following element:</p>
-<pre>     &lt;author xmlns:fnord = 'http://trolltech.com/fnord/'
-                  title=&quot;Ms&quot;
-                  fnord:title=&quot;Goddess&quot;
-                  name=&quot;Eris Kallisti&quot;/&gt;</pre>
+<pre> &lt;author xmlns:fnord = 'http://trolltech.com/fnord/'
+              title=&quot;Ms&quot;
+              fnord:title=&quot;Goddess&quot;
+              name=&quot;Eris Kallisti&quot;/&gt;</pre>
 <p>With <i>http://xml.org/sax/features/namespace-prefixes</i> set to true the reader will report four attributes; but with the <i>namespace-prefixes</i> feature set to false only three, with the <i>xmlns:fnord</i> attribute defining a namespace being &quot;invisible&quot; to the reader.</p>
 <p>The <i>http://xml.org/sax/features/namespaces</i> feature is responsible for reporting local names, namespace prefixes and URIs. With <i>http://xml.org/sax/features/namespaces</i> set to true the parser will report <i>title</i> as the local name of the <i>fnord:title</i> attribute, <i>fnord</i> being the namespace prefix and <i>http://trolltech.com/fnord/</i> as the namespace URI. When <i>http://xml.org/sax/features/namespaces</i> is false none of them are reported.</p>
 <p>In the current implementation the Qt XML classes follow the definition that the prefix <i>xmlns</i> itself isn't associated with any namespace at all (see <a href="http://www.w3.org/TR/1999/REC-xml-names-19990114/#ns-using">http://www.w3.org/TR/1999/REC-xml-names-19990114/#ns-using</a>). Therefore even with <i>http://xml.org/sax/features/namespaces</i> and <i>http://xml.org/sax/features/namespace-prefixes</i> both set to true the reader won't return either a local name, a namespace prefix or a namespace URI for <i>xmlns:fnord</i>.</p>
@@ -301,42 +301,42 @@
 <p>Parts of the Qt XML module documentation assume that you are familiar with XML namespaces. Here we present a brief introduction; skip to <a href="#namespacesconventions">Qt XML documentation conventions</a> if you already know this material.</p>
 <p>Namespaces are a concept introduced into XML to allow a more modular design. With their help data processing software can easily resolve naming conflicts in XML documents.</p>
 <p>Consider the following example:</p>
-<pre>     &lt;document&gt;
-     &lt;book&gt;
-       &lt;title&gt;Practical XML&lt;/title&gt;
-       &lt;author title=&quot;Ms&quot; name=&quot;Eris Kallisti&quot;/&gt;
-       &lt;chapter&gt;
-         &lt;title&gt;A Namespace Called fnord&lt;/title&gt;
-       &lt;/chapter&gt;
-     &lt;/book&gt;
-     &lt;/document&gt;</pre>
+<pre> &lt;document&gt;
+ &lt;book&gt;
+   &lt;title&gt;Practical XML&lt;/title&gt;
+   &lt;author title=&quot;Ms&quot; name=&quot;Eris Kallisti&quot;/&gt;
+   &lt;chapter&gt;
+     &lt;title&gt;A Namespace Called fnord&lt;/title&gt;
+   &lt;/chapter&gt;
+ &lt;/book&gt;
+ &lt;/document&gt;</pre>
 <p>Here we find three different uses of the name <i>title</i>. If you wish to process this document you will encounter problems because each of the <i>titles</i> should be displayed in a different manner -- even though they have the same name.</p>
 <p>The solution would be to have some means of identifying the first occurrence of <i>title</i> as the title of a book, i.e&#x2e; to use the <i>title</i> element of a book namespace to distinguish it from, for example, the chapter title, e.g&#x2e;:</p>
-<pre>     &lt;book:title&gt;Practical XML&lt;/book:title&gt;</pre>
+<pre> &lt;book:title&gt;Practical XML&lt;/book:title&gt;</pre>
 <p><i>book</i> in this case is a <i>prefix</i> denoting the namespace.</p>
 <p>Before we can apply a namespace to element or attribute names we must declare it.</p>
 <p>Namespaces are URIs like <i>http://trolltech.com/fnord/book/</i>. This does not mean that data must be available at this address; the URI is simply used to provide a unique name.</p>
 <p>We declare namespaces in the same way as attributes; strictly speaking they <i>are</i> attributes. To make for example <i>http://trolltech.com/fnord/</i> the document's default XML namespace <i>xmlns</i> we write</p>
-<pre>     xmlns=&quot;http://trolltech.com/fnord/&quot;</pre>
+<pre> xmlns=&quot;http://trolltech.com/fnord/&quot;</pre>
 <p>To distinguish the <i>http://trolltech.com/fnord/book/</i> namespace from the default, we must supply it with a prefix:</p>
-<pre>     xmlns:book=&quot;http://trolltech.com/fnord/book/&quot;</pre>
+<pre> xmlns:book=&quot;http://trolltech.com/fnord/book/&quot;</pre>
 <p>A namespace that is declared like this can be applied to element and attribute names by prepending the appropriate prefix and a &quot;:&quot; delimiter. We have already seen this with the <i>book:title</i> element.</p>
 <p>Element names without a prefix belong to the default namespace. This rule does not apply to attributes: an attribute without a prefix does not belong to any of the declared XML namespaces at all. Attributes always belong to the &quot;traditional&quot; namespace of the element in which they appear. A &quot;traditional&quot; namespace is not an XML namespace, it simply means that all attribute names belonging to one element must be different. Later we will see how to assign an XML namespace to an attribute.</p>
 <p>Due to the fact that attributes without prefixes are not in any XML namespace there is no collision between the attribute <i>title</i> (that belongs to the <i>author</i> element) and for example the <i>title</i> element within a <i>chapter</i>.</p>
 <p>Let's clarify this with an example:</p>
-<pre>     &lt;document xmlns:book = 'http://trolltech.com/fnord/book/'
-               xmlns      = 'http://trolltech.com/fnord/' &gt;
-     &lt;book&gt;
-       &lt;book:title&gt;Practical XML&lt;/book:title&gt;
-       &lt;book:author xmlns:fnord = 'http://trolltech.com/fnord/'
-                    title=&quot;Ms&quot;
-                    fnord:title=&quot;Goddess&quot;
-                    name=&quot;Eris Kallisti&quot;/&gt;
-       &lt;chapter&gt;
-         &lt;title&gt;A Namespace Called fnord&lt;/title&gt;
-       &lt;/chapter&gt;
-     &lt;/book&gt;
-     &lt;/document&gt;</pre>
+<pre> &lt;document xmlns:book = 'http://trolltech.com/fnord/book/'
+           xmlns      = 'http://trolltech.com/fnord/' &gt;
+ &lt;book&gt;
+   &lt;book:title&gt;Practical XML&lt;/book:title&gt;
+   &lt;book:author xmlns:fnord = 'http://trolltech.com/fnord/'
+                title=&quot;Ms&quot;
+                fnord:title=&quot;Goddess&quot;
+                name=&quot;Eris Kallisti&quot;/&gt;
+   &lt;chapter&gt;
+     &lt;title&gt;A Namespace Called fnord&lt;/title&gt;
+   &lt;/chapter&gt;
+ &lt;/book&gt;
+ &lt;/document&gt;</pre>
 <p>Within the <i>document</i> element we have two namespaces declared. The default namespace <i>http://trolltech.com/fnord/</i> applies to the <i>book</i> element, the <i>chapter</i> element, the appropriate <i>title</i> element and of course to <i>document</i> itself.</p>
 <p>The <i>book:author</i> and <i>book:title</i> elements belong to the namespace with the URI <i>http://trolltech.com/fnord/book/</i>.</p>
 <p>The two <i>book:author</i> attributes <i>title</i> and <i>name</i> have no XML namespace assigned. They are only members of the &quot;traditional&quot; namespace of the element <i>book:author</i>, meaning that for example two <i>title</i> attributes in <i>book:author</i> are forbidden.</p>
@@ -367,8 +367,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

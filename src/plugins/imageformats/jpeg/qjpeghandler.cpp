@@ -630,7 +630,7 @@ static void scaleSize(int &reqW, int &reqH, int imgW, int imgH, Qt::AspectRatioM
 
 #define HIGH_QUALITY_THRESHOLD 50
 
-static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArray &parameters, QSize scaledSize, int quality )
+static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArray &parameters, QSize scaledSize, int inQuality )
 {
 #ifdef QT_NO_IMAGE_SMOOTHSCALE
     Q_UNUSED( scaledSize );
@@ -655,7 +655,10 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
         (void) jpeg_read_header(&cinfo, true);
 #endif
 
-        (void) jpeg_start_decompress(&cinfo);
+        // -1 means default quality.
+        int quality = inQuality;
+        if (quality < 0)
+            quality = 75;
 
         QString params = QString::fromLatin1(parameters);
         params.simplified();
@@ -663,11 +666,33 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
         char sModeStr[1024] = "";
         Qt::AspectRatioMode sMode;
 
+#ifndef QT_NO_IMAGE_SMOOTHSCALE
+        // If high quality not required, shrink image during decompression
+        if (scaledSize.isValid() && quality < HIGH_QUALITY_THRESHOLD && !params.contains(QLatin1String("GetHeaderInformation")) ) {
+            cinfo.scale_denom = qMin(cinfo.image_width / scaledSize.width(),
+                                     cinfo.image_width / scaledSize.height());
+            if (cinfo.scale_denom < 2) {
+                cinfo.scale_denom = 1;
+            } else if (cinfo.scale_denom < 4) {
+                cinfo.scale_denom = 2;
+            } else if (cinfo.scale_denom < 8) {
+                cinfo.scale_denom = 4;
+            } else {
+                cinfo.scale_denom = 8;
+            }
+            cinfo.scale_num = 1;
+        }
+#endif
+
+
         // If high quality not required, use fast decompression
         if( quality < HIGH_QUALITY_THRESHOLD ) {
             cinfo.dct_method = JDCT_IFAST;
             cinfo.do_fancy_upsampling = FALSE;
         }
+
+
+        (void) jpeg_start_decompress(&cinfo);
 
         if (params.contains(QLatin1String("GetHeaderInformation"))) {
 
@@ -765,21 +790,6 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage, const QByteArra
             }
 #ifndef QT_NO_IMAGE_SMOOTHSCALE
         } else if (scaledSize.isValid()) {
-            // If high quality not required, shrink image during decompression
-            if(quality < HIGH_QUALITY_THRESHOLD) {
-                cinfo.scale_denom = qMin(cinfo.output_width / scaledSize.width(),
-                                         cinfo.output_height / scaledSize.height());
-                if (cinfo.scale_denom < 2) {
-                    cinfo.scale_denom = 1;
-                } else if (cinfo.scale_denom < 4) {
-                    cinfo.scale_denom = 2;
-                } else if (cinfo.scale_denom < 8) {
-                    cinfo.scale_denom = 4;
-                } else {
-                    cinfo.scale_denom = 8;
-                }
-            }
-            
             jpegSmoothScaler scaler(&cinfo, QString().sprintf("Scale( %d, %d, ScaleFree )",
                                                               scaledSize.width(),
                                                               scaledSize.height()).toLatin1().data());

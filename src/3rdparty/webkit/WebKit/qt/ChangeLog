@@ -1,3 +1,52 @@
+2008-08-12  Urs Wolfer  <uwolfer@kde.org>
+
+        Reviewed by Simon.
+
+        https://bugs.webkit.org/show_bug.cgi?id=20357
+
+        Fix crash in QWebPage in case contextMenuEvent has been overwritten
+        because context menu has the view as parent and thus is deleted too early.
+
+        Add testcase for this crash.
+
+        * Api/qwebpage_p.h:
+        * tests/qwebpage/tst_qwebpage.cpp:
+        (tst_QWebPage::contextMenuCrash):
+
+2008-08-07  Simon Hausmann  <hausmann@webkit.org>
+
+        Rubber-stamped by Lars.
+
+        Added API tests for QWebPage/QWebFrame based on QTestLib.
+
+        * tests/qwebframe/qwebframe.pro: Added.
+        * tests/qwebframe/tst_qwebframe.cpp: Added.
+        * tests/qwebpage/qwebpage.pro: Added.
+        * tests/qwebpage/tst_qwebpage.cpp: Added.
+        * tests/tests.pro: Added.
+
+2008-06-30  Simon Hausmann  <hausmann@webkit.org>
+
+        Rubber-stamped by Niko.
+
+        Removed the obsolete and unmaintained WebKitPart. The integration of
+        QtWebKit into KDE is now done in the webkitkde component inside KDE.
+
+        * WebKitPart/WebKitFactory.cpp: Removed.
+        * WebKitPart/WebKitFactory.h: Removed.
+        * WebKitPart/WebKitPart.cpp: Removed.
+        * WebKitPart/WebKitPart.desktop: Removed.
+        * WebKitPart/WebKitPart.h: Removed.
+        * WebKitPart/WebKitPart.rc: Removed.
+        * WebKitPart/WebKitPartBrowser.rc: Removed.
+        * WebKitPart/WebKitPartBrowserExtension.cpp: Removed.
+        * WebKitPart/WebKitPartBrowserExtension.h: Removed.
+        * WebKitPart/WebKitPartClient.cpp: Removed.
+        * WebKitPart/WebKitPartClient.h: Removed.
+        * WebKitPart/WebKitPartInterface.cpp: Removed.
+        * WebKitPart/WebKitPartInterface.h: Removed.
+        * WebKitPart/org.kde.WebKitPart.xml: Removed.
+
 2008-06-09  Tor Arne Vestbø  <tavestbo@trolltech.com>
 
         Reviewed by Simon

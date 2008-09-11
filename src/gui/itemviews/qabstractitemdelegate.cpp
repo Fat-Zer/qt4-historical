@@ -77,6 +77,19 @@ QT_BEGIN_NAMESPACE
     these functions; if you do not need custom rendering, subclass that
     class instead.
 
+    We give an example of drawing a progress bar in items; in our case
+    for a package management program.
+
+    \image widgetdelegate.png
+
+    We create the \c WidgetDelegate class, which inherits from
+    QStyledItemDelegate. We do the drawing in the paint() function:
+
+    \snippet doc/src/snippets/widgetdelegate.cpp 0
+
+    Notice that we use a QStyleOptionProgressBar and initialize its
+    members. We can then use the current QStyle to draw it.
+
     To provide custom editing, there are two approaches that can be
     used. The first approach is to create an editor widget and display
     it directly on top of the item. To do this you must reimplement
@@ -88,7 +101,7 @@ QT_BEGIN_NAMESPACE
     editorEvent().
 
     \sa {model-view-programming}{Model/View Programming}, QItemDelegate,
-        {Pixelator Example}
+        {Pixelator Example}, QStyledItemDelegate, QStyle
 */
 
 /*!
@@ -111,7 +124,7 @@ QT_BEGIN_NAMESPACE
     differently.
 
     The following hints are most useful when models are used that cache
-    data, such as those that manipulate date locally in order to increase
+    data, such as those that manipulate data locally in order to increase
     performance or conserve network bandwidth.
 
     \value SubmitModelCache If the model caches data, it should write out

@@ -62,7 +62,7 @@
 
     \section1 Installing Qt
 
-    Follow the instructions found in \l{Installing Qt/Windows CE}.
+    Follow the instructions found in \l{Installing Qt on Windows CE}.
 
     \section1 Building your own applications
 
@@ -75,11 +75,11 @@
     application. You can either do it on the command line or inside of
     VS2005. To do it on the command line, simply write:
 
-    \snippet doc/src/snippets/code/doc.src.wince-introduction.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_wince-introduction.qdoc 0
 
     To build the project inside of VS2005, on the command line write:
 
-    \snippet doc/src/snippets/code/doc.src.wince-introduction.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_wince-introduction.qdoc 1
 
     then start VS2005 with the generated \c .vcproj or \c .sln file and
     select \e{Build project}.
@@ -107,6 +107,6 @@
     VS2005 toolbar.
 
     Further information on deploying Qt applications for Windows can
-    be found in the \l{Deploying an Application on Qt/Windows}
+    be found in the \l{Deploying an Application on Windows}
     {deployment document}.
 */

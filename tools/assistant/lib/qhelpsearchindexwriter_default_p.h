@@ -103,7 +103,8 @@ public:
     ~QHelpSearchIndexWriter();
 
     void cancelIndexing();
-    void updateIndex(const QString &collectionFile, bool reindex);
+    void updateIndex(const QString &collectionFile,
+        const QString &indexFilesFolder, bool reindex);
 
 signals:
     void indexingStarted();
@@ -121,6 +122,7 @@ private:
     bool m_cancel;
     bool m_reindex;
     QString m_collectionFile;
+    QString m_indexFilesFolder;
 };
 
         }   // namespace std

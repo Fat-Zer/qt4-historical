@@ -153,7 +153,7 @@ Q_GLOBAL_STATIC(QReadWriteLock, customTypesLock)
     \internal
 
     The QDBusMetaType class allows you to register class types for
-    marshalling and demarshalling over D-BUS. D-BUS supports a very
+    marshalling and demarshalling over D-Bus. D-Bus supports a very
     limited set of primitive types, but allows one to extend the type
     system by creating compound types, such as arrays (lists) and
     structs. In order to use them with QtDBus, those types must be
@@ -181,7 +181,7 @@ Q_GLOBAL_STATIC(QReadWriteLock, customTypesLock)
     Q_DECLARE_METATYPE() macro, and then registered as in the
     following example:
 
-    \snippet doc/src/snippets/code/src.qdbus.qdbusmetatype.cpp 0
+    \snippet doc/src/snippets/code/src_qdbus_qdbusmetatype.cpp 0
 
     If \c{T} isn't a type derived from one of
     Qt's \l{container classes}, the \c{operator<<} and
@@ -230,7 +230,7 @@ void QDBusMetaType::registerMarshallOperators(int id, MarshallFunction mf,
 /*!
     \internal
     Executes the marshalling of type \a id (whose data is contained in
-    \a data) to the D-BUS marshalling argument \a arg. Returns true if
+    \a data) to the D-Bus marshalling argument \a arg. Returns true if
     the marshalling succeeded, or false if an error occurred.
 */
 bool QDBusMetaType::marshall(QDBusArgument &arg, int id, const void *data)
@@ -259,7 +259,7 @@ bool QDBusMetaType::marshall(QDBusArgument &arg, int id, const void *data)
 /*!
     \internal
     Executes the demarshalling of type \a id (whose data will be placed in
-    \a data) from the D-BUS marshalling argument \a arg. Returns true if
+    \a data) from the D-Bus marshalling argument \a arg. Returns true if
     the demarshalling succeeded, or false if an error occurred.
 */
 bool QDBusMetaType::demarshall(const QDBusArgument &arg, int id, void *data)
@@ -293,7 +293,7 @@ bool QDBusMetaType::demarshall(const QDBusArgument &arg, int id, void *data)
     Returns the Qt meta type id for the given D-Bus signature for exactly one full type, given
     by \a signature.
 
-    Note: this function only handles the basic D-BUS types.
+    Note: this function only handles the basic D-Bus types.
 
     \sa QDBusUtil::isValidSingleSignature(), typeToSignature(),
         QVariant::type(), QVariant::userType()

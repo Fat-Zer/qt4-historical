@@ -71,25 +71,11 @@
 # include <objidl.h>
 #endif
 
-#ifndef QT_NO_DRAGANDDROP
-
 QT_BEGIN_NAMESPACE
 
 class QEventLoop;
 
-class QDragPrivate : public QObjectPrivate
-{
-public:
-    QWidget *source;
-    QWidget *target;
-    QMimeData *data;
-    QPixmap pixmap;
-    QPoint hotspot;
-    Qt::DropActions possible_actions;
-    Qt::DropAction executed_action;
-    QMap<Qt::DropAction, QPixmap> customCursors;
-    Qt::DropAction defaultDropAction;
-};
+#if !(defined(QT_NO_DRAGANDDROP) && defined(QT_NO_CLIPBOARD))
 
 class QInternalMimeData : public QMimeData
 {
@@ -113,6 +99,91 @@ protected:
     virtual bool hasFormat_sys(const QString &mimeType) const = 0;
     virtual QStringList formats_sys() const = 0;
     virtual QVariant retrieveData_sys(const QString &mimeType, QVariant::Type type) const = 0;
+};
+
+#ifdef Q_WS_WIN
+class QOleDataObject : public IDataObject
+{
+public:
+    explicit QOleDataObject(QMimeData *mimeData);
+    virtual ~QOleDataObject();
+
+    void releaseQt();
+    const QMimeData *mimeData() const;
+    DWORD reportedPerformedEffect() const;
+
+    // IUnknown methods
+    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
+    STDMETHOD_(ULONG,AddRef)(void);
+    STDMETHOD_(ULONG,Release)(void);
+
+    // IDataObject methods
+    STDMETHOD(GetData)(LPFORMATETC pformatetcIn, LPSTGMEDIUM pmedium);
+    STDMETHOD(GetDataHere)(LPFORMATETC pformatetc, LPSTGMEDIUM pmedium);
+    STDMETHOD(QueryGetData)(LPFORMATETC pformatetc);
+    STDMETHOD(GetCanonicalFormatEtc)(LPFORMATETC pformatetc, LPFORMATETC pformatetcOut);
+    STDMETHOD(SetData)(LPFORMATETC pformatetc, STGMEDIUM FAR * pmedium,
+                       BOOL fRelease);
+    STDMETHOD(EnumFormatEtc)(DWORD dwDirection, LPENUMFORMATETC FAR* ppenumFormatEtc);
+    STDMETHOD(DAdvise)(FORMATETC FAR* pFormatetc, DWORD advf,
+                      LPADVISESINK pAdvSink, DWORD FAR* pdwConnection);
+    STDMETHOD(DUnadvise)(DWORD dwConnection);
+    STDMETHOD(EnumDAdvise)(LPENUMSTATDATA FAR* ppenumAdvise);
+
+private:
+    ULONG m_refs;
+    QPointer<QMimeData> data;
+    int CF_PERFORMEDDROPEFFECT;
+    DWORD performedEffect;
+};
+
+class QOleEnumFmtEtc : public IEnumFORMATETC
+{
+public:
+    explicit QOleEnumFmtEtc(const QVector<FORMATETC> &fmtetcs);
+    explicit QOleEnumFmtEtc(const QVector<LPFORMATETC> &lpfmtetcs);
+    virtual ~QOleEnumFmtEtc();
+
+    bool isNull() const;
+
+    // IUnknown methods
+    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
+    STDMETHOD_(ULONG,AddRef)(void);
+    STDMETHOD_(ULONG,Release)(void);
+
+    // IEnumFORMATETC methods
+    STDMETHOD(Next)(ULONG celt, LPFORMATETC rgelt, ULONG FAR* pceltFetched);
+    STDMETHOD(Skip)(ULONG celt);
+    STDMETHOD(Reset)(void);
+    STDMETHOD(Clone)(LPENUMFORMATETC FAR* newEnum);
+
+private:
+    bool copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const;
+
+    ULONG m_dwRefs;
+    ULONG m_nIndex;
+    QVector<LPFORMATETC> m_lpfmtetcs;
+    bool m_isNull;
+};
+
+#endif
+
+#endif //QT_NO_DRAGANDDROP && QT_NO_CLIPBOARD
+
+#ifndef QT_NO_DRAGANDDROP
+
+class QDragPrivate : public QObjectPrivate
+{
+public:
+    QWidget *source;
+    QWidget *target;
+    QMimeData *data;
+    QPixmap pixmap;
+    QPoint hotspot;
+    Qt::DropActions possible_actions;
+    Qt::DropAction executed_action;
+    QMap<Qt::DropAction, QPixmap> customCursors;
+    Qt::DropAction defaultDropAction;
 };
 
 class QDropData : public QInternalMimeData
@@ -206,71 +277,6 @@ private:
 
 #if defined(Q_WS_WIN)
 
-class QOleDataObject : public IDataObject
-{
-public:
-    explicit QOleDataObject(QMimeData *mimeData);
-    virtual ~QOleDataObject();
-
-    void releaseQt();
-    const QMimeData *mimeData() const;
-    DWORD reportedPerformedEffect() const;
-
-    // IUnknown methods
-    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
-    STDMETHOD_(ULONG,AddRef)(void);
-    STDMETHOD_(ULONG,Release)(void);
-
-    // IDataObject methods
-    STDMETHOD(GetData)(LPFORMATETC pformatetcIn, LPSTGMEDIUM pmedium);
-    STDMETHOD(GetDataHere)(LPFORMATETC pformatetc, LPSTGMEDIUM pmedium);
-    STDMETHOD(QueryGetData)(LPFORMATETC pformatetc);
-    STDMETHOD(GetCanonicalFormatEtc)(LPFORMATETC pformatetc, LPFORMATETC pformatetcOut);
-    STDMETHOD(SetData)(LPFORMATETC pformatetc, STGMEDIUM FAR * pmedium,
-                       BOOL fRelease);
-    STDMETHOD(EnumFormatEtc)(DWORD dwDirection, LPENUMFORMATETC FAR* ppenumFormatEtc);
-    STDMETHOD(DAdvise)(FORMATETC FAR* pFormatetc, DWORD advf,
-                      LPADVISESINK pAdvSink, DWORD FAR* pdwConnection);
-    STDMETHOD(DUnadvise)(DWORD dwConnection);
-    STDMETHOD(EnumDAdvise)(LPENUMSTATDATA FAR* ppenumAdvise);
-
-private:
-    ULONG m_refs;
-    QPointer<QMimeData> data;
-    int CF_PERFORMEDDROPEFFECT;
-    DWORD performedEffect;
-};
-
-
-class QOleEnumFmtEtc : public IEnumFORMATETC
-{
-public:
-    explicit QOleEnumFmtEtc(const QVector<FORMATETC> &fmtetcs);
-    explicit QOleEnumFmtEtc(const QVector<LPFORMATETC> &lpfmtetcs);
-    virtual ~QOleEnumFmtEtc();
-
-    bool isNull() const;
-
-    // IUnknown methods
-    STDMETHOD(QueryInterface)(REFIID riid, void FAR* FAR* ppvObj);
-    STDMETHOD_(ULONG,AddRef)(void);
-    STDMETHOD_(ULONG,Release)(void);
-
-    // IEnumFORMATETC methods
-    STDMETHOD(Next)(ULONG celt, LPFORMATETC rgelt, ULONG FAR* pceltFetched);
-    STDMETHOD(Skip)(ULONG celt);
-    STDMETHOD(Reset)(void);
-    STDMETHOD(Clone)(LPENUMFORMATETC FAR* newEnum);
-
-private:
-    bool copyFormatEtc(LPFORMATETC dest, LPFORMATETC src) const;
-
-    ULONG m_dwRefs;
-    ULONG m_nIndex;
-    QVector<LPFORMATETC> m_lpfmtetcs;
-    bool m_isNull;
-};
-
 class QOleDropTarget : public IDropTarget
 {
 public:
@@ -296,7 +302,7 @@ private:
     QPointer<QWidget> currentWidget;
     QRect answerRect;
     QPoint lastPoint;
-    DWORD choosenEffect;
+    DWORD chosenEffect;
     DWORD lastKeyState;
 
     void sendDragEnterEvent(QWidget *to, DWORD grfKeyState, POINTL pt, LPDWORD pdwEffect);
@@ -304,8 +310,8 @@ private:
 
 #endif
 
-QT_END_NAMESPACE
-
 #endif // QT_NO_DRAGANDDROP
+
+QT_END_NAMESPACE
 
 #endif // QDND_P_H

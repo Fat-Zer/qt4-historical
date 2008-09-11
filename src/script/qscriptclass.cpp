@@ -635,7 +635,7 @@ bool QScriptClass::supportsExtension(Extension extension) const
   result of the function call. In the following example the sum of the
   arguments to the script function are added up and returned:
 
-  \snippet doc/src/snippets/code/src.script.qscriptclass.cpp 0
+  \snippet doc/src/snippets/code/src_script_qscriptclass.cpp 0
 
   \sa supportsExtension()
 */

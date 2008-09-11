@@ -199,7 +199,7 @@ void QTimeLinePrivate::setCurrentTime(int msecs)
 
     Example:
 
-    \snippet doc/src/snippets/code/src.corelib.tools.qtimeline.cpp 0
+    \snippet doc/src/snippets/code/src_corelib_tools_qtimeline.cpp 0
 
     You can also use QTimeLine with the
     \l{Graphics View}{Graphics View framework} for
@@ -358,6 +358,8 @@ QTimeLine::State QTimeLine::state() const
     \brief the number of times the timeline should loop before it's finished.
 
     A loop count of of 0 means that the timeline will loop forever.
+
+    By default, this property contains a value of 1.
 */
 int QTimeLine::loopCount() const
 {
@@ -378,6 +380,8 @@ void QTimeLine::setLoopCount(int count)
     This direction indicates whether the time moves from 0 towards the
     timeline duration, or from the value of the duration and towards 0 after
     start() has been called.
+
+    By default, this property is set to \l Forward.
 */
 QTimeLine::Direction QTimeLine::direction() const
 {
@@ -512,6 +516,8 @@ void QTimeLine::setUpdateInterval(int interval)
 
     If you have reimplemented valueForTime(), this value is ignored.
 
+    By default, this property is set to \l EaseInOutCurve.
+
     \sa valueForTime()
 */
 QTimeLine::CurveShape QTimeLine::curveShape() const
@@ -533,6 +539,8 @@ void QTimeLine::setCurveShape(CurveShape shape)
     a function of the duration and direction of the timeline. Otherwise, it is
     value that was current when stop() was called last, or the value set by
     setCurrentTime().
+
+    By default, this property contains a value of 0.
 */
 int QTimeLine::currentTime() const
 {

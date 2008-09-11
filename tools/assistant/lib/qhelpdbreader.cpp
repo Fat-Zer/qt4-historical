@@ -45,6 +45,7 @@
 
 #include <QtCore/QVariant>
 #include <QtCore/QFile>
+#include <QtSql/QSqlError>
 #include <QtSql/QSqlQuery>
 
 QT_BEGIN_NAMESPACE
@@ -79,7 +80,7 @@ bool QHelpDBReader::init()
 	QSqlDatabase db = QSqlDatabase::addDatabase(QLatin1String("QSQLITE"), m_uniqueId);
 	db.setDatabaseName(m_dbName);
     if (!db.open()) {
-        m_error = tr("Cannot open DB!");
+        m_error = tr("Cannot open database '%1' '%2': %3").arg(m_dbName, m_uniqueId, db.lastError().text());
         QSqlDatabase::removeDatabase(m_uniqueId);
 		return false;
 	}

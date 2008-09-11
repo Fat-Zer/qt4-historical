@@ -354,12 +354,12 @@ void Q3HttpCloseRequest::start( Q3Http *http )
     consists of a name followed by a colon, a single space, and the
     field value. (See RFC 1945.) Field names are case-insensitive. A
     typical header field looks like this:
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 0
 
     In the API the header field name is called the "key" and the
     content is called the "value". You can get and set a header
     field's value by using its key with value() and setValue(), e.g.
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 1
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 1
 
     Some fields are so common that getters and setters are provided
     for them as a convenient alternative to using \l value() and
@@ -1016,7 +1016,7 @@ QString Q3HttpRequestHeader::toString() const
     do not use it directly, but rather through a QUrlOperator, for
     example:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 2
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 2
 
     This code will only work if the Q3Http class is registered; to
     register the class, you must call q3InitNetworkProtocols() before
@@ -1053,7 +1053,7 @@ QString Q3HttpRequestHeader::toString() const
     from the Trolltech home page (i.e. the URL
     http://www.trolltech.com/index.html):
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 3
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 3
 
     For the common HTTP requests \c GET, \c POST and \c HEAD, Q3Http
     provides the convenience functions get(), post() and head(). They
@@ -1061,12 +1061,12 @@ QString Q3HttpRequestHeader::toString() const
     special header fields, they are easier to use. The above example
     can also be written as:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 4
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 4
 
     For this example the following sequence of signals is emitted
     (with small variations, depending on network traffic, etc.):
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 5
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 5
 
     The dataSendProgress() and dataReadProgress() signals in the above
     example are useful if you want to show a \link QProgressBar
@@ -1091,13 +1091,13 @@ QString Q3HttpRequestHeader::toString() const
 
     For example, if you have the following sequence of reqeusts
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 6
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 6
 
     and the get() request fails because the host lookup fails, then
     the post() request is never executed and the signals would look
     like this:
 
-    \snippet doc/src/snippets/code/src.qt3support.network.q3http.cpp 7
+    \snippet doc/src/snippets/code/src_qt3support_network_q3http.cpp 7
 
     You can then get details about the error with the error() and
     errorString() functions. Note that only unexpected behaviour, like

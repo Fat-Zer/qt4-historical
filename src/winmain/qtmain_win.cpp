@@ -104,7 +104,7 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
 #if defined(Q_OS_WINCE)
     TCHAR appName[256];
     GetModuleFileName(0, appName, 255);
-    cmdParam = QString(QLatin1String("\"%1\" ")).arg(QString::fromUtf16(appName)).toLocal8Bit() + cmdParam;
+    cmdParam = QString(QLatin1String("\"%1\" ")).arg(QString::fromUtf16((const unsigned short *)appName)).toLocal8Bit() + cmdParam;
 #endif
 
     int argc = 0;
@@ -114,11 +114,11 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
 #if defined(Q_OS_WINCE)
     TCHAR uniqueAppID[256];
     GetModuleFileName(0, uniqueAppID, 255);
-    QString uid = QString::fromUtf16(uniqueAppID).toLower().replace(QString(QLatin1String("\\")), QString(QLatin1String("_")));
+    QString uid = QString::fromUtf16((const unsigned short *)uniqueAppID).toLower().replace(QString(QLatin1String("\\")), QString(QLatin1String("_")));
 
     // If there exists an other instance of this application
     // it will be the owner of a mutex with the unique ID.
-    HANDLE mutex = CreateMutex(NULL, TRUE, uid.utf16());
+    HANDLE mutex = CreateMutex(NULL, TRUE, (LPCWSTR)uid.utf16());
     if (mutex && ERROR_ALREADY_EXISTS == GetLastError()) {
         CloseHandle(mutex);
 
@@ -129,8 +129,8 @@ int APIENTRY WinMain(HINSTANCE instance, HINSTANCE prevInstance, LPSTR /*cmdPara
         // foreground, else just terminate.
         // Use bitwise 0x01 OR to reactivate window state if
         // it was hidden
-        UINT msgNo = RegisterWindowMessage(uid.utf16());
-        HWND aHwnd = FindWindow(QString::number(msgNo).utf16(), 0);
+        UINT msgNo = RegisterWindowMessage((LPCWSTR)uid.utf16());
+        HWND aHwnd = FindWindow((LPCWSTR)QString::number(msgNo).utf16(), 0);
         if (aHwnd)
             SetForegroundWindow((HWND)(((ULONG)aHwnd) | 0x01));
         return 0;

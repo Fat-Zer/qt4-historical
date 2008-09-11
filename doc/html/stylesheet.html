@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.1-1217326953/qt-all-opensource-src-4.4.1/doc/src/stylesheet.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/stylesheet.qdoc -->
 <head>
   <title>Qt 4.4: Qt Style Sheets</title>
   <link rel="next" href="stylesheet-syntax.html" />
@@ -13,7 +13,7 @@
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
-<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
 <td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><p>
 [Next: <a href="stylesheet-syntax.html">The Style Sheet Syntax</a>]
 </p>
@@ -94,8 +94,8 @@
 <h3>Overview</h3>
 <p>Styles sheets are textual specifications that can be set on the whole application using <a href="qapplication.html#styleSheet-prop">QApplication::setStyleSheet</a>() or on a specific widget (and its children) using <a href="qwidget.html#styleSheet-prop">QWidget::setStyleSheet</a>(). If several style sheets are set at different levels, Qt derives the effective style sheet from all of those that are set. This is called cascading.</p>
 <p>For example, the following style sheet specifies that all <a href="qlineedit.html">QLineEdit</a>s should use yellow as their background color, and all <a href="qcheckbox.html">QCheckBox</a>es should use red as the text color:</p>
-<pre>         QLineEdit { background: yellow }
-         QCheckBox { color: red }</pre>
+<pre> QLineEdit { background: yellow }
+ QCheckBox { color: red }</pre>
 <p>For this kind of customization, style sheets are much more powerful than <a href="qpalette.html">QPalette</a>. For example, it might be tempting to set the <a href="qpalette.html#ColorRole-enum">QPalette::Button</a> role to red for a <a href="qpushbutton.html">QPushButton</a> to obtain a red push button. However, this wasn't guaranteed to work for all styles, because style authors are restricted by the different platforms' guidelines and (on Windows XP and Mac OS X) by the native theme engine.</p>
 <p>Style sheets let you perform all kinds of customizations that are difficult or impossible to perform using <a href="qpalette.html">QPalette</a> alone. If you want yellow backgrounds for mandatory fields, red text for potentially destructive push buttons, or fancy check boxes, style sheets are the answer.</p>
 <p>Style sheets are applied on top of the current <a href="qstyle.html">widget style</a>, meaning that your applications will look as native as possible, but any style sheet constraints will be taken into consideration. Unlike palette fiddling, style sheets offer guarantees: If you set the background color of a <a href="qpushbutton.html">QPushButton</a> to be red, you can be assured that the button will have a red background in all styles, on all platforms. In addition, <a href="designer-manual.html#qt-designer">Qt Designer</a> provides style sheet integration, making it easy to view the effects of a style sheet in different <a href="qstyle.html">widget styles</a>.</p>
@@ -110,8 +110,8 @@
 </p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.1</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
 </tr></table></div></address></body>
 </html>

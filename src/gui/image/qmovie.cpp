@@ -59,7 +59,7 @@
     To display the movie in your application, you can pass your QMovie object
     to QLabel::setMovie(). Example:
 
-    \snippet doc/src/snippets/code/src.gui.image.qmovie.cpp 0
+    \snippet doc/src/snippets/code/src_gui_image_qmovie.cpp 0
 
     Whenever a new frame is available in the movie, QMovie will emit
     updated(). If the size of the frame changes, resized() is emitted. You can
@@ -929,7 +929,7 @@ void QMovie::setPaused(bool paused)
     The default speed is 100%.
     Example:
 
-    \snippet doc/src/snippets/code/src.gui.image.qmovie.cpp 1
+    \snippet doc/src/snippets/code/src_gui_image_qmovie.cpp 1
 */
 void QMovie::setSpeed(int percentSpeed)
 {
@@ -1040,9 +1040,13 @@ QList<QByteArray> QMovie::supportedFormats()
     animation to the beginning (for looping). Furthermore, if the image data
     comes from a sequential device, it is not possible for the underlying
     animation handler to seek back to frames whose data has already been read
-    (making looping altogether impossible). To aid in such situations, QMovie can
-    be instructed to cache the frames, at the added memory cost of keeping the
-    frames in memory for the lifetime of the QMovie.
+    (making looping altogether impossible).
+
+    To aid in such situations, a QMovie object can be instructed to cache the
+    frames, at the added memory cost of keeping the frames in memory for the
+    lifetime of the object.
+
+    By default, this property is set to \l CacheNone.
 
     \sa QMovie::CacheMode
 */

@@ -4240,7 +4240,7 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
         if(widget->parentWidget() && qobject_cast<const QComboBox*>(widget->parentWidget()))
             rect.adjust(-1, -2, 0, 0);
         else
-            rect.adjust(0, +2, 0, 0);
+            rect.adjust(-1, 0, 0, +1);
         break;
     case SE_CheckBoxLayoutItem:
         rect = opt->rect;

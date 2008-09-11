@@ -313,13 +313,13 @@ QModelIndexList QItemSelectionRange::indexes() const
   a selection that contains a range of items from the given \c model,
   beginning at the \c topLeft, and ending at the \c bottomRight.
 
-  \snippet doc/src/snippets/code/src.gui.itemviews.qitemselectionmodel.cpp 0
+  \snippet doc/src/snippets/code/src_gui_itemviews_qitemselectionmodel.cpp 0
 
   An empty item selection can be constructed, and later populated as
   required. So, if the model is going to be unavailable when we construct
   the item selection, we can rewrite the above code in the following way:
 
-  \snippet doc/src/snippets/code/src.gui.itemviews.qitemselectionmodel.cpp 1
+  \snippet doc/src/snippets/code/src_gui_itemviews_qitemselectionmodel.cpp 1
 
   QItemSelection saves memory, and avoids unnecessary work, by working with
   selection ranges rather than recording the model item index for each

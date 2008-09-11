@@ -122,13 +122,38 @@ QT_BEGIN_NAMESPACE
   implementations of these are all that is needed in the \e {data}
   class for an implicitly shared class.
 
-  Implementing the constructors for class \c Employee is also
+  Implementing the two constructors for class \c Employee is also
   straightforward. Both create a new instance of \c EmployeeData
   and assign it to the \e{d pointer} .
 
   \snippet doc/src/snippets/sharedemployee/employee.h 1
   \codeline
   \snippet doc/src/snippets/sharedemployee/employee.h 2
+
+  Note that class \c Employee also has a trivial copy constructor
+  defined, which is not strictly required in this case.
+  
+  \snippet doc/src/snippets/sharedemployee/employee.h 7
+
+  The copy constructor is not strictly required here, because class \c
+  EmployeeData is included in the same file as class \c Employee
+  (\c{employee.h}). However, including the private subclass of
+  QSharedData in the same file as the public class containing the
+  QSharedDataPointer is not typical. Normally, the idea is to hide the
+  private subclass of QSharedData from the user by putting it in a
+  separate file which would not be included in the public file. In
+  this case, we would normally put class \c EmployeeData in a separate
+  file, which would \e{not} be included in \c{employee.h}. Instead, we
+  would just predeclare the private subclass \c EmployeeData in \c
+  {employee.h} this way:
+
+  \code
+  class EmployeeData;
+  \endcode
+
+  If we had done it that way here, the copy constructor shown would be
+  required. Since the copy constructor is trivial, you might as well
+  just always include it.
 
   Behind the scenes, QSharedDataPointer automatically increments the
   reference count whenever an \c Employee object is copied, assigned,

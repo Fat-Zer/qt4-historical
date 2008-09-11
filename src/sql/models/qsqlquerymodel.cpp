@@ -179,7 +179,7 @@ QSqlQueryModel::~QSqlQueryModel()
 
     To force fetching of the entire database, you can use the following:
 
-    \snippet doc/src/snippets/code/src.sql.models.qsqlquerymodel.cpp 0
+    \snippet doc/src/snippets/code/src_sql_models_qsqlquerymodel.cpp 0
 
     \a parent should always be an invalid QModelIndex.
 
@@ -377,7 +377,7 @@ void QSqlQueryModel::setQuery(const QSqlQuery &query)
     was an error setting the query.
 
     Example:
-    \snippet doc/src/snippets/code/src.sql.models.qsqlquerymodel.cpp 1
+    \snippet doc/src/snippets/code/src_sql_models_qsqlquerymodel.cpp 1
 
     \sa query(), queryChange(), lastError()
 */

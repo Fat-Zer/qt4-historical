@@ -792,7 +792,7 @@ void Q3DockWindowTitleBar::mouseDoubleClickEvent(QMouseEvent *)
     or a Q3MainWindow as its parent if you want it docked. Pass 0 for
     the parent if you want it floated.
 
-    \snippet doc/src/snippets/code/src.qt3support.widgets.q3dockwindow.cpp 0
+    \snippet doc/src/snippets/code/src_qt3support_widgets_q3dockwindow.cpp 0
 
     In the example above we create a new Q3ToolBar in the constructor
     of a Q3MainWindow subclass (so that the \e this pointer points to

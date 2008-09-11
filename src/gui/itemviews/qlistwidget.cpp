@@ -929,7 +929,8 @@ void QListWidgetItem::setFlags(Qt::ItemFlags aflags) {
     \fn void QListWidgetItem::setStatusTip(const QString &statusTip)
 
     Sets the status tip for the list item to the text specified by
-    \a statusTip.
+    \a statusTip. QListWidget mouse tracking needs to be enabled for this
+    feature to work.
 
     \sa statusTip() setToolTip() setWhatsThis()
 */

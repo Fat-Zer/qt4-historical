@@ -51,19 +51,48 @@ QT_BEGIN_NAMESPACE
 
 QList<ArchiveExtractor *> ArchiveExtractor::extractors;
 
+/*!
+  \class ArchiveExtractor
+  
+  \brief The ArchiveExtractor class is a base class for classes that
+  know how to unpack a certain kind of archive file.
+
+  The archive extractor contains a list of the filename extensions
+  of the files that the archive extractor knows how to unpack.
+
+  It maintains a static list of all the instances of ArchiveExtractor
+  that have been created. It also has a static function for searching
+  that list to find the archive extracter for a file with a certain
+  extension.
+ */
+
+/*!
+  The constructor takes a list of filename extensions, which it
+  copies and saves internally. This archive extractor is prepended
+  to the static list.
+ */
 ArchiveExtractor::ArchiveExtractor( const QStringList& extensions )
     : fileExts( extensions )
 {
     extractors.prepend( this );
 }
 
+/*!
+  The destructor deletes all the filename extensions.
+ */
 ArchiveExtractor::~ArchiveExtractor()
 {
     extractors.removeAll( this );
 }
 
-ArchiveExtractor *ArchiveExtractor::extractorForFileName(
-    const QString& fileName )
+/*!
+  This function searches the static list of archive extractors
+  to find the first one that can handle \a fileName. If it finds
+  an acceptable extractor, it returns a pointer to it. Otherwise
+  it returns null.
+ */
+ArchiveExtractor*
+ArchiveExtractor::extractorForFileName( const QString& fileName )
 {
     int dot = -1;
     while ( (dot = fileName.indexOf(QLatin1Char('.'), dot + 1)) != -1 ) {

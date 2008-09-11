@@ -223,7 +223,7 @@
     supplied with Qt. Run the following two commands in the directory
     containing your modified sources to create the makefile.
 
-    \snippet doc/src/snippets/code/doc.src.examples.tutorial.qdoc 0
+    \snippet doc/src/snippets/code/doc_src_examples_tutorial.qdoc 0
 
     The first command tells qmake to create a project (\c{.pro}) file.
     The second command tells qmake to use the \c{.pro} file to create
@@ -864,7 +864,7 @@
     creating one for a single-file application. If you've saved all the
     files in this example in their own directory, all you have to do is:
 
-    \snippet doc/src/snippets/code/doc.src.examples.tutorial.qdoc 1
+    \snippet doc/src/snippets/code/doc_src_examples_tutorial.qdoc 1
 
     The first command tells \l{qmake} to create a \c .pro file. The
     second command tells it to create a (platform-specific) makefile

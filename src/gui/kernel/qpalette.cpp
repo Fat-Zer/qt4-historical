@@ -409,6 +409,7 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     use their palette to draw themselves. This makes the user
     interface easily configurable and easier to keep consistent.
 
+
     If you create a new widget we strongly recommend that you use the
     colors in the palette rather than hard-coding specific colors.
 
@@ -433,10 +434,10 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     "base" rather than literal colors like "red" or "turquoise". The color
     roles are enumerated and defined in the \l ColorRole documentation.
 
-                                We strongly recommend that you use the default palette of the
-                                current style (returned by QApplication::palette()) and
-                                modify that as necessary. This is done by Qt's widgets when they
-                                are drawn.
+    We strongly recommend that you use the default palette of the
+    current style (returned by QApplication::palette()) and
+    modify that as necessary. This is done by Qt's widgets when they
+    are drawn.
 
     To modify a color group you call the functions
     setColor() and setBrush(), depending on whether you want a pure
@@ -446,11 +447,17 @@ void QPalette::setColorGroup(ColorGroup cg, const QColorGroup &g)
     commonly used convenience function to get the ColorRole for the current ColorGroup:
     window(), windowText(), base(), etc.
 
+
     You can copy a palette using the copy constructor and test to see
     if two palettes are \e identical using isCopyOf().
 
     QPalette is optimized by the use of \l{implicit sharing},
     so it is very efficient to pass QPalette objects as arguments.
+
+    \warning Some styles do not use the palette for all drawing, for
+    instance, if they make use of native theme engines. This is the
+    case for both the Windows XP, Windows Vista, and the Mac OS X
+    styles.
 
     \sa QApplication::setPalette(), QWidget::setPalette(), QColor
 */
@@ -1072,8 +1079,7 @@ QDataStream &operator>>(QDataStream &s, QPalette &p)
         if (s.version() <= QDataStream::Qt_2_1) {
             p = QPalette();
             max = QPalette::HighlightedText + 1;
-        }
-        if (s.version() <= QDataStream::Qt_4_3) {
+        } else if (s.version() <= QDataStream::Qt_4_3) {
             p = QPalette();
             max = QPalette::AlternateBase + 1;
         }

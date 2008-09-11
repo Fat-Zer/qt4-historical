@@ -198,7 +198,8 @@ bool QAlphaPaintEngine::begin(QPaintDevice *pdev)
     return true;
 }
 
-extern int qt_defaultDpi();
+extern int qt_defaultDpiX();
+extern int qt_defaultDpiY();
 
 bool QAlphaPaintEngine::end()
 {
@@ -395,8 +396,8 @@ void QAlphaPaintEngine::flushAndInit(bool init)
 
         // make sure the output from QPicture is unscaled
         QTransform mtx;
-        mtx.scale(1.0f / (qreal(d->m_pdev->logicalDpiX()) / qreal(qt_defaultDpi())),
-                  1.0f / (qreal(d->m_pdev->logicalDpiY()) / qreal(qt_defaultDpi())));
+        mtx.scale(1.0f / (qreal(d->m_pdev->logicalDpiX()) / qreal(qt_defaultDpiX())),
+                  1.0f / (qreal(d->m_pdev->logicalDpiY()) / qreal(qt_defaultDpiY())));
         painter()->setTransform(mtx);
         painter()->drawPicture(0, 0, *d->m_pic);
         d->m_cliprgn = QRegion();
@@ -868,7 +869,7 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
     switch (m) {
     case QPaintDevice::PdmWidth:
         if (d->has_custom_paper_size) {
-            val =  qRound(d->paper_size.width());
+            val =  qRound(d->paper_size.width() * d->dpi_x / 72.0);
         } else {
             int logPixelsX = GetDeviceCaps(d->hdc, LOGPIXELSX);
             if (logPixelsX == 0) {
@@ -881,12 +882,12 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
                   / logPixelsX;
         }
         if (d->pageMarginsSet)
-            val -= int(mmToInches(d->previousDialogMargins.left() +
-                                  d->previousDialogMargins.width()));
+            val -= int(mmToInches((d->previousDialogMargins.left() +
+                                   d->previousDialogMargins.width()) / 100.0) * d->dpi_x);
         break;
     case QPaintDevice::PdmHeight:
         if (d->has_custom_paper_size) {
-            val = qRound(d->paper_size.height());
+            val = qRound(d->paper_size.height() * d->dpi_y / 72.0);
         } else {
             int logPixelsY = GetDeviceCaps(d->hdc, LOGPIXELSY);
             if (logPixelsY == 0) {
@@ -899,8 +900,8 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
                   / logPixelsY;
         }
         if (d->pageMarginsSet)
-            val -= int(mmToInches(d->previousDialogMargins.top() +
-                                  d->previousDialogMargins.height()));
+            val -= int(mmToInches((d->previousDialogMargins.top() +
+                                   d->previousDialogMargins.height()) / 100.0) * d->dpi_y);
         break;
     case QPaintDevice::PdmDpiX:
         val = res;
@@ -932,8 +933,8 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
             }
         }
         if (d->pageMarginsSet)
-            val -= d->previousDialogMargins.left() +
-                   d->previousDialogMargins.width();
+            val -= (d->previousDialogMargins.left() +
+                    d->previousDialogMargins.width()) / 100.0;
         break;
     case QPaintDevice::PdmHeightMM:
         if (d->has_custom_paper_size) {
@@ -953,8 +954,8 @@ int QWin32PrintEngine::metric(QPaintDevice::PaintDeviceMetric m) const
             }
         }
         if (d->pageMarginsSet)
-            val -= d->previousDialogMargins.top() +
-                   d->previousDialogMargins.height();
+            val -= (d->previousDialogMargins.top() +
+                    d->previousDialogMargins.height()) / 100.0;
         break;
     case QPaintDevice::PdmNumColors:
         {
@@ -1920,12 +1921,15 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
 
     case PPK_PageRect:
         if (d->has_custom_paper_size) {
-            QRect rect(0, 0, qRound(d->paper_size.width()), qRound(d->paper_size.height()));
-            if (d->pageMarginsSet)
-                rect = rect.adjusted(qRound(mmToInches(d->previousDialogMargins.left())),
-                                     qRound(mmToInches(d->previousDialogMargins.top())),
-                                     qRound(mmToInches(d->previousDialogMargins.width())),
-                                     qRound(mmToInches(d->previousDialogMargins.height())));
+            QRect rect(0, 0,
+                       qRound(d->paper_size.width() * d->dpi_x / 72.0),
+                       qRound(d->paper_size.height() * d->dpi_y / 72.0));
+            if (d->pageMarginsSet) {
+                rect = rect.adjusted(qRound(mmToInches(d->previousDialogMargins.left()/100.0) * d->dpi_x),
+                                     qRound(mmToInches(d->previousDialogMargins.top()/100.0) * d->dpi_y),
+                                     -qRound(mmToInches(d->previousDialogMargins.width()/100.0) * d->dpi_x),
+                                     -qRound(mmToInches(d->previousDialogMargins.height()/100.0) * d->dpi_y));
+            }
             value = rect;
         } else {
             value = QTransform(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0)
@@ -1934,20 +1938,27 @@ QVariant QWin32PrintEngine::property(PrintEnginePropertyKey key) const
         break;
 
     case PPK_PaperSize:
-        if (!d->devMode) {
-            value = QPrinter::A4;
+        if (d->has_custom_paper_size) {
+            value = QPrinter::Custom;
         } else {
-            QT_WA( {
-                value = mapDevmodePaperSize(d->devModeW()->dmPaperSize);
-            }, {
-                value = mapDevmodePaperSize(d->devModeA()->dmPaperSize);
-            } );
+            if (!d->devMode) {
+                value = QPrinter::A4;
+            } else {
+                QT_WA( {
+                        value = mapDevmodePaperSize(d->devModeW()->dmPaperSize);
+                    }, {
+                           value = mapDevmodePaperSize(d->devModeA()->dmPaperSize);
+                       } );
+            }
         }
         break;
 
     case PPK_PaperRect:
-        if (d->has_custom_paper_size)
-            value = QRect(0, 0, qRound(d->paper_size.width()), qRound(d->paper_size.height()));
+        if (d->has_custom_paper_size) {
+            value = QRect(0, 0,
+                          qRound(d->paper_size.width() * d->dpi_x / 72.0),
+                          qRound(d->paper_size.height() * d->dpi_y / 72.0));
+        }
         else
             value = QTransform(1/d->stretch_x, 0, 0, 1/d->stretch_y, 0, 0).mapRect(d->devPaperRect);
         break;
