@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/dbus/qdbuscontext.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-x11-opensource-src-4.4.3/src/dbus/qdbuscontext.cpp -->
 <head>
   <title>Qt 4.4: QDBusContext Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QDBusContext" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -74,27 +73,20 @@
 <p>Note: do not subclass QDBusContext and <a href="qdbusabstractadaptor.html">QDBusAbstractAdaptor</a> at the same time. QDBusContext should appear in the real object, not the adaptor. If it's necessary from the adaptor code to determine the context, use a public inheritance and access the functions via <a href="qobject.html#parent">QObject::parent</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QDBusContext/QDBusContext" />
 <h3 class="fn"><a name="QDBusContext"></a>QDBusContext::QDBusContext ()</h3>
 <p>Constructs an empty <a href="qdbuscontext.html">QDBusContext</a>.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/~QDBusContext" />
 <h3 class="fn"><a name="dtor.QDBusContext"></a>QDBusContext::~QDBusContext ()</h3>
 <p>An empty destructor.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/calledFromDBus" />
 <h3 class="fn"><a name="calledFromDBus"></a>bool QDBusContext::calledFromDBus () const</h3>
 <p>Returns true if we are processing a D-Bus call. If this function returns true, the rest of the functions in this class are available.</p>
 <p>Accessing those functions when this function returns false is undefined and may lead to crashes.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/connection" />
 <h3 class="fn"><a name="connection"></a><a href="qdbusconnection.html">QDBusConnection</a> QDBusContext::connection () const</h3>
 <p>Returns the connection from which this call was received.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/isDelayedReply" />
 <h3 class="fn"><a name="isDelayedReply"></a>bool QDBusContext::isDelayedReply () const</h3>
 <p>Returns true if this call will have a delayed reply.</p>
 <p>See also <a href="qdbuscontext.html#setDelayedReply">setDelayedReply</a>().</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/message" />
 <h3 class="fn"><a name="message"></a>const <a href="qdbusmessage.html">QDBusMessage</a> &amp; QDBusContext::message () const</h3>
 <p>Returns the message that generated this call.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/sendErrorReply" />
 <h3 class="fn"><a name="sendErrorReply"></a>void QDBusContext::sendErrorReply ( const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>msg</i> = QString() ) const</h3>
 <p>Sends an error <i>name</i> as a reply to the caller. The optional <i>msg</i> parameter is a human-readable text explaining the failure.</p>
 <p>If an error is sent, the return value and any output parameters from the called slot will be ignored by <a href="qtdbus.html">QtDBus</a>.</p>
@@ -102,7 +94,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Sends an error <i>type</i> as a reply to the caller. The optional <i>msg</i> parameter is a human-readable text explaining the failure.</p>
 <p>If an error is sent, the return value and any output parameters from the called slot will be ignored by <a href="qtdbus.html">QtDBus</a>.</p>
-<a name="//apple_ref/cpp/instm/QDBusContext/setDelayedReply" />
 <h3 class="fn"><a name="setDelayedReply"></a>void QDBusContext::setDelayedReply ( bool <i>enable</i> ) const</h3>
 <p>Sets whether this call will have a delayed reply or not.</p>
 <p>If <i>enable</i> is false, <a href="qtdbus.html">QtDBus</a> will automatically generate a reply back to the caller, if needed, as soon as the called slot returns.</p>

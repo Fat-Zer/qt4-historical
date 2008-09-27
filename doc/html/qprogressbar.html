@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/gui/widgets/qprogressbar.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-x11-opensource-src-4.4.3/src/gui/widgets/qprogressbar.cpp -->
 <head>
   <title>Qt 4.4: QProgressBar Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QProgressBar" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -70,7 +69,7 @@
 <ul>
 <li><div class="fn"/>206 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"/>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"/>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"/>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -128,9 +127,6 @@
 <p>See also <a href="qtimeline.html">QTimeLine</a>, <a href="qprogressdialog.html">QProgressDialog</a>, and <a href="guibooks.html#fowler">GUI Design Handbook: Progress Indicator</a>.</p>
 <hr />
 <h2>Member Type Documentation</h2>
-<a name="//apple_ref/cpp/tag/QProgressBar/Direction" />
-<a name="//apple_ref/cpp/econst/QProgressBar/TopToBottom" />
-<a name="//apple_ref/cpp/econst/QProgressBar/BottomToTop" />
 <h3 class="fn"><a name="Direction-enum"></a>enum QProgressBar::Direction</h3>
 <p>Specifies the reading direction of the <a href="qprogressbar.html#text-prop">text</a> for vertical progress bars.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
@@ -143,8 +139,6 @@
 <p>See also <a href="qprogressbar.html#textDirection-prop">textDirection</a>.</p>
 <hr />
 <h2>Property Documentation</h2>
-<a name="//apple_ref/cpp/instm/QProgressBar/alignment" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setAlignment" />
 <h3 class="fn"><a name="alignment-prop"></a>alignment : <a href="qt.html#AlignmentFlag-enum">Qt::Alignment</a></h3>
 <p>This property holds the alignment of the progress bar.</p>
 <p>Access functions:</p>
@@ -152,8 +146,6 @@
 <li><div class="fn"/><b>Qt::Alignment alignment () const</b></li>
 <li><div class="fn"/><b>void setAlignment ( Qt::Alignment <i>alignment</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QProgressBar/format" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setFormat" />
 <h3 class="fn"><a name="format-prop"></a>format : <a href="qstring.html">QString</a></h3>
 <p>This property holds the string used to generate the current text.</p>
 <p>%p - is replaced by the percentage completed. %v - is replaced by the current value. %m - is replaced by the total number of steps.</p>
@@ -165,8 +157,6 @@
 <li><div class="fn"/><b>void setFormat ( const QString &amp; <i>format</i> )</b></li>
 </ul>
 <p>See also <a href="qprogressbar.html#text-prop">text</a>().</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/invertedAppearance" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setInvertedAppearance" />
 <h3 class="fn"><a name="invertedAppearance-prop"></a>invertedAppearance : bool</h3>
 <p>This property holds whether or not a progress bar shows its progress inverted.</p>
 <p>If this property is false, the progress bar grows in the other direction (e.g&#x2e; from right to left). By default, the progress bar is not inverted.</p>
@@ -177,8 +167,6 @@
 <li><div class="fn"/><b>void setInvertedAppearance ( bool <i>invert</i> )</b></li>
 </ul>
 <p>See also <a href="qprogressbar.html#orientation-prop">orientation</a> and <a href="qwidget.html#layoutDirection-prop">layoutDirection</a>.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/maximum" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setMaximum" />
 <h3 class="fn"><a name="maximum-prop"></a>maximum : int</h3>
 <p>This property holds the progress bar's maximum value.</p>
 <p>When setting this property, the <a href="qprogressbar.html#minimum-prop">minimum</a> is adjusted if necessary to ensure that the range remains valid. If the current value falls outside the new range, the progress bar is reset with <a href="qprogressbar.html#reset">reset</a>().</p>
@@ -187,8 +175,6 @@
 <li><div class="fn"/><b>int maximum () const</b></li>
 <li><div class="fn"/><b>void setMaximum ( int <i>maximum</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QProgressBar/minimum" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setMinimum" />
 <h3 class="fn"><a name="minimum-prop"></a>minimum : int</h3>
 <p>This property holds the progress bar's minimum value.</p>
 <p>When setting this property, the <a href="qprogressbar.html#maximum-prop">maximum</a> is adjusted if necessary to ensure that the range remains valid. If the current value falls outside the new range, the progress bar is reset with <a href="qprogressbar.html#reset">reset</a>().</p>
@@ -197,8 +183,6 @@
 <li><div class="fn"/><b>int minimum () const</b></li>
 <li><div class="fn"/><b>void setMinimum ( int <i>minimum</i> )</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QProgressBar/orientation" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setOrientation" />
 <h3 class="fn"><a name="orientation-prop"></a>orientation : <a href="qt.html#Orientation-enum">Qt::Orientation</a></h3>
 <p>This property holds the orientation of the progress bar.</p>
 <p>The orientation must be <a href="qt.html#Orientation-enum">Qt::Horizontal</a> (the default) or <a href="qt.html#Orientation-enum">Qt::Vertical</a>.</p>
@@ -209,7 +193,6 @@
 <li><div class="fn"/><b>void setOrientation ( Qt::Orientation )</b></li>
 </ul>
 <p>See also <a href="qprogressbar.html#invertedAppearance-prop">invertedAppearance</a> and <a href="qprogressbar.html#textDirection-prop">textDirection</a>.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/text" />
 <h3 class="fn"><a name="text-prop"></a>text : const <a href="qstring.html">QString</a></h3>
 <p>This property holds the descriptive text shown with the progress bar.</p>
 <p>The text returned is the same as the text displayed in the center (or in some styles, to the left) of the progress bar.</p>
@@ -219,8 +202,6 @@
 <ul>
 <li><div class="fn"/><b>virtual QString text () const</b></li>
 </ul>
-<a name="//apple_ref/cpp/instm/QProgressBar/textDirection" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setTextDirection" />
 <h3 class="fn"><a name="textDirection-prop"></a>textDirection : <a href="qprogressbar.html#Direction-enum">Direction</a></h3>
 <p>This property holds the reading direction of the text for vertical progress bars.</p>
 <p>This property has no impact on horizontal progress bars. By default, the reading direction is <a href="qprogressbar.html#Direction-enum">QProgressBar::TopToBottom</a>.</p>
@@ -231,8 +212,6 @@
 <li><div class="fn"/><b>void setTextDirection ( QProgressBar::Direction <i>textDirection</i> )</b></li>
 </ul>
 <p>See also <a href="qprogressbar.html#orientation-prop">orientation</a> and <a href="qprogressbar.html#textVisible-prop">textVisible</a>.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/isTextVisible" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setTextVisible" />
 <h3 class="fn"><a name="textVisible-prop"></a>textVisible : bool</h3>
 <p>This property holds whether the current completed percentage should be displayed.</p>
 <p>Access functions:</p>
@@ -241,8 +220,6 @@
 <li><div class="fn"/><b>void setTextVisible ( bool <i>visible</i> )</b></li>
 </ul>
 <p>See also <a href="qprogressbar.html#textDirection-prop">textDirection</a>.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/value" />
-<a name="//apple_ref/cpp/instm/QProgressBar/setValue" />
 <h3 class="fn"><a name="value-prop"></a>value : int</h3>
 <p>This property holds the progress bar's current value.</p>
 <p>Attempting to change the current value to one outside the minimum-maximum range has no effect on the current value.</p>
@@ -253,25 +230,20 @@
 </ul>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QProgressBar/QProgressBar" />
 <h3 class="fn"><a name="QProgressBar"></a>QProgressBar::QProgressBar ( <a href="qwidget.html">QWidget</a> * <i>parent</i> = 0 )</h3>
 <p>Constructs a progress bar with the given <i>parent</i>.</p>
 <p>By default, the minimum step value is set to 0, and the maximum to 100.</p>
 <p>See also <a href="qprogressbar.html#setRange">setRange</a>().</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/initStyleOption" />
 <h3 class="fn"><a name="initStyleOption"></a>void QProgressBar::initStyleOption ( <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> * <i>option</i> ) const&nbsp;&nbsp;<tt> [protected]</tt></h3>
 <p>Initialize <i>option</i> with the values from this <a href="qprogressbar.html">QProgressBar</a>. This method is useful for subclasses when they need a <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> or <a href="qstyleoptionprogressbarv2.html">QStyleOptionProgressBarV2</a>, but don't want to fill in all the information themselves. This function will check the version of the <a href="qstyleoptionprogressbar.html">QStyleOptionProgressBar</a> and fill in the additional values for a <a href="qstyleoptionprogressbarv2.html">QStyleOptionProgressBarV2</a>.</p>
 <p>See also <a href="qstyleoption.html#initFrom">QStyleOption::initFrom</a>().</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/reset" />
 <h3 class="fn"><a name="reset"></a>void QProgressBar::reset ()&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Reset the progress bar. The progress bar &quot;rewinds&quot; and shows no progress.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/setRange" />
 <h3 class="fn"><a name="setRange"></a>void QProgressBar::setRange ( int <i>minimum</i>, int <i>maximum</i> )&nbsp;&nbsp;<tt> [slot]</tt></h3>
 <p>Sets the progress bar's minimum and maximum values to <i>minimum</i> and <i>maximum</i> respectively.</p>
 <p>If <i>maximum</i> is smaller than <i>minimum</i>, <i>minimum</i> becomes the only legal value.</p>
 <p>If the current value falls outside the new range, the progress bar is reset with <a href="qprogressbar.html#reset">reset</a>().</p>
 <p>See also <a href="qprogressbar.html#minimum-prop">minimum</a> and <a href="qprogressbar.html#maximum-prop">maximum</a>.</p>
-<a name="//apple_ref/cpp/instm/QProgressBar/valueChanged" />
 <h3 class="fn"><a name="valueChanged"></a>void QProgressBar::valueChanged ( int <i>value</i> )&nbsp;&nbsp;<tt> [signal]</tt></h3>
 <p>This signal is emitted when the value shown in the progress bar changes. <i>value</i> is the new value shown by the progress bar.</p>
 <p /><address><hr /><div align="center">
