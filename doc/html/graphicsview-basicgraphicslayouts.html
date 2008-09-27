@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/examples/basicgraphicslayouts.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/doc/src/examples/basicgraphicslayouts.qdoc -->
 <head>
   <title>Qt 4.4: Basic Graphics Layouts Example</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -10,9 +10,9 @@
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">Basic Graphics Layouts Example<br /><span class="subtitle"></span>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">Basic Graphics Layouts Example<br /><span class="subtitle"></span>
 </h1>
 <p>Files:</p>
 <ul>
@@ -103,7 +103,7 @@
 <pre> LayoutItem::LayoutItem(QGraphicsItem *parent<span class="comment">/* = 0*/</span>)
      : QGraphicsWidget(parent)
  {
-     pix = new QPixmap(QLatin1String(&quot;:/images/QT_original_R.png&quot;));
+     pix = new QPixmap(QLatin1String(&quot;:/images/block.png&quot;));
      <span class="comment">// Do not allow a size smaller than the pixmap with two frames around it.</span>
      setMinimumSize(pix-&gt;size() + QSize(12, 12));
  }</pre>
@@ -122,7 +122,7 @@
 <pre>     <span class="comment">// paint a background rect (with gradient)</span>
      QLinearGradient gradient(frame.topLeft(), frame.topLeft() + QPointF(200,200));
      stops &lt;&lt; QGradientStop(0.0, QColor(60, 60,  60));
-     stops &lt;&lt; QGradientStop(frame.height()/2/frame.height(), QColor(157, 195,  55));
+     stops &lt;&lt; QGradientStop(frame.height()/2/frame.height(), QColor(102, 176, 54));
 
      <span class="comment">//stops &lt;&lt; QGradientStop(((frame.height() + h)/2 )/frame.height(), QColor(157, 195,  55));</span>
      stops &lt;&lt; QGradientStop(1.0, QColor(215, 215, 215));
@@ -138,7 +138,7 @@
      gradient.setFinalStop(innerFrame.bottomRight());
      stops.clear();
      stops &lt;&lt; QGradientStop(0.0, QColor(215, 255, 200));
-     stops &lt;&lt; QGradientStop(0.5, QColor(157, 195,  55));
+     stops &lt;&lt; QGradientStop(0.5, QColor(102, 176, 54));
      stops &lt;&lt; QGradientStop(1.0, QColor(0, 0,  0));
      gradient.setStops(stops);
      painter-&gt;setBrush(QBrush(gradient));
@@ -147,8 +147,8 @@
  }</pre>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 Nokia</td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.3</div></td>
 </tr></table></div></address></body>
 </html>

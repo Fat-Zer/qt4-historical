@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/kernel/qformlayout.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/gui/kernel/qformlayout.cpp -->
 <head>
   <title>Qt 4.4: QFormLayout Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,9 +11,9 @@
 <a name="//apple_ref/cpp/cl//QFormLayout" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QFormLayout Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">QFormLayout Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QFormLayout class manages forms of input widgets and their associated labels. <a href="#details">More...</a></p>
 <pre> #include &lt;QFormLayout&gt;</pre><p>Inherits <a href="qlayout.html">QLayout</a>.</p>
@@ -141,9 +141,9 @@
 </ul>
 <p>The table below shows the default appearance in different styles.</p>
 <p><table align="center" cellpadding="2" cellspacing="1" border="0">
-<thead><tr valign="top" class="qt-style"><th><a href="qcommonstyle.html">QCommonStyle</a> derived styles (except <a href="qplastiquestyle.html">QPlastiqueStyle</a>)</th><th><a href="qmacstyle.html">QMacStyle</a></th><th><a href="qplastiquestyle.html">QPlastiqueStyle</a></th><th>Qtopia styles</th></tr></thead>
+<thead><tr valign="top" class="qt-style"><th><a href="qcommonstyle.html">QCommonStyle</a> derived styles (except <a href="qplastiquestyle.html">QPlastiqueStyle</a>)</th><th><a href="qmacstyle.html">QMacStyle</a></th><th><a href="qplastiquestyle.html">QPlastiqueStyle</a></th><th>Qt Extended styles</th></tr></thead>
 <tr valign="top" class="odd"><td><img src="images/qformlayout-win.png" /></td><td><img src="images/qformlayout-mac.png" /></td><td><img src="images/qformlayout-kde.png" /></td><td><img src="images/qformlayout-qpe.png" /></td></tr>
-<tr valign="top" class="even"><td>Traditional style used for Windows, GNOME, and earlier versions of KDE. Labels are left aligned, and expanding fields grow to fill the available space. (This normally corresponds to what we would get using a two-column <a href="qgridlayout.html">QGridLayout</a>.)</td><td>Style based on the <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/">Mac OS X Aqua guidelines</a>. Labels are right-aligned, the fields don't grow beyond their size hint, and the form is horizontally centered.</td><td>Recommended style for <a href="http://www.kdedevelopers.org/node/2345">KDE applications</a>. Similar to MacStyle, except that the form is left-aligned and all fields grow to fill the available space.</td><td>Default style for Qtopia styles. Labels are right-aligned, expanding fields grow to fill the available space, and row wrapping is enabled for long lines.</td></tr>
+<tr valign="top" class="even"><td>Traditional style used for Windows, GNOME, and earlier versions of KDE. Labels are left aligned, and expanding fields grow to fill the available space. (This normally corresponds to what we would get using a two-column <a href="qgridlayout.html">QGridLayout</a>.)</td><td>Style based on the <a href="http://developer.apple.com/documentation/UserExperience/Conceptual/OSXHIGuidelines/">Mac OS X Aqua guidelines</a>. Labels are right-aligned, the fields don't grow beyond their size hint, and the form is horizontally centered.</td><td>Recommended style for <a href="http://www.kdedevelopers.org/node/2345">KDE applications</a>. Similar to MacStyle, except that the form is left-aligned and all fields grow to fill the available space.</td><td>Default style for Qt Extended styles. Labels are right-aligned, expanding fields grow to fill the available space, and row wrapping is enabled for long lines.</td></tr>
 </table></p>
 <p>The form styles can be also be overridden individually by calling <a href="qformlayout.html#labelAlignment-prop">setLabelAlignment</a>(), <a href="qformlayout.html#formAlignment-prop">setFormAlignment</a>(), <a href="qformlayout.html#fieldGrowthPolicy-prop">setFieldGrowthPolicy</a>(), and <a href="qformlayout.html#rowWrapPolicy-prop">setRowWrapPolicy</a>(). For example, to simulate the form layout appearance of <a href="qmacstyle.html">QMacStyle</a> on all platforms, but with left-aligned labels, you could write:</p>
 <pre> formLayout-&gt;setRowWrapPolicy(QFormLayout::DontWrapRows);
@@ -185,8 +185,8 @@
 <p>This enum specifies the different policies that can be used to control the way in which the form's rows wrap.</p>
 <p><table border="1" cellpadding="2" cellspacing="1" width="100%">
 <tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QFormLayout::DontWrapRows</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Fields are always laid out next to their label. This is the default policy for all styles except Qtopia styles.</td></tr>
-<tr><td valign="top"><tt>QFormLayout::WrapLongRows</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Labels are given enough horizontal space to fit the widest label, and the rest of the space is given to the fields. If the minimum size of a field pair is wider than the available space, the field is wrapped to the next line. This is the default policy for Qtopia styles.</td></tr>
+<tr><td valign="top"><tt>QFormLayout::DontWrapRows</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">Fields are always laid out next to their label. This is the default policy for all styles except Qt Extended styles.</td></tr>
+<tr><td valign="top"><tt>QFormLayout::WrapLongRows</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">Labels are given enough horizontal space to fit the widest label, and the rest of the space is given to the fields. If the minimum size of a field pair is wider than the available space, the field is wrapped to the next line. This is the default policy for Qt Extended styles.</td></tr>
 <tr><td valign="top"><tt>QFormLayout::WrapAllRows</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">Fields are always laid out below their label.</td></tr>
 </table></p>
 <p>See also <a href="qformlayout.html#rowWrapPolicy-prop">rowWrapPolicy</a>.</p>
@@ -196,7 +196,7 @@
 <a name="//apple_ref/cpp/instm/QFormLayout/setFieldGrowthPolicy" />
 <h3 class="fn"><a name="fieldGrowthPolicy-prop"></a>fieldGrowthPolicy : <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldGrowthPolicy</a></h3>
 <p>This property holds the way in which the form's fields grow.</p>
-<p>The default value depends on the widget or application style. For <a href="qmacstyle.html">QMacStyle</a>, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldsStayAtSizeHint</a>; for <a href="qcommonstyle.html">QCommonStyle</a> derived styles (like Plastique and Windows), the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">ExpandingFieldsGrow</a>; for Qtopia styles, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">AllNonFixedFieldsGrow</a>.</p>
+<p>The default value depends on the widget or application style. For <a href="qmacstyle.html">QMacStyle</a>, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">FieldsStayAtSizeHint</a>; for <a href="qcommonstyle.html">QCommonStyle</a> derived styles (like Plastique and Windows), the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">ExpandingFieldsGrow</a>; for Qt Extended styles, the default is <a href="qformlayout.html#FieldGrowthPolicy-enum">AllNonFixedFieldsGrow</a>.</p>
 <p>If none of the fields can grow and the form is resized, extra space is distributed according to the current <a href="qformlayout.html#formAlignment-prop">form alignment</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -241,7 +241,7 @@
 <a name="//apple_ref/cpp/instm/QFormLayout/setRowWrapPolicy" />
 <h3 class="fn"><a name="rowWrapPolicy-prop"></a>rowWrapPolicy : <a href="qformlayout.html#RowWrapPolicy-enum">RowWrapPolicy</a></h3>
 <p>This property holds the way in which the form's rows wrap.</p>
-<p>The default value depends on the widget or application style. For Qtopia styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">WrapLongRows</a>; for the other styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">DontWrapRows</a>.</p>
+<p>The default value depends on the widget or application style. For Qt Extended styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">WrapLongRows</a>; for the other styles, the default is <a href="qformlayout.html#RowWrapPolicy-enum">DontWrapRows</a>.</p>
 <p>If you want to display each label above its associated field (instead of next to it), set this property to <a href="qformlayout.html#RowWrapPolicy-enum">WrapAllRows</a>.</p>
 <p>Access functions:</p>
 <ul>
@@ -358,8 +358,8 @@
 <p>See also <a href="qformlayout.html#setSpacing">setSpacing</a>(), <a href="qformlayout.html#verticalSpacing-prop">verticalSpacing</a>(), and <a href="qformlayout.html#horizontalSpacing-prop">horizontalSpacing</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 Nokia</td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.3</div></td>
 </tr></table></div></address></body>
 </html>

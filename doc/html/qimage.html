@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/gui/image/qimage.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/gui/image/qimage.cpp -->
 <head>
   <title>Qt 4.4: QImage Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -11,9 +11,9 @@
 <a name="//apple_ref/cpp/cl//QImage" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">QImage Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">QImage Class Reference<br /><span class="small-subtitle">[<a href="qtgui.html">QtGui</a> module]</span>
 </h1>
 <p>The QImage class provides a hardware-independent image representation that allows direct access to the pixel data, and can be used as a paint device. <a href="#details">More...</a></p>
 <pre> #include &lt;QImage&gt;</pre><p>Inherits <a href="qpaintdevice.html">QPaintDevice</a>.</p>
@@ -131,8 +131,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-lt-lt-17">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</li>
-<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-gt-gt-8">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QImage &amp; <i>image</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-lt-lt-134">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</li>
+<li><div class="fn"/>QDataStream &amp; <b><a href="qimage.html#operator-gt-gt-78">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QImage &amp; <i>image</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -236,7 +236,7 @@
 <p>QImage also provide the <a href="qimage.html#scanLine">scanLine</a>() function which returns a pointer to the pixel data at the scanline with the given index, and the <a href="qimage.html#bits">bits</a>() function which returns a pointer to the first pixel data (this is equivalent to <tt>scanLine(0)</tt>).</p>
 <a name="image-formats"></a>
 <h3>Image Formats</h3>
-<p>Each pixel stored in a QImage is represented by an integer. The size of the integer varies depending on the format. QImage supports several image formats described by the <a href="qimage.html#Format-enum">Format</a> enum. The monochrome (1-bit), 8-bit and 32-bit images are available in all versions of Qt. In addition Qt for Embedded Linux also supports 2-bit, 4-bit, and 16-bit images. For more information about the Qtopia specific formats, see the documentation of the <a href="qimage.html#Format-enum">Format</a> enum.</p>
+<p>Each pixel stored in a QImage is represented by an integer. The size of the integer varies depending on the format. QImage supports several image formats described by the <a href="qimage.html#Format-enum">Format</a> enum. The monochrome (1-bit), 8-bit and 32-bit images are available in all versions of Qt. In addition Qt for Embedded Linux also supports 2-bit, 4-bit, and 16-bit images. For more information about the Qt Extended specific formats, see the documentation of the <a href="qimage.html#Format-enum">Format</a> enum.</p>
 <p>Monochrome images are stored using 1-bit indexes into a color table with at most two colors. There are two different types of monochrome images: big endian (MSB first) or little endian (LSB first) bit order.</p>
 <p>8-bit images are stored using 8-bit indexes into a color table, i.e&#x2e; they have a single byte per pixel. The color table is a <a href="qvector.html">QVector</a>&lt;<a href="qcolor.html#QRgb-typedef">QRgb</a>&gt;, and the <a href="qcolor.html#QRgb-typedef">QRgb</a> typedef is equivalent to an unsigned int containing an ARGB quadruplet on the format 0xAARRGGBB.</p>
 <p>32-bit images have no color table; instead, each pixel contains an <a href="qcolor.html#QRgb-typedef">QRgb</a> value. There are three different types of 32-bit images storing RGB (i.e&#x2e; 0xffRRGGBB), ARGB and premultiplied ARGB values respectively. In the premultiplied format the red, green, and blue channels are multiplied by the alpha component divided by 255.</p>
@@ -738,18 +738,18 @@
 <p>See also <a href="qimage.html#operator-eq">operator=</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-17"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-134"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QImage &amp; <i>image</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Writes the given <i>image</i> to the given <i>stream</i> as a PNG image, or as a BMP image if the stream's version is 1. Note that writing the stream to a file will not produce a valid image file.</p>
 <p>See also <a href="qimage.html#save">QImage::save</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-8"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QImage &amp; <i>image</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-78"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QImage &amp; <i>image</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Reads an image from the given <i>stream</i> and stores it in the given <i>image</i>.</p>
 <p>See also <a href="qimage.html#load">QImage::load</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 Nokia</td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.3</div></td>
 </tr></table></div></address></body>
 </html>

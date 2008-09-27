@@ -1,9 +1,15 @@
 /****************************************************************************
-**
-* (C) Copyright 2007 Trolltech ASA  
-*  All rights reserved.
-**
-* This is version of the Pictureflow animated image show widget modified by Trolltech ASA.
+*
+* Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
+* This is version of the Pictureflow animated image show widget modified by Nokia.
+*
+*  This file contains third party code which is not governed by the Qt
+*  Commercial License Agreement. Please read the license headers below
+*  for more information.
+* 
+*  Further information about Qt licensing is available at:
+*  http://www.trolltech.com/products/qt/licensing.html or by
+*  contacting qt-info@nokia.com.
 *
 *
 * Redistribution and use in source and binary forms, with or without

@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/src/corelib/global/qglobal.cpp -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/src/corelib/global/qglobal.cpp -->
 <head>
   <title>Qt 4.4: &lt;QtGlobal&gt; - Global Qt Declarations</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -10,9 +10,9 @@
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">&lt;QtGlobal&gt; - Global Qt Declarations<br /><span class="subtitle"></span>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">&lt;QtGlobal&gt; - Global Qt Declarations<br /><span class="subtitle"></span>
 </h1>
 <p>The &lt;QtGlobal&gt; header provides basic declarations and is included by all other Qt headers. <a href="#details">More...</a></p>
 <ul>
@@ -45,7 +45,7 @@
 <a name="Functionsx"></a>
 <h3>Functions</h3>
 <ul>
-<li><div class="fn"/>T <b><a href="qtglobal.html#qAbsx">qAbs</a></b> ( const T &amp; <i>value</i> )</li>
+<li><div class="fn"/>T <b><a href="qtglobal.html#qAbs">qAbs</a></b> ( const T &amp; <i>value</i> )</li>
 <li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qBound">qBound</a></b> ( const T &amp; <i>min</i>, const T &amp; <i>value</i>, const T &amp; <i>max</i> )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qCritical">qCritical</a></b> ( const char * <i>msg</i>, ... )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qDebug">qDebug</a></b> ( const char * <i>msg</i>, ... )</li>
@@ -58,8 +58,8 @@
 <li><div class="fn"/>bool <b><a href="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</a></b> ( float <i>p1</i>, float <i>p2</i> )</li>
 <li><div class="fn"/>QtMsgHandler <b><a href="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</a></b> ( QtMsgHandler <i>handler</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qMacVersion">qMacVersion</a></b> ()</li>
-<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMaxx">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
-<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMinx">qMin</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
+<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMax">qMax</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
+<li><div class="fn"/>const T &amp; <b><a href="qtglobal.html#qMin">qMin</a></b> ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</li>
 <li><div class="fn"/>qint64 <b><a href="qtglobal.html#qRound64">qRound64</a></b> ( qreal <i>value</i> )</li>
 <li><div class="fn"/>int <b><a href="qtglobal.html#qRound">qRound</a></b> ( qreal <i>value</i> )</li>
 <li><div class="fn"/>void <b><a href="qtglobal.html#qToBigEndian">qToBigEndian</a></b> ( T <i>src</i>, uchar * <i>dest</i> )</li>
@@ -161,7 +161,7 @@
 <p>Finally, the <a href="qtglobal.html#QtMsgType-enum">QtMsgType</a> definition identifies the various messages that can be generated and sent to a Qt message handler; <a href="qtglobal.html#QtMsgHandler-typedef">QtMsgHandler</a> is a type definition for a pointer to a function with the signature <tt>void myMsgHandler(QtMsgType, const char *)</tt>.</p>
 <a name="functions"></a>
 <h3>Functions</h3>
-<p>The &lt;QtGlobal&gt; header file contains several functions comparing and adjusting an object's value. These functions take a template type as argument: You can retrieve the absolute value of an object using the <a href="qtglobal.html#qAbsx">qAbs</a>() function, and you can bound a given object's value by given minimum and maximum values using the <a href="qtglobal.html#qBound">qBound</a>() function. You can retrieve the minimum and maximum of two given objects using <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qMaxx">qMax</a>() respectively. All these functions return a corresponding template type; the template types can be replaced by any other type. For example:</p>
+<p>The &lt;QtGlobal&gt; header file contains several functions comparing and adjusting an object's value. These functions take a template type as argument: You can retrieve the absolute value of an object using the <a href="qtglobal.html#qAbs">qAbs</a>() function, and you can bound a given object's value by given minimum and maximum values using the <a href="qtglobal.html#qBound">qBound</a>() function. You can retrieve the minimum and maximum of two given objects using <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>() respectively. All these functions return a corresponding template type; the template types can be replaced by any other type. For example:</p>
 <pre> int myValue = 10;
  int minValue = 2;
  int maxValue = 6;
@@ -274,7 +274,7 @@
 <hr />
 <h2>Function Documentation</h2>
 <a name="//apple_ref/cpp/func//qAbs" />
-<h3 class="fn"><a name="qAbsx"></a>T qAbs ( const T &amp; <i>value</i> )</h3>
+<h3 class="fn"><a name="qAbs"></a>T qAbs ( const T &amp; <i>value</i> )</h3>
 <p>Returns the absolute value of <i>value</i>. For example:</p>
 <pre> int absoluteValue;
  int myValue = -4;
@@ -290,7 +290,7 @@
 
  int boundedValue = qBound(minValue, myValue, maxValue);
 <span class="comment"> // boundedValue == 6</span></pre>
-<p>See also <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qMaxx">qMax</a>().</p>
+<p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qMax">qMax</a>().</p>
 <a name="//apple_ref/cpp/func//qCritical" />
 <h3 class="fn"><a name="qCritical"></a>void qCritical ( const char * <i>msg</i>, ... )</h3>
 <p>Calls the message handler with the critical message <i>msg</i>. If no message handler has been installed, the message is printed to stderr. Under Windows, the message is sent to the debugger.</p>
@@ -408,23 +408,23 @@
 <p>Use <a href="qsysinfo.html#MacintoshVersion-var">QSysInfo::MacintoshVersion</a> instead.</p>
 <p>See also <a href="qsysinfo.html">QSysInfo</a>.</p>
 <a name="//apple_ref/cpp/func//qMax" />
-<h3 class="fn"><a name="qMaxx"></a>const T &amp; qMax ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
+<h3 class="fn"><a name="qMax"></a>const T &amp; qMax ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
 <p>Returns the maximum of <i>value1</i> and <i>value2</i>. For example:</p>
 <pre> int myValue = 6;
  int yourValue = 4;
 
  int maxValue = qMax(myValue, yourValue);
 <span class="comment"> // maxValue == myValue</span></pre>
-<p>See also <a href="qtglobal.html#qMinx">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
+<p>See also <a href="qtglobal.html#qMin">qMin</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qMin" />
-<h3 class="fn"><a name="qMinx"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
+<h3 class="fn"><a name="qMin"></a>const T &amp; qMin ( const T &amp; <i>value1</i>, const T &amp; <i>value2</i> )</h3>
 <p>Returns the minimum of <i>value1</i> and <i>value2</i>. For example:</p>
 <pre> int myValue = 6;
  int yourValue = 4;
 
  int minValue = qMin(myValue, yourValue);
 <span class="comment"> // minValue == yourValue</span></pre>
-<p>See also <a href="qtglobal.html#qMaxx">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
+<p>See also <a href="qtglobal.html#qMax">qMax</a>() and <a href="qtglobal.html#qBound">qBound</a>().</p>
 <a name="//apple_ref/cpp/func//qRound64" />
 <h3 class="fn"><a name="qRound64"></a><a href="qtglobal.html#qint64-typedef">qint64</a> qRound64 ( <a href="qtglobal.html#qreal-typedef">qreal</a> <i>value</i> )</h3>
 <p>Rounds <i>value</i> to the nearest 64-bit integer. For example:</p>
@@ -942,8 +942,8 @@
 <p>See also <a href="qtglobal.html#qDebug">qDebug</a>(), <a href="qtglobal.html#qWarning">qWarning</a>(), <a href="qtglobal.html#qCritical">qCritical</a>(), and <a href="qtglobal.html#qFatal">qFatal</a>().</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 Nokia</td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.3</div></td>
 </tr></table></div></address></body>
 </html>

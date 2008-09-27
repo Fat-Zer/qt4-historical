@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.4.2-1221147150/qt-all-opensource-src-4.4.2/doc/src/emb-qvfb.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.4.3-1222505853/qt-all-opensource-src-4.4.3/doc/src/emb-qvfb.qdoc -->
 <head>
   <title>Qt 4.4: The Virtual Framebuffer</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -10,9 +10,9 @@
 <body>
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
-<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" width="32" height="32" border="0" /></a></td>
+<td align="left" valign="top" width="32"><a href="http://www.trolltech.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
 <td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
-<td align="right" valign="top" width="230"><a href="http://www.trolltech.com"><img src="images/trolltech-logo.png" align="right" width="203" height="32" border="0" /></a></td></tr></table><h1 class="title">The Virtual Framebuffer<br /><span class="subtitle"></span>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">The Virtual Framebuffer<br /><span class="subtitle"></span>
 </h1>
 <p><a href="qt-embedded.html">Qt for Embedded Linux</a> applications write directly to the framebuffer, eliminating the need for the X Window System and saving memory. For development and debugging purposes, a virtual framebuffer can be used, allowing <a href="qt-embedded.html">Qt for Embedded Linux</a> programs to be developed on a desktop machine, without switching between consoles and X11.</p>
 <p>QVFb is an X11 application supplied with Qt for X11 that provides a virtual framebuffer for Qt for Embedded Linux to use. To use it, you need to <a href="install-x11.html">configure and install Qt on X11 platforms</a> appropriately. Further requirements can be found in the <a href="requirements-embedded-linux.html">Qt for Embedded Linux Requirements</a> document.</p>
@@ -49,16 +49,16 @@
 <a name="skins"></a>
 <h3>Skins</h3>
 <p>A skin is a set of XML and pixmap files that tells the vitual framebuffer what it should look like and how it should behave; a skin can change the unrealistic default display into a display that is similar to the target device. To access the <tt>qvfb</tt> tool's menus when a skin is activated, right-click over the display.</p>
-<p>Note that a skin can have buttons which (when clicked) send signals to the Qtopia application running inside the virtual framebuffer, just as would happen on a real device.</p>
+<p>Note that a skin can have buttons which (when clicked) send signals to the Qt Extended application running inside the virtual framebuffer, just as would happen on a real device.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><td><b>Target Device Environment</b><p>The <tt>qvfb</tt> tool provides various skins by default, allowing the user to view their application in an environment similar to their target device. The provided skins are:</p>
 <ul>
 <li>ClamshellPhone</li>
 <li>pda</li>
 <li>PDAPhone</li>
-<li>QtopiaPDA</li>
-<li>QtopiaPhone-Advanced</li>
-<li>QtopiaPhone-Simple</li>
+<li>Qt ExtendedPDA</li>
+<li>Qt ExtendedPhone-Advanced</li>
+<li>Qt ExtendedPhone-Simple</li>
 <li>SmartPhone</li>
 <li>SmartPhone2</li>
 <li>SmartPhoneWithButtons</li>
@@ -78,9 +78,9 @@
 <li><tt>ClamshellPhone1-5.png</tt></li>
 <li><tt>ClamshellPhone1-5-pressed.png</tt></li>
 <li><tt>ClamshellPhone1-5-closed.png</tt></li>
-<li><tt>defaultbuttons.conf</tt> (only necessary for <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a>)</li>
+<li><tt>defaultbuttons.conf</tt> (only necessary for <a href="qt.html">Qt</a> Extended)</li>
 </ul>
-<p>Note that the <tt>defaultbuttons.conf</tt> file is only necessary if the skin is supposed to be used with <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> (The file customizes the launch screen applications, orders the soft keys and provides input method hints). See the <a href="http://www.trolltech.com/products/qtopia/">Qtopia</a> documentation for more information.</p>
+<p>Note that the <tt>defaultbuttons.conf</tt> file is only necessary if the skin is supposed to be used with <a href="qt.html">Qt</a> Extended (The file customizes the launch screen applications, orders the soft keys and provides input method hints). See the <a href="qt.html">Qt</a> Extended documentation for more information.</p>
 <p><table width="100%" align="center" cellpadding="2" cellspacing="1" border="0">
 <thead><tr valign="top" class="qt-style"><th colspan="3">The ClamshellPhone Skin</th></tr></thead>
 <tr valign="top" class="odd"><td colspan="3"><pre> [SkinFile]
@@ -149,8 +149,8 @@
 <p><b>Warning:</b> If <tt>qvfb</tt> is not running (or the current <a href="qt-embedded.html">Qt for Embedded Linux</a> configuration doesn't support it) and the driver is not explicitly specified, <a href="qt-embedded.html">Qt for Embedded Linux</a> will write to the real framebuffer and the X11 display will be corrupted.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
-<td width="30%" align="left">Copyright &copy; 2008 <a href="trolltech.html">Trolltech</a></td>
+<td width="30%" align="left">Copyright &copy; 2008 Nokia</td>
 <td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
-<td width="30%" align="right"><div align="right">Qt 4.4.2</div></td>
+<td width="30%" align="right"><div align="right">Qt 4.4.3</div></td>
 </tr></table></div></address></body>
 </html>

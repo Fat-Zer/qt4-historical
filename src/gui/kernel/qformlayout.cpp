@@ -1,43 +1,37 @@
 /****************************************************************************
 **
-** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be used under the terms of the GNU General Public
-** License versions 2.0 or 3.0 as published by the Free Software
-** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file.  Alternatively you may (at
-** your option) use any later version of the GNU General Public
-** License if such license has been publicly approved by Trolltech ASA
-** (or its successors, if any) and the KDE Free Qt Foundation. In
-** addition, as a special exception, Trolltech gives you certain
-** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.2, which can be found at
-** http://www.trolltech.com/products/qt/gplexception/ and in the file
-** GPL_EXCEPTION.txt in this package.
+** Commercial Usage
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
 **
-** Please review the following information to ensure GNU General
-** Public Licensing requirements will be met:
-** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
-** you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
-** or contact the sales department at sales@trolltech.com.
 **
-** In addition, as a special exception, Trolltech, as the sole
-** copyright holder for Qt Designer, grants users of the Qt/Eclipse
-** Integration plug-in the right for the Qt/Eclipse Integration to
-** link to functionality provided by Qt Designer and its related
-** libraries.
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License versions 2.0 or 3.0 as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file.  Please review the following information
+** to ensure GNU General Public Licensing requirements will be met:
+** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
+** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
+** exception, Nokia gives you certain additional rights. These rights
+** are described in the Nokia Qt GPL Exception version 1.3, included in
+** the file GPL_EXCEPTION.txt in this package.
 **
-** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
-** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
-** granted herein.
+** Qt for Windows(R) Licensees
+** As a special exception, Nokia, as the sole copyright holder for Qt
+** Designer, grants users of the Qt/Eclipse Integration plug-in the
+** right for the Qt/Eclipse Integration to link to functionality
+** provided by Qt Designer and its related libraries.
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
 **
 ****************************************************************************/
 
@@ -1055,7 +1049,7 @@ QStyle* QFormLayoutPrivate::getStyle() const
         \o QCommonStyle derived styles (except QPlastiqueStyle)
         \o QMacStyle
         \o QPlastiqueStyle
-        \o Qtopia styles
+        \o Qt Extended styles
     \row
         \o \inlineimage qformlayout-win.png
         \o \inlineimage qformlayout-mac.png
@@ -1077,7 +1071,7 @@ QStyle* QFormLayoutPrivate::getStyle() const
            applications}. Similar to MacStyle, except that the form
            is left-aligned and all fields grow to fill the available
            space.
-        \o Default style for Qtopia styles. Labels are right-aligned,
+        \o Default style for Qt Extended styles. Labels are right-aligned,
            expanding fields grow to fill the available space, and row
            wrapping is enabled for long lines.
     \endtable
@@ -1129,14 +1123,14 @@ QStyle* QFormLayoutPrivate::getStyle() const
 
     \value DontWrapRows
            Fields are always laid out next to their label.  This is
-           the default policy for all styles except Qtopia styles.
+           the default policy for all styles except Qt Extended styles.
 
     \value WrapLongRows
            Labels are given enough horizontal space to fit the widest label,
            and the rest of the space is given to the fields. If the minimum
            size of a field pair is wider than the available space, the field
            is wrapped to the next line.  This is the default policy for
-           Qtopia styles.
+           Qt Extended styles.
 
     \value WrapAllRows
            Fields are always laid out below their label.
@@ -1676,7 +1670,7 @@ QWidget *QFormLayout::labelForField(QLayout *field) const
     The default value depends on the widget or application style. For
     QMacStyle, the default is FieldsStayAtSizeHint; for QCommonStyle
     derived styles (like Plastique and Windows), the default
-    is ExpandingFieldsGrow; for Qtopia styles, the default is
+    is ExpandingFieldsGrow; for Qt Extended styles, the default is
     AllNonFixedFieldsGrow.
 
     If none of the fields can grow and the form is resized, extra
@@ -1710,7 +1704,7 @@ QFormLayout::FieldGrowthPolicy QFormLayout::fieldGrowthPolicy() const
     \brief the way in which the form's rows wrap
 
     The default value depends on the widget or application style. For
-    Qtopia styles, the default is WrapLongRows; for the other styles,
+    Qt Extended styles, the default is WrapLongRows; for the other styles,
     the default is DontWrapRows.
 
     If you want to display each label above its associated field

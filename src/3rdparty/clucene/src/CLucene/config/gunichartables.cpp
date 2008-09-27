@@ -41,7 +41,7 @@
  */
  
 /*
- * Changes are Copyright(C) 2007 by Trolltech ASA, all rights reserved.
+ * Changes are Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 */
 
 #include "CLucene/StdHeader.h"

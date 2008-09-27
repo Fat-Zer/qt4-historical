@@ -1,43 +1,37 @@
 /****************************************************************************
 **
-** Copyright (C) 1992-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
-** This file may be used under the terms of the GNU General Public
-** License versions 2.0 or 3.0 as published by the Free Software
-** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file.  Alternatively you may (at
-** your option) use any later version of the GNU General Public
-** License if such license has been publicly approved by Trolltech ASA
-** (or its successors, if any) and the KDE Free Qt Foundation. In
-** addition, as a special exception, Trolltech gives you certain
-** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.2, which can be found at
-** http://www.trolltech.com/products/qt/gplexception/ and in the file
-** GPL_EXCEPTION.txt in this package.
+** Commercial Usage
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
 **
-** Please review the following information to ensure GNU General
-** Public Licensing requirements will be met:
-** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
-** you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
-** or contact the sales department at sales@trolltech.com.
 **
-** In addition, as a special exception, Trolltech, as the sole
-** copyright holder for Qt Designer, grants users of the Qt/Eclipse
-** Integration plug-in the right for the Qt/Eclipse Integration to
-** link to functionality provided by Qt Designer and its related
-** libraries.
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License versions 2.0 or 3.0 as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file.  Please review the following information
+** to ensure GNU General Public Licensing requirements will be met:
+** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
+** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
+** exception, Nokia gives you certain additional rights. These rights
+** are described in the Nokia Qt GPL Exception version 1.3, included in
+** the file GPL_EXCEPTION.txt in this package.
 **
-** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
-** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
-** granted herein.
+** Qt for Windows(R) Licensees
+** As a special exception, Nokia, as the sole copyright holder for Qt
+** Designer, grants users of the Qt/Eclipse Integration plug-in the
+** right for the Qt/Eclipse Integration to link to functionality
+** provided by Qt Designer and its related libraries.
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
 **
 ****************************************************************************/
 
@@ -560,35 +554,97 @@ int QWindowsStyle::pixelMetric(PixelMetric pm, const QStyleOption *opt, const QW
 
 #ifndef QT_NO_IMAGEFORMAT_XPM
 
+/* XPM */
 static const char * const qt_menu_xpm[] = {
-"16 16 11 1",
-"  c #000000",
-", c #336600",
-". c #99CC00",
-"X c #666600",
-"o c #999933",
-"+ c #333300",
-"@ c #669900",
-"# c #999900",
-"$ c #336633",
-"% c #666633",
-"& c #99CC33",
-"................",
-"................",
-".....#,++X#.....",
-"....X      X....",
-"...X  Xo#%  X&..",
-"..#  o..&@o  o..",
-".., X..#+ @X X..",
-"..+ o.o+ +o# +..",
-"..+ #o+  +## +..",
-".., %@ ++ +, X..",
-"..#  o@oo+   #..",
-"...X  X##$   o..",
-"....X        X..",
-"....&oX++X#oX...",
-"................",
-"................"};
+"16 16 72 1",
+"  c None",
+". c #65AF36",
+"+ c #66B036",
+"@ c #77B94C",
+"# c #A7D28C",
+"$ c #BADBA4",
+"% c #A4D088",
+"& c #72B646",
+"* c #9ACB7A",
+"= c #7FBD56",
+"- c #85C05F",
+"; c #F4F9F0",
+"> c #FFFFFF",
+", c #E5F1DC",
+"' c #ECF5E7",
+") c #7ABA50",
+"! c #83BF5C",
+"~ c #AED595",
+"{ c #D7EACA",
+"] c #A9D28D",
+"^ c #BCDDA8",
+"/ c #C4E0B1",
+"( c #81BE59",
+"_ c #D0E7C2",
+": c #D4E9C6",
+"< c #6FB542",
+"[ c #6EB440",
+"} c #88C162",
+"| c #98CA78",
+"1 c #F4F9F1",
+"2 c #8FC56C",
+"3 c #F1F8EC",
+"4 c #E8F3E1",
+"5 c #D4E9C7",
+"6 c #74B748",
+"7 c #80BE59",
+"8 c #73B747",
+"9 c #6DB43F",
+"0 c #CBE4BA",
+"a c #80BD58",
+"b c #6DB33F",
+"c c #FEFFFE",
+"d c #68B138",
+"e c #F9FCF7",
+"f c #91C66F",
+"g c #E8F3E0",
+"h c #DCEDD0",
+"i c #91C66E",
+"j c #A3CF86",
+"k c #C9E3B8",
+"l c #B0D697",
+"m c #E3F0DA",
+"n c #95C873",
+"o c #E6F2DE",
+"p c #9ECD80",
+"q c #BEDEAA",
+"r c #C7E2B6",
+"s c #79BA4F",
+"t c #6EB441",
+"u c #BCDCA7",
+"v c #FAFCF8",
+"w c #F6FAF3",
+"x c #84BF5D",
+"y c #EDF6E7",
+"z c #FAFDF9",
+"A c #88C263",
+"B c #98CA77",
+"C c #CDE5BE",
+"D c #67B037",
+"E c #D9EBCD",
+"F c #6AB23C",
+"G c #77B94D",
+" .++++++++++++++",
+".+++++++++++++++",
+"+++@#$%&+++*=+++",
+"++-;>,>')+!>~+++",
+"++{>]+^>/(_>:~<+",
+"+[>>}+|>123>456+",
+"+7>>8+->>90>~+++",
+"+a>>b+a>c[0>~+++",
+"+de>=+f>g+0>~+++",
+"++h>i+j>k+0>~+++",
+"++l>mno>p+q>rst+",
+"++duv>wl++xy>zA+",
+"++++B>Cb++++&D++",
+"+++++0zE++++++++",
+"++++++FG+++++++.",
+"++++++++++++++. "};
 
 static const char * const qt_close_xpm[] = {
 "10 10 2 1",

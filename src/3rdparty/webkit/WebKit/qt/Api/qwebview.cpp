@@ -1,5 +1,5 @@
 /*
-    Copyright (C) 2007 Trolltech ASA
+    Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
     Copyright (C) 2008 Holger Hans Peter Freyther
 
     This library is free software; you can redistribute it and/or
@@ -78,7 +78,7 @@ public:
     It can be used in various applications to display web content live from the
     Internet.
 
-    The image below shows QWebView previewed in \QD with the Trolltech website.
+    The image below shows QWebView previewed in \QD with the Nokia website.
 
     \image qwebview-url.png
 

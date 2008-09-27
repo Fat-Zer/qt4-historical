@@ -3537,8 +3537,8 @@ Czy chcesz nadpisać szablon?</translation>
     </message>
     <message>
         <location filename="../tools/designer/src/designer/versiondialog.cpp" line="175"/>
-        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright 2000-2008 Trolltech ASA. All rights reserved.&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
-        <translation type="unfinished">%1&lt;br/&gt;%2&lt;br/&gt;Copyright (C) 2000-2008 Trolltech ASA. Wszystkie prawa zastrzeżone.&lt;br/&gt;&lt;br/&gt;Program dostarczony jest BEZ ŻADNYCH GWARANCJI.&lt;br/&gt; </translation>
+        <source>%1&lt;br/&gt;%2&lt;br/&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).&lt;br/&gt;&lt;br/&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;br/&gt; </source>
+        <translation type="unfinished">%1&lt;br/&gt;%2&lt;br/&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies). Wszystkie prawa zastrzeżone.&lt;br/&gt;&lt;br/&gt;Program dostarczony jest BEZ ŻADNYCH GWARANCJI.&lt;br/&gt; </translation>
     </message>
     <message>
         <location filename="../tools/designer/src/designer/versiondialog.cpp" line="163"/>

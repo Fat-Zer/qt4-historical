@@ -1515,8 +1515,8 @@ Line: %2</source>
     </message>
     <message>
         <location filename="../tools/linguist/linguist/trwindow.cpp" line="970"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2000-2008 Trolltech ASA. All rights reserved.&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
-        <translation>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt 语言家是一个用于为 Qt 应用程序添加翻译的工具。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;版权所有 (C) 2000-2008 Trolltech ASA。所有权利已被保留。&lt;/p&gt;&lt;p&gt;本程序是在&lt;b&gt;没有任何担保（其中包括任何特定目的的设计、商业和适当性的担保）&lt;/b&gt;的条件下提供的。&lt;/p&gt;</translation>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <translation>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt 语言家是一个用于为 Qt 应用程序添加翻译的工具。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;版权所有 (C) 2000-2008 Nokia Corporation and/or its subsidiary(-ies)。所有权利已被保留。&lt;/p&gt;&lt;p&gt;本程序是在&lt;b&gt;没有任何担保（其中包括任何特定目的的设计、商业和适当性的担保）&lt;/b&gt;的条件下提供的。&lt;/p&gt;</translation>
     </message>
     <message>
         <location filename="../tools/linguist/linguist/trwindow.cpp" line="1695"/>

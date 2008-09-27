@@ -1,6 +1,6 @@
 /*  This file is part of the KDE project.
 
-Copyright (C) 2008 Trolltech ASA. All rights reserved.
+Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 
 This library is free software: you can redistribute it and/or modify
 it under the terms of the GNU Lesser General Public License as published by
@@ -198,7 +198,7 @@ static void arts_sink_base_init (gpointer g_class) {
     GstElementDetails details = GST_ELEMENT_DETAILS ("Experimental aRts sink",
                                           "Sink/Audio",
                                           "aRts Audio Output Device",
-                                          "Trolltech ASA <info@trolltech.com>");
+                                          "Nokia Corporation and/or its subsidiary(-ies) <qt-info@nokia.com>");
     gst_element_class_add_pad_template (gstelement_class, gst_static_pad_template_get (&sinktemplate));
     gst_element_class_set_details (gstelement_class, &details);
 }

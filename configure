@@ -2,7 +2,8 @@
 #
 # Configures to build the Qt library
 #
-# Copyright (C) 1999-2008 Trolltech ASA. All rights reserved.
+# Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+# Contact: Qt Software Information (qt-info@nokia.com)
 #
 # This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
 # WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
@@ -170,34 +171,13 @@ elif [ -f "$relpath"/LICENSE.GPL2 -o -f "$relpath"/LICENSE.GPL3 ]; then
     Edition="OpenSource"
     EditionString="Open Source"
     QT_EDITION="QT_EDITION_OPENSOURCE"
-elif [ -f "$relpath"/LICENSE.PREVIEW.OPENSOURCE ]; then
-    # tech preview - opensource
+elif [ -f "$relpath"/.LICENSE ]; then
+    # Generic, non final license
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
     [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-    Licensee="Preview"
-    Edition="Preview"
-    QT_EDITION="QT_EDITION_OPENSOURCE"
-elif [ -f "$relpath"/LICENSE.PREVIEW.COMMERCIAL ]; then
-    # tech preview - commercial
-    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
-    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-    Licensee="Preview"
-    Edition="Preview"
+    Edition=`sed 's/ LICENSE AGREEMENT//;q' .LICENSE`
+    Licensee="$Edition"
     QT_EDITION="QT_EDITION_DESKTOP"
-elif [ -f "$relpath"/LICENSE.SNAPSHOT.COMMERCIAL ]; then
-    # snapshot - commercial
-    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
-    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-    Licensee="Snapshot"
-    Edition="Snapshot"
-    QT_EDITION="QT_EDITION_DESKTOP"
-elif [ -f "$relpath"/LICENSE.SNAPSHOT.OPENSOURCE.GPL2 -o -f "$relpath"/LICENSE.SNAPSHOT.OPENSOURCE.GPL3 ]; then
-    # snapshot - opensource
-    [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
-    [ "$PLATFORM_QWS" = "maybe" ] && PLATFORM_QWS=yes
-    Licensee="Snapshot"
-    Edition="Snapshot"
-    QT_EDITION="QT_EDITION_OPENSOURCE"
 elif [ -f "$relpath"/LICENSE.TROLL ]; then
     # internal Trolltech edition
     [ "$PLATFORM_MAC" = "maybe" ] && PLATFORM_MAC=yes
@@ -263,17 +243,14 @@ else
             QT_EDITION="QT_EDITION_UNIVERSAL"
             ;;
         B)
-            Edition="Desktop"
+            Edition="FullFramework"
+            EditionString="Full Framework"
             QT_EDITION="QT_EDITION_DESKTOP"
             ;;
         L)
-            Edition="DesktopLight"
-            EditionString="Desktop Light"
+            Edition="GUIFramework"
+            EditionString="GUI Framework"
             QT_EDITION="QT_EDITION_DESKTOPLIGHT"
-            ;;
-        R)
-            Edition="Console"
-            QT_EDITION="QT_EDITION_CONSOLE"
             ;;
         esac
         ;;
@@ -286,24 +263,6 @@ else
             ;;
         esac
         ;;
-    34M)
-        LicenseType="Academic"
-        case $ProductCode in
-        B)
-            Edition="Academic"
-            QT_EDITION="QT_EDITION_ACADEMIC"
-            ;;
-        esac
-        ;;
-    TBM)
-        LicenseType="Educational"
-        case $ProductCode in
-        B)
-            Edition="Educational"
-            QT_EDITION="QT_EDITION_EDUCATIONAL"
-            ;;
-        esac
-        ;;
     esac
     if [ -z "$LicenseType" -o -z "$Edition" -o -z "$QT_EDITION" ]; then
         echo
@@ -313,11 +272,14 @@ else
 
     # verify that we are licensed to use Qt on this platform
     LICENSE_EXTENSION=
-    if [ "$PLATFORM_QWS" = "yes" ]; then
+    if [ "$PlatformCode" = "X" ]; then
+	# Qt All-OS
+	LICENSE_EXTENSION="-ALLOS"
+    elif [ "$PLATFORM_QWS" = "yes" ]; then
         case $PlatformCode in
-        2|4|8|A|B|E|G|J|K|P|Q|S|U|V|W|X)
+        2|4|8|A|B|E|G|J|K|P|Q|S|U|V|W)
+            # Qt for Embedded Linux
             LICENSE_EXTENSION="-EMBEDDED"
-            # Qt Embedded
             ;;
         *)
             echo
@@ -331,9 +293,14 @@ else
         esac
     elif [ "$PLATFORM_MAC" = "yes" ]; then
         case $PlatformCode in
-        2|4|5|7|9|B|C|E|F|G|L|M|U|W|X|Y)
+        2|4|5|7|9|B|C|E|F|G|L|M|U|W|Y)
             # Qt/Mac
+            LICENSE_EXTENSION="-DESKTOP"
             ;;
+        3|6|8|A|D|H|J|K|P|Q|S|V)
+            # Embedded no-deploy
+            LICENSE_EXTENSION="-EMBEDDED"
+	    ;;
         *)
             echo
             echo "You are not licensed for the Qt/Mac platform."
@@ -345,8 +312,13 @@ else
         esac
      else
          case $PlatformCode in
-         2|3|4|5|7|D|E|F|J|M|Q|S|T|V|X|Z)
+         2|3|4|5|7|D|E|F|J|M|Q|S|T|V|Z)
              # Qt/X11
+             LICENSE_EXTENSION="-DESKTOP"
+             ;;
+         6|8|9|A|B|C|G|H|K|P|U|W)
+             # Embedded no-deploy
+             LICENSE_EXTENSION="-EMBEDDED"
              ;;
          *)
              echo
@@ -369,12 +341,6 @@ else
         Evaluation)
             cp -f "$relpath/.LICENSE-EVALUATION-US" "$outpath/LICENSE"
             ;;
-        Academic)
-            cp -f "$relpath/.LICENSE-ACADEMIC-US" "$outpath/LICENSE"
-            ;;
-        Educational)
-            cp -f "$relpath/.LICENSE-EDUCATIONAL-US" "$outpath/LICENSE"
-            ;;
         esac
         ;;
     2|5)
@@ -385,12 +351,6 @@ else
             ;;
         Evaluation)
             cp -f "$relpath/.LICENSE-EVALUATION" "$outpath/LICENSE"
-            ;;
-        Academic)
-            cp -f "$relpath/.LICENSE-ACADEMIC" "$outpath/LICENSE"
-            ;;
-        Educational)
-            cp -f "$relpath/.LICENSE-EDUCATIONAL" "$outpath/LICENSE"
             ;;
         esac
         ;;

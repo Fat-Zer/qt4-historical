@@ -4,7 +4,7 @@
  *  David Turner, Robert Wilhelm, and Werner Lemberg.
  *
  *  Copyright 2006  Behdad Esfahbod
- *  Copyright 2007  Trolltech ASA
+ *  Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
  *  This is part of HarfBuzz, an OpenType Layout engine library.
  *

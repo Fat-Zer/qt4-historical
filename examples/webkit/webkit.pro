@@ -1,5 +1,5 @@
 TEMPLATE =  subdirs
-SUBDIRS +=  formExtractor \
+SUBDIRS +=  formextractor \
             previewer
 
 # install

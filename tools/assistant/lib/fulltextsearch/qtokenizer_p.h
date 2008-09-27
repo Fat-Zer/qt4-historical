@@ -1,12 +1,10 @@
 /****************************************************************************
 **
-** Copyright (C) 2007-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the QCLucene library and is distributable under
 ** the terms of the LGPL license as specified in the license.txt file.
-**
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
 **
 ****************************************************************************/
 

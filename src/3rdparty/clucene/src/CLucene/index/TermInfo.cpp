@@ -4,7 +4,7 @@
 * Distributable under the terms of either the Apache License (Version 2.0) or 
 * the GNU Lesser General Public License, as specified in the COPYING file.
 *
-* Changes are Copyright(C) 2008 by Trolltech ASA, all rights reserved.
+* Changes are Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
 ------------------------------------------------------------------------------*/
 
 #include "CLucene/StdHeader.h"

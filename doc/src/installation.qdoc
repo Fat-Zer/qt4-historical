@@ -1,43 +1,37 @@
 /****************************************************************************
 **
-** Copyright (C) 2004-2008 Trolltech ASA. All rights reserved.
+** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
-** This file may be used under the terms of the GNU General Public
-** License versions 2.0 or 3.0 as published by the Free Software
-** Foundation and appearing in the files LICENSE.GPL2 and LICENSE.GPL3
-** included in the packaging of this file.  Alternatively you may (at
-** your option) use any later version of the GNU General Public
-** License if such license has been publicly approved by Trolltech ASA
-** (or its successors, if any) and the KDE Free Qt Foundation. In
-** addition, as a special exception, Trolltech gives you certain
-** additional rights. These rights are described in the Trolltech GPL
-** Exception version 1.2, which can be found at
-** http://www.trolltech.com/products/qt/gplexception/ and in the file
-** GPL_EXCEPTION.txt in this package.
+** Commercial Usage
+** Licensees holding valid Qt Commercial licenses may use this file in
+** accordance with the Qt Commercial License Agreement provided with the
+** Software or, alternatively, in accordance with the terms contained in
+** a written agreement between you and Nokia.
 **
-** Please review the following information to ensure GNU General
-** Public Licensing requirements will be met:
-** http://trolltech.com/products/qt/licenses/licensing/opensource/. If
-** you are unsure which license is appropriate for your use, please
-** review the following information:
-** http://trolltech.com/products/qt/licenses/licensing/licensingoverview
-** or contact the sales department at sales@trolltech.com.
 **
-** In addition, as a special exception, Trolltech, as the sole
-** copyright holder for Qt Designer, grants users of the Qt/Eclipse
-** Integration plug-in the right for the Qt/Eclipse Integration to
-** link to functionality provided by Qt Designer and its related
-** libraries.
+** GNU General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU
+** General Public License versions 2.0 or 3.0 as published by the Free
+** Software Foundation and appearing in the file LICENSE.GPL included in
+** the packaging of this file.  Please review the following information
+** to ensure GNU General Public Licensing requirements will be met:
+** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
+** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
+** exception, Nokia gives you certain additional rights. These rights
+** are described in the Nokia Qt GPL Exception version 1.3, included in
+** the file GPL_EXCEPTION.txt in this package.
 **
-** This file is provided "AS IS" with NO WARRANTY OF ANY KIND,
-** INCLUDING THE WARRANTIES OF DESIGN, MERCHANTABILITY AND FITNESS FOR
-** A PARTICULAR PURPOSE. Trolltech reserves all rights not expressly
-** granted herein.
+** Qt for Windows(R) Licensees
+** As a special exception, Nokia, as the sole copyright holder for Qt
+** Designer, grants users of the Qt/Eclipse Integration plug-in the
+** right for the Qt/Eclipse Integration to link to functionality
+** provided by Qt Designer and its related libraries.
 **
-** This file is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE
-** WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+** If you are unsure which license is appropriate for your use, please
+** contact the sales department at qt-sales@nokia.com.
 **
 ****************************************************************************/
 
@@ -73,12 +67,12 @@ in the \l{Qt for X11 Requirements} document.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-x11-opensource-desktop-4.4.2.tar.gz}
+    if you have the \c{qt-x11-opensource-desktop-4.4.3.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 0
 
-    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.2}
+    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.3}
     containing the files from the archive. We only support the GNU version of
     the tar archiving utility. Note that on some systems it is called gtar.
 
@@ -88,7 +82,7 @@ in the \l{Qt for X11 Requirements} document.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.2} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.3} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
@@ -142,7 +136,7 @@ in the \l{Qt for X11 Requirements} document.
 
     For compilers that do not support rpath you must also extended the
     \c LD_LIBRARY_PATH environment variable to include
-    \c{/usr/local/Trolltech/Qt-4.4.2/lib}. On Linux with GCC this step
+    \c{/usr/local/Trolltech/Qt-4.4.3/lib}. On Linux with GCC this step
     is not needed.
 
 \o  That's all. Qt is now installed.
@@ -202,7 +196,7 @@ as part of the \l{Qt Commercial Editions}.
     For the open source version you do not need a license file.
 
 \o  Uncompress the files into the directory you want Qt installed;
-    e.g. \c{C:\Qt\4.4.2}.
+    e.g. \c{C:\Qt\4.4.3}.
 
     \note The install path must not contain any spaces or Windows specific
     file system characters.
@@ -214,7 +208,7 @@ as part of the \l{Qt Commercial Editions}.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 7
 
-    This is done by adding \c{c:\Qt\4.4.2\bin} to the \c PATH variable.
+    This is done by adding \c{c:\Qt\4.4.3\bin} to the \c PATH variable.
 
     For newer versions of Windows, \c PATH can be extended through
     the \menu{Control Panel|System|Advanced|Environment variables} menu.
@@ -308,12 +302,12 @@ The following instructions describe how to install Qt from the source package.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-mac-opensource-desktop-4.4.2.tar.gz}
+    if you have the \c{qt-mac-opensource-desktop-4.4.3.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 11
 
-    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.2}
+    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.3}
     containing the files from the archive.
 
 \o  Building
@@ -322,7 +316,7 @@ The following instructions describe how to install Qt from the source package.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.2} directory, but this can be
+    \c{/usr/local/Trolltech/Qt-4.4.3} directory, but this can be
     changed by using the \c{-prefix} option. Alternatively, the
     \c{-prefix-install} option can be used to specify a "local"
     installation within the source directory.
@@ -414,7 +408,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
 \list 1
     \o  Uncompress the files into the directory you want to install Qt into;
-        e.g., \c{C:\Qt\4.4.2}.
+        e.g., \c{C:\Qt\4.4.3}.
 
         \note The install path must not contain any spaces.
 
@@ -425,7 +419,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
         \snippet doc/src/snippets/code/doc_src_installation.qdoc 18
 
-        This is done by adding \c{c:\Qt\4.4.2\bin} to the \c PATH variable.
+        This is done by adding \c{c:\Qt\4.4.3\bin} to the \c PATH variable.
 
         For newer versions of Windows, \c PATH can be extended through
         "Control Panel->System->Advanced->Environment variables" and for
@@ -546,7 +540,7 @@ in the \l{Qt for Windows CE Requirements} document.
         \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=0baf2b35-c656-4969-ace8-e4c0c0716adb&DisplayLang=en}{here}.
     \endlist
 
-    \sa {Known Issues in 4.4.2}
+    \sa {Known Issues in 4.4.3}
 */
 
 /*!
@@ -556,7 +550,7 @@ in the \l{Qt for Windows CE Requirements} document.
     \brief Setting up the Mac OS X environment for Qt.
     \previouspage General Qt Requirements
 
-    \sa {Known Issues in 4.4.2}
+    \sa {Known Issues in 4.4.3}
 */
 
 /*!
@@ -632,7 +626,7 @@ in the \l{Qt for Windows CE Requirements} document.
     \note You must compile with XRender support to get alpha transparency
     support for pixmaps and images.
 
-    \sa {Known Issues in 4.4.2}
+    \sa {Known Issues in 4.4.3}
 */
 
 /*!
@@ -662,7 +656,7 @@ in the \l{Qt for Windows CE Requirements} document.
     Windows CE using Platform Builder. In order for Qt for Windows CE to
     support a custom SDK, a build specification needs to be created.
 
-    \sa {Known Issues in 4.4.2}
+    \sa {Known Issues in 4.4.3}
 */
 
 /*!
@@ -672,7 +666,7 @@ in the \l{Qt for Windows CE Requirements} document.
     \brief Setting up the Embedded Linux environment for Qt.
     \previouspage General Qt Requirements
 
-    \sa {Known Issues in 4.4.2}
+    \sa {Known Issues in 4.4.3}
 
     \section1 Building Qt for Embedded Linux with uclibc
 

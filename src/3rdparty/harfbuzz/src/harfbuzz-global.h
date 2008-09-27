@@ -1,7 +1,7 @@
 /*******************************************************************
  *
  *  Copyright 2005  David Turner, The FreeType Project (www.freetype.org)
- *  Copyright 2007  Trolltech ASA
+ *  Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies)
  *
  *  This is part of HarfBuzz, an OpenType Layout engine library.
  *
