@@ -9,7 +9,7 @@ win32 {
     }
 }
 
-DOCS_GENERATION_DEFINES = -Dopensourceedition
+DOCS_GENERATION_DEFINES = -Dqtopiacore
 GENERATOR = $$QT_BUILD_TREE/bin/qhelpgenerator
 
 win32:isEmpty(QMAKE_SH) {
