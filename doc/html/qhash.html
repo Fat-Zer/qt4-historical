@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/corelib/tools/qhash.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/src/corelib/tools/qhash.cpp -->
 <head>
   <title>Qt 4.5: QHash Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -82,9 +82,9 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-12">qHash</a></b> ( char <i>key</i> )</li>
-<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-15">qHash</a></b> ( const QPair&lt;T1, T2&gt; &amp; <i>key</i> )</li>
-<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-16">qHash</a></b> ( const QXmlNodeModelIndex &amp; <i>index</i> )</li>
+<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-5">qHash</a></b> ( char <i>key</i> )</li>
+<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-7">qHash</a></b> ( const QPair&lt;T1, T2&gt; &amp; <i>key</i> )</li>
+<li><div class="fn"></div>uint <b><a href="qhash.html#qHash-8">qHash</a></b> ( const QXmlNodeModelIndex &amp; <i>index</i> )</li>
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-17">qHash</a></b> ( uchar <i>key</i> )</li>
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-18">qHash</a></b> ( signed char <i>key</i> )</li>
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-19">qHash</a></b> ( ushort <i>key</i> )</li>
@@ -100,8 +100,8 @@
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-29">qHash</a></b> ( const QBitArray &amp; <i>key</i> )</li>
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-30">qHash</a></b> ( const QString &amp; <i>key</i> )</li>
 <li><div class="fn"></div>uint <b><a href="qhash.html#qHash-31">qHash</a></b> ( const T * <i>key</i> )</li>
-<li><div class="fn"></div>QDataStream &amp; <b><a href="qhash.html#operator-lt-lt-16">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
-<li><div class="fn"></div>QDataStream &amp; <b><a href="qhash.html#operator-gt-gt-13">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
+<li><div class="fn"></div>QDataStream &amp; <b><a href="qhash.html#operator-lt-lt-117">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
+<li><div class="fn"></div>QDataStream &amp; <b><a href="qhash.html#operator-gt-gt-62">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</li>
 </ul>
 <a name="details"></a>
 <hr />
@@ -437,13 +437,13 @@
 <p>Same as <a href="qhash.html#value">value</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="qHash-12"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-5"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( char <i>key</i> )</h3>
 <p>Returns the hash value for the <i>key</i>.</p>
-<h3 class="fn"><a name="qHash-15"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qpair.html">QPair</a>&lt;T1, T2&gt; &amp; <i>key</i> )</h3>
+<h3 class="fn"><a name="qHash-7"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qpair.html">QPair</a>&lt;T1, T2&gt; &amp; <i>key</i> )</h3>
 <p>Returns the hash value for the <i>key</i>.</p>
 <p>Types <tt>T1</tt> and <tt>T2</tt> must be supported by qHash().</p>
 <p>This function was introduced in Qt 4.3.</p>
-<h3 class="fn"><a name="qHash-16"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> &amp; <i>index</i> )</h3>
+<h3 class="fn"><a name="qHash-8"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> &amp; <i>index</i> )</h3>
 <p>Computes a hash key from the <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a> <i>index</i>, and returns it. This function would be used by <a href="qhash.html">QHash</a> if you wanted to build a hash table for instances of <a href="qxmlnodemodelindex.html">QXmlNodeModelIndex</a>.</p>
 <p>The hash is computed on <a href="qxmlnodemodelindex.html#data">QXmlNodeModelIndex::data</a>(), <a href="qxmlnodemodelindex.html#additionalData">QXmlNodeModelIndex::additionalData</a>(), and <a href="qxmlnodemodelindex.html#model">QXmlNodeModelIndex::model</a>(). This means the hash key can be used for node indexes from different node models.</p>
 <p>This function was introduced in Qt 4.4.</p>
@@ -492,11 +492,11 @@
 <h3 class="fn"><a name="qHash-31"></a><a href="qtglobal.html#uint-typedef">uint</a> qHash ( const T * <i>key</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the hash value for the <i>key</i>.</p>
-<h3 class="fn"><a name="operator-lt-lt-16"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-117"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>out</i>, const QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
 <p>Writes the hash <i>hash</i> to stream <i>out</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&lt;&lt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-13"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-62"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>in</i>, QHash&lt;Key, T&gt; &amp; <i>hash</i> )</h3>
 <p>Reads a hash from stream <i>in</i> into <i>hash</i>.</p>
 <p>This function requires the key and value types to implement <tt>operator&gt;&gt;()</tt>.</p>
 <p>See also <a href="datastreamformat.html">Format of the QDataStream operators</a>.</p>

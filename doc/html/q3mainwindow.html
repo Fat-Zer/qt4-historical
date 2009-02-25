@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/qt3support/widgets/q3mainwindow.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/src/qt3support/widgets/q3mainwindow.cpp -->
 <head>
   <title>Qt 4.5: Q3MainWindow Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -93,7 +93,7 @@
 <ul>
 <li><div class="fn"></div>207 public functions inherited from <a href="qwidget.html#public-functions">QWidget</a></li>
 <li><div class="fn"></div>29 public functions inherited from <a href="qobject.html#public-functions">QObject</a></li>
-<li><div class="fn"></div>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"></div>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="public-slots"></a>
 <h3>Public Slots</h3>
@@ -148,8 +148,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"></div>QTextStream &amp; <b><a href="q3mainwindow.html#operator-lt-lt-6">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</li>
-<li><div class="fn"></div>QTextStream &amp; <b><a href="q3mainwindow.html#operator-gt-gt-3">operator&gt;&gt;</a></b> ( QTextStream &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</li>
+<li><div class="fn"></div>QTextStream &amp; <b><a href="q3mainwindow.html#operator-lt-lt-19">operator&lt;&lt;</a></b> ( QTextStream &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</li>
+<li><div class="fn"></div>QTextStream &amp; <b><a href="q3mainwindow.html#operator-gt-gt-11">operator&gt;&gt;</a></b> ( QTextStream &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -510,11 +510,11 @@
 <p>See also <a href="q3whatsthis.html#enterWhatsThisMode">Q3WhatsThis::enterWhatsThisMode</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-6"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-19"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&lt;&lt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, const Q3MainWindow &amp; <i>mainWindow</i> )</h3>
 <p>Writes the layout (sizes and positions) of the dock windows in the dock areas of the <a href="q3mainwindow.html">Q3MainWindow</a> <i>mainWindow</i>, including <tt>Minimized</tt> and <tt>TornOff</tt> dock windows, to the text stream <i>ts</i>.</p>
 <p>This can be used, for example, in conjunction with <a href="qsettings.html">QSettings</a> to save the user's layout when the <i>mainWindow</i> receives a close event.</p>
 <p>See also <a href="qwidget.html#closeEvent">QWidget::closeEvent</a>().</p>
-<h3 class="fn"><a name="operator-gt-gt-3"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&gt;&gt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-11"></a><a href="qtextstream.html">QTextStream</a> &amp; operator&gt;&gt; ( <a href="qtextstream.html">QTextStream</a> &amp; <i>ts</i>, Q3MainWindow &amp; <i>mainWindow</i> )</h3>
 <p>Reads the layout (sizes and positions) of the dock windows in the dock areas of the <a href="q3mainwindow.html">Q3MainWindow</a> <i>mainWindow</i> from the text stream, <i>ts</i>, including <tt>Minimized</tt> and <tt>TornOff</tt> dock windows. Restores the dock windows and dock areas to these sizes and positions. The layout information must be in the format produced by operator&lt;&lt;().</p>
 <p>This can be used, for example, in conjunction with <a href="qsettings.html">QSettings</a> to restore the user's layout.</p>
 <p /><address><hr /><div align="center">

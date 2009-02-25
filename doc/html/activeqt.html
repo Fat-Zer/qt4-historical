@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/activeqt.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/doc/src/activeqt.qdoc -->
 <head>
   <title>Qt 4.5: ActiveQt Framework</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -21,8 +21,8 @@
 </ol>
 <p>The <a href="#activeqt">ActiveQt</a> framework consists of two modules:</p>
 <ul>
-<li>The <a href="qaxcontainer.html">QAxContainer</a> module is a static library implementing <a href="qobject.html">QObject</a> and <a href="qwidget.html">QWidget</a> subclasses, <a href="qaxobject.html">QAxObject</a> and <a href="qaxwidget.html">QAxWidget</a>, that act as containers for COM objects and ActiveX controls.</li>
-<li>The <a href="qaxserver.html">QAxServer</a> module is a static library that implements functionality for in-process and executable COM servers. This module provides the <a href="qaxaggregated.html">QAxAggregated</a>, <a href="qaxbindable.html">QAxBindable</a> and <a href="qaxfactory.html">QAxFactory</a> classes.</li>
+<li>The <a href="qaxcontainer.html">QAxContainer</a> module is a static library implementing <a href="qobject.html">QObject</a> and <a href="qwidget.html">QWidget</a> subclasses, QAxObject and QAxWidget, that act as containers for COM objects and ActiveX controls.</li>
+<li>The <a href="qaxserver.html">QAxServer</a> module is a static library that implements functionality for in-process and executable COM servers. This module provides the QAxAggregated, QAxBindable and QAxFactory classes.</li>
 </ul>
 <p>To build the static libraries, change into the <tt>activeqt</tt> directory (usually <tt>QTDIR/src/activeqt</tt>), and run <tt>qmake</tt> and your make tool in both the <tt>container</tt> and the <tt>control</tt> subdirectory. The libraries <tt>qaxcontainer.lib</tt> and <tt>qaxserver.lib</tt> will be linked into <tt>QTDIR/lib</tt>.</p>
 <p>If you are using a shared configuration of Qt enter the <tt>plugin</tt> subdirectory and run <tt>qmake</tt> and your make tool to build a plugin that integrates the <a href="qaxcontainer.html">QAxContainer</a> module into <a href="designer-manual.html#qt-designer">Qt Designer</a>.</p>

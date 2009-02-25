@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/gui/kernel/qapplication.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/src/gui/kernel/qapplication.cpp -->
 <head>
   <title>Qt 4.5: QApplication Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -73,8 +73,10 @@
 <li><div class="fn"></div>QString <b><a href="qapplication.html#sessionKey">sessionKey</a></b> () const</li>
 <li><div class="fn"></div>void <b><a href="qapplication.html#setInputContext">setInputContext</a></b> ( QInputContext * <i>inputContext</i> )</li>
 <li><div class="fn"></div>QString <b><a href="qapplication.html#styleSheet-prop">styleSheet</a></b> () const</li>
-<li><div class="fn"></div>virtual bool <b><a href="qapplication.html#x11EventFilter">x11EventFilter</a></b> ( XEvent * <i>event</i> )</li>
-<li><div class="fn"></div>int <b><a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a></b> ( XEvent * <i>event</i> )</li>
+<li><div class="fn"></div>void <b><a href="qapplication.html#winFocus">winFocus</a></b> ( QWidget *, bool )</li>
+<li><div class="fn"></div>virtual int <b><a href="qapplication.html#x11ClientMessage">x11ClientMessage</a></b> ( QWidget *, XEvent *, bool <i>passive_only</i> )</li>
+<li><div class="fn"></div>virtual bool <b><a href="qapplication.html#x11EventFilter">x11EventFilter</a></b> ( XEvent * )</li>
+<li><div class="fn"></div>int <b><a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a></b> ( XEvent * )</li>
 </ul>
 <ul>
 <li><div class="fn"></div>4 public functions inherited from <a href="qcoreapplication.html#public-functions">QCoreApplication</a></li>
@@ -182,6 +184,7 @@
 <li><div class="fn"></div>int <b><a href="qapplication.html#wheelScrollLines-prop">wheelScrollLines</a></b> ()</li>
 <li><div class="fn"></div>QWidget * <b><a href="qapplication.html#widgetAt">widgetAt</a></b> ( const QPoint &amp; <i>point</i> )</li>
 <li><div class="fn"></div>QWidget * <b><a href="qapplication.html#widgetAt-4">widgetAt</a></b> ( int <i>x</i>, int <i>y</i> )</li>
+<li><div class="fn"></div>void <b><a href="qapplication.html#winMouseButtonUp">winMouseButtonUp</a></b> ()</li>
 <li><div class="fn"></div>QIcon <b><a href="qapplication.html#windowIcon-prop">windowIcon</a></b> ()</li>
 </ul>
 <ul>
@@ -227,7 +230,7 @@
 <tr valign="top" class="odd"><td>GUI Styles</td><td><a href="qapplication.html#style">style</a>(), <a href="qapplication.html#setStyle">setStyle</a>().</td></tr>
 <tr valign="top" class="even"><td>Color usage</td><td><a href="qapplication.html#colorSpec">colorSpec</a>(), <a href="qapplication.html#setColorSpec">setColorSpec</a>(), <a href="qapplication.html#qwsSetCustomColors">qwsSetCustomColors</a>().</td></tr>
 <tr valign="top" class="odd"><td>Text handling</td><td><a href="qcoreapplication.html#installTranslator">installTranslator</a>(), <a href="qcoreapplication.html#removeTranslator">removeTranslator</a>() <a href="qcoreapplication.html#translate">translate</a>().</td></tr>
-<tr valign="top" class="even"><td>Widgets</td><td><a href="qapplication.html#allWidgets">allWidgets</a>(), <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>(), <a href="qapplication.html#desktop">desktop</a>(), <a href="qapplication.html#activePopupWidget">activePopupWidget</a>(), <a href="qapplication.html#activeModalWidget">activeModalWidget</a>(), <a href="qapplication.html#clipboard">clipboard</a>(), <a href="qapplication.html#focusWidget">focusWidget</a>(), winFocus(), <a href="qapplication.html#activeWindow">activeWindow</a>(), <a href="qapplication.html#widgetAt">widgetAt</a>().</td></tr>
+<tr valign="top" class="even"><td>Widgets</td><td><a href="qapplication.html#allWidgets">allWidgets</a>(), <a href="qapplication.html#topLevelWidgets">topLevelWidgets</a>(), <a href="qapplication.html#desktop">desktop</a>(), <a href="qapplication.html#activePopupWidget">activePopupWidget</a>(), <a href="qapplication.html#activeModalWidget">activeModalWidget</a>(), <a href="qapplication.html#clipboard">clipboard</a>(), <a href="qapplication.html#focusWidget">focusWidget</a>(), <a href="qapplication.html#winFocus">winFocus</a>(), <a href="qapplication.html#activeWindow">activeWindow</a>(), <a href="qapplication.html#widgetAt">widgetAt</a>().</td></tr>
 <tr valign="top" class="odd"><td>Advanced cursor handling</td><td><a href="qapplication.html#overrideCursor">overrideCursor</a>(), <a href="qapplication.html#setOverrideCursor">setOverrideCursor</a>(), <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>().</td></tr>
 <tr valign="top" class="even"><td>X Window System synchronization</td><td><a href="qapplication-qt3.html#flushX">flushX</a>(), <a href="qapplication.html#syncX">syncX</a>().</td></tr>
 <tr valign="top" class="odd"><td>Session management</td><td><a href="qapplication.html#isSessionRestored">isSessionRestored</a>(), <a href="qapplication.html#sessionId">sessionId</a>(), <a href="qapplication.html#commitData">commitData</a>(), <a href="qapplication.html#saveState">saveState</a>().</td></tr>
@@ -844,9 +847,7 @@
 <p>This cursor will be displayed in all the application's widgets until <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>() or another setOverrideCursor() is called.</p>
 <p>Application cursors are stored on an internal stack. setOverrideCursor() pushes the cursor onto the stack, and <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>() pops the active cursor off the stack. <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>() changes the curently active application override cursor. Every setOverrideCursor() must eventually be followed by a corresponding <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), otherwise the stack will never be emptied.</p>
 <p>Example:</p>
-<pre> QApplication::setOverrideCursor(QCursor(Qt::WaitCursor));
- calculateHugeMandelbrot();              <span class="comment">// lunch time...</span>
- QApplication::restoreOverrideCursor();</pre>
+<pre></pre>
 <p>See also <a href="qapplication.html#overrideCursor">overrideCursor</a>(), <a href="qapplication.html#restoreOverrideCursor">restoreOverrideCursor</a>(), <a href="qapplication.html#changeOverrideCursor">changeOverrideCursor</a>(), and <a href="qwidget.html#cursor-prop">QWidget::setCursor</a>().</p>
 <a name="//apple_ref/cpp/clm/QApplication/setPalette" />
 <h3 class="fn"><a name="setPalette"></a>void QApplication::setPalette ( const <a href="qpalette.html">QPalette</a> &amp; <i>palette</i>, const char * <i>className</i> = 0 )&nbsp;&nbsp;<tt> [static]</tt></h3>
@@ -877,7 +878,6 @@
 <p>See also <a href="qapplication.html#setStyle">setStyle</a>() and <a href="qstyle.html">QStyle</a>.</p>
 <a name="//apple_ref/cpp/clm/QApplication/syncX" />
 <h3 class="fn"><a name="syncX"></a>void QApplication::syncX ()&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Synchronizes with the X server in the X11 implementation. This normally takes some time. Does nothing on other platforms.</p>
 <a name="//apple_ref/cpp/clm/QApplication/topLevelAt" />
 <h3 class="fn"><a name="topLevelAt"></a><a href="qwidget.html">QWidget</a> * QApplication::topLevelAt ( const <a href="qpoint.html">QPoint</a> &amp; <i>point</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Returns the top-level widget at the given <i>point</i>; returns 0 if there is no such widget.</p>
@@ -908,18 +908,16 @@
 <h3 class="fn"><a name="widgetAt-4"></a><a href="qwidget.html">QWidget</a> * QApplication::widgetAt ( int <i>x</i>, int <i>y</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns the widget at global screen position (<i>x</i>, <i>y</i>), or 0 if there is no Qt widget there.</p>
+<a name="//apple_ref/cpp/instm/QApplication/winFocus" />
+<h3 class="fn"><a name="winFocus"></a>void QApplication::winFocus ( <a href="qwidget.html">QWidget</a> *, bool )</h3>
+<a name="//apple_ref/cpp/clm/QApplication/winMouseButtonUp" />
+<h3 class="fn"><a name="winMouseButtonUp"></a>void QApplication::winMouseButtonUp ()&nbsp;&nbsp;<tt> [static]</tt></h3>
+<a name="//apple_ref/cpp/instm/QApplication/x11ClientMessage" />
+<h3 class="fn"><a name="x11ClientMessage"></a>int QApplication::x11ClientMessage ( <a href="qwidget.html">QWidget</a> *, XEvent *, bool <i>passive_only</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <a name="//apple_ref/cpp/instm/QApplication/x11EventFilter" />
-<h3 class="fn"><a name="x11EventFilter"></a>bool QApplication::x11EventFilter ( XEvent * <i>event</i> )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
-<p><b>Warning:</b> This virtual function is only implemented under X11.</p>
-<p>If you create an application that inherits <a href="qapplication.html">QApplication</a> and reimplement this function, you get direct access to all X events that the are received from the X server. The events are passed in the <i>event</i> parameter.</p>
-<p>Return true if you want to stop the event from being processed. Return false for normal event dispatching. The default implementation returns false.</p>
-<p>It is only the directly addressed messages that are filtered. You must install an event filter directly on the event dispatcher, which is returned by <a href="qabstracteventdispatcher.html#instance">QAbstractEventDispatcher::instance</a>(), to handle system wide messages.</p>
-<p>See also <a href="qapplication.html#x11ProcessEvent">x11ProcessEvent</a>().</p>
+<h3 class="fn"><a name="x11EventFilter"></a>bool QApplication::x11EventFilter ( XEvent * )&nbsp;&nbsp;<tt> [virtual]</tt></h3>
 <a name="//apple_ref/cpp/instm/QApplication/x11ProcessEvent" />
-<h3 class="fn"><a name="x11ProcessEvent"></a>int QApplication::x11ProcessEvent ( XEvent * <i>event</i> )</h3>
-<p>This function does the core processing of individual X <i>event</i>s, normally by dispatching Qt events to the right destination.</p>
-<p>It returns 1 if the event was consumed by special handling, 0 if the <i>event</i> was consumed by normal handling, and -1 if the <i>event</i> was for an unrecognized widget.</p>
-<p>See also <a href="qapplication.html#x11EventFilter">x11EventFilter</a>().</p>
+<h3 class="fn"><a name="x11ProcessEvent"></a>int QApplication::x11ProcessEvent ( XEvent * )</h3>
 <hr />
 <h2>Macro Documentation</h2>
 <a name="//apple_ref/cpp/macro//qApp" />

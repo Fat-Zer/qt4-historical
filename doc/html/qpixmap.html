@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/gui/image/qpixmap.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/src/gui/image/qpixmap.cpp -->
 <head>
   <title>Qt 4.5: QPixmap Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -83,12 +83,13 @@
 <li><div class="fn"></div>int <b><a href="qpixmap.html#width">width</a></b> () const</li>
 <li><div class="fn"></div>const QX11Info &amp; <b><a href="qpixmap.html#x11Info">x11Info</a></b> () const</li>
 <li><div class="fn"></div>Qt::HANDLE <b><a href="qpixmap.html#x11PictureHandle">x11PictureHandle</a></b> () const</li>
+<li><div class="fn"></div>void <b><a href="qpixmap.html#x11SetScreen">x11SetScreen</a></b> ( int <i>screen</i> )</li>
 <li><div class="fn"></div><b><a href="qpixmap.html#operator-QVariant">operator QVariant</a></b> () const</li>
 <li><div class="fn"></div>bool <b><a href="qpixmap.html#operator-not">operator!</a></b> () const</li>
 <li><div class="fn"></div>QPixmap &amp; <b><a href="qpixmap.html#operator-eq">operator=</a></b> ( const QPixmap &amp; <i>pixmap</i> )</li>
 </ul>
 <ul>
-<li><div class="fn"></div>12 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
+<li><div class="fn"></div>14 public functions inherited from <a href="qpaintdevice.html#public-functions">QPaintDevice</a></li>
 </ul>
 <a name="static-public-members"></a>
 <h3>Static Public Members</h3>
@@ -96,13 +97,14 @@
 <li><div class="fn"></div>int <b><a href="qpixmap.html#defaultDepth">defaultDepth</a></b> ()</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#fromImage">fromImage</a></b> ( const QImage &amp; <i>image</i>, Qt::ImageConversionFlags <i>flags</i> = Qt::AutoColor )</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#fromMacCGImageRef">fromMacCGImageRef</a></b> ( CGImageRef <i>image</i> )</li>
-<li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#fromWinHBITMAP">fromWinHBITMAP</a></b> ( HBITMAP <i>bitmap</i>, HBitmapFormat <i>format</i> = NoAlpha )</li>
+<li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#fromWinHBITMAP">fromWinHBITMAP</a></b> ( HBITMAP <i>hbitmap</i>, HBitmapFormat <i>format</i> = NoAlpha )</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#fromX11Pixmap">fromX11Pixmap</a></b> ( Qt::HANDLE <i>pixmap</i>, ShareMode <i>mode</i> = ImplicitlyShared )</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#grabWidget">grabWidget</a></b> ( QWidget * <i>widget</i>, const QRect &amp; <i>rectangle</i> )</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#grabWidget-2">grabWidget</a></b> ( QWidget * <i>widget</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>width</i> = -1, int <i>height</i> = -1 )</li>
 <li><div class="fn"></div>QPixmap <b><a href="qpixmap.html#grabWindow">grabWindow</a></b> ( WId <i>window</i>, int <i>x</i> = 0, int <i>y</i> = 0, int <i>width</i> = -1, int <i>height</i> = -1 )</li>
 <li><div class="fn"></div>QTransform <b><a href="qpixmap.html#trueMatrix">trueMatrix</a></b> ( const QTransform &amp; <i>matrix</i>, int <i>width</i>, int <i>height</i> )</li>
 <li><div class="fn"></div>QMatrix <b><a href="qpixmap.html#trueMatrix-2">trueMatrix</a></b> ( const QMatrix &amp; <i>m</i>, int <i>w</i>, int <i>h</i> )</li>
+<li><div class="fn"></div>int <b><a href="qpixmap.html#x11SetDefaultScreen">x11SetDefaultScreen</a></b> ( int <i>screen</i> )</li>
 </ul>
 <ul>
 <li><div class="fn"></div>1 static public member inherited from <a href="qpaintdevice.html#static-public-members">QPaintDevice</a></li>
@@ -110,8 +112,8 @@
 <a name="related-non-members"></a>
 <h3>Related Non-Members</h3>
 <ul>
-<li><div class="fn"></div>QDataStream &amp; <b><a href="qpixmap.html#operator-lt-lt-35">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPixmap &amp; <i>pixmap</i> )</li>
-<li><div class="fn"></div>QDataStream &amp; <b><a href="qpixmap.html#operator-gt-gt-23">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPixmap &amp; <i>pixmap</i> )</li>
+<li><div class="fn"></div>QDataStream &amp; <b><a href="qpixmap.html#operator-lt-lt-86">operator&lt;&lt;</a></b> ( QDataStream &amp; <i>stream</i>, const QPixmap &amp; <i>pixmap</i> )</li>
+<li><div class="fn"></div>QDataStream &amp; <b><a href="qpixmap.html#operator-gt-gt-42">operator&gt;&gt;</a></b> ( QDataStream &amp; <i>stream</i>, QPixmap &amp; <i>pixmap</i> )</li>
 </ul>
 <h3>Additional Inherited Members</h3>
 <ul>
@@ -177,19 +179,7 @@
 <hr />
 <h2>Member Type Documentation</h2>
 <a name="//apple_ref/cpp/tag/QPixmap/HBitmapFormat" />
-<a name="//apple_ref/cpp/econst/QPixmap/NoAlpha" />
-<a name="//apple_ref/cpp/econst/QPixmap/PremultipliedAlpha" />
-<a name="//apple_ref/cpp/econst/QPixmap/Alpha" />
 <h3 class="fn"><a name="HBitmapFormat-enum"></a>enum QPixmap::HBitmapFormat</h3>
-<p>This enum defines how the conversion between <tt>HBITMAP</tt> and <a href="qpixmap.html">QPixmap</a> is performed.</p>
-<p><b>Warning:</b> This enum is only available on Windows.</p>
-<p><table border="1" cellpadding="2" cellspacing="1" width="100%">
-<tr><th width="25%">Constant</th><th width="15%">Value</th><th width="60%">Description</th></tr>
-<tr><td valign="top"><tt>QPixmap::NoAlpha</tt></td><td align="center" valign="top"><tt>0</tt></td><td valign="top">The alpha channel is ignored and always treated as being set to fully opaque. This is preferred if the <tt>HBITMAP</tt> is used with standard GDI calls, such as <tt>BitBlt()</tt>.</td></tr>
-<tr><td valign="top"><tt>QPixmap::PremultipliedAlpha</tt></td><td align="center" valign="top"><tt>1</tt></td><td valign="top">The <tt>HBITMAP</tt> is treated as having an alpha channel and premultiplied colors. This is preferred if the <tt>HBITMAP</tt> is accessed through the <tt>AlphaBlend()</tt> GDI function.</td></tr>
-<tr><td valign="top"><tt>QPixmap::Alpha</tt></td><td align="center" valign="top"><tt>2</tt></td><td valign="top">The <tt>HBITMAP</tt> is treated as having a plain alpha channel. This is the preferred format if the <tt>HBITMAP</tt> is going to be used as an application icon or systray icon.</td></tr>
-</table></p>
-<p>See also <a href="qpixmap.html#fromWinHBITMAP">fromWinHBITMAP</a>() and <a href="qpixmap.html#toWinHBITMAP">toWinHBITMAP</a>().</p>
 <a name="//apple_ref/cpp/tag/QPixmap/ShareMode" />
 <a name="//apple_ref/cpp/econst/QPixmap/ImplicitlyShared" />
 <a name="//apple_ref/cpp/econst/QPixmap/ExplicitlyShared" />
@@ -326,10 +316,7 @@
 <p>This function was introduced in Qt 4.2.</p>
 <p>See also <a href="qpixmap.html#toMacCGImageRef">toMacCGImageRef</a>() and <a href="qpixmap.html#pixmap-conversion">Pixmap Conversion</a>.</p>
 <a name="//apple_ref/cpp/clm/QPixmap/fromWinHBITMAP" />
-<h3 class="fn"><a name="fromWinHBITMAP"></a>QPixmap QPixmap::fromWinHBITMAP ( HBITMAP <i>bitmap</i>, <a href="qpixmap.html#HBitmapFormat-enum">HBitmapFormat</a> <i>format</i> = NoAlpha )&nbsp;&nbsp;<tt> [static]</tt></h3>
-<p>Returns a <a href="qpixmap.html">QPixmap</a> that is equivalent to the given <i>bitmap</i>. The conversion is based on the specified <i>format</i>.</p>
-<p><b>Warning:</b> This function is only available on Windows.</p>
-<p>See also <a href="qpixmap.html#toWinHBITMAP">toWinHBITMAP</a>() and <a href="qpixmap.html#pixmap-conversion">Pixmap Conversion</a>.</p>
+<h3 class="fn"><a name="fromWinHBITMAP"></a>QPixmap QPixmap::fromWinHBITMAP ( HBITMAP <i>hbitmap</i>, <a href="qpixmap.html#HBitmapFormat-enum">HBitmapFormat</a> <i>format</i> = NoAlpha )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <a name="//apple_ref/cpp/clm/QPixmap/fromX11Pixmap" />
 <h3 class="fn"><a name="fromX11Pixmap"></a>QPixmap QPixmap::fromX11Pixmap ( <a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> <i>pixmap</i>, <a href="qpixmap.html#ShareMode-enum">ShareMode</a> <i>mode</i> = ImplicitlyShared )&nbsp;&nbsp;<tt> [static]</tt></h3>
 <p>Creates a <a href="qpixmap.html">QPixmap</a> from the native X11 Pixmap handle <i>pixmap</i>, using <i>mode</i> as the share mode. The default share mode is <a href="qpixmap.html#ShareMode-enum">QPixmap::ImplicitlyShared</a>, which means that a copy of the pixmap is made if someone tries to modify it by e.g&#x2e; drawing onto it.</p>
@@ -484,10 +471,6 @@
 <p>See also <a href="qpixmap.html#fromMacCGImageRef">fromMacCGImageRef</a>().</p>
 <a name="//apple_ref/cpp/instm/QPixmap/toWinHBITMAP" />
 <h3 class="fn"><a name="toWinHBITMAP"></a>HBITMAP QPixmap::toWinHBITMAP ( <a href="qpixmap.html#HBitmapFormat-enum">HBitmapFormat</a> <i>format</i> = NoAlpha ) const</h3>
-<p>Creates a <tt>HBITMAP</tt> equivalent to the <a href="qpixmap.html">QPixmap</a>, based on the given <i>format</i>. Returns the <tt>HBITMAP</tt> handle.</p>
-<p>It is the caller's responsibility to free the <tt>HBITMAP</tt> data after use.</p>
-<p><b>Warning:</b> This function is only available on Windows.</p>
-<p>See also <a href="qpixmap.html#fromWinHBITMAP">fromWinHBITMAP</a>().</p>
 <a name="//apple_ref/cpp/instm/QPixmap/transformed" />
 <h3 class="fn"><a name="transformed"></a>QPixmap QPixmap::transformed ( const <a href="qtransform.html">QTransform</a> &amp; <i>transform</i>, <a href="qt.html#TransformationMode-enum">Qt::TransformationMode</a> <i>mode</i> = Qt::FastTransformation ) const</h3>
 <p>Returns a copy of the pixmap that is transformed using the given transformation <i>transform</i> and transformation <i>mode</i>. The original pixmap is not changed.</p>
@@ -510,16 +493,13 @@
 <p>Returns the width of the pixmap.</p>
 <p>See also <a href="qpixmap.html#size">size</a>() and <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
 <a name="//apple_ref/cpp/instm/QPixmap/x11Info" />
-<h3 class="fn"><a name="x11Info"></a>const <a href="qx11info.html">QX11Info</a> &amp; QPixmap::x11Info () const</h3>
-<p>Returns information about the configuration of the X display used to display the widget.</p>
-<p><b>Warning:</b> This function is only available on X11.</p>
-<p>See also <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
+<h3 class="fn"><a name="x11Info"></a>const QX11Info &amp; QPixmap::x11Info () const</h3>
 <a name="//apple_ref/cpp/instm/QPixmap/x11PictureHandle" />
 <h3 class="fn"><a name="x11PictureHandle"></a><a href="qt.html#HANDLE-typedef">Qt::HANDLE</a> QPixmap::x11PictureHandle () const</h3>
-<p>Returns the X11 Picture handle of the pixmap for XRender support.</p>
-<p>This function will return 0 if XRender support is not compiled into Qt, if the XRender extension is not supported on the X11 display, or if the handle could not be created. Use of this function is not portable.</p>
-<p><b>Warning:</b> This function is only available on X11.</p>
-<p>See also <a href="qpixmap.html#pixmap-information">Pixmap Information</a>.</p>
+<a name="//apple_ref/cpp/clm/QPixmap/x11SetDefaultScreen" />
+<h3 class="fn"><a name="x11SetDefaultScreen"></a>int QPixmap::x11SetDefaultScreen ( int <i>screen</i> )&nbsp;&nbsp;<tt> [static]</tt></h3>
+<a name="//apple_ref/cpp/instm/QPixmap/x11SetScreen" />
+<h3 class="fn"><a name="x11SetScreen"></a>void QPixmap::x11SetScreen ( int <i>screen</i> )</h3>
 <a name="//apple_ref/cpp/instm/QPixmap/operator QVariant" />
 <h3 class="fn"><a name="operator-QVariant"></a>QPixmap::operator QVariant () const</h3>
 <p>Returns the pixmap as a <a href="qvariant.html">QVariant</a>.</p>
@@ -533,10 +513,10 @@
 <p>See also <a href="qpixmap.html#copy">copy</a>() and <a href="qpixmap.html#QPixmap">QPixmap</a>().</p>
 <hr />
 <h2>Related Non-Members</h2>
-<h3 class="fn"><a name="operator-lt-lt-35"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPixmap &amp; <i>pixmap</i> )</h3>
+<h3 class="fn"><a name="operator-lt-lt-86"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&lt;&lt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, const QPixmap &amp; <i>pixmap</i> )</h3>
 <p>Writes the given <i>pixmap</i> to the the given <i>stream</i> as a PNG image. Note that writing the stream to a file will not produce a valid image file.</p>
 <p>See also <a href="qpixmap.html#save">QPixmap::save</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
-<h3 class="fn"><a name="operator-gt-gt-23"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPixmap &amp; <i>pixmap</i> )</h3>
+<h3 class="fn"><a name="operator-gt-gt-42"></a><a href="qdatastream.html">QDataStream</a> &amp; operator&gt;&gt; ( <a href="qdatastream.html">QDataStream</a> &amp; <i>stream</i>, QPixmap &amp; <i>pixmap</i> )</h3>
 <p>Reads an image from the given <i>stream</i> into the given <i>pixmap</i>.</p>
 <p>See also <a href="qpixmap.html#load">QPixmap::load</a>() and <a href="datastreamformat.html">Format of the QDataStream Operators</a>.</p>
 <p /><address><hr /><div align="center">

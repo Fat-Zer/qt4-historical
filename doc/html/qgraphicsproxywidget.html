@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/gui/graphicsview/qgraphicsproxywidget.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-mac-opensource-src-4.5.0/src/gui/graphicsview/qgraphicsproxywidget.cpp -->
 <head>
   <title>Qt 4.5: QGraphicsProxyWidget Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -159,7 +159,7 @@
 <p>When the widget is embedded, its state (e.g&#x2e;, visible, enabled, geometry, size hints) is copied into the proxy widget. If the embedded widget is explicitly hidden or disabled, the proxy widget will become explicitly hidden or disabled after embedding is complete. The class documentation has a full overview over the shared state.</p>
 <p>After this function returns, <a href="qgraphicsproxywidget.html">QGraphicsProxyWidget</a> will keep its state synchronized with that of <i>widget</i> whenever possible.</p>
 <p>If a widget is already embedded by this proxy when this function is called, that widget will first be automatically unembedded. Passing 0 for the <i>widget</i> argument will only unembed the widget, and the ownership of the currently embedded widget will be passed on to the caller. Every child widget that are embedded will also be embedded and their proxy widget destroyed.</p>
-<p>Note that widgets with the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> widget attribute set and widgets that wrap an external application or controller cannot be embedded. Examples are <a href="qglwidget.html">QGLWidget</a> and <a href="qaxwidget.html">QAxWidget</a>.</p>
+<p>Note that widgets with the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> widget attribute set and widgets that wrap an external application or controller cannot be embedded. Examples are <a href="qglwidget.html">QGLWidget</a> and QAxWidget.</p>
 <p>See also <a href="qgraphicsproxywidget.html#widget">widget</a>().</p>
 <a name="//apple_ref/cpp/instm/QGraphicsProxyWidget/subWidgetRect" />
 <h3 class="fn"><a name="subWidgetRect"></a><a href="qrectf.html">QRectF</a> QGraphicsProxyWidget::subWidgetRect ( const <a href="qwidget.html">QWidget</a> * <i>widget</i> ) const</h3>
