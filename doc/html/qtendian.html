@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/qtendian.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/qtendian.qdoc -->
 <head>
   <title>Qt 4.5: &lt;QtEndian&gt; - Endian Conversion Functions</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -31,7 +31,6 @@
 </ul>
 <hr />
 <h2>Function Documentation</h2>
-<a name="//apple_ref/cpp/func//qFromBigEndian" />
 <h3 class="fn"><a name="qFromBigEndian"></a>T qFromBigEndian ( const <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>src</i> )</h3>
 <p>Reads a big-endian number from memory location <i>src</i> and returns the number in the host byte order representation. On CPU architectures where the host byte order is little-endian (such as x86) this will swap the byte order; otherwise it will just read from <i>src</i>.</p>
 <p><b>Note:</b> Template type <tt>T</tt> can either be a qint16, qint32 or qint64. Other types of integers, e.g&#x2e;, qlong, are not applicable.</p>
@@ -42,7 +41,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Converts <i>src</i> from big-endian byte order and returns the number in host byte order representation of that number. On CPU architectures where the host byte order is little-endian (such as x86) this will return <i>src</i> with the byte order swapped; otherwise it will return <i>src</i> unmodified.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/func//qFromLittleEndian" />
 <h3 class="fn"><a name="qFromLittleEndian"></a>T qFromLittleEndian ( const <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>src</i> )</h3>
 <p>Reads a little-endian number from memory location <i>src</i> and returns the number in the host byte order representation. On CPU architectures where the host byte order is big-endian (such as PowerPC) this will swap the byte order; otherwise it will just read from <i>src</i>.</p>
 <p><b>Note:</b> Template type <tt>T</tt> can either be a qint16, qint32 or qint64. Other types of integers, e.g&#x2e;, qlong, are not applicable.</p>
@@ -53,7 +51,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Converts <i>src</i> from little-endian byte order and returns the number in host byte order representation of that number. On CPU architectures where the host byte order is big-endian (such as PowerPC) this will return <i>src</i> with the byte order swapped; otherwise it will return <i>src</i> unmodified.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/func//qToBigEndian" />
 <h3 class="fn"><a name="qToBigEndian"></a>void qToBigEndian ( T <i>src</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>dest</i> )</h3>
 <p>Writes the number <i>src</i> with template type <tt>T</tt> to the memory location at <i>dest</i> in big-endian byte order.</p>
 <p>Note that template type <tt>T</tt> can only be an integer data type (signed or unsigned).</p>
@@ -64,7 +61,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Converts <i>src</i> from host byte order and returns the number in big-endian byte order representation of that number. On CPU architectures where the host byte order is little-endian (such as x86) this will return <i>src</i> with the byte order swapped; otherwise it will return <i>src</i> unmodified.</p>
 <p>This function was introduced in Qt 4.3.</p>
-<a name="//apple_ref/cpp/func//qToLittleEndian" />
 <h3 class="fn"><a name="qToLittleEndian"></a>void qToLittleEndian ( T <i>src</i>, <a href="qtglobal.html#uchar-typedef">uchar</a> * <i>dest</i> )</h3>
 <p>Writes the number <i>src</i> with template type <tt>T</tt> to the memory location at <i>dest</i> in little-endian byte order.</p>
 <p>Note that template type <tt>T</tt> can only be an integer data type (signed or unsigned).</p>

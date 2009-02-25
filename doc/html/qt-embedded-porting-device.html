@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/emb-porting.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/emb-porting.qdoc -->
 <head>
   <title>Qt 4.5: Porting Qt for Embedded Linux to a New Architecture</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -19,7 +19,7 @@
 <h2>Hardware Drivers</h2>
 <p>When running a <a href="qt-embedded-linux.html">Qt for Embedded Linux</a> application, it either runs as a server or connects to an existing server. All system generated events, including keyboard and mouse events, are passed to the server application which then propagates the event to the appropriate client. When rendering, the default behavior is for each client to render its widgets into memory while the server is responsible for putting the contents of the memory onto the screen.</p>
 <p>The various hardware drivers are loaded by the server application when it starts running, using Qt's <a href="plugins-howto.html">plugin system</a>.</p>
-<p>Derive from the QWSMouseHandler, QWSKeyboardHandler and QScreen classes to create a custom mouse, keyboard and screen driver respectively. To load the drivers into the server application at runtime, you must also create corresponding plugins. See the following documentation for more details:</p>
+<p>Derive from the <a href="qwsmousehandler.html">QWSMouseHandler</a>, <a href="qwskeyboardhandler.html">QWSKeyboardHandler</a> and <a href="qscreen.html">QScreen</a> classes to create a custom mouse, keyboard and screen driver respectively. To load the drivers into the server application at runtime, you must also create corresponding plugins. See the following documentation for more details:</p>
 <ul>
 <li><a href="qt-embedded-pointer.html">Pointer Handling</a></li>
 <li><a href="qt-embedded-charinput.html">Character Input</a></li>

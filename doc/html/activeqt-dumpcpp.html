@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/activeqt-dumpcpp.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/activeqt-dumpcpp.qdoc -->
 <head>
   <title>Qt 4.5: The dumpcpp Tool (ActiveQt)</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -28,12 +28,8 @@
 <tr valign="top" class="even"><td>-h</td><td>Print help</td></tr>
 </table></p>
 <p><tt>dumpcpp</tt> can be integrated into the <tt>qmake</tt> build system. In your .pro file, list the type libraries you want to use in the TYPELIBS variable:</p>
-<pre> TEMPLATE = app
- TARGET   = qutlook
- CONFIG  += qaxcontainer
-
- TYPELIBS = $$system(dumpcpp -getfile {00062FFF-0000-0000-C000-000000000046})</pre>
-<p>The generated namespace will declare all enumerations, as well as one <a href="qaxobject.html">QAxObject</a> subclass for each <tt>coclass</tt> and <tt>interface</tt> declared in the type library. coclasses marked with the <tt>control</tt> attribute will be wrapped by a <a href="qaxwidget.html">QAxWidget</a> subclass.</p>
+<pre></pre>
+<p>The generated namespace will declare all enumerations, as well as one QAxObject subclass for each <tt>coclass</tt> and <tt>interface</tt> declared in the type library. coclasses marked with the <tt>control</tt> attribute will be wrapped by a QAxWidget subclass.</p>
 <p>Those classes that wrap creatable coclasses (i.e&#x2e; coclasses that are not marked as <tt>noncreatable</tt>) have a default constructor; this is typically a single class of type <tt>Application</tt>.</p>
 <pre> Outlook::Application *outlook = new Outlook::Application;</pre>
 <p>All other classes can only be created by passing an IDispatch interface pointer to the constructor; those classes should however not be created explicitly. Instead, use the appropriate API of already created objects.</p>

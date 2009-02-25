@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/ipc.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/ipc.qdoc -->
 <head>
   <title>Qt 4.5: Inter-Process Communication in Qt</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -26,7 +26,7 @@
 <p>The cross-platform shared memory class, <a href="qsharedmemory.html">QSharedMemory</a>, provides access to the operating system's shared memory implementation. It allows safe access to shared memory segments by multiple threads and processes. Additionally, <a href="qsystemsemaphore.html">QSystemSemaphore</a> can be used to control access to resources shared by the system, as well as to communicate between processes.</p>
 <a name="qt-communications-protocol-qcop"></a>
 <h3>Qt COmmunications Protocol (QCOP)</h3>
-<p>The QCopChannel class implements a protocol for transferring messages between client processes across named channels. QCopChannel is only available in <a href="qt-embedded-linux.html">Qt for Embedded Linux</a>. Like the <a href="qtdbus.html">QtDBus</a> module, QCOP extends Qt's <a href="signalsandslots.html">Signals and Slots</a> mechanism to the IPC level, allowing a signal emitted by one process to be connected to a slot in another process, but unlike <a href="qtdbus.html">QtDBus</a>, QCOP does not depend on a third party library.</p>
+<p>The <a href="qcopchannel.html">QCopChannel</a> class implements a protocol for transferring messages between client processes across named channels. <a href="qcopchannel.html">QCopChannel</a> is only available in <a href="qt-embedded-linux.html">Qt for Embedded Linux</a>. Like the <a href="qtdbus.html">QtDBus</a> module, QCOP extends Qt's <a href="signalsandslots.html">Signals and Slots</a> mechanism to the IPC level, allowing a signal emitted by one process to be connected to a slot in another process, but unlike <a href="qtdbus.html">QtDBus</a>, QCOP does not depend on a third party library.</p>
 <p><table width="100%" class="annotated" cellpadding="2" cellspacing="1" border="0">
 <tr valign="top" class="odd"><th><a href="qsharedmemory.html">QSharedMemory</a></th><td>Access to a shared memory segment</td></tr>
 <tr valign="top" class="even"><th><a href="qsystemsemaphore.html">QSystemSemaphore</a></th><td>General counting system semaphore</td></tr>

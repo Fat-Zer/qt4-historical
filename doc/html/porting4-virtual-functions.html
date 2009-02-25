@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/porting4.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/porting4.qdoc -->
 <head>
   <title>Qt 4.5: Porting to Qt 4 - Virtual Functions</title>
   <link rel="prev" href="porting4.html" />
@@ -78,7 +78,7 @@
 <tr valign="top" class="odd"><td><a href="qbytearray.html">QByteArray</a> QWindowsMime::convertFromMime(<a href="qbytearray.html">QByteArray</a>, const char *, int)</td><td><a href="qbytearray.html">QByteArray</a> QWindowsMime::convertFromMime(const <a href="qbytearray.html">QByteArray</a> &amp;, const <a href="qstring.html">QString</a> &amp;, int)</td></tr>
 <tr valign="top" class="even"><td><a href="qbytearray.html">QByteArray</a> QWindowsMime::convertToMime(<a href="qbytearray.html">QByteArray</a>, const char *, int)</td><td><a href="qbytearray.html">QByteArray</a> QWindowsMime::convertToMime(const <a href="qbytearray.html">QByteArray</a> &amp;, const <a href="qstring.html">QString</a> &amp;, int)</td></tr>
 <tr valign="top" class="odd"><td>const char * QWindowsMime::convertorName()</td><td><a href="qstring.html">QString</a> QWindowsMime::convertorName()</td></tr>
-<tr valign="top" class="even"><td>void QWSMouseHandler::calibrate(QWSPointerCalibrationData *)</td><td>void QWSMouseHandler::calibrate(const QWSPointerCalibrationData *)</td></tr>
+<tr valign="top" class="even"><td>void QWSMouseHandler::calibrate(<a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a> *)</td><td>void QWSMouseHandler::calibrate(const <a href="qwspointercalibrationdata.html">QWSPointerCalibrationData</a> *)</td></tr>
 <tr valign="top" class="odd"><td>bool QWidget::macEvent(MSG *)</td><td>bool QWidget::macEvent(EventHandlerCallRef, EventRef)</td></tr>
 <tr valign="top" class="even"><td>bool QWidget::winEvent(MSG *)</td><td>bool QWidget::winEvent(MSG *, long *)</td></tr>
 <tr valign="top" class="odd"><td><a href="qstring.html">QString</a> <a href="qxmlcontenthandler.html#errorString">QXmlContentHandler::errorString</a>()</td><td><a href="qstring.html">QString</a> <a href="qxmlcontenthandler.html#errorString">QXmlContentHandler::errorString</a>() const</td></tr>
@@ -438,9 +438,9 @@
 <tr valign="top" class="even"><td>void QPushButton::setIsMenuButton(bool)</td><td>Not used polymorphically in Qt.</td></tr>
 <tr valign="top" class="odd"><td>void QPushButton::setOn(bool)</td><td>Connect to QPushButton::toggled(bool) instead.</td></tr>
 <tr valign="top" class="even"><td>void QRadioButton::setChecked(bool)</td><td>Connect to QRadioButton::toggled(bool) instead.</td></tr>
-<tr valign="top" class="odd"><td>uchar * QScreen::cache(int , int)</td><td>Port to the new QScreen API.</td></tr>
-<tr valign="top" class="even"><td>void QScreen::set(unsigned int , unsigned int , unsigned int , unsigned)</td><td>Port to the new QScreen API.</td></tr>
-<tr valign="top" class="odd"><td>void QScreen::uncache(uchar *)</td><td>Port to the new QScreen API.</td></tr>
+<tr valign="top" class="odd"><td>uchar * QScreen::cache(int , int)</td><td>Port to the new <a href="qscreen.html">QScreen</a> API.</td></tr>
+<tr valign="top" class="even"><td>void QScreen::set(unsigned int , unsigned int , unsigned int , unsigned)</td><td>Port to the new <a href="qscreen.html">QScreen</a> API.</td></tr>
+<tr valign="top" class="odd"><td>void QScreen::uncache(uchar *)</td><td>Port to the new <a href="qscreen.html">QScreen</a> API.</td></tr>
 <tr valign="top" class="even"><td>void QScrollBar::setOrientation(Orientation)</td><td>Setter.</td></tr>
 <tr valign="top" class="odd"><td>void QScrollBar::setTracking(bool)</td><td>Setter.</td></tr>
 <tr valign="top" class="even"><td>void QSignalMapper::setMapping(const <a href="qobject.html">QObject</a> *, const <a href="qstring.html">QString</a> &amp;)</td><td>Setter.</td></tr>

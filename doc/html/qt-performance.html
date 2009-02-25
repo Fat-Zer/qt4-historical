@@ -2,7 +2,7 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/emb-performance.qdoc -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-embedded-linux-opensource-src-4.5.0/doc/src/emb-performance.qdoc -->
 <head>
   <title>Qt 4.5: Qt Performance Tuning</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
@@ -72,7 +72,7 @@
 <a name="bypassing-the-backing-store"></a>
 <h3>Bypassing the Backing Store</h3>
 <p>When rendering, Qt uses the concept of a backing store; i.e&#x2e;, a paint buffer, to reduce flicker and to support graphics operations such as blending.</p>
-<p>The default behavior is for each client to render its widgets into memory while the server is responsible for putting the contents of the memory onto the screen. But when the hardware is known and well defined, as is often the case with software for embedded devices, it might be useful to bypass the backing store, allowing the clients to manipulate the underlying hardware directly. There are two approaches to direct painting: The first approach is to set the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> window attribute for each widget, the other is to use the QDirectPainter class to reserve a region of the framebuffer. For more information, see the <a href="qt-embedded-architecture.html#direct-painting">direct painting</a> section of the <a href="qt-embedded-architecture.html">architecture</a> documentation.</p>
+<p>The default behavior is for each client to render its widgets into memory while the server is responsible for putting the contents of the memory onto the screen. But when the hardware is known and well defined, as is often the case with software for embedded devices, it might be useful to bypass the backing store, allowing the clients to manipulate the underlying hardware directly. There are two approaches to direct painting: The first approach is to set the <a href="qt.html#WidgetAttribute-enum">Qt::WA_PaintOnScreen</a> window attribute for each widget, the other is to use the <a href="qdirectpainter.html">QDirectPainter</a> class to reserve a region of the framebuffer. For more information, see the <a href="qt-embedded-architecture.html#direct-painting">direct painting</a> section of the <a href="qt-embedded-architecture.html">architecture</a> documentation.</p>
 <p /><address><hr /><div align="center">
 <table width="100%" cellspacing="0" border="0"><tr class="address">
 <td width="30%" align="left">Copyright &copy; 2009 Nokia Corporation and/or its subsidiary(-ies)</td>
