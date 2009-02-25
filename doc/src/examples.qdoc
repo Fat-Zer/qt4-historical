@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -57,8 +61,7 @@
     Qt's features. You might want to look at these as well.
 
     One more valuable source for examples and explanations of Qt
-    features is the archive of the \l {http://doc.trolltech.com/qq}
-    {Qt Quarterly}.
+    features is the archive of the \l {Qt Quarterly}.
 
     In the list below, examples marked with an asterisk (*) are fully
     documented. Eventually, all the examples will be fully documented,
@@ -96,11 +99,11 @@
 
     \section1 D-Bus
     \list
-    \o  \l{dbus/dbus-chat}{Chat}
-    \o  \l{dbus/complexpingpong}{Complex Ping Pong}
-    \o  \l{dbus/listnames}{List Names}
-    \o  \l{dbus/pingpong}{Ping Pong}
-    \o  \l{dbus/remotecontrolledcar}{Remote Controlled Car} 
+    \o \l{dbus/dbus-chat}{Chat}
+    \o \l{dbus/complexpingpong}{Complex Ping Pong}
+    \o \l{dbus/listnames}{List Names}
+    \o \l{dbus/pingpong}{Ping Pong}
+    \o \l{dbus/remotecontrolledcar}{Remote Controlled Car} 
     \endlist
 
     \section1 Desktop
@@ -126,6 +129,7 @@
     \section1 Drag and Drop
 
     \list
+    \o \l{draganddrop/delayedencoding}{Delayed Encoding}\raisedaster
     \o \l{draganddrop/draggableicons}{Draggable Icons}
     \o \l{draganddrop/draggabletext}{Draggable Text}
     \o \l{draganddrop/dropsite}{Drop Site}
@@ -153,18 +157,20 @@
     \section1 Item Views
 
     \list
-    \o \l{itemviews/addressbook}{Address Book}
+    \o \l{itemviews/addressbook}{Address Book}\raisedaster
     \o \l{itemviews/basicsortfiltermodel}{Basic Sort/Filter Model}
     \o \l{itemviews/chart}{Chart}
     \o \l{itemviews/coloreditorfactory}{Color Editor Factory}\raisedaster
+    \o \l{itemviews/combowidgetmapper}{Combo Widget Mapper}\raisedaster
     \o \l{itemviews/customsortfiltermodel}{Custom Sort/Filter Model}\raisedaster
     \o \l{itemviews/dirview}{Dir View}
     \o \l{itemviews/editabletreemodel}{Editable Tree Model}\raisedaster
+    \o \l{itemviews/fetchmore}{Fetch More}\raisedaster
     \o \l{itemviews/pixelator}{Pixelator}\raisedaster
     \o \l{itemviews/puzzle}{Puzzle}
     \o \l{itemviews/simpledommodel}{Simple DOM Model}\raisedaster
     \o \l{itemviews/simpletreemodel}{Simple Tree Model}\raisedaster
-    \o \l{itemviews/simplewidgetmapper}{Simple Widget Mapper}
+    \o \l{itemviews/simplewidgetmapper}{Simple Widget Mapper}\raisedaster
     \o \l{itemviews/spinboxdelegate}{Spin Box Delegate}\raisedaster
     \o \l{itemviews/stardelegate}{Star Delegate}\raisedaster
     \endlist
@@ -262,21 +268,22 @@
     \section1 Qt for Embedded Linux
 
     \list
-    \o \l{qws/mousecalibration}{Mouse Calibration}\raisedaster
     \o \l{qws/svgalib}{Accelerated Graphics Driver}\raisedaster
-    \o \l{qws/ahigl}{OpenGL for Embedded Systems}\raisedaster
     \o \l{qws/dbscreen}{Double Buffered Graphics Driver}\raisedaster
+    \o \l{qws/mousecalibration}{Mouse Calibration}\raisedaster
+    \o \l{qws/ahigl}{OpenGL for Embedded Systems}\raisedaster
+    \o \l{qws/simpledecoration}{Simple Decoration}\raisedaster
     \endlist
 
     \section1 Qt Script
 
     \list
-    \o \l{script/calculator}{Calculator}
-    \o \l{script/context2d}{Context2D}
-    \o \l{script/defaultprototypes}{Default Prototypes}
-    \o \l{script/helloscript}{Hello Script}
-    \o \l{script/tetrix}{Tetrix}
-    \o \l{script/customclass}{Custom Script Class}
+    \o \l{script/calculator}{Calculator}\raisedaster
+    \o \l{script/context2d}{Context2D}\raisedaster
+    \o \l{script/defaultprototypes}{Default Prototypes}\raisedaster
+    \o \l{script/helloscript}{Hello Script}\raisedaster
+    \o \l{script/qstetrix}{Qt Script Tetrix}\raisedaster
+    \o \l{script/customclass}{Custom Script Class}\raisedaster
     \endlist
 
     \section1 Rich Text
@@ -285,6 +292,7 @@
     \o \l{richtext/calendar}{Calendar}\raisedaster
     \o \l{richtext/orderform}{Order Form}\raisedaster
     \o \l{richtext/syntaxhighlighter}{Syntax Highlighter}\raisedaster
+    \o \l{richtext/textobject}{Text Object}\raisedaster
     \endlist
 
     \section1 SQL
@@ -295,6 +303,7 @@
     \o \l{sql/querymodel}{Query Model}
     \o \l{sql/relationaltablemodel}{Relational Table Model}
     \o \l{sql/tablemodel}{Table Model}
+    \o \l{sql/sqlwidgetmapper}{SQL Widget Mapper}\raisedaster
     \endlist
 
     \section1 Threads
@@ -344,6 +353,7 @@
     \o \l{widgets/calculator}{Calculator}\raisedaster
     \o \l{widgets/calendarwidget}{Calendar Widget}\raisedaster
     \o \l{widgets/charactermap}{Character Map}\raisedaster
+    \o \l{widgets/codeeditor}{Code Editor}\raisedaster
     \o \l{widgets/digitalclock}{Digital Clock}\raisedaster
     \o \l{widgets/groupbox}{Group Box}\raisedaster
     \o \l{widgets/icons}{Icons}\raisedaster
@@ -373,13 +383,14 @@
     \o \l{xml/xmlstreamlint}{XML Stream Lint Example}\raisedaster
     \endlist
 
-    \section1 XML Patterns: XQuery & XPath
+    \section1 XQuery, XPath
 
     \list
-    \o \l{xmlpatterns/xquery/globalVariables}{C++ Source Code Analyzer Example}
+    \o \l{xmlpatterns/recipes}{Recipes}
     \o \l{xmlpatterns/filetree}{File System Example}
     \o \l{xmlpatterns/qobjectxmlmodel}{QObject XML Model Example}
-    \o \l{xmlpatterns/recipes}{Recipes}
+    \o \l{xmlpatterns/xquery/globalVariables}{C++ Source Code Analyzer Example}
+    \o \l{xmlpatterns/trafficinfo}{Traffic Info}\raisedaster
     \endlist
 
     \section1 Inter-Process Communication

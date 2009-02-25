@@ -107,7 +107,7 @@ bool contains(const QString &string)
 
 //! [12]
 QStringList strings = ...;
-QFuture<QString> strings = QtConcurrent::filtered(strings, boost::bind(&QString::contains, QRegExp("^\\S+$")));
+boost::bind(static_cast<bool(QString::*)(const QRegExp&)>( &QString::contains ), QRegExp("..." ));
 //! [12]
 
 //! [13]

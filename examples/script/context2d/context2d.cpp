@@ -1,42 +1,45 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
-#include "context2d.h"
 
-#include "qcontext2dcanvas.h"
+#include "context2d.h"
 
 #include <QVariant>
 
@@ -79,7 +82,7 @@ static QList<qreal> parseNumbersList(QString::const_iterator &itr)
     return points;
 }
 
-static QColor colorFromString(const QString &name)
+QColor colorFromString(const QString &name)
 {
     QString::const_iterator itr = name.constBegin();
     QList<qreal> compo;
@@ -141,62 +144,96 @@ static QPainter::CompositionMode compositeOperatorFromString(const QString &comp
     return QPainter::CompositionMode_SourceOver;
 }
 
-void CanvasGradientData::setup(QScriptEngine *e)
+static QString compositeOperatorToString(QPainter::CompositionMode op)
 {
-    QScriptValue proto = e->newObject();
-    proto.setProperty("addColorStop", e->newFunction(&CanvasGradientData::addColorStop, /*length=*/ 2));
-    e->setDefaultPrototype(qRegisterMetaType<CanvasGradient>(), proto);
-}
-
-QScriptValue CanvasGradientData::addColorStop(QScriptContext *ctx, QScriptEngine *e)
-{
-    QVariant self = ctx->thisObject().toVariant();
-
-    if (qVariantCanConvert<CanvasGradient>(self)) {
-        CanvasGradient g = qvariant_cast<CanvasGradient>(self);
-        qsreal pos = ctx->argument(0).toNumber();
-        QColor color = colorFromString(ctx->argument(1).toString());
-        g->gradient.setColorAt(pos, color);
+    switch (op) {
+    case QPainter::CompositionMode_SourceOver:
+        return "source-over";
+    case QPainter::CompositionMode_DestinationOver:
+        return "destination-over";
+    case QPainter::CompositionMode_Clear:
+        return "clear";
+    case QPainter::CompositionMode_Source:
+        return "source";
+    case QPainter::CompositionMode_Destination:
+        return "destination";
+    case QPainter::CompositionMode_SourceIn:
+        return "source-in";
+    case QPainter::CompositionMode_DestinationIn:
+        return "destination-in";
+    case QPainter::CompositionMode_SourceOut:
+        return "source-out";
+    case QPainter::CompositionMode_DestinationOut:
+        return "destination-out";
+    case QPainter::CompositionMode_SourceAtop:
+        return "source-atop";
+    case QPainter::CompositionMode_DestinationAtop:
+        return "destination-atop";
+    case QPainter::CompositionMode_Xor:
+        return "xor";
+    case QPainter::CompositionMode_Plus:
+        return "plus";
+    case QPainter::CompositionMode_Multiply:
+        return "multiply";
+    case QPainter::CompositionMode_Screen:
+        return "screen";
+    case QPainter::CompositionMode_Overlay:
+        return "overlay";
+    case QPainter::CompositionMode_Darken:
+        return "darken";
+    case QPainter::CompositionMode_Lighten:
+        return "lighten";
+    case QPainter::CompositionMode_ColorDodge:
+        return "color-dodge";
+    case QPainter::CompositionMode_ColorBurn:
+        return "color-burn";
+    case QPainter::CompositionMode_HardLight:
+        return "hard-light";
+    case QPainter::CompositionMode_SoftLight:
+        return "soft-light";
+    case QPainter::CompositionMode_Difference:
+        return "difference";
+    case QPainter::CompositionMode_Exclusion:
+        return "exclusion";
+    default:
+        break;
     }
-    return e->undefinedValue();
+    return QString();
 }
 
 void Context2D::save()
 {
     m_stateStack.push(m_state);
-    m_painter.save();
 }
 
 
 void Context2D::restore()
 {
-    if (!m_stateStack.isEmpty())
+    if (!m_stateStack.isEmpty()) {
         m_state = m_stateStack.pop();
-    m_painter.restore();
+        m_state.flags = AllIsFullOfDirt;
+    }
 }
 
 
 void Context2D::scale(qreal x, qreal y)
 {
-    if (m_state.creatingShape)
-        m_state.matrix.scale(x, y);
-    m_painter.scale(x, y);
+    m_state.matrix.scale(x, y);
+    m_state.flags |= DirtyTransformationMatrix;
 }
 
 
 void Context2D::rotate(qreal angle)
 {
-    if (m_state.creatingShape)
-        m_state.matrix.rotate(DEGREES(angle));
-    m_painter.rotate(DEGREES(angle));
+    m_state.matrix.rotate(DEGREES(angle));
+    m_state.flags |= DirtyTransformationMatrix;
 }
 
 
 void Context2D::translate(qreal x, qreal y)
 {
-    if (m_state.creatingShape)
-        m_state.matrix.translate(x, y);
-    m_painter.translate(x, y);
+    m_state.matrix.translate(x, y);
+    m_state.flags |= DirtyTransformationMatrix;
 }
 
 
@@ -206,9 +243,8 @@ void Context2D::transform(qreal m11, qreal m12, qreal m21, qreal m22,
     QMatrix mat(m11, m12,
                 m21, m22,
                 dx, dy);
-    if (m_state.creatingShape)
-        m_state.matrix *= mat;
-    m_painter.setMatrix(mat, true);
+    m_state.matrix *= mat;
+    m_state.flags |= DirtyTransformationMatrix;
 }
 
 
@@ -218,71 +254,69 @@ void Context2D::setTransform(qreal m11, qreal m12, qreal m21, qreal m22,
     QMatrix mat(m11, m12,
                 m21, m22,
                 dx, dy);
-    if (m_state.creatingShape)
-        m_state.matrix = mat;
-    m_painter.setMatrix(mat, false);
+    m_state.matrix = mat;
+    m_state.flags |= DirtyTransformationMatrix;
 }
 
-void Context2D::setGlobalAlpha(qreal alpha)
+
+QString Context2D::globalCompositeOperation() const
 {
-    m_painter.setOpacity(alpha);
+    return compositeOperatorToString(m_state.globalCompositeOperation);
 }
 
 void Context2D::setGlobalCompositeOperation(const QString &op)
 {
     QPainter::CompositionMode mode =
         compositeOperatorFromString(op);
+    m_state.globalCompositeOperation = mode;
+    m_state.flags |= DirtyGlobalCompositeOperation;
+}
 
-    m_painter.setCompositionMode(mode);
+QVariant Context2D::strokeStyle() const
+{
+    return m_state.strokeStyle;
 }
 
 void Context2D::setStrokeStyle(const QVariant &style)
 {
-    QPen pen = m_painter.pen();
     if (qVariantCanConvert<CanvasGradient>(style)) {
         CanvasGradient cg = qvariant_cast<CanvasGradient>(style);
-        pen.setBrush(cg->qgradient());
+        m_state.strokeStyle = cg.value;
     } else {
-        QColor clr = colorFromString(style.toString());
-        pen.setColor(clr);
+        QColor color = colorFromString(style.toString());
+        m_state.strokeStyle = color;
     }
-    if (pen.style() == Qt::NoPen)
-        pen.setStyle(Qt::SolidLine);
-    m_painter.setPen(pen);
+    m_state.flags |= DirtyStrokeStyle;
 }
 
+QVariant Context2D::fillStyle() const
+{
+    return m_state.fillStyle;
+}
+
+//! [3]
 void Context2D::setFillStyle(const QVariant &style)
 {
     if (qVariantCanConvert<CanvasGradient>(style)) {
         CanvasGradient cg = qvariant_cast<CanvasGradient>(style);
-        m_painter.setBrush(cg->qgradient());
+        m_state.fillStyle = cg.value;
     } else {
-        QColor clr = colorFromString(style.toString());
-        m_painter.setBrush(clr);
+        QColor color = colorFromString(style.toString());
+        m_state.fillStyle = color;
     }
+    m_state.flags |= DirtyFillStyle;
 }
+//! [3]
 
 qreal Context2D::globalAlpha() const
 {
-    return m_painter.opacity();
+    return m_state.globalAlpha;
 }
 
-
-QString Context2D::globalCompositeOperation() const
+void Context2D::setGlobalAlpha(qreal alpha)
 {
-    return 0;
-}
-
-
-QVariant Context2D::strokeStyle() const
-{
-    return m_painter.pen().color().name();
-}
-
-
-QVariant Context2D::fillStyle() const
-{
-    return m_painter.brush().color().name();
+    m_state.globalAlpha = alpha;
+    m_state.flags |= DirtyGlobalAlpha;
 }
 
 
@@ -290,7 +324,7 @@ CanvasGradient Context2D::createLinearGradient(qreal x0, qreal y0,
                                                qreal x1, qreal y1)
 {
     QLinearGradient g(x0, y0, x1, y1);
-    return CanvasGradient(new CanvasGradientData(g));
+    return CanvasGradient(g);
 }
 
 
@@ -299,144 +333,181 @@ CanvasGradient Context2D::createRadialGradient(qreal x0, qreal y0,
                                                qreal y1, qreal r1)
 {
     QRadialGradient g(QPointF(x1, y1), r0+r1, QPointF(x0, y0));
-    return CanvasGradient(new CanvasGradientData(g));
-}
-
-void Context2D::setLineWidth(qreal w)
-{
-    QPen p = m_painter.pen();
-    p.setWidthF(w);
-    m_painter.setPen(p);
-}
-
-void Context2D::setLineCap(const QString &capString)
-{
-    QPen pen = m_painter.pen();
-    if (capString == "round")
-        pen.setCapStyle(Qt::RoundCap);
-    else if (capString == "square")
-        pen.setCapStyle(Qt::SquareCap);
-    else
-        pen.setCapStyle(Qt::FlatCap);
-    m_painter.setPen(pen);
-}
-
-void Context2D::setLineJoin(const QString &joinString)
-{
-    QPen pen = m_painter.pen();
-    if (joinString == "round")
-        pen.setJoinStyle(Qt::RoundJoin);
-    else if (joinString == "bevel")
-        pen.setJoinStyle(Qt::BevelJoin);
-    else
-        pen.setJoinStyle(Qt::MiterJoin);
-    m_painter.setPen(pen);
-}
-
-void Context2D::setMiterLimit(qreal m)
-{
-    QPen pen = m_painter.pen();
-    pen.setMiterLimit(m);
-    m_painter.setPen(pen);
+    return CanvasGradient(g);
 }
 
 qreal Context2D::lineWidth() const
 {
-    return m_painter.pen().widthF();
+    return m_state.lineWidth;
 }
 
+void Context2D::setLineWidth(qreal w)
+{
+    m_state.lineWidth = w;
+    m_state.flags |= DirtyLineWidth;
+}
+
+//! [0]
 QString Context2D::lineCap() const
 {
+    switch (m_state.lineCap) {
+    case Qt::FlatCap:
+        return "butt";
+    case Qt::SquareCap:
+        return "square";
+    case Qt::RoundCap:
+        return "round";
+    default: ;
+    }
     return QString();
 }
 
+void Context2D::setLineCap(const QString &capString)
+{
+    Qt::PenCapStyle style;
+    if (capString == "round")
+        style = Qt::RoundCap;
+    else if (capString == "square")
+        style = Qt::SquareCap;
+    else if (capString == "butt")
+        style = Qt::FlatCap;
+    m_state.lineCap = style;
+    m_state.flags |= DirtyLineCap;
+}
+//! [0]
 
 QString Context2D::lineJoin() const
 {
+    switch (m_state.lineJoin) {
+    case Qt::RoundJoin:
+        return "round";
+    case Qt::BevelJoin:
+        return "bevel";
+    case Qt::MiterJoin:
+        return "miter";
+    default: ;
+    }
     return QString();
+}
+
+void Context2D::setLineJoin(const QString &joinString)
+{
+    Qt::PenJoinStyle style;
+    if (joinString == "round")
+        style = Qt::RoundJoin;
+    else if (joinString == "bevel")
+        style = Qt::BevelJoin;
+    else if (joinString == "miter")
+        style = Qt::MiterJoin;
+    m_state.lineJoin = style;
+    m_state.flags |= DirtyLineJoin;
 }
 
 qreal Context2D::miterLimit() const
 {
-    return 0;
+    return m_state.miterLimit;
+}
+
+void Context2D::setMiterLimit(qreal m)
+{
+    m_state.miterLimit = m;
+    m_state.flags |= DirtyMiterLimit;
 }
 
 void Context2D::setShadowOffsetX(qreal x)
 {
-    Q_UNUSED(x);
+    m_state.shadowOffsetX = x;
+    m_state.flags |= DirtyShadowOffsetX;
 }
 
 void Context2D::setShadowOffsetY(qreal y)
 {
-    Q_UNUSED(y);
+    m_state.shadowOffsetY = y;
+    m_state.flags |= DirtyShadowOffsetY;
 }
 
 void Context2D::setShadowBlur(qreal b)
 {
-    Q_UNUSED(b);
+    m_state.shadowBlur = b;
+    m_state.flags |= DirtyShadowBlur;
 }
 
-void Context2D::setShadowColor(const QColor &c)
+void Context2D::setShadowColor(const QString &str)
 {
-    Q_UNUSED(c);
+    m_state.shadowColor = colorFromString(str);
+    m_state.flags |= DirtyShadowColor;
 }
 
 qreal Context2D::shadowOffsetX() const
 {
-    return 0;
+    return m_state.shadowOffsetX;
 }
 
 qreal Context2D::shadowOffsetY() const
 {
-    return 0;
+    return m_state.shadowOffsetY;
 }
 
 
 qreal Context2D::shadowBlur() const
 {
-    return 0;
+    return m_state.shadowBlur;
 }
 
 
-QColor Context2D::shadowColor() const
+QString Context2D::shadowColor() const
 {
-    return QColor();
+    return m_state.shadowColor.name();
 }
 
 
 void Context2D::clearRect(qreal x, qreal y, qreal w, qreal h)
 {
+    beginPainting();
     m_painter.save();
+    m_painter.setMatrix(m_state.matrix, false);
     m_painter.setCompositionMode(QPainter::CompositionMode_Source);
     m_painter.fillRect(QRectF(x, y, w, h), QColor(0, 0, 0, 0));
     m_painter.restore();
+    scheduleChange();
 }
 
 
+//! [1]
 void Context2D::fillRect(qreal x, qreal y, qreal w, qreal h)
 {
+    beginPainting();
+    m_painter.save();
+    m_painter.setMatrix(m_state.matrix, false);
     m_painter.fillRect(QRectF(x, y, w, h), m_painter.brush());
+    m_painter.restore();
+    scheduleChange();
 }
+//! [1]
 
 
 void Context2D::strokeRect(qreal x, qreal y, qreal w, qreal h)
 {
-    QPainterPath path; path.addRect(x, y, w, h);
+    QPainterPath path;
+    path.addRect(x, y, w, h);
+    beginPainting();
+    m_painter.save();
+    m_painter.setMatrix(m_state.matrix, false);
     m_painter.strokePath(path, m_painter.pen());
+    m_painter.restore();
+    scheduleChange();
 }
 
 
 void Context2D::beginPath()
 {
     m_path = QPainterPath();
-    m_state.creatingShape = true;
 }
 
 
 void Context2D::closePath()
 {
     m_path.closeSubpath();
-    m_state.creatingShape = false;
 }
 
 
@@ -538,21 +609,28 @@ void Context2D::arc(qreal xc, qreal yc, qreal radius,
 
 void Context2D::fill()
 {
+    beginPainting();
     m_painter.fillPath(m_path, m_painter.brush());
-    m_state.creatingShape = false;
+    scheduleChange();
 }
 
 
 void Context2D::stroke()
 {
-    m_painter.strokePath(m_path, m_painter.pen());
-    m_state.creatingShape = false;
+    beginPainting();
+    m_painter.save();
+    m_painter.setMatrix(m_state.matrix, false);
+    QPainterPath tmp = m_state.matrix.inverted().map(m_path);
+    m_painter.strokePath(tmp, m_painter.pen());
+    m_painter.restore();
+    scheduleChange();
 }
 
 
 void Context2D::clip()
 {
-    m_painter.setClipPath(m_path);
+    m_state.clipPath = m_path;
+    m_state.flags |= DirtyClippingRegion;
 }
 
 
@@ -579,49 +657,112 @@ void Context2D::putImageData(ImageData image, qreal dx, qreal dy)
     Q_UNUSED(dy);
 }
 
-Context2D::Context2D(QContext2DCanvas *parent)
-    : QObject(parent),
-      m_cache(parent->size(), QImage::Format_ARGB32_Premultiplied)
+Context2D::Context2D(QObject *parent)
+    : QObject(parent), m_changeTimerId(-1)
 {
-    m_cache.fill(qRgba(0,0,0,0));
-    CanvasGradientData::setup(parent->engine());
-
-    begin();
+    reset();
 }
 
-const QImage &Context2D::end()
+const QImage &Context2D::endPainting()
 {
     if (m_painter.isActive())
         m_painter.end();
-    m_state.creatingShape = false;
-    return m_cache;
+    return m_image;
 }
 
-void Context2D::begin()
+void Context2D::beginPainting()
 {
     if (!m_painter.isActive()) {
-        m_painter.begin(&m_cache);
+        m_painter.begin(&m_image);
         m_painter.setRenderHint(QPainter::Antialiasing);
-        m_painter.setBrush(Qt::black);
+        if (!m_state.clipPath.isEmpty())
+            m_painter.setClipPath(m_state.clipPath);
+        m_painter.setBrush(m_state.fillStyle);
+        m_painter.setOpacity(m_state.globalAlpha);
+        QPen pen;
+        pen.setBrush(m_state.strokeStyle);
+        if (pen.style() == Qt::NoPen)
+            pen.setStyle(Qt::SolidLine);
+        pen.setCapStyle(m_state.lineCap);
+        pen.setJoinStyle(m_state.lineJoin);
+        pen.setWidthF(m_state.lineWidth);
+        pen.setMiterLimit(m_state.miterLimit);
+        m_painter.setPen(pen);
+    } else {
+        if ((m_state.flags & DirtyClippingRegion) && !m_state.clipPath.isEmpty())
+            m_painter.setClipPath(m_state.clipPath);
+        if (m_state.flags & DirtyFillStyle)
+            m_painter.setBrush(m_state.fillStyle);
+        if (m_state.flags & DirtyGlobalAlpha)
+            m_painter.setOpacity(m_state.globalAlpha);
+        if (m_state.flags & DirtyGlobalCompositeOperation)
+            m_painter.setCompositionMode(m_state.globalCompositeOperation);
+        if (m_state.flags & MDirtyPen) {
+            QPen pen = m_painter.pen();
+            if (m_state.flags & DirtyStrokeStyle)
+                pen.setBrush(m_state.strokeStyle);
+            if (m_state.flags & DirtyLineWidth)
+                pen.setWidthF(m_state.lineWidth);
+            if (m_state.flags & DirtyLineCap)
+                pen.setCapStyle(m_state.lineCap);
+            if (m_state.flags & DirtyLineJoin)
+                pen.setJoinStyle(m_state.lineJoin);
+            if (m_state.flags & DirtyMiterLimit)
+                pen.setMiterLimit(m_state.miterLimit);
+            m_painter.setPen(pen);
+        }
+        m_state.flags = 0;
     }
 }
 
 void Context2D::clear()
 {
-    m_cache.fill(qRgba(0,0,0,0));
+    endPainting();
+    m_image.fill(qRgba(0,0,0,0));
+    scheduleChange();
 }
 
-void Context2D::setSize(int w, int h)
+void Context2D::reset()
 {
-    if (m_painter.isActive())
-        end();
-    QImage newi(w, h, QImage::Format_ARGB32_Premultiplied);
+    m_stateStack.clear();
+    m_state.matrix = QMatrix();
+    m_state.clipPath = QPainterPath();
+    m_state.globalAlpha = 1.0;
+    m_state.globalCompositeOperation = QPainter::CompositionMode_SourceOver;
+    m_state.strokeStyle = Qt::black;
+    m_state.fillStyle = Qt::black;
+    m_state.lineWidth = 1;
+    m_state.lineCap = Qt::FlatCap;
+    m_state.lineJoin = Qt::MiterJoin;
+    m_state.miterLimit = 10;
+    m_state.shadowOffsetX = 0;
+    m_state.shadowOffsetY = 0;
+    m_state.shadowBlur = 0;
+    m_state.shadowColor = qRgba(0, 0, 0, 0);
+    m_state.flags = AllIsFullOfDirt;
+    clear();
+}
+
+void Context2D::setSize(int width, int height)
+{
+    endPainting();
+    QImage newi(width, height, QImage::Format_ARGB32_Premultiplied);
     newi.fill(qRgba(0,0,0,0));
     QPainter p(&newi);
-    p.drawImage(0, 0, m_cache);
+    p.drawImage(0, 0, m_image);
     p.end();
-    m_cache = newi;
-    begin();
+    m_image = newi;
+    scheduleChange();
+}
+
+void Context2D::setSize(const QSize &size)
+{
+    setSize(size.width(), size.height());
+}
+
+QSize Context2D::size() const
+{
+    return m_image.size();
 }
 
 void Context2D::drawImage(DomImage *image, qreal dx, qreal dy)
@@ -636,7 +777,9 @@ void Context2D::drawImage(DomImage *image, qreal dx, qreal dy)
 
         drawImage(image, sx, sy, sw, sh, 0, 0, sw, sh);
     } else {
+        beginPainting();
         m_painter.drawImage(QPointF(dx, dy), image->image());
+        scheduleChange();
     }
 }
 
@@ -645,7 +788,9 @@ void Context2D::drawImage(DomImage *image, qreal dx, qreal dy,
 {
     if (!image)
         return;
+    beginPainting();
     m_painter.drawImage(QRectF(dx, dy, dw, dh).toRect(), image->image());
+    scheduleChange();
 }
 
 void Context2D::drawImage(DomImage *image, qreal sx, qreal sy,
@@ -654,6 +799,27 @@ void Context2D::drawImage(DomImage *image, qreal sx, qreal sy,
 {
     if (!image)
         return;
+    beginPainting();
     m_painter.drawImage(QRectF(dx, dy, dw, dh), image->image(),
                         QRectF(sx, sy, sw, sh));
+    scheduleChange();
 }
+
+//! [2]
+void Context2D::scheduleChange()
+{
+    if (m_changeTimerId == -1)
+        m_changeTimerId = startTimer(0);
+}
+
+void Context2D::timerEvent(QTimerEvent *e)
+{
+    if (e->timerId() == m_changeTimerId) {
+        killTimer(m_changeTimerId);
+        m_changeTimerId = -1;
+        emit changed(endPainting());
+    } else {
+        QObject::timerEvent(e);
+    }
+}
+//! [2]

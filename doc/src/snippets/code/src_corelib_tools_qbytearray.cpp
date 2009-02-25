@@ -214,7 +214,7 @@ if (url.startsWith("ftp:"))
 
 
 //! [26]
-QByteArray url("http://www.trolltech.com/index.html");
+QByteArray url("http://qtsoftware.com/index.html");
 if (url.endsWith(".html"))
     ...
 //! [26]

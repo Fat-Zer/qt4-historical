@@ -2,7 +2,6 @@
         class MainApplicationAdaptor: public QDBusAbstractAdaptor
         {
             Q_OBJECT
-            Q_CLASSINFO("D-Bus Interface", "com.example.DBus.MainApplication")
             Q_CLASSINFO("D-Bus Interface", "org.kde.DBus.MainApplication")
             Q_PROPERTY(QString caption READ caption WRITE setCaption)
             Q_PROPERTY(QString organizationName READ organizationName)
@@ -80,7 +79,7 @@
 
 
 //! [1]
-interface com.example.DBus.MainApplication
+interface org.kde.DBus.MainApplication
 {
     property readwrite STRING caption
     property read STRING organizationName
@@ -93,11 +92,6 @@ interface com.example.DBus.MainApplication
 
     signal aboutToQuit()
     signal mainWindowHasFocus()
-}
-
-interface org.kde.DBus.MainApplication
-{
-    ....
 }
 //! [1]
 
@@ -126,7 +120,6 @@ int main(int argc, char **argv)
 class MainApplicationAdaptor: public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "com.example.DBus.MainApplication")
     Q_CLASSINFO("D-Bus Interface", "org.kde.DBus.MainApplication")
 //! [3]
 

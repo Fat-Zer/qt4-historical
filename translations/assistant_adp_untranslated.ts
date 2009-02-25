@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1">
+<!DOCTYPE TS><TS version="2.0">
 <context>
     <name>AssistantServer</name>
     <message>
-        <location filename="../tools/assistant/main.cpp" line="194"/>
+        <location filename="../tools/assistant/compat/main.cpp" line="+195"/>
         <source>Qt Assistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/main.cpp" line="195"/>
+        <location line="+1"/>
         <source>Failed to bind to port %1</source>
         <translation type="unfinished"></translation>
     </message>
@@ -16,27 +16,27 @@
 <context>
     <name>FontPanel</name>
     <message>
-        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="44"/>
+        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="+33"/>
         <source>Font</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="54"/>
+        <location line="+11"/>
         <source>&amp;Writing system</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="57"/>
+        <location line="+3"/>
         <source>&amp;Family</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="61"/>
+        <location line="+4"/>
         <source>&amp;Style</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/shared/fontpanel/fontpanel.cpp" line="65"/>
+        <location line="+4"/>
         <source>&amp;Point size</source>
         <translation type="unfinished"></translation>
     </message>
@@ -44,27 +44,27 @@
 <context>
     <name>FontSettingsDialog</name>
     <message>
-        <location filename="../tools/assistant/fontsettingsdialog.cpp" line="33"/>
+        <location filename="../tools/assistant/compat/fontsettingsdialog.cpp" line="+33"/>
         <source>Font Settings</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/fontsettingsdialog.cpp" line="40"/>
+        <location line="+7"/>
         <source>Font settings for:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/fontsettingsdialog.cpp" line="44"/>
+        <location line="+4"/>
         <source>Browser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/fontsettingsdialog.cpp" line="45"/>
+        <location line="+1"/>
         <source>Application</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/fontsettingsdialog.cpp" line="51"/>
+        <location line="+6"/>
         <source>Use custom settings</source>
         <translation type="unfinished"></translation>
     </message>
@@ -72,251 +72,267 @@
 <context>
     <name>HelpDialog</name>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="46"/>
+        <location filename="../tools/assistant/compat/helpdialog.ui"/>
         <source>Con&amp;tents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1020"/>
+        <location filename="../tools/assistant/compat/helpdialog.cpp" line="+345"/>
+        <location line="+16"/>
+        <location line="+659"/>
         <source>Qt Assistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="248"/>
+        <location line="-772"/>
         <source>Open Link in Current Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="251"/>
+        <location line="+3"/>
         <source>Open Link in New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="254"/>
+        <location line="+3"/>
         <source>Open Link in New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="409"/>
+        <location line="+73"/>
+        <location line="+82"/>
         <source>Prepare...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="346"/>
+        <location line="-64"/>
         <source>Failed to load keyword index file
 Assistant will not work!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="362"/>
+        <location line="+17"/>
         <source>Cannot open the index file %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="552"/>
+        <location line="+58"/>
+        <location line="+124"/>
+        <location line="+8"/>
         <source>Warning</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="546"/>
+        <location line="-131"/>
+        <location line="+124"/>
         <source>Documentation file %1 does not exist!
 Skipping file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="566"/>
+        <location line="-112"/>
+        <location line="+133"/>
         <source>Parse Error</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="554"/>
+        <location line="-13"/>
         <source>Documentation file %1 is not compatible!
 Skipping file.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1068"/>
+        <location line="+48"/>
+        <location line="+467"/>
         <source>Done</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1022"/>
+        <location line="-47"/>
         <source>Failed to save fulltext search index
 Assistant will not work!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1050"/>
+        <location line="+29"/>
         <source>Indexing files...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1065"/>
+        <location line="+15"/>
         <source>Reading dictionary...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1120"/>
+        <location line="+46"/>
+        <location line="+9"/>
         <source>Full Text Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1112"/>
+        <location line="-8"/>
         <source>Using a wildcard within phrases is not allowed.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.cpp" line="1121"/>
+        <location line="+9"/>
         <source>The closing quotation mark is missing.</source>
         <translation type="unfinished"></translation>
     </message>
+    <message numerus="yes">
+        <location line="+7"/>
+        <source>%n document(s) found.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="27"/>
+        <location filename="../tools/assistant/compat/helpdialog.ui"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="30"/>
+        <location/>
         <source>&lt;b&gt;Help&lt;/b&gt;&lt;p&gt;Choose the topic you want help on from the contents list, or search the index for keywords.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="42"/>
+        <location/>
         <source>Displays help topics organized by category, index or bookmarks. Another tab inherits the full text search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="61"/>
+        <location/>
         <source>&lt;b&gt;Help topics organized by category.&lt;/b&gt;&lt;p&gt;Double-click an item to see the topics in that category. To view a topic, just double-click it.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="145"/>
+        <location/>
         <source>column 1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="80"/>
+        <location/>
         <source>&amp;Index</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="92"/>
+        <location/>
         <source>&amp;Look For:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="102"/>
+        <location/>
         <source>Enter keyword</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="105"/>
+        <location/>
         <source>&lt;b&gt;Enter a keyword.&lt;/b&gt;&lt;p&gt;The list will select an item that matches the entered string best.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="115"/>
+        <location/>
         <source>&lt;b&gt;List of available help topics.&lt;/b&gt;&lt;p&gt;Double-click on an item to open its help page. If more than one is found, you must specify which page you want.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="123"/>
+        <location/>
         <source>&amp;Bookmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="138"/>
+        <location/>
         <source>Displays the list of bookmarks.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="177"/>
+        <location/>
         <source>Add new bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="180"/>
+        <location/>
         <source>Add the currently displayed page as a new bookmark.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="183"/>
+        <location/>
         <source>&amp;New</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="190"/>
+        <location/>
         <source>Delete bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="193"/>
+        <location/>
         <source>Delete the selected bookmark.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="196"/>
+        <location/>
         <source>&amp;Delete</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="317"/>
+        <location/>
         <source>&amp;Search</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="234"/>
+        <location/>
         <source>Searching f&amp;or:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="244"/>
+        <location/>
         <source>Enter searchword(s).</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="247"/>
+        <location/>
         <source>&lt;b&gt;Enter search word(s).&lt;/b&gt;&lt;p&gt;Enter here the word(s) you are looking for. The words may contain wildcards (*). For a sequence of words quote them.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="257"/>
+        <location/>
         <source>&lt;b&gt;Found documents&lt;/b&gt;&lt;p&gt;This list contains all found documents from the last search. The documents are ordered, i.e. the first document has the most matches.&lt;/p&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="264"/>
+        <location/>
         <source>Found &amp;Documents:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="282"/>
+        <location/>
         <source>Display the help page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="285"/>
+        <location/>
         <source>Display the help page for the full text search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="288"/>
+        <location/>
         <source>He&amp;lp</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="311"/>
+        <location/>
         <source>Start searching.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="314"/>
+        <location/>
         <source>Pressing this button starts the search.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpdialog.ui" line="348"/>
+        <location/>
         <source>Preparing...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -324,43 +340,48 @@ Assistant will not work!</source>
 <context>
     <name>HelpWindow</name>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="63"/>
+        <location filename="../tools/assistant/compat/helpwindow.cpp" line="+67"/>
         <source>Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="145"/>
-        <source>Open Link in New Window<byte value="x9"/>Shift+LMB</source>
+        <location line="+93"/>
+        <source>Open Link in New Window	Shift+LMB</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="64"/>
+        <location line="-92"/>
         <source>Unable to launch web browser.
 </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="65"/>
+        <location line="+1"/>
         <source>OK</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="92"/>
+        <location line="+27"/>
         <source>Failed to open link: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="94"/>
+        <location line="+1"/>
         <source>&lt;div align=&quot;center&quot;&gt;&lt;h1&gt;The page could not be found&lt;/h1&gt;&lt;br&gt;&lt;h3&gt;&apos;%1&apos;&lt;/h3&gt;&lt;/div&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="95"/>
+        <location line="+2"/>
         <source>Error...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/helpwindow.cpp" line="147"/>
+        <location line="+56"/>
+        <source>Copy &amp;Link Location</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Open Link in New Tab</source>
         <translation type="unfinished"></translation>
     </message>
@@ -368,7 +389,7 @@ Assistant will not work!</source>
 <context>
     <name>Index</name>
     <message>
-        <location filename="../tools/assistant/index.cpp" line="354"/>
+        <location filename="../tools/assistant/compat/index.cpp" line="+355"/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
@@ -376,462 +397,469 @@ Assistant will not work!</source>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="25"/>
-        <source>Qt Assistant by Trolltech</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="30"/>
+        <location filename="../tools/assistant/compat/mainwindow.ui"/>
         <source>Toolbar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="151"/>
+        <location/>
         <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="162"/>
+        <location/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="176"/>
+        <location/>
         <source>&amp;Copy</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="190"/>
+        <location/>
         <source>&amp;Find in Text...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="220"/>
+        <location/>
         <source>&amp;Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="234"/>
+        <location/>
         <source>&amp;Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="248"/>
+        <location/>
         <source>&amp;Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="267"/>
+        <location/>
         <source>About Qt</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="275"/>
+        <location/>
         <source>Zoom &amp;in</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="289"/>
+        <location/>
         <source>Zoom &amp;out</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="300"/>
+        <location/>
         <source>New Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="157"/>
+        <location filename="../tools/assistant/compat/mainwindow.cpp" line="+158"/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="158"/>
+        <location line="+1"/>
         <source>Ctrl+I</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="159"/>
+        <location line="+1"/>
         <source>Ctrl+B</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="311"/>
+        <location line="+130"/>
+        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://qtsoftware.com/company/model&quot;&gt;qtsoftware.com/company/model&lt;/a&gt; for an overview of Qt licensing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+6"/>
+        <source>This program is licensed to you under the terms of the Qt %1 License Agreement. For details, see the license file that came with this software distribution.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+21"/>
+        <location line="+1"/>
         <source>Qt Assistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="319"/>
+        <location filename="../tools/assistant/compat/mainwindow.ui"/>
         <source>&amp;Add Bookmark</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="72"/>
+        <location filename="../tools/assistant/compat/mainwindow.cpp" line="-245"/>
         <source>Sidebar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="90"/>
+        <location line="+18"/>
         <source>&amp;Window</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="92"/>
+        <location line="+2"/>
         <source>Minimize</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="93"/>
+        <location line="+1"/>
         <source>Ctrl+M</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="127"/>
+        <location line="+34"/>
         <source>Initializing Qt Assistant...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="153"/>
+        <location line="+26"/>
         <source>SHIFT+CTRL+=</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="160"/>
+        <location line="+7"/>
         <source>Ctrl+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="161"/>
+        <location filename="../tools/assistant/compat/mainwindow.ui"/>
         <source>Ctrl+W</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="162"/>
+        <location filename="../tools/assistant/compat/mainwindow.cpp" line="+1"/>
         <source>Ctrl+]</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="163"/>
+        <location line="+1"/>
         <source>Ctrl+[</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="170"/>
+        <location line="+7"/>
         <source>Views</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="249"/>
+        <location line="+80"/>
         <source>Displays the main page of a specific documentation set.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="284"/>
+        <location line="+35"/>
         <source>Open Source Edition</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="288"/>
+        <location line="+1"/>
         <source>This version of Qt Assistant is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="291"/>
-        <source>You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;a href=&quot;http://www.trolltech.com/company/model.html&quot;&gt;www.trolltech.com/company/model.html&lt;/a&gt; for an overview of Qt licensing.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="297"/>
+        <location line="+16"/>
         <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="330"/>
+        <location line="+35"/>
         <source>Failed to open about application contents in file: &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="467"/>
+        <location line="+201"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="711"/>
+        <location line="+238"/>
+        <location line="+6"/>
         <source>Save Page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.cpp" line="711"/>
+        <location line="+0"/>
         <source>Cannot open file for writing!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="57"/>
+        <location filename="../tools/assistant/compat/mainwindow.ui"/>
+        <source>Qt Assistant by Nokia</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="80"/>
+        <location/>
         <source>&amp;Help</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="91"/>
+        <location/>
         <source>&amp;File</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="106"/>
+        <location/>
         <source>Boo&amp;kmarks</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="111"/>
+        <location/>
         <source>&amp;Go</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="123"/>
+        <location/>
         <source>&amp;View</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="130"/>
+        <location/>
         <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="154"/>
+        <location/>
         <source>Print the currently displayed page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="157"/>
+        <location/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="165"/>
+        <location/>
         <source>Quit Qt Assistant.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="168"/>
+        <location/>
         <source>Ctrl+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="179"/>
+        <location/>
         <source>Copy the selected text to the clipboard.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="182"/>
+        <location/>
         <source>Ctrl+C</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="193"/>
+        <location/>
         <source>Open the Find dialog. Qt Assistant will search the currently displayed page for the text you enter.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="196"/>
+        <location/>
         <source>Ctrl+F</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="201"/>
+        <location/>
         <source>Find &amp;Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="204"/>
+        <location/>
         <source>F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="209"/>
+        <location/>
         <source>Find &amp;Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="212"/>
+        <location/>
         <source>Shift+F3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="223"/>
+        <location/>
         <source>Go to the home page. Qt Assistant&apos;s home page is the Qt Reference Documentation.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="226"/>
+        <location/>
         <source>Ctrl+Home</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="237"/>
+        <location/>
         <source>Go to the previous page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="240"/>
+        <location/>
         <source>Alt+Left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="251"/>
+        <location/>
         <source>Go to the next page.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="254"/>
+        <location/>
         <source>Alt+Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="259"/>
+        <location/>
         <source>About Qt Assistant</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="262"/>
+        <location/>
         <source>Display further information about Qt Assistant.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="278"/>
+        <location/>
         <source>Zoom in on the document, i.e. increase the font size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="281"/>
+        <location/>
         <source>Ctrl++</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="292"/>
+        <location/>
         <source>Zoom out on the document, i.e. decrease the font size.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="295"/>
+        <location/>
         <source>Ctrl+-</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="303"/>
+        <location/>
         <source>Open a new window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="306"/>
+        <location/>
         <source>Ctrl+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="311"/>
+        <location/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="314"/>
+        <location/>
         <source>Close the current window.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="322"/>
+        <location/>
         <source>Add the currently displayed page as a new bookmark.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="330"/>
+        <location/>
         <source>What&apos;s This?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="336"/>
+        <location/>
         <source>&quot;What&apos;s This?&quot; context sensitive help.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="339"/>
+        <location/>
         <source>Shift+F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="344"/>
+        <location/>
         <source>Add Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="347"/>
+        <location/>
         <source>Ctrl+Alt+N</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="352"/>
+        <location/>
         <source>Next Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="355"/>
+        <location/>
         <source>Ctrl+Alt+Right</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="360"/>
+        <location/>
         <source>Previous Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="363"/>
+        <location/>
         <source>Ctrl+Alt+Left</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="368"/>
+        <location/>
         <source>Close Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="371"/>
+        <location/>
         <source>Ctrl+Alt+Q</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="379"/>
+        <location/>
         <source>Qt Assistant Manual</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="382"/>
+        <location/>
         <source>F1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="387"/>
+        <location/>
         <source>Save Page As...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="390"/>
+        <location/>
         <source>Ctrl+Alt+S</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="398"/>
+        <location/>
         <source>Sync with Table of Contents</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="401"/>
+        <location/>
         <source>Select the page in contents tab.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/mainwindow.ui" line="406"/>
+        <location/>
         <source>Font Settings...</source>
         <translation type="unfinished"></translation>
     </message>
@@ -839,75 +867,75 @@ Assistant will not work!</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../tools/assistant/config.cpp" line="321"/>
-        <source>Qt Assistant by Trolltech</source>
+        <location filename="../tools/assistant/compat/config.cpp" line="+320"/>
+        <source>Qt Assistant by Nokia</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>TabbedBrowser</name>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="120"/>
+        <location filename="../tools/assistant/compat/tabbedbrowser.cpp" line="+119"/>
         <source>...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="206"/>
+        <location line="+86"/>
         <source>Add page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="215"/>
+        <location line="+9"/>
         <source>Close page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="456"/>
+        <location line="+243"/>
         <source>New Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="457"/>
+        <location line="+1"/>
         <source>Close Tab</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.cpp" line="458"/>
+        <location line="+1"/>
         <source>Close Other Tabs</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="27"/>
+        <location filename="../tools/assistant/compat/tabbedbrowser.ui"/>
         <source>TabbedBrowser</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="40"/>
+        <location/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="102"/>
+        <location/>
         <source>Previous</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="124"/>
+        <location/>
         <source>Next</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="143"/>
+        <location/>
         <source>Case Sensitive</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="150"/>
+        <location/>
         <source>Whole words</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/tabbedbrowser.ui" line="169"/>
+        <location/>
         <source>&lt;img src=&quot;:/trolltech/assistant/images/wrap.png&quot;&gt;&amp;nbsp;Search wrapped</source>
         <translation type="unfinished"></translation>
     </message>
@@ -915,47 +943,47 @@ Assistant will not work!</source>
 <context>
     <name>TopicChooser</name>
     <message>
-        <location filename="../tools/assistant/topicchooser.cpp" line="26"/>
+        <location filename="../tools/assistant/compat/topicchooser.cpp" line="+26"/>
         <source>Choose a topic for &lt;b&gt;%1&lt;/b&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="28"/>
+        <location filename="../tools/assistant/compat/topicchooser.ui"/>
         <source>Choose Topic</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="34"/>
+        <location/>
         <source>Select a topic from the list and click the &lt;b&gt;Display&lt;/b&gt;-button to open the online help.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="52"/>
+        <location/>
         <source>&amp;Topics</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="65"/>
+        <location/>
         <source>Displays a list of available help topics for the keyword.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="106"/>
+        <location/>
         <source>&amp;Display</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="115"/>
+        <location/>
         <source>Open the topic selected in the list.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="125"/>
+        <location/>
         <source>&amp;Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/topicchooser.ui" line="131"/>
+        <location/>
         <source>Close the Dialog.</source>
         <translation type="unfinished"></translation>
     </message>

@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -86,12 +90,20 @@ void Window::browse()
 {
     QString directory = QFileDialog::getExistingDirectory(this,
                                tr("Find Files"), QDir::currentPath());
+
     if (!directory.isEmpty()) {
-        directoryComboBox->addItem(directory);
-        directoryComboBox->setCurrentIndex(directoryComboBox->currentIndex() + 1);
+        if (directoryComboBox->findText(directory) == -1)
+            directoryComboBox->addItem(directory);
+        directoryComboBox->setCurrentIndex(directoryComboBox->findText(directory));
     }
 }
 //! [2]
+
+static void updateComboBox(QComboBox *comboBox)
+{
+    if (comboBox->findText(comboBox->currentText()) == -1)
+        comboBox->addItem(comboBox->currentText());
+}
 
 //! [3]
 void Window::find()
@@ -103,23 +115,26 @@ void Window::find()
     QString path = directoryComboBox->currentText();
 //! [3]
 
+    updateComboBox(fileComboBox);
+    updateComboBox(textComboBox);
+    updateComboBox(directoryComboBox);
+
 //! [4]
-    QDir directory = QDir(path);
+    currentDir = QDir(path);
     QStringList files;
     if (fileName.isEmpty())
         fileName = "*";
-    files = directory.entryList(QStringList(fileName),
-                                QDir::Files | QDir::NoSymLinks);
+    files = currentDir.entryList(QStringList(fileName),
+                                 QDir::Files | QDir::NoSymLinks);
 
     if (!text.isEmpty())
-        files = findFiles(directory, files, text);
-    showFiles(directory, files);
+        files = findFiles(files, text);
+    showFiles(files);
 }
 //! [4]
 
 //! [5]
-QStringList Window::findFiles(const QDir &directory, const QStringList &files,
-                              const QString &text)
+QStringList Window::findFiles(const QStringList &files, const QString &text)
 {
     QProgressDialog progressDialog(this);
     progressDialog.setCancelButtonText(tr("&Cancel"));
@@ -140,7 +155,7 @@ QStringList Window::findFiles(const QDir &directory, const QStringList &files,
             break;
 
 //! [7]
-        QFile file(directory.absoluteFilePath(files[i]));
+        QFile file(currentDir.absoluteFilePath(files[i]));
 
         if (file.open(QIODevice::ReadOnly)) {
             QString line;
@@ -161,10 +176,10 @@ QStringList Window::findFiles(const QDir &directory, const QStringList &files,
 //! [7]
 
 //! [8]
-void Window::showFiles(const QDir &directory, const QStringList &files)
+void Window::showFiles(const QStringList &files)
 {
     for (int i = 0; i < files.size(); ++i) {
-        QFile file(directory.absoluteFilePath(files[i]));
+        QFile file(currentDir.absoluteFilePath(files[i]));
         qint64 size = QFileInfo(file).size();
 
         QTableWidgetItem *fileNameItem = new QTableWidgetItem(files[i]);
@@ -228,7 +243,7 @@ void Window::openFileOfItem(int row, int /* column */)
 {
     QTableWidgetItem *item = filesTable->item(row, 0);
 
-    QDesktopServices::openUrl(item->text());
+    QDesktopServices::openUrl(currentDir.absoluteFilePath(item->text()));
 }
 
 //! [12]

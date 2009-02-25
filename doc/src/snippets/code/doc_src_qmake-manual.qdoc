@@ -807,3 +807,7 @@ CONFIG(debug, debug|release) {
     win32: TARGET = $$join(TARGET,,d)
 }
 //! [127]
+
+//! [128]
+DEPLOYMENT_PLUGIN += qjpeg
+//! [128]

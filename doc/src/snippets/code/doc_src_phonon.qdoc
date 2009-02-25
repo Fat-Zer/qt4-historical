@@ -9,5 +9,5 @@ QT += phonon
 
 
 //! [2]
-#include <phonon>
+#include <Phonon/MediaObject>
 //! [2]

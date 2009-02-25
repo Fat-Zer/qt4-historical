@@ -17,6 +17,7 @@
     <example filename="interview" name="Interview" />
     <example filename="browser" name="Browser" />
     <example filename="mediaplayer" name="Media Player" />
+    <example filename="boxes" name="Boxes" />
   </demos>
   <category dirname="qtconcurrent" name="Concurrent Programming">
     <example filename="map" name="Map" executable="false" />
@@ -74,7 +75,9 @@
     <example filename="chart" name="Chart" />
     <example filename="customsortfiltermodel" name="Custom Sort/Filter Model" />
     <example filename="coloreditorfactory" name="Color Editor Factory" image="coloreditorfactoryimage.png"/>
+    <example filename="combowidgetmapper" name="Combo Widget Mapper" />
     <example filename="dirview" name="Directory View" />
+    <example filename="fetchmore" name="Fetch More" />
     <example filename="pixelator" name="Pixelator" />
     <example filename="puzzle" name="Puzzle " image="itemviewspuzzle-example.png"/>
     <example filename="simpledommodel" name="Simple DOM Model" />
@@ -106,7 +109,7 @@
     <example filename="blockingfortuneclient" name="Blocking Fortune Client" />
     <example filename="broadcastreceiver" name="Broadcast Receiver" />
     <example filename="broadcastsender" name="Broadcast Sender" />
-    <example filename="chat" name="Chat Client" />
+    <example filename="network-chat" name="Network Chat Client" />
     <example filename="fortuneclient" name="Fortune Client" />
     <example filename="fortuneserver" name="Fortune Server" />
     <example filename="ftp" changedirectory="false" name="FTP Client" />
@@ -144,13 +147,14 @@
     <example filename="calendar" name="Calendar" />
     <example filename="orderform" name="Order Form" />
     <example filename="syntaxhighlighter" name="Syntax Highlighter" />
+    <example filename="textobject" name="Text Object" />
   </category>
   <category dirname="script" name="QtScript">
     <example filename="calculator" name="Calculator" />
     <example filename="context2d" name="Context2D" />
     <example filename="defaultprototypes" name="Default Prototypes" />
     <example filename="helloscript" name="Hello Script" image="t1.png"/>
-    <example filename="tetrix" name="Tetrix" />
+    <example filename="qstetrix" name="QSTetrix" image="tetrix-example.png" />
   </category>
   <category dirname="sql" name="SQL">
     <example filename="cachedtable" name="Cached Table" />
@@ -159,11 +163,10 @@
     <example filename="relationaltablemodel" name="Relational Table Model" />
     <example filename="tablemodel" name="Table Model" />
     <example filename="masterdetail" name="Music Archive" />
+    <example filename="sqlwidgetmapper" name="SQL Widget Mapper" />
   </category>
   <category dirname="threads" name="Threading">
     <example filename="mandelbrot" name="Mandelbrot" />
-    <example filename="semaphores" name="Semaphores" executable="false" />
-    <example filename="waitconditions" name="Wait Conditions" executable="false" />
   </category>
   <category dirname="tools" name="Tools">
     <example filename="codecs" name="Codecs" />
@@ -175,22 +178,6 @@
     <example filename="settingseditor" name="Settings Editor" />
     <example filename="treemodelcompleter" name="Tree Model Completer" />
     <example filename="undoframework" name="Undo Framework"/>
-  </category>
-  <category dirname="tutorials/tutorial" name="Tutorial">
-    <example filename="t1" name="Tutorial 1" />
-    <example filename="t2" name="Tutorial 2" />
-    <example filename="t3" name="Tutorial 3" />
-    <example filename="t4" name="Tutorial 4" />
-    <example filename="t5" name="Tutorial 5" />
-    <example filename="t6" name="Tutorial 6" />
-    <example filename="t7" name="Tutorial 7" />
-    <example filename="t8" name="Tutorial 8" />
-    <example filename="t9" name="Tutorial 9" />
-    <example filename="t10" name="Tutorial 10" />
-    <example filename="t11" name="Tutorial 11" />
-    <example filename="t12" name="Tutorial 12" />
-    <example filename="t13" name="Tutorial 13" />
-    <example filename="t14" name="Tutorial 14" />
   </category>
   <category dirname="tutorials/addressbook" name="Address Book Tutorial">
     <example filename="part1" name="Part 1" image="addressbook-tutorial-part1-screenshot.png" />
@@ -206,6 +193,7 @@
     <example filename="calculator" name="Calculator " />
     <example filename="calendarwidget" name="Calendar Widget" />
     <example filename="charactermap" name="Character Map" />
+    <example filename="codeeditor" name="Code Editor" />
     <example filename="digitalclock" name="Digital Clock" />
     <example filename="groupbox" name="Group Box" />
     <example filename="icons" name="Icons" />
@@ -234,5 +222,6 @@
     <example filename="recipes" name="Recipes" />
     <example filename="qobjectxmlmodel" name="QObjectXmlModel" />
     <example filename="filetree" name="File Tree" />
+    <example filename="trafficinfo" name="Traffic Info" />
   </category>  
 </categories>

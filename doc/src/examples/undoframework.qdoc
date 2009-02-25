@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -71,19 +75,19 @@
     The example consists of the following classes:
 
     \list 
-	\o \c MainWindow is the main window and arranges the
-	      example's widgets. It creates the commands based 
-	      on user input and keeps them on the command stack.
-	\o \c AddCommand adds an item to the scene.
-	\o \c DeleteCommand deletes an item from the scene.
-	\o \c MoveCommand when an item is moved the MoveCommand keeps record
+        \o \c MainWindow is the main window and arranges the
+              example's widgets. It creates the commands based 
+              on user input and keeps them on the command stack.
+        \o \c AddCommand adds an item to the scene.
+        \o \c DeleteCommand deletes an item from the scene.
+        \o \c MoveCommand when an item is moved the MoveCommand keeps record
               of the start and stop positions of the move, and it
-	      moves the item according to these when \c redo() and \c undo()
-	      is called.
-	\o \c DiagramScene inherits QGraphicsScene and
+              moves the item according to these when \c redo() and \c undo()
+              is called.
+        \o \c DiagramScene inherits QGraphicsScene and
               emits signals for the \c MoveComands when an item is moved.
-	\o \c DiagramItem inherits QGraphicsPolygonItem and represents
-	      an item in the diagram.
+        \o \c DiagramItem inherits QGraphicsPolygonItem and represents
+              an item in the diagram.
     \endlist
 
     \section1 MainWindow Class Definition
@@ -101,11 +105,7 @@
 
     \snippet examples/tools/undoframework/mainwindow.cpp 0
 
-    By connecting the undo stack's \c canRedoChanged() and
-    canUndoChanged() signals to our undo and redo action's
-    setEnabled() slot we make the actions disabled when the stack
-    cannot undo and redo commands. The rest of the constructor sets up
-    the DiagramScene and QGraphicsView. 
+    In the constructor, we set up the DiagramScene and QGraphicsView. 
 
     Here is the \c createUndoView() function:    
 
@@ -124,13 +124,15 @@
     \snippet examples/tools/undoframework/mainwindow.cpp 5
 
     The \c createActions() function sets up all the examples actions
-    in the manner shown above. We can connect our \c undoAction and \c
-    redoAction directly to the stack's \c undo() and \c redo() slots 
-    as we disable the actions when the stack cannot do undo and redo. 
-    For the other actions we have implemented slots in the \c MainWindow 
-    class.
+    in the manner shown above. The
+    \l{QUndoStack::}{createUndoAction()} and
+    \l{QUndoStack::}{createRedoAction()} helps us crate actions that
+    are disabled and enabled based on the state of the stack.  Also,
+    the text of the action will be updated automatically based on the
+    \l{QUndoCommand::}{text()} of the undo commands. For the other
+    actions we have implemented slots in the \c MainWindow class.
 
-    Here is the \c createMenues() function:
+    Here is the \c createMenus() function:
 
     \snippet examples/tools/undoframework/mainwindow.cpp 6
 
@@ -141,9 +143,8 @@
 
     We have to use the QMenu \c aboutToShow() and \c aboutToHide()
     signals since we only want \c deleteAction to be enabled when we
-    have selected an item. We also want the \l{QUndoCommand::}{text()} 
-    to be shown in the \c undoAction and \c redoAction menu items.
-    
+    have selected an item.     
+
     Here is the \c itemMoved() slot:
 
     \snippet examples/tools/undoframework/mainwindow.cpp 9
@@ -169,9 +170,7 @@
     We implement \c itemMenuAboutToShow() and \c itemMenuAboutToHide()
     to get a dynamic item menu. These slots are connected to the 
     \l{QMenu::}{aboutToShow()} and \l{QMenu::}{aboutToHide()} signals.
-    We need this to disable or enable the \c deleteAction and fill the
-    \c redoAction and \c undoAction menu item with the text from the
-    next QUndoCommand that will be redone or undone.
+    We need this to disable or enable the \c deleteAction. 
 
     Here is the \c addBox() slot:
 

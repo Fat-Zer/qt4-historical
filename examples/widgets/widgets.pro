@@ -3,6 +3,7 @@ SUBDIRS       = analogclock \
                 calculator \
                 calendarwidget \
                 charactermap \
+                codeeditor \
                 digitalclock \
                 groupbox \
                 icons \
@@ -13,7 +14,6 @@ SUBDIRS       = analogclock \
                 shapedclock \
                 sliders \
                 spinboxes \
-                styles \
                 stylesheet \
                 tablet \
                 tetrix \
@@ -21,6 +21,8 @@ SUBDIRS       = analogclock \
                 validators \
                 wiggly \
                 windowflags
+
+contains(styles, motif): SUBDIRS += styles
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/widgets

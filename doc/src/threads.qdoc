@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -166,13 +170,13 @@
     possible to write multi-threaded programs without using low-level
     threading primitives such as mutexes, read-write locks, wait
     conditions, or semaphores. Programs written with QtConcurrent
-    automaticallly adjust the number of threads used according to the
+    automatically adjust the number of threads used according to the
     number of processor cores available. This means that applications
     written today will continue to scale when deployed on multi-core
     systems in the future.
 
     QtConcurrent includes functional programming style APIs for
-    parallel list prosessing, including a MapReduce and FilterReduce
+    parallel list processing, including a MapReduce and FilterReduce
     implementation for shared-memory (non-distributed) systems, and
     classes for managing asynchronous computations in GUI
     applications:
@@ -243,8 +247,11 @@
         \o Supported and Recommended
     \endtable
     
-    Random Access Iterators can be faster in cases where Qt Concurrent is iterating
-    over a large number of lightweight items, since they allow skipping to any point in the container. 
+    Random access iterators can be faster in cases where Qt Concurrent is iterating
+    over a large number of lightweight items, since they allow skipping to any point
+    in the container. In addition, using random access iterators allows Qt Concurrent
+    to provide progress information trough QFuture::progressValue() and QFutureWatcher::
+    progressValueChanged().
 
     The non in-place modifying functions such as mapped() and filtered() makes a 
     copy of the container when called. If you are using STL containers this copy operation
@@ -594,13 +601,9 @@
     \section1 Recommended Reading
 
     \list
-    \o \link http://www.amazon.com/exec/obidos/ASIN/0134436989/trolltech/t
-    Threads Primer: A Guide to Multithreaded Programming\endlink
-    \o \link http://www.amazon.com/exec/obidos/ASIN/0131900676/trolltech/t
-    Thread Time: The Multithreaded Programming Guide\endlink
-    \o \link http://www.amazon.com/exec/obidos/ASIN/1565921151/trolltech/t
-    Pthreads Programming: A POSIX Standard for Better Multiprocessing\endlink
-    \o \link http://www.amazon.com/exec/obidos/ASIN/1565922964/trolltech/t
-    Win32 Multithreaded Programming\endlink
+    \o \l{Threads Primer: A Guide to Multithreaded Programming}
+    \o \l{Thread Time: The Multithreaded Programming Guide}
+    \o \l{Pthreads Programming: A POSIX Standard for Better Multiprocessing}
+    \o \l{Win32 Multithreaded Programming}
     \endlist
 */

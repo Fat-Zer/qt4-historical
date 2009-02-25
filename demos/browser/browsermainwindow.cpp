@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -142,6 +146,7 @@ BrowserMainWindow::BrowserMainWindow(QWidget *parent, Qt::WindowFlags flags)
 
     int size = m_tabWidget->lineEditStack()->sizeHint().height();
     m_navigationBar->setIconSize(QSize(size, size));
+
 }
 
 BrowserMainWindow::~BrowserMainWindow()
@@ -162,7 +167,7 @@ void BrowserMainWindow::loadDefaultState()
 QSize BrowserMainWindow::sizeHint() const
 {
     QRect desktopRect = QApplication::desktop()->screenGeometry();
-    QSize size = desktopRect.size() * 0.9;
+    QSize size = desktopRect.size() * qreal(0.9);
     return size;
 }
 
@@ -348,9 +353,13 @@ void BrowserMainWindow::setupMenu()
     m_reload->setShortcuts(QKeySequence::Refresh);
     m_tabWidget->addWebAction(m_reload, QWebPage::Reload);
 
-    viewMenu->addAction(tr("&Make Text Bigger"), this, SLOT(slotViewTextBigger()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
-    viewMenu->addAction(tr("&Make Text Normal"), this, SLOT(slotViewTextNormal()), QKeySequence(Qt::CTRL | Qt::Key_0));
-    viewMenu->addAction(tr("&Make Text Smaller"), this, SLOT(slotViewTextSmaller()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
+    viewMenu->addAction(tr("Zoom &In"), this, SLOT(slotViewZoomIn()), QKeySequence(Qt::CTRL | Qt::Key_Plus));
+    viewMenu->addAction(tr("Zoom &Out"), this, SLOT(slotViewZoomOut()), QKeySequence(Qt::CTRL | Qt::Key_Minus));
+    viewMenu->addAction(tr("Reset &Zoom"), this, SLOT(slotViewResetZoom()), QKeySequence(Qt::CTRL | Qt::Key_0));
+    QAction *zoomTextOnlyAction = viewMenu->addAction(tr("Zoom &Text Only"));
+    connect(zoomTextOnlyAction, SIGNAL(toggled(bool)), this, SLOT(slotViewZoomTextOnly(bool)));
+    zoomTextOnlyAction->setCheckable(true);
+    zoomTextOnlyAction->setChecked(false);
 
     viewMenu->addSeparator();
     viewMenu->addAction(tr("Page S&ource"), this, SLOT(slotViewPageSource()), tr("Ctrl+Alt+U"));
@@ -550,7 +559,7 @@ QUrl BrowserMainWindow::guessUrlFromString(const QString &string)
     // Check if it looks like a qualified URL. Try parsing it and see.
     bool hasSchema = test.exactMatch(urlStr);
     if (hasSchema) {
-        QUrl url(urlStr, QUrl::TolerantMode);
+        QUrl url = QUrl::fromEncoded(urlStr.toUtf8(), QUrl::TolerantMode);
         if (url.isValid())
             return url;
     }
@@ -566,25 +575,30 @@ QUrl BrowserMainWindow::guessUrlFromString(const QString &string)
         int dotIndex = urlStr.indexOf(QLatin1Char('.'));
         if (dotIndex != -1) {
             QString prefix = urlStr.left(dotIndex).toLower();
-            QString schema = (prefix == QLatin1String("ftp")) ? prefix : QLatin1String("http");
-            QUrl url(schema + QLatin1String("://") + urlStr, QUrl::TolerantMode);
+            QByteArray schema = (prefix == QLatin1String("ftp")) ? prefix.toLatin1() : "http";
+            QUrl url =
+                QUrl::fromEncoded(schema + "://" + urlStr.toUtf8(), QUrl::TolerantMode);
             if (url.isValid())
                 return url;
         }
     }
 
     // Fall back to QUrl's own tolerant parser.
-    QUrl url = QUrl(string, QUrl::TolerantMode);
+    QUrl url = QUrl::fromEncoded(string.toUtf8(), QUrl::TolerantMode);
 
     // finally for cases where the user just types in a hostname add http
     if (url.scheme().isEmpty())
-        url = QUrl(QLatin1String("http://") + string, QUrl::TolerantMode);
+        url = QUrl::fromEncoded("http://" + string.toUtf8(), QUrl::TolerantMode);
     return url;
 }
 
 void BrowserMainWindow::loadUrl(const QUrl &url)
 {
-    loadPage(url.toString());
+    if (!currentTab() || !url.isValid())
+        return;
+
+    m_tabWidget->currentLineEdit()->setText(QString::fromUtf8(url.toEncoded()));
+    m_tabWidget->loadUrlInCurrentTab(url);
 }
 
 void BrowserMainWindow::slotDownloadManager()
@@ -658,12 +672,14 @@ void BrowserMainWindow::slotFileOpen()
 
 void BrowserMainWindow::slotFilePrintPreview()
 {
+#ifndef QT_NO_PRINTER
     if (!currentTab())
         return;
     QPrintPreviewDialog *dialog = new QPrintPreviewDialog(this);
     connect(dialog, SIGNAL(paintRequested(QPrinter *)),
             currentTab(), SLOT(print(QPrinter *)));
     dialog->exec();
+#endif
 }
 
 void BrowserMainWindow::slotFilePrint()
@@ -675,12 +691,14 @@ void BrowserMainWindow::slotFilePrint()
 
 void BrowserMainWindow::printRequested(QWebFrame *frame)
 {
+#ifndef QT_NO_PRINTER
     QPrinter printer;
     QPrintDialog *dialog = new QPrintDialog(&printer, this);
     dialog->setWindowTitle(tr("Print Document"));
     if (dialog->exec() != QDialog::Accepted)
         return;
     frame->print(&printer);
+#endif
 }
 
 void BrowserMainWindow::slotPrivateBrowsing()
@@ -762,25 +780,32 @@ void BrowserMainWindow::slotEditFindPrevious()
     currentTab()->findText(m_lastSearch, QWebPage::FindBackward);
 }
 
-void BrowserMainWindow::slotViewTextBigger()
+void BrowserMainWindow::slotViewZoomIn()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() + 0.1);
+    currentTab()->setZoomFactor(currentTab()->zoomFactor() + 0.1);
 }
 
-void BrowserMainWindow::slotViewTextNormal()
+void BrowserMainWindow::slotViewZoomOut()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(1.0);
+    currentTab()->setZoomFactor(currentTab()->zoomFactor() - 0.1);
 }
 
-void BrowserMainWindow::slotViewTextSmaller()
+void BrowserMainWindow::slotViewResetZoom()
 {
     if (!currentTab())
         return;
-    currentTab()->setTextSizeMultiplier(currentTab()->textSizeMultiplier() - 0.1);
+    currentTab()->setZoomFactor(1.0);
+}
+
+void BrowserMainWindow::slotViewZoomTextOnly(bool enable)
+{
+    if (!currentTab())
+        return;
+    currentTab()->page()->settings()->setAttribute(QWebSettings::ZoomTextOnly, enable);
 }
 
 void BrowserMainWindow::slotViewFullScreen(bool makeFullScreen)
@@ -813,7 +838,7 @@ void BrowserMainWindow::slotHome()
 {
     QSettings settings;
     settings.beginGroup(QLatin1String("MainWindow"));
-    QString home = settings.value(QLatin1String("home"), QLatin1String("http://www.trolltech.com/")).toString();
+    QString home = settings.value(QLatin1String("home"), QLatin1String("http://qtsoftware.com/")).toString();
     loadPage(home);
 }
 
@@ -847,12 +872,8 @@ void BrowserMainWindow::slotSwapFocus()
 
 void BrowserMainWindow::loadPage(const QString &page)
 {
-    if (!currentTab() || page.isEmpty())
-        return;
-
     QUrl url = guessUrlFromString(page);
-    m_tabWidget->currentLineEdit()->setText(url.toString());
-    m_tabWidget->loadUrlInCurrentTab(url);
+    loadUrl(url);
 }
 
 TabWidget *BrowserMainWindow::tabWidget() const

@@ -26,7 +26,7 @@ int main(int argc, char *argv[])
 {
     QApplication app(argc, argv);
 
-    Thumbnailer thumbnail(QUrl("http://www.trolltech.com"));
+    Thumbnailer thumbnail(QUrl("http://qtsoftware.com"));
 
     QObject::connect(&thumbnail, SIGNAL(finished()),
         &app, SLOT(quit()));

@@ -1,3 +1,10 @@
+#! [syntax]
+<condition> {
+    <command or definition>
+    ...
+}
+#! [syntax]
+
 #! [0]
 win32 {
     SOURCES += paintwidget_win.cpp
@@ -27,3 +34,9 @@ macx:debug {
     HEADERS += debugging.h
 }
 #! [3]
+
+#! [4]
+win32|macx {
+    HEADERS += debugging.h
+}
+#! [4]

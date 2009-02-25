@@ -1,5 +1,6 @@
 TEMPLATE      = subdirs
 SUBDIRS       = recipes \
+                trafficinfo \
                 xquery  \
                 filetree
 

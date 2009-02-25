@@ -6,7 +6,7 @@ static void paintLayout(QPainter *painter, QLayoutItem *item)
         for (int i = 0; i < layout->count(); ++i)
             paintLayout(painter, layout->itemAt(i));
     }
-    painter->drawRect(layout->geometry());
+    painter->drawRect(item->geometry());
 }
 
 void MyWidget::paintEvent(QPaintEvent *)

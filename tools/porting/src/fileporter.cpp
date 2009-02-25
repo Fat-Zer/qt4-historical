@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -58,7 +62,7 @@ FilePorter::FilePorter(PreprocessorCache &preprocessorCache)
 ,headerReplacements(PortingRules::instance()->getHeaderReplacements())
 ,replaceToken(tokenReplacementRules)
 {
-    foreach(QString headerName, PortingRules::instance()->getHeaderList(PortingRules::Qt4)) {
+    foreach (const QString &headerName, PortingRules::instance()->getHeaderList(PortingRules::Qt4)) {
         qt4HeaderNames.insert(headerName.toLatin1());
     }
 }
@@ -144,7 +148,7 @@ QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
     // Iterate class list and find which modules are used. This info is used elswhere
     // by when porting the .pro file.
     const QHash<QByteArray, QByteArray> classLibraryList = PortingRules::instance()->getClassLibraryList();
-    foreach(const QByteArray className, classes) {
+    foreach (const QByteArray &className, classes) {
         m_usedQtModules.insert(classLibraryList.value(className));
     }
 
@@ -154,7 +158,7 @@ QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
     // Find classes that is missing an include directive and that has a needHeader rule.
     const QHash<QByteArray, QByteArray> neededHeaders = PortingRules::instance()->getNeededHeaders();
     QList<QByteArray> insertHeaders;
-    foreach(const QByteArray className, classes) {
+    foreach (const QByteArray &className, classes) {
         if (!headers.contains((className.toLower() + QByteArray(".h"))) &&
             !headers.contains(className)) {
             const QByteArray insertHeader = neededHeaders.value(className);
@@ -175,7 +179,7 @@ QByteArray FilePorter::includeAnalyse(QByteArray fileContents)
         logText += QByteArray("In file ");
         logText += Logger::instance()->globalState.value(QLatin1String("currentFileName")).toLocal8Bit();
         logText += QByteArray(": Added the following include directives:\n");
-        foreach (QByteArray headerName, insertHeaders) {
+        foreach (const QByteArray &headerName, insertHeaders) {
             insertText = insertText + headerName + lineEnding;
             logText += QByteArray("\t");
             logText += headerName + QByteArray(" ");
@@ -246,7 +250,7 @@ void PreprocessReplace::evaluateText(const Rpp::Text *textLine)
         return;
  
     const TokenEngine::TokenContainer container = textLine->text().tokenContainer(0);
-    foreach(Rpp::Token *token, textLine->tokenList()) {
+    foreach (Rpp::Token *token, textLine->tokenList()) {
         if (token->toLineComment()) {
             const int tokenIndex = token->index();
             const QByteArray text = container.text(tokenIndex);

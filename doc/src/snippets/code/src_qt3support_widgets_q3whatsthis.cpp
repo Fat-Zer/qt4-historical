@@ -1,3 +1,3 @@
 //! [0]
-(void)QWhatsThis::whatsThisButton( my_help_tool_bar );
+(void)Q3WhatsThis::whatsThisButton( my_help_tool_bar );
 //! [0]

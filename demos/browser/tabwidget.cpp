@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -72,6 +76,11 @@ TabBar::TabBar(QWidget *parent)
         m_tabShortcuts.append(shortCut);
         connect(shortCut, SIGNAL(activated()), this, SLOT(selectTabAction()));
     }
+    setTabsClosable(true);
+    connect(this, SIGNAL(tabCloseRequested(int)),
+            this, SIGNAL(closeTab(int)));
+    setSelectionBehaviorOnRemove(QTabBar::SelectPreviousTab);
+    setMovable(true);
 }
 
 void TabBar::selectTabAction()
@@ -149,43 +158,26 @@ void TabBar::mousePressEvent(QMouseEvent *event)
 
 void TabBar::mouseMoveEvent(QMouseEvent *event)
 {
-    if (event->buttons() == Qt::LeftButton
-        && (event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance()) {
-        QDrag *drag = new QDrag(this);
-        QMimeData *mimeData = new QMimeData;
-        QList<QUrl> urls;
-        int index = tabAt(event->pos());
-        QUrl url = tabData(index).toUrl();
-        urls.append(url);
-        mimeData->setUrls(urls);
-        mimeData->setText(tabText(index));
-        mimeData->setData(QLatin1String("action"), "tab-reordering");
-        drag->setMimeData(mimeData);
-        drag->exec();
+    if (event->buttons() == Qt::LeftButton) {
+        int diffX = event->pos().x() - m_dragStartPos.x();
+        int diffY = event->pos().y() - m_dragStartPos.y();
+        if ((event->pos() - m_dragStartPos).manhattanLength() > QApplication::startDragDistance()
+            && diffX < 3 && diffX > -3
+            && diffY < -10) {
+            QDrag *drag = new QDrag(this);
+            QMimeData *mimeData = new QMimeData;
+            QList<QUrl> urls;
+            int index = tabAt(event->pos());
+            QUrl url = tabData(index).toUrl();
+            urls.append(url);
+            mimeData->setUrls(urls);
+            mimeData->setText(tabText(index));
+            mimeData->setData(QLatin1String("action"), "tab-reordering");
+            drag->setMimeData(mimeData);
+            drag->exec();
+        }
     }
     QTabBar::mouseMoveEvent(event);
-}
-
-void TabBar::dragEnterEvent(QDragEnterEvent *event)
-{
-    const QMimeData *mimeData = event->mimeData();
-    QStringList formats = mimeData->formats();
-    if (formats.contains(QLatin1String("action"))
-        && (mimeData->data(QLatin1String("action")) == "tab-reordering")) {
-        event->acceptProposedAction();
-    }
-    QTabBar::dragEnterEvent(event);
-}
-
-void TabBar::dropEvent(QDropEvent *event)
-{
-    int fromIndex = tabAt(m_dragStartPos);
-    int toIndex = tabAt(event->pos());
-    if (fromIndex != toIndex) {
-        emit tabMoveRequested(fromIndex, toIndex);
-        event->acceptProposedAction();
-    }
-    QTabBar::dropEvent(event);
 }
 
 // When index is -1 index chooses the current tab
@@ -229,8 +221,9 @@ TabWidget::TabWidget(QWidget *parent)
     connect(m_tabBar, SIGNAL(closeOtherTabs(int)), this, SLOT(closeOtherTabs(int)));
     connect(m_tabBar, SIGNAL(reloadTab(int)), this, SLOT(reloadTab(int)));
     connect(m_tabBar, SIGNAL(reloadAllTabs()), this, SLOT(reloadAllTabs()));
-    connect(m_tabBar, SIGNAL(tabMoveRequested(int, int)), this, SLOT(moveTab(int, int)));
+    connect(m_tabBar, SIGNAL(tabMoved(int, int)), this, SLOT(moveTab(int, int)));
     setTabBar(m_tabBar);
+    setDocumentMode(true);
 
     // Actions
     m_newTabAction = new QAction(QIcon(QLatin1String(":addtab.png")), tr("New &Tab"), this);
@@ -270,19 +263,6 @@ TabWidget::TabWidget(QWidget *parent)
     m_recentlyClosedTabsAction->setMenu(m_recentlyClosedTabsMenu);
     m_recentlyClosedTabsAction->setEnabled(false);
 
-    // corner buttons
-    QToolButton *addTabButton = new QToolButton(this);
-    addTabButton->setDefaultAction(m_newTabAction);
-    addTabButton->setAutoRaise(true);
-    addTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setCornerWidget(addTabButton, Qt::TopLeftCorner);
-
-    QToolButton *closeTabButton = new QToolButton(this);
-    closeTabButton->setDefaultAction(m_closeTabAction);
-    closeTabButton->setAutoRaise(true);
-    closeTabButton->setToolButtonStyle(Qt::ToolButtonIconOnly);
-    setCornerWidget(closeTabButton, Qt::TopRightCorner);
-
     connect(this, SIGNAL(currentChanged(int)),
             this, SLOT(currentChanged(int)));
 
@@ -302,19 +282,9 @@ void TabWidget::clear()
 
 void TabWidget::moveTab(int fromIndex, int toIndex)
 {
-    disconnect(this, SIGNAL(currentChanged(int)),
-        this, SLOT(currentChanged(int)));
-
-    QWidget *tabWidget = widget(fromIndex);
-    QIcon icon = tabIcon(fromIndex);
-    QString text = tabText(fromIndex);
-    QVariant data = m_tabBar->tabData(fromIndex);
-    removeTab(fromIndex);
-    insertTab(toIndex, tabWidget, icon, text);
-    m_tabBar->setTabData(toIndex, data);
-    connect(this, SIGNAL(currentChanged(int)),
-        this, SLOT(currentChanged(int)));
-    setCurrentIndex(toIndex);
+    QWidget *lineEdit = m_lineEdits->widget(fromIndex);
+    m_lineEdits->removeWidget(lineEdit);
+    m_lineEdits->insertWidget(toIndex, lineEdit);
 }
 
 void TabWidget::addWebAction(QAction *action, QWebPage::WebAction webAction)

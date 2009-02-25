@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -58,32 +62,29 @@ PathStrokeControls::PathStrokeControls(QWidget* parent, PathStrokeRenderer* rend
 void PathStrokeControls::createCommonControls(QWidget* parent)
 {
     m_capGroup = new QGroupBox(parent);
-    m_capGroup->setAttribute(Qt::WA_ContentsPropagated);
     m_capGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     QRadioButton *flatCap = new QRadioButton(m_capGroup);
     QRadioButton *squareCap = new QRadioButton(m_capGroup);
     QRadioButton *roundCap = new QRadioButton(m_capGroup);
-    m_capGroup->setTitle("Cap Style");
-    flatCap->setText("Flat");
-    squareCap->setText("Square");
-    roundCap->setText("Round");
+    m_capGroup->setTitle(tr("Cap Style"));
+    flatCap->setText(tr("Flat"));
+    squareCap->setText(tr("Square"));
+    roundCap->setText(tr("Round"));
     flatCap->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     squareCap->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     roundCap->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
 
     m_joinGroup = new QGroupBox(parent);
-    m_joinGroup->setAttribute(Qt::WA_ContentsPropagated);
     m_joinGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     QRadioButton *bevelJoin = new QRadioButton(m_joinGroup);
     QRadioButton *miterJoin = new QRadioButton(m_joinGroup);
     QRadioButton *roundJoin = new QRadioButton(m_joinGroup);
-    m_joinGroup->setTitle("Join Style");
-    bevelJoin->setText("Bevel");
-    miterJoin->setText("Miter");
-    roundJoin->setText("Round");
+    m_joinGroup->setTitle(tr("Join Style"));
+    bevelJoin->setText(tr("Bevel"));
+    miterJoin->setText(tr("Miter"));
+    roundJoin->setText(tr("Round"));
 
     m_styleGroup = new QGroupBox(parent);
-    m_styleGroup->setAttribute(Qt::WA_ContentsPropagated);
     m_styleGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     QRadioButton *solidLine = new QRadioButton(m_styleGroup);
     QRadioButton *dashLine = new QRadioButton(m_styleGroup);
@@ -91,7 +92,7 @@ void PathStrokeControls::createCommonControls(QWidget* parent)
     QRadioButton *dashDotLine = new QRadioButton(m_styleGroup);
     QRadioButton *dashDotDotLine = new QRadioButton(m_styleGroup);
     QRadioButton *customDashLine = new QRadioButton(m_styleGroup);
-    m_styleGroup->setTitle("Pen Style");
+    m_styleGroup->setTitle(tr("Pen Style"));
 
     QPixmap line_solid(":res/images/line_solid.png");
     solidLine->setIcon(line_solid);
@@ -108,7 +109,7 @@ void PathStrokeControls::createCommonControls(QWidget* parent)
     QPixmap line_dash_dot_dot(":res/images/line_dash_dot_dot.png");
     dashDotDotLine->setIcon(line_dash_dot_dot);
     dashDotDotLine->setIconSize(line_dash_dot_dot.size());
-    customDashLine->setText("Custom");
+    customDashLine->setText(tr("Custom"));
 
     int fixedHeight = bevelJoin->sizeHint().height();
     solidLine->setFixedHeight(fixedHeight);
@@ -118,13 +119,12 @@ void PathStrokeControls::createCommonControls(QWidget* parent)
     dashDotDotLine->setFixedHeight(fixedHeight);
 
     m_pathModeGroup = new QGroupBox(parent);
-    m_pathModeGroup->setAttribute(Qt::WA_ContentsPropagated);
     m_pathModeGroup->setSizePolicy(QSizePolicy::Minimum, QSizePolicy::Fixed);
     QRadioButton *curveMode = new QRadioButton(m_pathModeGroup);
     QRadioButton *lineMode = new QRadioButton(m_pathModeGroup);
-    m_pathModeGroup->setTitle("Line Style");
-    curveMode->setText("Curves");
-    lineMode->setText("Lines");
+    m_pathModeGroup->setTitle(tr("Line Style"));
+    curveMode->setText(tr("Curves"));
+    lineMode->setText(tr("Lines"));
 
 
     // Layouts
@@ -182,33 +182,32 @@ void PathStrokeControls::layoutForDesktop()
 {
     QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setFixedWidth(180);
-    mainGroup->setTitle("Path Stroking");
+    mainGroup->setTitle(tr("Path Stroking"));
 
     createCommonControls(mainGroup);
 
     QGroupBox* penWidthGroup = new QGroupBox(mainGroup);
-    penWidthGroup->setAttribute(Qt::WA_ContentsPropagated);
     QSlider *penWidth = new QSlider(Qt::Horizontal, penWidthGroup);
     penWidth->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
-    penWidthGroup->setTitle("Pen Width");
+    penWidthGroup->setTitle(tr("Pen Width"));
     penWidth->setRange(0, 500);
 
     QPushButton *animated = new QPushButton(mainGroup);
-    animated->setText("Animate");
+    animated->setText(tr("Animate"));
     animated->setCheckable(true);
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
-    showSourceButton->setText("Show Source");
+    showSourceButton->setText(tr("Show Source"));
 #ifdef QT_OPENGL_SUPPORT
     QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(true);
     enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
     if (!QGLFormat::hasOpenGL())
         enableOpenGLButton->hide();
 #endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
-    whatsThisButton->setText("What's This?");
+    whatsThisButton->setText(tr("What's This?"));
     whatsThisButton->setCheckable(true);
 
 
@@ -267,22 +266,22 @@ void PathStrokeControls::layoutForSmallScreens()
     m_styleGroup->layout()->setMargin(0);
     m_pathModeGroup->layout()->setMargin(0);
 
-    QPushButton* okBtn = new QPushButton("OK", this);
+    QPushButton* okBtn = new QPushButton(tr("OK"), this);
     okBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     okBtn->setMinimumSize(100,okBtn->minimumSize().height());
 
-    QPushButton* quitBtn = new QPushButton("Quit", this);
+    QPushButton* quitBtn = new QPushButton(tr("Quit"), this);
     quitBtn->setSizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
     quitBtn->setMinimumSize(100, okBtn->minimumSize().height());
 
-    QLabel *penWidthLabel = new QLabel(" Width:");
+    QLabel *penWidthLabel = new QLabel(tr(" Width:"));
     QSlider *penWidth = new QSlider(Qt::Horizontal, this);
     penWidth->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     penWidth->setRange(0, 500);
 
 #ifdef QT_OPENGL_SUPPORT
     QPushButton *enableOpenGLButton = new QPushButton(this);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(true);
     enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
     if (!QGLFormat::hasOpenGL())
@@ -355,8 +354,8 @@ PathStrokeWidget::PathStrokeWidget(bool smallScreen)
     if (!smallScreen)
         viewLayout->addWidget(m_controls);
 
-    m_renderer->loadSourceFile(":res/pathstroke.cpp");
-    m_renderer->loadDescription(":res/pathstroke.html");
+    m_renderer->loadSourceFile(":res/pathstroke/pathstroke.cpp");
+    m_renderer->loadDescription(":res/pathstroke/pathstroke.html");
 
     connect(m_renderer, SIGNAL(clicked()), this, SLOT(showControls()));
     connect(m_controls, SIGNAL(okPressed()), this, SLOT(hideControls()));

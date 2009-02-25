@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -268,113 +272,6 @@ QAction *addAction(QMenu *menu, const QString &text, QActionGroup *group, QSigna
     return result;
 }
 
-class BlueTitleBar : public QWidget
-{
-    Q_OBJECT
-public:
-    BlueTitleBar(QWidget *parent = 0);
-
-    QSize sizeHint() const { return minimumSizeHint(); }
-    QSize minimumSizeHint() const;
-protected:
-    void paintEvent(QPaintEvent *event);
-    void mousePressEvent(QMouseEvent *event);
-private:
-    QPixmap leftPm, centerPm, rightPm;
-};
-
-QSize BlueTitleBar::minimumSizeHint() const
-{
-    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
-    Q_ASSERT(dw != 0);
-    QSize result(leftPm.width() + rightPm.width(), centerPm.height());
-    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar)
-        result.transpose();
-    return result;
-}
-
-BlueTitleBar::BlueTitleBar(QWidget *parent)
-    : QWidget(parent)
-{
-    leftPm = QPixmap(":/res/titlebarLeft.png");
-    centerPm = QPixmap(":/res/titlebarCenter.png");
-    rightPm = QPixmap(":/res/titlebarRight.png");
-}
-
-void BlueTitleBar::paintEvent(QPaintEvent*)
-{
-    QPainter painter(this);
-    QRect rect = this->rect();
-
-    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
-    Q_ASSERT(dw != 0);
-
-    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar) {
-        QSize s = rect.size();
-        s.transpose();
-        rect.setSize(s);
-
-        painter.translate(rect.left(), rect.top() + rect.width());
-        painter.rotate(-90);
-        painter.translate(-rect.left(), -rect.top());
-    }
-
-    painter.drawPixmap(rect.topLeft(), leftPm);
-    painter.drawPixmap(rect.topRight() - QPoint(rightPm.width() - 1, 0), rightPm);
-    QBrush brush(centerPm);
-    painter.fillRect(rect.left() + leftPm.width(), rect.top(),
-                        rect.width() - leftPm.width() - rightPm.width(),
-                        centerPm.height(), centerPm);
-}
-
-void BlueTitleBar::mousePressEvent(QMouseEvent *event)
-{
-    QPoint pos = event->pos();
-
-    QRect rect = this->rect();
-
-    QDockWidget *dw = qobject_cast<QDockWidget*>(parentWidget());
-    Q_ASSERT(dw != 0);
-
-    if (dw->features() & QDockWidget::DockWidgetVerticalTitleBar) {
-        QPoint p = pos;
-        pos.setX(rect.left() + rect.bottom() - p.y());
-        pos.setY(rect.top() + p.x() - rect.left());
-
-        QSize s = rect.size();
-        s.transpose();
-        rect.setSize(s);
-    }
-
-    const int buttonRight = 7;
-    const int buttonWidth = 20;
-    int right = rect.right() - pos.x();
-    int button = (right - buttonRight)/buttonWidth;
-    switch (button) {
-        case 0:
-            event->accept();
-            dw->close();
-            break;
-        case 1:
-            event->accept();
-            dw->setFloating(!dw->isFloating());
-            break;
-        case 2: {
-            event->accept();
-            QDockWidget::DockWidgetFeatures features = dw->features();
-            if (features & QDockWidget::DockWidgetVerticalTitleBar)
-                features &= ~QDockWidget::DockWidgetVerticalTitleBar;
-            else
-                features |= QDockWidget::DockWidgetVerticalTitleBar;
-            dw->setFeatures(features);
-            break;
-        }
-        default:
-            event->ignore();
-            break;
-    }
-}
-
 void MainWindow::setupDockWidgets(const QMap<QString, QSize> &customSizeHints)
 {
     mapper = new QSignalMapper(this);
@@ -429,7 +326,11 @@ void MainWindow::setupDockWidgets(const QMap<QString, QSize> &customSizeHints)
         if (i%2)
             swatch->setWindowIcon(QIcon(QPixmap(":/res/qt.png")));
         if (qstrcmp(sets[i].name, "Blue") == 0) {
-            swatch->setTitleBarWidget(new BlueTitleBar(swatch));
+            BlueTitleBar *titlebar = new BlueTitleBar(swatch);
+            swatch->setTitleBarWidget(titlebar);
+            connect(swatch, SIGNAL(topLevelChanged(bool)), titlebar, SLOT(updateMask()));
+            connect(swatch, SIGNAL(featuresChanged(QDockWidget::DockWidgetFeatures)), titlebar, SLOT(updateMask()));
+
 #ifdef Q_WS_QWS
             QPalette pal = palette();
             pal.setBrush(backgroundRole(), QColor(0,0,0,0));
@@ -607,5 +508,3 @@ void MainWindow::destroyDockWidget(QAction *action)
     if (destroyDockWidgetMenu->isEmpty())
         destroyDockWidgetMenu->setEnabled(false);
 }
-
-#include "mainwindow.moc"

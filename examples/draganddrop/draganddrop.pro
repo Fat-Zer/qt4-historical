@@ -1,5 +1,6 @@
 TEMPLATE    = subdirs
-SUBDIRS     = draggableicons \
+SUBDIRS     = delayedencoding \
+              draggableicons \
               draggabletext \
               dropsite \
               fridgemagnets \

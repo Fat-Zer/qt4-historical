@@ -3,15 +3,17 @@ CONFIG       += ordered
 SUBDIRS       = codecs \
                 completer \
                 customcompleter \
-		echoplugin \
+                echoplugin \
                 i18n \
                 plugandpaintplugins \
                 plugandpaint \
                 regexp \
                 settingseditor \
-		styleplugin \
+                styleplugin \
                 treemodelcompleter \
-		undoframework
+                undoframework
+
+plugandpaint.depends = plugandpaintplugins
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/tools

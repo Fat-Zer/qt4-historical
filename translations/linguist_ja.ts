@@ -1,17 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="ja">
+<!DOCTYPE TS><TS version="2.0" language="ja">
+<context>
+    <name></name>
+    <message>
+        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="+29"/>
+        <source>(New Entry)</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
 <context>
     <name>@default</name>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="32"/>
         <source>(New Phrase)</source>
-        <translation type="unfinished">(新しいフレーズ)</translation>
+        <translation type="obsolete">(新しいフレーズ)</translation>
     </message>
 </context>
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="998"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="+1318"/>
         <source>Qt Linguist</source>
         <translation>Qt Linguist</translation>
     </message>
@@ -19,128 +26,197 @@
 <context>
     <name>BatchTranslationDialog</name>
     <message>
-        <location filename="batchtranslationdialog.cpp" line="127"/>
         <source>Batch translated %1 entries</source>
         <translation type="obsolete">%1 項目が一括翻訳されました</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslationdialog.cpp" line="80"/>
+        <location filename="../tools/linguist/linguist/batchtranslationdialog.cpp" line="+86"/>
         <source>&amp;Cancel</source>
         <translation>キャンセル(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslationdialog.cpp" line="119"/>
+        <location line="+42"/>
         <source>Linguist batch translator</source>
         <translation>Linguist の一括翻訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslationdialog.cpp" line="80"/>
+        <location line="-42"/>
         <source>Searching, please wait...</source>
         <translation>検索しています、お待ちください...</translation>
     </message>
+    <message>
+        <location line="-37"/>
+        <source>Batch Translation of &apos;%1&apos; - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
     <message numerus="yes">
-        <location filename="../tools/linguist/linguist/batchtranslationdialog.cpp" line="120"/>
+        <location line="+80"/>
         <source>Batch translated %n entries</source>
         <translation type="unfinished">
             <numerusform></numerusform>
         </translation>
     </message>
+    <message>
+        <location filename="../tools/linguist/linguist/batchtranslation.ui"/>
+        <source>Qt Linguist - Batch Translation</source>
+        <translation type="unfinished">Qt Linguist - 一括翻訳</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Options</source>
+        <translation type="unfinished">オプション</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Set translated entries to finished</source>
+        <translation type="unfinished">翻訳された項目を完了にする</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Retranslate entries with existing translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Note that the modified entries will be reset to unfinished if &apos;Set translated entries to finished&apos; above is unchecked.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Translate also finished entries</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Phrase book preference</source>
+        <translation type="unfinished">フレーズブックの優先度</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move up</source>
+        <translation type="unfinished">上に移動</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move down</source>
+        <translation type="unfinished">下に移動</translation>
+    </message>
+    <message>
+        <location/>
+        <source>The batch translator will search through the selected phrase books in the order given above.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Run</source>
+        <translation type="unfinished">実行(&amp;R)</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Cancel</source>
+        <translation type="unfinished">キャンセル</translation>
+    </message>
 </context>
 <context>
     <name>ContextModel</name>
     <message>
-        <location filename="contextmodel.cpp" line="176"/>
         <source>Context</source>
         <translation type="obsolete">コンテキスト</translation>
     </message>
     <message>
-        <location filename="contextmodel.cpp" line="174"/>
         <source>Done</source>
         <translation type="obsolete">完了</translation>
     </message>
     <message>
-        <location filename="contextmodel.cpp" line="178"/>
         <source>Items</source>
         <translation type="obsolete">項目数</translation>
     </message>
 </context>
 <context>
-    <name>EditorPage</name>
+    <name>DataModel</name>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="79"/>
-        <source>Source text</source>
-        <translation>ソーステキスト</translation>
+        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="+184"/>
+        <source>&lt;qt&gt;Duplicate messages found in &apos;%1&apos;:</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="754"/>
+        <location line="+4"/>
+        <source>&lt;p&gt;[more duplicates omitted]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&lt;p&gt;* Context: %1&lt;br&gt;* Source: %2</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>&lt;br&gt;* Comment: %3</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+121"/>
+        <source>Cannot create &apos;%2&apos;: %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>EditorPage</name>
+    <message>
+        <source>Source text</source>
+        <translation type="obsolete">ソーステキスト</translation>
+    </message>
+    <message>
         <source>Translation (%1)</source>
         <translation type="obsolete">訳 (%1)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="80"/>
         <source>This area shows the source text.</source>
-        <translation type="unfinished">この領域はソーステキストを表示します。</translation>
+        <translation type="obsolete">この領域はソーステキストを表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="95"/>
         <source>This area shows a comment that may guide you, and the context in which the text occurs.</source>
-        <translation type="unfinished">この領域は、手助けとなるコメントと、テキストが出てくるコンテキストを表示します。</translation>
+        <translation type="obsolete">この領域は、手助けとなるコメントと、テキストが出てくるコンテキストを表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="124"/>
-        <source>Existing %1 translation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="237"/>
-        <source>Translation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="239"/>
-        <source>%1 translation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="253"/>
-        <source>%1 translation (%2)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="261"/>
         <source>This is where you can enter or modify the translation of some source text.</source>
-        <translation type="unfinished">ソーステキストの訳を入力したり変更したりできるところです。</translation>
+        <translation type="obsolete">ソーステキストの訳を入力したり変更したりできるところです。</translation>
     </message>
 </context>
 <context>
     <name>ErrorsView</name>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="49"/>
+        <location filename="../tools/linguist/linguist/errorsview.cpp" line="+46"/>
         <source>Accelerator possibly superfluous in translation.</source>
         <translation type="unfinished">訳に余分なアクセラレータがついています。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="52"/>
+        <location line="+3"/>
         <source>Accelerator possibly missing in translation.</source>
         <translation type="unfinished">訳にアクセラレータが欠けています。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="55"/>
+        <location line="+3"/>
         <source>Translation does not end with the same punctuation as the source text.</source>
         <translation type="unfinished">訳がソーステキストと同じ句読点で終わっていません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="58"/>
+        <location line="+3"/>
         <source>A phrase book suggestion for &apos;%1&apos; was ignored.</source>
         <translation type="unfinished">&apos;%1&apos; についてのフレーズブックの示唆を無視しています。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="61"/>
+        <location line="+3"/>
         <source>Translation does not refer to the same place markers as in the source text.</source>
         <translation type="unfinished">訳語にはソーステキストと同じ数の &quot;%&quot; がありません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/errorsview.cpp" line="64"/>
+        <location line="+3"/>
+        <source>Translation does not contain the necessary %n place marker.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>Unknown error</source>
         <translation type="unfinished"></translation>
     </message>
@@ -148,132 +224,156 @@
 <context>
     <name>FindDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="178"/>
+        <location filename="../tools/linguist/linguist/finddialog.ui"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="175"/>
+        <location/>
         <source>Click here to close this window.</source>
         <translation>このウィンドウを閉じるにはここをクリックします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="159"/>
+        <location/>
+        <source>Find</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Find what:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Source texts</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Match case</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Comments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Ignore &amp;accelerators</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Click here to find the next occurrence of the text you typed in.</source>
         <translation>入力したテキストが次に出てくる箇所を見つけるにはここをクリックします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="136"/>
         <source>Comments</source>
-        <translation>コメント</translation>
+        <translation type="obsolete">コメント</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="133"/>
+        <location/>
         <source>Comments and contexts are searched when checked.</source>
         <translation>選択するとコメントとコンテキストが検索されます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="162"/>
+        <location/>
         <source>Find Next</source>
         <translation>次を検索</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="66"/>
         <source>Find what:</source>
-        <translation>検索対象:</translation>
+        <translation type="obsolete">検索対象:</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="126"/>
         <source>Match case</source>
-        <translation>大文字・小文字の区別</translation>
+        <translation type="obsolete">大文字・小文字の区別</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="85"/>
+        <location/>
         <source>Options</source>
         <translation>オプション</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="35"/>
         <source>Qt Linguist</source>
-        <translation>Qt Linguist</translation>
+        <translation type="obsolete">Qt Linguist</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="100"/>
         <source>Source texts</source>
-        <translation>ソーステキスト</translation>
+        <translation type="obsolete">ソーステキスト</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="97"/>
+        <location/>
         <source>Source texts are searched when checked.</source>
         <translation>選択するとソーステキストが検索されます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="123"/>
+        <location/>
         <source>Texts such as &apos;TeX&apos; and &apos;tex&apos; are considered as different when checked.</source>
         <translation>選択すると、たとえば &apos;TeX&apos; と &apos;tex&apos; は異なるものと見なされます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="38"/>
+        <location/>
         <source>This window allows you to search for some text in the translation source file.</source>
         <translation>このウィンドウで翻訳ソースファイル内のテキストを検索できます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="113"/>
         <source>Translations</source>
-        <translation>訳</translation>
+        <translation type="obsolete">訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="110"/>
+        <location/>
         <source>Translations are searched when checked.</source>
         <translation>選択すると訳が検索されます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.ui" line="76"/>
+        <location/>
         <source>Type in the text to search for.</source>
         <translation>検索するテキストを入力してください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/finddialog.cpp" line="14"/>
+        <location filename="../tools/linguist/linguist/finddialog.cpp" line="+14"/>
         <source></source>
         <comment>Choose Edit|Find from the menu bar or press Ctrl+F to pop up the Find dialog</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>FormHolder</name>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="359"/>
         <source>Preview Form</source>
-        <translation>フォームをプレビュー</translation>
+        <translation type="obsolete">フォームをプレビュー</translation>
     </message>
 </context>
 <context>
     <name>FormatTextEdit</name>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="122"/>
         <source>&amp;Copy</source>
-        <translation type="unfinished">コピー(&amp;C)</translation>
+        <translation type="obsolete">コピー(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="123"/>
         <source>Ctrl+C</source>
-        <translation type="unfinished">Ctrl+C</translation>
+        <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="124"/>
         <source>Select &amp;All</source>
-        <translation type="unfinished">すべてを選択(&amp;A)</translation>
+        <translation type="obsolete">すべてを選択(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="125"/>
         <source>Ctrl+A</source>
-        <translation type="unfinished">Ctrl+A</translation>
+        <translation type="obsolete">Ctrl+A</translation>
     </message>
 </context>
 <context>
     <name>LRelease</name>
     <message numerus="yes">
-        <location filename="../tools/linguist/shared/metatranslator.cpp" line="576"/>
+        <location filename="../tools/linguist/shared/qm.cpp" line="+653"/>
         <source>    Generated %n translation(s) (%1 finished and %2 unfinished)
 </source>
         <translation type="unfinished">
@@ -281,7 +381,7 @@
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../tools/linguist/shared/metatranslator.cpp" line="579"/>
+        <location line="+4"/>
         <source>    Ignored %n untranslated source text(s)
 </source>
         <translation type="unfinished">
@@ -292,752 +392,1256 @@
 <context>
     <name>LanguagesDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.cpp" line="83"/>
-        <source>Open Translation File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.cpp" line="87"/>
-        <source>Qt translation sources (%1);;Qt translation sources (*.ts);;XLIFF localization files (*.xlf);;All files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="13"/>
-        <source>Auxiliary Languages</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="23"/>
-        <source>Locale</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="28"/>
         <source>File</source>
-        <translation type="unfinished">ファイル</translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="41"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Move selected language up&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="47"/>
-        <source>up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="61"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px; font-size:8pt;&quot;&gt;Move selected language down&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="67"/>
-        <source>down</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="81"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Remove selected language&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="87"/>
-        <source>remove</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="101"/>
-        <source>&lt;html&gt;&lt;head&gt;&lt;meta name=&quot;qrichtext&quot; content=&quot;1&quot; /&gt;&lt;style type=&quot;text/css&quot;&gt;
-p, li { white-space: pre-wrap; }
-&lt;/style&gt;&lt;/head&gt;&lt;body style=&quot; font-family:&apos;MS Shell Dlg 2&apos;; font-size:8.25pt; font-weight:400; font-style:normal;&quot;&gt;
-&lt;p style=&quot; margin-top:0px; margin-bottom:0px; margin-left:0px; margin-right:0px; -qt-block-indent:0; text-indent:0px;&quot;&gt;Open auxiliary language files&lt;/p&gt;&lt;/body&gt;&lt;/html&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="107"/>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/languagesdialog.ui" line="131"/>
-        <source>OK</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ファイル</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="646"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>About Qt</source>
         <translation>Qt について(&amp;Q)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="638"/>
+        <location/>
         <source>About Qt Linguist</source>
         <translation>Qt Linguist について(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="492"/>
+        <location/>
         <source>&amp;Accelerators</source>
         <translation>アクセラレータの確認(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="703"/>
+        <location/>
         <source>Batch translate all entries using the information in the phrase books.</source>
         <translation>フレーズブックにある情報を用いて、全項目を一括翻訳します。</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="663"/>
         <source>&amp;Batch Translation</source>
         <translation type="obsolete">一括翻訳(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="475"/>
         <source>&amp;Begin from source</source>
-        <translation>ソーステキストを元に翻訳(&amp;B)</translation>
+        <translation type="obsolete">ソーステキストを元に翻訳(&amp;B)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="52"/>
+        <location/>
         <source>&amp;Close Phrase Book</source>
         <translation>フレーズブックを閉じる(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="214"/>
+        <location/>
         <source>Close this window and exit.</source>
         <translation>このウィンドウを閉じて終了します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="391"/>
+        <location/>
         <source>Continue the search where it was left.</source>
         <translation>残りの部分の検索を続けます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="478"/>
+        <location/>
         <source>Copies the source text into the translation field.</source>
         <translation>ソーステキストを訳の欄へコピーします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="320"/>
+        <location/>
         <source>&amp;Copy</source>
         <translation>コピー(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="306"/>
+        <location/>
         <source>Copy the selected translation text to the clipboard and deletes it.</source>
         <translation>選択された訳のテキストをクリップボードにコピーして削除します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="323"/>
+        <location/>
         <source>Copy the selected translation text to the clipboard.</source>
         <translation>選択された訳のテキストをクリップボードにコピーします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="548"/>
+        <location/>
         <source>Create a new phrase book.</source>
         <translation>新しいフレーズブックを作成</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="250"/>
+        <location/>
         <source>Create a Qt message file suitable for released applications from the current message file.</source>
         <translation>リリースされたアプリケーションに合う Qt メッセージファイルを、現在のメッセージファイルから作成します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="717"/>
+        <location/>
         <source>Create a Qt message file suitable for released applications from the current message file. The filename will automatically be determined from the name of the .ts file.</source>
         <translation>リリースされたアプリケーションにふさわしい Qt メッセージファイルを現在のメッセージファイルから作成します。ファイル名は、.ts ファイルの名前から自動的に決められます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="360"/>
+        <location/>
         <source>Ctrl+A</source>
         <translation>Ctrl+A</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="481"/>
+        <location/>
         <source>Ctrl+B</source>
         <translation>Ctrl+B</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="326"/>
+        <location/>
         <source>Ctrl+C</source>
         <translation>Ctrl+C</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="377"/>
+        <location/>
         <source>Ctrl+F</source>
         <translation>Ctrl+F</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="565"/>
+        <location/>
         <source>Ctrl+H</source>
         <translation>Ctrl+H</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="408"/>
+        <location/>
         <source>Ctrl+K</source>
         <translation>Ctrl+K</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="422"/>
+        <location/>
         <source>Ctrl+L</source>
         <translation>Ctrl+L</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="551"/>
+        <location/>
         <source>Ctrl+N</source>
         <translation>Ctrl+N</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="203"/>
+        <location/>
         <source>Ctrl+O</source>
         <translation>Ctrl+O</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="261"/>
+        <location/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="217"/>
+        <location/>
         <source>Ctrl+Q</source>
         <translation>Ctrl+Q</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="231"/>
+        <location/>
+        <source>Open Read-O&amp;nly...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Ctrl+S</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="436"/>
+        <location/>
         <source>Ctrl+Shift+K</source>
         <translation>Ctrl+Shift+K</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="450"/>
+        <location/>
         <source>Ctrl+Shift+L</source>
         <translation>Ctrl+Shift+L</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="343"/>
+        <location/>
         <source>Ctrl+V</source>
         <translation>Ctrl+V</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="309"/>
+        <location/>
         <source>Ctrl+X</source>
         <translation>Ctrl+X</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="292"/>
+        <location/>
         <source>Ctrl+Y</source>
         <translation>Ctrl+Y</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="275"/>
+        <location/>
+        <source>Recently Opened &amp;Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Ctrl+Z</source>
         <translation>Ctrl+Z</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="303"/>
+        <location/>
         <source>Cu&amp;t</source>
         <translation>切り取り(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="596"/>
+        <location/>
         <source>&amp;Display guesses</source>
         <translation>推測を表示(&amp;D)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="649"/>
+        <location/>
         <source>Display information about the Qt toolkit by Trolltech.</source>
         <translation>Trolltech の Qt ツールキットについての情報を表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="461"/>
+        <location/>
         <source>&amp;Done and Next</source>
         <translation>完了にして次へ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="156"/>
+        <location/>
         <source>&amp;Edit</source>
         <translation>編集(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="739"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="+742"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Edit</source>
         <translation>編集</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="57"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>&amp;Edit Phrase Book</source>
         <translation>フレーズブックを編集(&amp;E)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="506"/>
+        <location/>
         <source>&amp;Ending Punctuation</source>
         <translation>末尾の句読点(&amp;E)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="672"/>
+        <location/>
         <source>Enter What&apos;s This? mode.</source>
         <translation>ヒントモードに入ります。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="208"/>
+        <location/>
         <source>E&amp;xit</source>
         <translation>終了(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="630"/>
+        <location/>
         <source>F1</source>
         <translation>F1</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="394"/>
+        <location/>
         <source>F3</source>
         <translation>F3</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="789"/>
+        <location/>
         <source>F5</source>
         <translation>F5</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="134"/>
+        <location/>
         <source>&amp;File</source>
         <translation>ファイル(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="728"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-7"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>File</source>
         <translation>ファイル</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="364"/>
         <source>&amp;Find</source>
         <translation type="obsolete">検索(&amp;F)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="388"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Find &amp;Next</source>
         <translation>次を検索(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="786"/>
+        <location/>
         <source>Form Preview Tool</source>
         <translation>フォームプレビューツール</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="772"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="+26"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Help</source>
         <translation>ヘルプ</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="114"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>&amp;Help</source>
         <translation>ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="25"/>
+        <location/>
         <source>MainWindow</source>
         <translation>メインウィンドウ</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="624"/>
+        <location/>
         <source>&amp;Manual</source>
         <translation>マニュアル(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="464"/>
         <source>Marks this item as done and moves to the next unfinished item.</source>
-        <translation>この項目に完了のマークをつけ、次の未訳の項目へ移動します。</translation>
+        <translation type="obsolete">この項目に完了のマークをつけ、次の未訳の項目へ移動します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="447"/>
         <source>Moves to the next item.</source>
-        <translation>次の項目へ移動します。</translation>
+        <translation type="obsolete">次の項目へ移動します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="419"/>
         <source>Moves to the next unfinished item.</source>
-        <translation>次の未訳の項目へ移動します。</translation>
+        <translation type="obsolete">次の未訳の項目へ移動します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="433"/>
         <source>Moves to the previous item.</source>
-        <translation>前の項目へ移動します。</translation>
+        <translation type="obsolete">前の項目へ移動します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="405"/>
         <source>Moves to the previous unfinished item.</source>
-        <translation>前の未訳の項目へ移動します。</translation>
+        <translation type="obsolete">前の未訳の項目へ移動します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="192"/>
         <source>&amp;New</source>
-        <translation>新規(&amp;N)</translation>
+        <translation type="obsolete">新規(&amp;N)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="532"/>
         <source>&amp;New Phrase Book</source>
         <translation type="obsolete">新しいフレーズブック(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="444"/>
+        <location/>
         <source>Ne&amp;xt</source>
         <translation>次へ(&amp;X)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="416"/>
+        <location/>
         <source>&amp;Next Unfinished</source>
         <translation>次の未訳へ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="187"/>
         <source>&amp;Open</source>
         <translation type="obsolete">オープン(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="562"/>
+        <location/>
         <source>Open a phrase book to assist translation.</source>
         <translation>翻訳の参考にするためにフレーズブックを開きます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="200"/>
+        <location/>
         <source>Open a Qt translation source file (TS file) for editing</source>
         <translation>Qt 翻訳ソースファイル (TS ファイル) を編集用に開きます。</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="546"/>
         <source>&amp;Open Phrase Book</source>
         <translation type="obsolete">フレーズブックを開く(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="780"/>
+        <location/>
         <source>Open/Refresh Form &amp;Preview</source>
         <translation>フォームプレビューを開く／更新する(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="337"/>
+        <location/>
         <source>&amp;Paste</source>
         <translation>貼り付け(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="340"/>
+        <location/>
         <source>Paste the clipboard text into the translation.</source>
         <translation>クリップボードのテキストを訳に貼り付けます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="520"/>
+        <location/>
         <source>&amp;Phrase matches</source>
         <translation>フレーズの一致(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="48"/>
+        <location/>
         <source>&amp;Phrases</source>
         <translation>フレーズ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="534"/>
+        <location/>
         <source>Place &amp;Marker Matches</source>
         <translation>&quot;%&quot; の数や数字の一致(&amp;M)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="430"/>
+        <location/>
         <source>P&amp;rev</source>
         <translation>前へ(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="402"/>
+        <location/>
         <source>&amp;Prev Unfinished</source>
         <translation>前の未訳へ(&amp;P)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="248"/>
         <source>&amp;Print</source>
         <translation type="obsolete">印刷(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="258"/>
         <source>Print a list of all the phrases in the current Qt translation source file.</source>
-        <translation>現在の Qt 翻訳ソースファイルの全てのフレーズ一覧を印刷します。</translation>
+        <translation type="obsolete">現在の Qt 翻訳ソースファイルの全てのフレーズ一覧を印刷します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="62"/>
+        <location/>
         <source>&amp;Print Phrase Book</source>
         <translation>フレーズブックを印刷(&amp;P)...</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="134"/>
         <source>Re&amp;cently opened files</source>
         <translation type="obsolete">最近開いたファイル(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="286"/>
+        <location/>
         <source>&amp;Redo</source>
         <translation>やり直す(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="289"/>
+        <location/>
         <source>Redo an undone editing operation performed on the translation.</source>
         <translation>取り消された編集操作をやり直します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="247"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-99"/>
         <source>&amp;Release</source>
         <translation>リリース(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="714"/>
+        <location line="-13"/>
+        <location line="+10"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Release As...</source>
         <translation>名前を付けてリリース...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="689"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Replace the translation on all entries that matches the search source text.</source>
         <translation>検索対象のソーステキストに該当する全項目の訳語を置換します。</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="563"/>
         <source>&amp;Revert Sorting</source>
         <translation type="obsolete">ソート順序を初期状態に(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="225"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-1965"/>
+        <source></source>
+        <comment>This is the application&apos;s main window.</comment>
+        <translation></translation>
+    </message>
+    <message>
+        <location line="+165"/>
+        <source>Source text</source>
+        <translation type="unfinished">ソーステキスト</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location line="+25"/>
+        <source>Index</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-2"/>
+        <location line="+61"/>
+        <source>Context</source>
+        <translation type="unfinished">コンテキスト</translation>
+    </message>
+    <message>
+        <location line="-60"/>
+        <source>Items</source>
+        <translation type="unfinished">項目数</translation>
+    </message>
+    <message>
+        <location line="+77"/>
+        <source>This panel lists the source contexts.</source>
+        <translation type="unfinished">このパネルではソースのコンテキストを一覧表示しています。</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Strings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+39"/>
+        <source>Phrases and guesses</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Sources and Forms</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Warnings</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+59"/>
+        <source> MOD </source>
+        <comment>status bar: file(s) modified</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+124"/>
+        <source>Loading...</source>
+        <translation type="unfinished">ロードしています...</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <location line="+20"/>
+        <source>Loading File - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-19"/>
+        <source>The file &apos;%1&apos; does not seem to be related to the currently open file(s) &apos;%2&apos;.
+
+Close the open file(s) first?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+20"/>
+        <source>The file &apos;%1&apos; does not seem to be related to the file &apos;%2&apos; which is being loaded as well.
+
+Skip loading the first named file?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location line="+49"/>
+        <source>%n translation unit(s) loaded.</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="+92"/>
+        <source>Related files (%1);;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Open Translation Files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <location line="+30"/>
+        <source>File saved.</source>
+        <translation type="unfinished">ファイルが保存されました。</translation>
+    </message>
+    <message>
+        <location line="+14"/>
+        <location line="+1184"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
+        <source>Release</source>
+        <translation type="unfinished">リリース</translation>
+    </message>
+    <message>
+        <location line="-1183"/>
+        <source>Qt message files for released applications (*.qm)
+All files (*)</source>
+        <translation type="unfinished">リリースされたアプリケーション用の Qt メッセージファイル (*.qm)
+すべてのファイル (*)</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <location line="+12"/>
+        <source>File created.</source>
+        <translation type="unfinished">ファイルが作成されました。</translation>
+    </message>
+    <message>
+        <location line="+27"/>
+        <location line="+355"/>
+        <source>Printing...</source>
+        <translation type="unfinished">印刷中...</translation>
+    </message>
+    <message>
+        <location line="-347"/>
+        <source>Context: %1</source>
+        <translation type="unfinished">コンテキスト: %1</translation>
+    </message>
+    <message>
+        <location line="+32"/>
+        <source>finished</source>
+        <translation type="unfinished">完了</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>unresolved</source>
+        <translation type="unfinished">未解決</translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>obsolete</source>
+        <translation type="unfinished">このバージョンでは使われていない</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <location line="+307"/>
+        <source>Printing... (page %1)</source>
+        <translation type="unfinished">印刷中... (%1 ページ)</translation>
+    </message>
+    <message>
+        <location line="-300"/>
+        <location line="+307"/>
+        <source>Printing completed</source>
+        <translation type="unfinished">印刷完了</translation>
+    </message>
+    <message>
+        <location line="-305"/>
+        <location line="+307"/>
+        <source>Printing aborted</source>
+        <translation type="unfinished">印刷中止</translation>
+    </message>
+    <message>
+        <location line="-232"/>
+        <source>Search wrapped.</source>
+        <translation type="unfinished">検索が一通り終わりました。</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <location line="+278"/>
+        <location line="+60"/>
+        <location line="+24"/>
+        <location line="+22"/>
+        <location line="+516"/>
+        <location line="+1"/>
+        <location line="+274"/>
+        <location line="+40"/>
+        <location line="+10"/>
+        <source>Qt Linguist</source>
+        <translation type="unfinished">Qt Linguist</translation>
+    </message>
+    <message>
+        <location line="-1224"/>
+        <location line="+102"/>
+        <source>Cannot find the string &apos;%1&apos;.</source>
+        <translation type="unfinished">文字列 &apos;%1&apos; が見つかりません。</translation>
+    </message>
+    <message>
+        <source>Translate</source>
+        <translation type="obsolete">翻訳</translation>
+    </message>
+    <message numerus="yes">
+        <source>Translated %n entries to &apos;%1&apos;</source>
+        <translation type="obsolete">
+            <numerusform>%n 項目を &apos;%1&apos; に翻訳しました</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="-82"/>
+        <source>Search And Translate in &apos;%1&apos; - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+34"/>
+        <location line="+23"/>
+        <location line="+24"/>
+        <source>Translate - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location line="-46"/>
+        <source>Translated %n entry(s)</source>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>No more occurrences of &apos;%1&apos;. Start over?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+30"/>
+        <source>Create New Phrase Book</source>
+        <translation type="unfinished">新しいフレーズブックを作成</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Qt phrase books (*.qph)
+All files (*)</source>
+        <translation type="unfinished">Qt フレーズブック (*.qph)
+すべてのファイル (*)</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <source>Phrase book created.</source>
+        <translation type="unfinished">フレーズブックが作成されました。</translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Open Phrase Book</source>
+        <translation type="unfinished">フレーズブックを開く</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Qt phrase books (*.qph);;All files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message numerus="yes">
+        <location line="+7"/>
+        <source>%n phrase(s) loaded.</source>
+        <translation type="unfinished">
+            <numerusform>%n 項目のフレーズがロードされました。</numerusform>
+        </translation>
+    </message>
+    <message>
+        <location line="+93"/>
+        <location line="+3"/>
+        <location line="+7"/>
+        <source>Add to phrase book</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-9"/>
+        <source>No appropriate phrasebook found.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Adding entry to phrasebook %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>Select phrase book to add to</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+29"/>
+        <source>Unable to launch Qt Assistant (%1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+17"/>
+        <source>Version %1</source>
+        <translation type="unfinished">バージョン %1</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source> Open Source Edition</source>
+        <translation type="unfinished"> オープンソース版</translation>
+    </message>
+    <message>
+        <location line="+7"/>
+        <source>This version of Qt Linguist is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.&lt;br/&gt;&lt;br/&gt;You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;tt&gt;http://qtsoftware.com/company/model.html&lt;/tt&gt; for an overview of Qt licensing.</source>
+        <translation type="unfinished">このバージョンの Qt Linguist は、 オープンソースアプリケーションを開発するための Qt オープンソース版の一部です。Qt は、クロスプラットフォームなアプリケーションを開発するための包括的な C++ のフレームワークです。&lt;br/&gt;&lt;br/&gt;独占的な（ソースが隠された）アプリケーションを開発するには、Qt の商用ライセンスが必要です。Qt のライセンスの概要については &lt;tt&gt;http://qtsoftware.com/company/model.html&lt;/tt&gt; をご覧ください。</translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>This program is licensed to you under the terms of the Qt %1 License Agreement. For details, see the license file that came with this software distribution.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
+        <translation type="unfinished">このプログラムは、Qt 商用ライセンス契約書の定める条件の下であなたの利用が認められています。詳細は、ソフトウェアと一緒に配布される LICENSE ファイルを参照してください。</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <translation type="unfinished">&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist は、Qt アプリケーションの翻訳を行うツールです。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies). 全ての権利は保護されています。&lt;/p&gt;&lt;p&gt;このプログラムは、「設計」、「市場性」および「特定の目的への適合性」も含む、あらゆる種類の「保証がなく」、「そのままで」提供されます。&lt;/p&gt;</translation>
+    </message>
+    <message>
+        <location line="+41"/>
+        <source>Do you want to save the modified files?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Do you want to save &apos;%1&apos;?</source>
+        <translation type="unfinished">&apos;%1&apos; を保存しますか?</translation>
+    </message>
+    <message>
+        <location line="+43"/>
+        <source>Qt Linguist[*]</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>%1[*] - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+267"/>
+        <location line="+12"/>
+        <source>No untranslated translation units left.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+176"/>
+        <source>&amp;Window</source>
+        <translation type="unfinished">ウィンドウ(&amp;W)</translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>Minimize</source>
+        <translation type="unfinished">最小化</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Ctrl+M</source>
+        <translation type="unfinished">Ctrl+M</translation>
+    </message>
+    <message>
+        <location line="+12"/>
+        <source>Display the manual for %1.</source>
+        <translation type="unfinished">%1 のマニュアルを表示します。</translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Display information about %1.</source>
+        <translation type="unfinished">%1 についての情報を表示します。</translation>
+    </message>
+    <message>
+        <location line="+70"/>
+        <source>&amp;Save &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Save &apos;%1&apos; &amp;As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Release &apos;%1&apos; As...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Close &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <location line="+15"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="236"/>
+        <location line="-14"/>
+        <location line="+11"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Save &amp;As...</source>
         <translation>名前を付けて保存(&amp;A)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="239"/>
+        <location line="-8"/>
+        <location line="+13"/>
+        <source>&amp;Close</source>
+        <translation type="unfinished">閉じる(&amp;C)</translation>
+    </message>
+    <message>
+        <location line="-10"/>
+        <source>Save All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
+        <source>&amp;Release All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Close All</source>
+        <translation type="unfinished">すべて閉じる</translation>
+    </message>
+    <message>
+        <location line="+23"/>
+        <source>Translation File &amp;Settings for &apos;%1&apos;...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>&amp;Batch Translation of &apos;%1&apos;...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Search And &amp;Translate in &apos;%1&apos;...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Search And &amp;Translate...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+161"/>
+        <source>Cannot read from phrase book &apos;%1&apos;.</source>
+        <translation type="unfinished">フレーズブック &apos;%1&apos; から読み出せません。</translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>Close this phrase book.</source>
+        <translation type="unfinished">このフレーズブックを閉じます。</translation>
+    </message>
+    <message>
+        <location line="+4"/>
+        <source>Enables you to add, modify, or delete entries in this phrase book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Print the entries in this phrase book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+16"/>
+        <source>Cannot create phrase book &apos;%1&apos;.</source>
+        <translation type="unfinished">フレーズブック &apos;%1&apos; を作成できません。</translation>
+    </message>
+    <message>
+        <location line="+10"/>
+        <source>Do you want to save phrase book &apos;%1&apos;?</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+312"/>
+        <source>All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Save As...</source>
         <translation>名前を付けて保存...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="228"/>
+        <location/>
         <source>Save changes made to this Qt translation source file</source>
         <translation>この Qt 翻訳ソースファイルに対して行われた変更を保存します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="242"/>
+        <location/>
         <source>Save changes made to this Qt translation source file into a new file.</source>
         <translation>Qt の翻訳ソースファイルで行われた変更を新しいファイルに保存します。</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="652"/>
         <source>&amp;Search And Translate</source>
         <translation type="obsolete">検索して訳語を置換(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="374"/>
+        <location/>
         <source>Search for some text in the translation source file.</source>
         <translation>翻訳ソースファイルからテキストを検索します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="354"/>
+        <location/>
         <source>Select &amp;All</source>
         <translation>すべてを選択(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="357"/>
+        <location/>
         <source>Select the whole translation text.</source>
         <translation>訳のテキスト全部を選択します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="599"/>
+        <location/>
         <source>Set whether or not to display translation guesses.</source>
         <translation>訳の推測を表示するかどうかを設定します。</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="594"/>
         <source>Set whether or not to display translation statistics.</source>
         <translation type="obsolete">翻訳の統計を表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="675"/>
+        <location/>
         <source>Shift+F1</source>
         <translation>Shift+F1</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="582"/>
+        <location/>
         <source>Sort the items back in the same order as in the message file.</source>
         <translation>項目のソートの順序をメッセージファイルと同じものに戻します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="613"/>
+        <location/>
         <source>&amp;Statistics</source>
         <translation>統計(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="523"/>
+        <location/>
         <source>Toggle checking that phrase suggestions are used.</source>
         <translation>フレーズの示唆を使うかどうかのチェックを切り替えます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="495"/>
         <source>Toggle validity checks of accelerators.</source>
-        <translation>アクセラレータのチェックを有効にするかどうかを切り替えます。</translation>
+        <translation type="obsolete">アクセラレータのチェックを有効にするかどうかを切り替えます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="509"/>
         <source>Toggle validity checks of ending punctuation.</source>
-        <translation>末尾の句読点のチェックを有効にするかどうかを切り替えます。</translation>
+        <translation type="obsolete">末尾の句読点のチェックを有効にするかどうかを切り替えます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="537"/>
         <source>Toggle validity checks of place markers.</source>
-        <translation>&quot;%&quot; の数や番号のチェックを行うかどうかを切り替えます。</translation>
+        <translation type="obsolete">&quot;%&quot; の数や番号のチェックを行うかどうかを切り替えます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="95"/>
+        <location/>
         <source>&amp;Toolbars</source>
         <translation>ツールバー(&amp;T)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="107"/>
         <source>Too&amp;ls</source>
-        <translation>ツール(&amp;L)</translation>
+        <translation type="obsolete">ツール(&amp;L)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="750"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-459"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Translation</source>
         <translation>翻訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="123"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>&amp;Translation</source>
         <translation>翻訳(&amp;T)</translation>
     </message>
     <message>
-        <location filename="mainwindow.ui" line="757"/>
         <source>Translation File &amp;Settings</source>
         <translation type="obsolete">翻訳ファイルの設定(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="269"/>
+        <location/>
         <source>&amp;Undo</source>
         <translation>元に戻す(&amp;U)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="272"/>
         <source>Undo the last editing operation performed on the translation.</source>
-        <translation>最後に行った編集操作を取り消します。</translation>
+        <translation type="obsolete">最後に行った編集操作を取り消します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="761"/>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="+6"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Validation</source>
         <translation>検証</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="77"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>V&amp;alidation</source>
         <translation>検証(&amp;A)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="86"/>
+        <location/>
         <source>&amp;View</source>
         <translation>表示(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="90"/>
+        <location/>
         <source>Vie&amp;ws</source>
         <translation>表示(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="663"/>
+        <location/>
         <source>&amp;What&apos;s This?</source>
         <translation>ヒント(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="669"/>
+        <location/>
         <source>What&apos;s This?</source>
         <translation>ヒント</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="138"/>
-        <source>Re&amp;cently Opened Files</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="197"/>
+        <location/>
         <source>&amp;Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="255"/>
+        <location/>
+        <source>Save</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>&amp;Print...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="371"/>
+        <location/>
+        <source>Print a list of all the translation units in the current translation source file.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Undo the last editing operation performed on the current translation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>&amp;Find...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="545"/>
+        <location/>
+        <source>Previous unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move to the previous unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Next unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move to the next unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move to previous item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move to the previous item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Next item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Move to the next item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Mark item as done and move to the next unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Mark this item as done and move to the next unfinished item.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Copy from source text</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of accelerators.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of accelerators, i.e. whether the number of ampersands in the source and translation text is the same. If the check fails, a message is shown in the warnings window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of ending punctuation.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of ending punctuation. If the check fails, a message is shown in the warnings window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle checking that phrase suggestions are used. If the check fails, a message is shown in the warnings window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of place markers.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Toggle the validity check of place markers, i.e. whether %1, %2, ... are used consistently in the source text and translation text. If the check fails, a message is shown in the warnings window.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>&amp;New Phrase Book...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="559"/>
+        <location/>
         <source>&amp;Open Phrase Book...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="579"/>
+        <location/>
         <source>&amp;Reset Sorting</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="616"/>
+        <location/>
         <source>Display translation statistics.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="686"/>
+        <location/>
         <source>&amp;Search And Translate...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="700"/>
+        <location/>
+        <source>Close</source>
+        <translation type="unfinished">閉じる</translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Close All</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Ctrl+W</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-71"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>&amp;Batch Translation...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="800"/>
+        <location line="-1"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>Translation File &amp;Settings...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="811"/>
-        <source>Other &amp;Languages...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="814"/>
-        <source>Edit which other languages to show.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="825"/>
+        <location filename="../tools/linguist/linguist/mainwindow.ui"/>
         <source>&amp;Add to Phrase Book</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/mainwindow.ui" line="828"/>
+        <location/>
         <source>Ctrl+T</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1045,146 +1649,207 @@ p, li { white-space: pre-wrap; }
 <context>
     <name>MessageEditor</name>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="34"/>
         <source>backspace</source>
-        <translation>バックスペース</translation>
+        <translation type="obsolete">バックスペース</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="33"/>
         <source>bell</source>
-        <translation>ベル</translation>
+        <translation type="obsolete">ベル</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="37"/>
         <source>carriage return</source>
-        <translation>行頭復帰</translation>
+        <translation type="obsolete">行頭復帰</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="1094"/>
         <source>Guess</source>
         <translation type="obsolete">推測</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="1092"/>
         <source>Guess (%1)</source>
         <translation type="obsolete">推測(%1)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="36"/>
         <source>new line</source>
-        <translation>改行</translation>
+        <translation type="obsolete">改行</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="35"/>
         <source>new page</source>
-        <translation>改ページ</translation>
+        <translation type="obsolete">改ページ</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="829"/>
         <source>Phrases</source>
         <translation type="obsolete">フレーズ</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="836"/>
         <source>Phrases and guesses:</source>
         <translation type="obsolete">フレーズと推測:</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="340"/>
         <source>sp)</source>
         <translation type="obsolete">スペース)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditorwidgets.cpp" line="39"/>
         <source>tab</source>
-        <translation>タブ</translation>
+        <translation type="obsolete">タブ</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="908"/>
+        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="+42"/>
+        <source>German</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Japanese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>French</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Polish</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>Chinese</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+75"/>
+        <source>Source text</source>
+        <translation type="unfinished">ソーステキスト</translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>Source text (Plural)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>This area shows the plural form of the source text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
+        <source>Developer comments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+3"/>
         <source>This area shows a comment that may guide you, and the context in which the text occurs.</source>
-        <translation type="obsolete">この領域は、手助けとなるコメントと、テキストが出てくるコンテキストを表示します。</translation>
+        <translation type="unfinished">この領域は、手助けとなるコメントと、テキストが出てくるコンテキストを表示します。</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="905"/>
+        <location line="+59"/>
+        <source>Here you can enter comments for your own use. They have no effect on the translated applications.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+205"/>
+        <source>%1 translation (%2)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+19"/>
+        <source>This is where you can enter or modify the translation of the above source text.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>%1 translation</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+1"/>
+        <source>%1 translator comments</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="-300"/>
         <source>This area shows the source text.</source>
-        <translation type="obsolete">この領域はソーステキストを表示します。</translation>
+        <translation type="unfinished">この領域はソーステキストを表示します。</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="1126"/>
         <source>This is where you can enter or modify the translation of some source text.</source>
         <translation type="obsolete">ソーステキストの訳を入力したり変更したりできるところです。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="316"/>
+        <location line="-27"/>
         <source>This whole panel allows you to view and edit the translation of some source text.</source>
         <translation>このパネル全体でソーステキストの訳を見たり編集したりすることができます。</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="1064"/>
         <source>Translation (%1)</source>
         <translation type="obsolete">訳 (%1)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="382"/>
+        <location line="+465"/>
         <source>&apos;%1&apos;
 Line: %2</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="415"/>
-        <source>%1 Translation (%2)</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MessageModel</name>
     <message>
-        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="306"/>
         <source>Context</source>
-        <translation>コンテキスト</translation>
+        <translation type="obsolete">コンテキスト</translation>
     </message>
     <message>
-        <location filename="messagemodel.cpp" line="318"/>
         <source>Done</source>
         <translation type="obsolete">完了</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="308"/>
         <source>Items</source>
-        <translation>項目数</translation>
+        <translation type="obsolete">項目数</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="310"/>
-        <source>Index</source>
+        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="+861"/>
+        <source>Completion status for %1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+15"/>
+        <source>&lt;file header&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+2"/>
+        <source>&lt;context comment&gt;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+71"/>
+        <source>&lt;unnamed context&gt;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>MessagesTreeView</name>
     <message>
-        <location filename="../tools/linguist/linguist/messagestreeview.cpp" line="61"/>
         <source>Done</source>
-        <translation>完了</translation>
+        <translation type="obsolete">完了</translation>
     </message>
 </context>
 <context>
     <name>MsgEdit</name>
     <message>
-        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="14"/>
+        <location filename="../tools/linguist/linguist/messageeditor.cpp" line="-547"/>
         <source></source>
         <comment>This is the right panel of the main window.</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>PageCurl</name>
     <message>
-        <location filename="msgedit.h" line="148"/>
         <source>Next unfinished phrase</source>
         <translation type="obsolete">次の未訳のフレーズ</translation>
     </message>
     <message>
-        <location filename="msgedit.h" line="157"/>
         <source>Previous unfinished phrase</source>
         <translation type="obsolete">前の未訳のフレーズ</translation>
     </message>
@@ -1192,121 +1857,142 @@ Line: %2</source>
 <context>
     <name>PhraseBookBox</name>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="109"/>
+        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="+8"/>
+        <source>%1[*] - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+91"/>
         <source>Cannot save phrase book &apos;%1&apos;.</source>
         <translation>フレーズブック &apos;%1&apos; を保存できません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="114"/>
+        <location filename="../tools/linguist/linguist/phrasebookbox.ui"/>
         <source>Click here to add the phrase to the phrase book.</source>
         <translation>フレーズブックにフレーズを追加するにはここをクリックしてください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="144"/>
+        <location/>
+        <source>&amp;New Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Click here to remove the entry from the phrase book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>&amp;Remove Entry</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Settin&amp;gs...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>Click here to close this window.</source>
         <translation>このウィンドウを閉じるにはここをクリックしてください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="124"/>
         <source>Click here to remove the phrase from the phrase book.</source>
-        <translation>フレーズブックからフレーズを消去するにはここをクリックしてください。</translation>
+        <translation type="obsolete">フレーズブックからフレーズを消去するにはここをクリックしてください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="134"/>
+        <location/>
         <source>Click here to save the changes made.</source>
         <translation>変更を保存するにはここをクリックしてください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="147"/>
+        <location/>
         <source>Close</source>
         <translation>閉じる</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="79"/>
+        <location/>
         <source>&amp;Definition:</source>
         <translation>定義(&amp;D):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="25"/>
+        <location/>
         <source>Edit Phrase Book</source>
         <translation>フレーズブックを編集</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="117"/>
         <source>&amp;New Phrase</source>
-        <translation>新しいフレーズ(&amp;N)</translation>
+        <translation type="obsolete">新しいフレーズ(&amp;N)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="108"/>
+        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="-1"/>
         <source>Qt Linguist</source>
         <translation>Qt Linguist</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="127"/>
         <source>&amp;Remove Phrase</source>
-        <translation>フレーズを消去(&amp;R)</translation>
+        <translation type="obsolete">フレーズを消去(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="137"/>
+        <location filename="../tools/linguist/linguist/phrasebookbox.ui"/>
         <source>&amp;Save</source>
         <translation>保存(&amp;S)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="55"/>
+        <location/>
         <source>S&amp;ource phrase:</source>
         <translation>ソースフレーズ(&amp;S):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="65"/>
+        <location/>
+        <source>This window allows you to add, modify, or delete entries in a phrase book.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
         <source>This is a definition for the source phrase.</source>
         <translation>ソースフレーズの定義です。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="72"/>
+        <location/>
         <source>This is the phrase in the source language.</source>
         <translation>ソースの言語のフレーズです。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="48"/>
+        <location/>
         <source>This is the phrase in the target language corresponding to the source phrase.</source>
         <translation>ソースフレーズに対応する翻訳先言語のフレーズです。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="28"/>
         <source>This window allows you to add, modify, or delete phrases in a phrase book.</source>
-        <translation>このウィンドウでフレーズブックにフレーズを追加、変更、削除できます。</translation>
+        <translation type="obsolete">このウィンドウでフレーズブックにフレーズを追加、変更、削除できます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.ui" line="38"/>
+        <location/>
         <source>&amp;Translation:</source>
         <translation>訳(&amp;T):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="37"/>
-        <source>%1 - %2[*]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="14"/>
+        <location filename="../tools/linguist/linguist/phrasebookbox.cpp" line="-113"/>
         <source></source>
         <comment>Go to Phrase &gt; Edit Phrase Book... The dialog that pops up is a PhraseBookBox.</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>PhraseModel</name>
     <message>
-        <location filename="../tools/linguist/linguist/phrasemodel.cpp" line="93"/>
+        <location filename="../tools/linguist/linguist/phrasemodel.cpp" line="+91"/>
         <source>Definition</source>
         <translation>定義</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasemodel.cpp" line="89"/>
+        <location line="-4"/>
         <source>Source phrase</source>
         <translation>ソースフレーズ</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phrasemodel.cpp" line="91"/>
+        <location line="+2"/>
         <source>Translation</source>
         <translation>訳</translation>
     </message>
@@ -1314,22 +2000,22 @@ Line: %2</source>
 <context>
     <name>PhraseView</name>
     <message>
-        <location filename="../tools/linguist/linguist/phraseview.cpp" line="82"/>
+        <location filename="../tools/linguist/linguist/phraseview.cpp" line="+91"/>
         <source>Insert</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phraseview.cpp" line="85"/>
+        <location line="+3"/>
         <source>Edit</source>
         <translation type="unfinished">編集</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phraseview.cpp" line="190"/>
+        <location line="+113"/>
         <source>Guess (%1)</source>
         <translation type="unfinished">推測(%1)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/phraseview.cpp" line="192"/>
+        <location line="+2"/>
         <source>Guess</source>
         <translation type="unfinished">推測</translation>
     </message>
@@ -1337,66 +2023,121 @@ Line: %2</source>
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../tools/linguist/linguist/phrase.cpp" line="159"/>
+        <location filename="../tools/linguist/shared/qm.cpp" line="+12"/>
+        <source>Compiled Qt translations</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/linguist/mainwindow.cpp" line="-1296"/>
+        <source>Translation files (%1);;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+5"/>
+        <source>All files (*)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/linguist/messagemodel.cpp" line="-1086"/>
+        <location line="+18"/>
+        <location line="+101"/>
+        <location line="+17"/>
+        <location line="+15"/>
+        <location filename="../tools/linguist/linguist/phrase.cpp" line="+166"/>
         <source>Qt Linguist</source>
         <translation>Qt Linguist</translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/cpp.cpp" line="+1039"/>
+        <source>C++ source files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/java.cpp" line="+624"/>
+        <source>Java source files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/po.cpp" line="+584"/>
+        <source>GNU Gettext localization files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/qscript.cpp" line="+2369"/>
+        <source>Qt Script source files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/ts.cpp" line="+617"/>
+        <source>Qt translation sources (format 1.1)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+8"/>
+        <source>Qt translation sources (format 2.0)</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Qt translation sources</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/ui.cpp" line="+171"/>
+        <source>Qt Designer form files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location line="+9"/>
+        <source>Qt Jambi form files</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/shared/xliff.cpp" line="+778"/>
+        <source>XLIFF localization files</source>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>QtWindowListMenu</name>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/qtwindowlistmenu.cpp" line="80"/>
         <source>Cascade</source>
-        <translation>カスケード</translation>
+        <translation type="obsolete">カスケード</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/qtwindowlistmenu.cpp" line="82"/>
         <source>Close</source>
-        <translation>閉じる</translation>
+        <translation type="obsolete">閉じる</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/qtwindowlistmenu.cpp" line="84"/>
         <source>Close All</source>
-        <translation>すべて閉じる</translation>
+        <translation type="obsolete">すべて閉じる</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/qtwindowlistmenu.cpp" line="79"/>
         <source>Tile</source>
-        <translation>タイル</translation>
+        <translation type="obsolete">タイル</translation>
     </message>
 </context>
 <context>
     <name>SortedMessagesModel</name>
     <message>
-        <location filename="../tools/linguist/linguist/sortedmessagesmodel.cpp" line="35"/>
         <source>Source text</source>
-        <translation type="unfinished">ソーステキスト</translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/sortedmessagesmodel.cpp" line="37"/>
-        <source>Translation</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/sortedmessagesmodel.cpp" line="39"/>
-        <source>Index</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">ソーステキスト</translation>
     </message>
 </context>
 <context>
     <name>SourceCodeView</name>
     <message>
-        <location filename="../tools/linguist/linguist/sourcecodeview.cpp" line="41"/>
+        <location filename="../tools/linguist/linguist/sourcecodeview.cpp" line="+40"/>
         <source>&lt;i&gt;Source code not available&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/sourcecodeview.cpp" line="75"/>
+        <location line="+33"/>
         <source>&lt;i&gt;File %1 not available&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/sourcecodeview.cpp" line="80"/>
+        <location line="+5"/>
         <source>&lt;i&gt;File %1 not readable&lt;/i&gt;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -1404,22 +2145,18 @@ Line: %2</source>
 <context>
     <name>SourceTextEdit</name>
     <message>
-        <location filename="msgedit.cpp" line="358"/>
         <source>&amp;Copy</source>
         <translation type="obsolete">コピー(&amp;C)</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="361"/>
         <source>Ctrl+A</source>
         <translation type="obsolete">Ctrl+A</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="359"/>
         <source>Ctrl+C</source>
         <translation type="obsolete">Ctrl+C</translation>
     </message>
     <message>
-        <location filename="msgedit.cpp" line="360"/>
         <source>Select &amp;All</source>
         <translation type="obsolete">すべてを選択(&amp;A)</translation>
     </message>
@@ -1427,675 +2164,504 @@ Line: %2</source>
 <context>
     <name>Statistics</name>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="204"/>
+        <location filename="../tools/linguist/linguist/statistics.ui"/>
         <source>0</source>
         <translation>0</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="184"/>
+        <location/>
         <source>Characters (with spaces):</source>
         <translation>文字(スペースつき):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="174"/>
+        <location/>
         <source>Characters:</source>
         <translation>文字:</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="61"/>
         <source>&amp;Close</source>
-        <translation>閉じる(&amp;C)</translation>
+        <translation type="obsolete">閉じる(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="114"/>
+        <location/>
         <source>Source</source>
         <translation>ソース</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="28"/>
+        <location/>
         <source>Statistics</source>
         <translation>統計</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="104"/>
+        <location/>
         <source>Translation</source>
         <translation>訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/statistics.ui" line="144"/>
+        <location/>
         <source>Words:</source>
         <translation>語:</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Close</source>
+        <translation type="unfinished">閉じる</translation>
     </message>
 </context>
 <context>
     <name>TrPreviewTool</name>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="44"/>
         <source>&lt;No Translation&gt;</source>
-        <translation>&lt;翻訳ファイルなし&gt;</translation>
+        <translation type="obsolete">&lt;翻訳ファイルなし&gt;</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="299"/>
         <source>About </source>
-        <translation> について</translation>
+        <translation type="obsolete"> について</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="159"/>
         <source>Could not load form file(s):
 </source>
-        <translation>フォームファイルをロードできませんでした:
+        <translation type="obsolete">フォームファイルをロードできませんでした:
 </translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="252"/>
         <source>Could not load translation file:
 </source>
-        <translation>翻訳ファイルをロードできませんでした:
+        <translation type="obsolete">翻訳ファイルをロードできませんでした:
 </translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="274"/>
         <source>Could not reload translation file(s):
 </source>
-        <translation>翻訳ファイルをリロードできませんでした:
+        <translation type="obsolete">翻訳ファイルをリロードできませんでした:
 </translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="34"/>
         <source>File</source>
-        <translation>ファイル</translation>
+        <translation type="obsolete">ファイル</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="246"/>
         <source>Load Translation</source>
-        <translation>翻訳ファイルをロード</translation>
+        <translation type="obsolete">翻訳ファイルをロード</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="123"/>
         <source>Open Forms</source>
-        <translation>フォームを開く</translation>
+        <translation type="obsolete">フォームを開く</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="285"/>
         <source>Qt Translation Preview Tool: Warning</source>
-        <translation>Qt 翻訳プレビューツール: 警告</translation>
+        <translation type="obsolete">Qt 翻訳プレビューツール: 警告</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="248"/>
         <source>Translation files (*.qm);;All files (*.*)</source>
-        <translation>翻訳ファイル (*.qm);;全てのファイル (*.*)</translation>
+        <translation type="obsolete">翻訳ファイル (*.qm);;全てのファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="125"/>
         <source>User interface form files (*.ui);;All files (*.*)</source>
-        <translation>ユーザインタフェースファイル (*.ui);;全てのファイル (*.*)</translation>
+        <translation type="obsolete">ユーザインタフェースファイル (*.ui);;全てのファイル (*.*)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.cpp" line="39"/>
         <source>Windows</source>
-        <translation>ウィンドウ</translation>
+        <translation type="obsolete">ウィンドウ</translation>
     </message>
 </context>
 <context>
     <name>TrPreviewToolClass</name>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="148"/>
         <source>About</source>
-        <translation>について</translation>
+        <translation type="obsolete">について</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="153"/>
         <source>About Qt</source>
-        <translation>Qt について</translation>
+        <translation type="obsolete">Qt について</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="143"/>
         <source>&amp;Close</source>
-        <translation>閉じる(&amp;C)</translation>
+        <translation type="obsolete">閉じる(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="138"/>
         <source>F5</source>
-        <translation>F5</translation>
+        <translation type="obsolete">F5</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="59"/>
         <source>&amp;File</source>
-        <translation>ファイル(&amp;F)</translation>
+        <translation type="obsolete">ファイル(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="85"/>
         <source>Forms</source>
-        <translation>フォーム</translation>
+        <translation type="obsolete">フォーム</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="52"/>
         <source>&amp;Help</source>
-        <translation>ヘルプ(&amp;H)</translation>
+        <translation type="obsolete">ヘルプ(&amp;H)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="127"/>
         <source>&amp;Load Translation...</source>
-        <translation>翻訳ファイルをロード(&amp;L)...</translation>
+        <translation type="obsolete">翻訳ファイルをロード(&amp;L)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="119"/>
         <source>&amp;Open Form...</source>
-        <translation>フォームを開く(&amp;O)...</translation>
+        <translation type="obsolete">フォームを開く(&amp;O)...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="27"/>
         <source>Qt Translation Preview Tool</source>
-        <translation>Qt 翻訳プレビューツール</translation>
+        <translation type="obsolete">Qt 翻訳プレビューツール</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="135"/>
         <source>&amp;Reload Translations</source>
-        <translation>翻訳ファイルをリロード(&amp;R)</translation>
+        <translation type="obsolete">翻訳ファイルをリロード(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="41"/>
         <source>&amp;View</source>
-        <translation>表示(&amp;V)</translation>
+        <translation type="obsolete">表示(&amp;V)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/previewtool/trpreviewtool.ui" line="45"/>
         <source>&amp;Views</source>
-        <translation>表示(&amp;V)</translation>
+        <translation type="obsolete">表示(&amp;V)</translation>
     </message>
 </context>
 <context>
     <name>TrWindow</name>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="965"/>
         <source> Open Source Edition</source>
-        <translation> オープンソース版</translation>
+        <translation type="obsolete"> オープンソース版</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="787"/>
         <source>%1 - %2</source>
         <translation type="obsolete">%1 - %2</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="970"/>
         <source>%1 - %2%3</source>
         <translation type="obsolete">%1 - %2%3</translation>
     </message>
     <message numerus="yes">
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="815"/>
         <source>%n phrase(s) loaded.</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%n 項目のフレーズがロードされました。</numerusform>
         </translation>
     </message>
     <message numerus="yes">
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="356"/>
         <source>%n source phrase(s) loaded.</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%n 個のソースフレーズがロードされました。</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="900"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
-        <translation type="obsolete">&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist は、Qt アプリケーションの翻訳を行うツールです。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies). 全ての権利は保護されています。&lt;/p&gt;&lt;p&gt;このプログラムは、「設計」、「市場性」および「特定の目的への適合性」も含む、あらゆる種類の「保証がなく」、「そのままで」提供されます。&lt;/p&gt;</translation>
+        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
+        <translation type="obsolete">&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist は、Qt アプリケーションの翻訳を行うツールです。&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies). 全ての権利は保護されています。&lt;/p&gt;&lt;p&gt;このプログラムは、「設計」、「市場性」および「特定の目的への適合性」も含む、あらゆる種類の「保証がなく」、「そのままで」提供されます。&lt;/p&gt;</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="782"/>
         <source>A file called &apos;%1&apos; already exists.  Please choose another name.</source>
-        <translation>&apos;%1&apos; というファイルはすでに存在します。別の名前を選んでください。</translation>
+        <translation type="obsolete">&apos;%1&apos; というファイルはすでに存在します。別の名前を選んでください。</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="1723"/>
         <source>A phrase book suggestion for &apos;%1&apos; was ignored.</source>
         <translation type="obsolete">&apos;%1&apos; についてのフレーズブックの示唆を無視しています。</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="1686"/>
         <source>Accelerator possibly missing in translation.</source>
         <translation type="obsolete">訳にアクセラレータが欠けています。</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="1681"/>
         <source>Accelerator possibly superfluous in translation.</source>
         <translation type="obsolete">訳に余分なアクセラレータがついています。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1745"/>
         <source>Allow you to add, modify, or delete phrases of this phrase book.</source>
-        <translation>フレーズブックにフレーズを追加、変更、削除できます。</translation>
+        <translation type="obsolete">フレーズブックにフレーズを追加、変更、削除できます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1767"/>
         <source>Cannot create phrase book &apos;%1&apos;.</source>
-        <translation>フレーズブック &apos;%1&apos; を作成できません。</translation>
+        <translation type="obsolete">フレーズブック &apos;%1&apos; を作成できません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="746"/>
         <source>Cannot find the string &apos;%1&apos;.</source>
-        <translation>文字列 &apos;%1&apos; が見つかりません。</translation>
+        <translation type="obsolete">文字列 &apos;%1&apos; が見つかりません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="334"/>
         <source>Cannot open &apos;%1&apos;.</source>
-        <translation>&apos;%1&apos; をオープンできません。</translation>
+        <translation type="obsolete">&apos;%1&apos; をオープンできません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1731"/>
         <source>Cannot read from phrase book &apos;%1&apos;.</source>
-        <translation>フレーズブック &apos;%1&apos; から読み出せません。</translation>
+        <translation type="obsolete">フレーズブック &apos;%1&apos; から読み出せません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="452"/>
         <source>Cannot save &apos;%1&apos;.</source>
-        <translation>&apos;%1&apos; を保存できません。</translation>
+        <translation type="obsolete">&apos;%1&apos; を保存できません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1740"/>
         <source>Close this phrase book.</source>
-        <translation>このフレーズブックを閉じます。</translation>
+        <translation type="obsolete">このフレーズブックを閉じます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="161"/>
         <source>Context</source>
-        <translation>コンテキスト</translation>
+        <translation type="obsolete">コンテキスト</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="477"/>
         <source>Context: %1</source>
-        <translation>コンテキスト: %1</translation>
+        <translation type="obsolete">コンテキスト: %1</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="774"/>
         <source>Create New Phrase Book</source>
-        <translation>新しいフレーズブックを作成</translation>
+        <translation type="obsolete">新しいフレーズブックを作成</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1582"/>
         <source>Ctrl+M</source>
-        <translation>Ctrl+M</translation>
+        <translation type="obsolete">Ctrl+M</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1595"/>
         <source>Display information about %1.</source>
-        <translation>%1 についての情報を表示します。</translation>
+        <translation type="obsolete">%1 についての情報を表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1594"/>
         <source>Display the manual for %1.</source>
-        <translation>%1 のマニュアルを表示します。</translation>
+        <translation type="obsolete">%1 のマニュアルを表示します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1031"/>
         <source>Do you want to save &apos;%1&apos;?</source>
-        <translation>&apos;%1&apos; を保存しますか?</translation>
+        <translation type="obsolete">&apos;%1&apos; を保存しますか?</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1630"/>
         <source>Edit</source>
-        <translation>編集</translation>
+        <translation type="obsolete">編集</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1623"/>
         <source>File</source>
-        <translation>ファイル</translation>
+        <translation type="obsolete">ファイル</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="450"/>
         <source>File created.</source>
-        <translation>ファイルが作成されました。</translation>
+        <translation type="obsolete">ファイルが作成されました。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="409"/>
         <source>File saved.</source>
-        <translation>ファイルが保存されました。</translation>
+        <translation type="obsolete">ファイルが保存されました。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="493"/>
         <source>finished</source>
-        <translation>完了</translation>
+        <translation type="obsolete">完了</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1649"/>
         <source>Help</source>
-        <translation>ヘルプ</translation>
+        <translation type="obsolete">ヘルプ</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="329"/>
         <source>Loading...</source>
-        <translation>ロードしています...</translation>
+        <translation type="obsolete">ロードしています...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1581"/>
         <source>Minimize</source>
-        <translation>最小化</translation>
+        <translation type="obsolete">最小化</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="264"/>
         <source>MOD</source>
-        <translation>変更されています</translation>
+        <translation type="obsolete">変更されています</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1406"/>
         <source>No untranslated phrases left.</source>
-        <translation>未訳のフレーズは残っていません。</translation>
+        <translation type="obsolete">未訳のフレーズは残っていません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="499"/>
         <source>obsolete</source>
-        <translation>このバージョンでは使われていない</translation>
+        <translation type="obsolete">このバージョンでは使われていない</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="807"/>
         <source>Open Phrase Book</source>
-        <translation>フレーズブックを開く</translation>
+        <translation type="obsolete">フレーズブックを開く</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="790"/>
         <source>Phrase book created.</source>
-        <translation>フレーズブックが作成されました。</translation>
+        <translation type="obsolete">フレーズブックが作成されました。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1750"/>
         <source>Print the entries of the phrase book.</source>
-        <translation>フレーズブックの見出し語を印刷します。</translation>
+        <translation type="obsolete">フレーズブックの見出し語を印刷します。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="887"/>
         <source>Printing aborted</source>
-        <translation>印刷中止</translation>
+        <translation type="obsolete">印刷中止</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="885"/>
         <source>Printing completed</source>
-        <translation>印刷完了</translation>
+        <translation type="obsolete">印刷完了</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="865"/>
         <source>Printing...</source>
-        <translation>印刷中...</translation>
+        <translation type="obsolete">印刷中...</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="879"/>
         <source>Printing... (page %1)</source>
-        <translation>印刷中... (%1 ページ)</translation>
+        <translation type="obsolete">印刷中... (%1 ページ)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="2110"/>
         <source>Qt Linguist</source>
-        <translation>Qt Linguist</translation>
+        <translation type="obsolete">Qt Linguist</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1066"/>
         <source>Qt Linguist by Trolltech</source>
-        <translation>Trolltech の Qt Linguist</translation>
+        <translation type="obsolete">Trolltech の Qt Linguist</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="433"/>
         <source>Qt message files for released applications (*.qm)
 All files (*)</source>
-        <translation>リリースされたアプリケーション用の Qt メッセージファイル (*.qm)
+        <translation type="obsolete">リリースされたアプリケーション用の Qt メッセージファイル (*.qm)
 すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="775"/>
         <source>Qt phrase books (*.qph)
 All files (*)</source>
-        <translation>Qt フレーズブック (*.qph)
+        <translation type="obsolete">Qt フレーズブック (*.qph)
 すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="363"/>
         <source>Qt translation source (*.ts)
 All files (*)</source>
         <translation type="obsolete">Qt 翻訳ソースファイル (*.ts)
 すべてのファイル (*)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="432"/>
         <source>Release</source>
-        <translation>リリース</translation>
+        <translation type="obsolete">リリース</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="623"/>
         <source>Search wrapped.</source>
-        <translation>検索が一通り終わりました。</translation>
+        <translation type="obsolete">検索が一通り終わりました。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="2110"/>
         <source>There was a problem in the preparation of form preview.</source>
-        <translation>フォームのプレビューの準備中に問題が発生しました。</translation>
+        <translation type="obsolete">フォームのプレビューの準備中に問題が発生しました。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="169"/>
         <source>This panel lists the source contexts.</source>
-        <translation>このパネルではソースのコンテキストを一覧表示しています。</translation>
+        <translation type="obsolete">このパネルではソースのコンテキストを一覧表示しています。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="986"/>
         <source>This program is licensed to you under the terms of the Qt Commercial License Agreement. For details, see the file LICENSE that came with this software distribution.</source>
-        <translation>このプログラムは、Qt 商用ライセンス契約書の定める条件の下であなたの利用が認められています。詳細は、ソフトウェアと一緒に配布される LICENSE ファイルを参照してください。</translation>
+        <translation type="obsolete">このプログラムは、Qt 商用ライセンス契約書の定める条件の下であなたの利用が認められています。詳細は、ソフトウェアと一緒に配布される LICENSE ファイルを参照してください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="978"/>
-        <source>This version of Qt Linguist is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.&lt;br/&gt;&lt;br/&gt;You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;tt&gt;http://www.trolltech.com/company/model.html&lt;/tt&gt; for an overview of Qt licensing.</source>
-        <translation>このバージョンの Qt Linguist は、 オープンソースアプリケーションを開発するための Qt オープンソース版の一部です。Qt は、クロスプラットフォームなアプリケーションを開発するための包括的な C++ のフレームワークです。&lt;br/&gt;&lt;br/&gt;独占的な（ソースが隠された）アプリケーションを開発するには、Qt の商用ライセンスが必要です。Qt のライセンスの概要については &lt;tt&gt;http://www.trolltech.com/company/model.html&lt;/tt&gt; をご覧ください。</translation>
+        <source>This version of Qt Linguist is part of the Qt Open Source Edition, for use in the development of Open Source applications. Qt is a comprehensive C++ framework for cross-platform application development.&lt;br/&gt;&lt;br/&gt;You need a commercial Qt license for development of proprietary (closed source) applications. Please see &lt;tt&gt;http://qtsoftware.com/company/model.html&lt;/tt&gt; for an overview of Qt licensing.</source>
+        <translation type="obsolete">このバージョンの Qt Linguist は、 オープンソースアプリケーションを開発するための Qt オープンソース版の一部です。Qt は、クロスプラットフォームなアプリケーションを開発するための包括的な C++ のフレームワークです。&lt;br/&gt;&lt;br/&gt;独占的な（ソースが隠された）アプリケーションを開発するには、Qt の商用ライセンスが必要です。Qt のライセンスの概要については &lt;tt&gt;http://qtsoftware.com/company/model.html&lt;/tt&gt; をご覧ください。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="703"/>
         <source>Translate</source>
-        <translation>翻訳</translation>
+        <translation type="obsolete">翻訳</translation>
     </message>
     <message numerus="yes">
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="704"/>
         <source>Translated %n entries to &apos;%1&apos;</source>
-        <translation>
+        <translation type="obsolete">
             <numerusform>%n 項目を &apos;%1&apos; に翻訳しました</numerusform>
         </translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1636"/>
         <source>Translation</source>
-        <translation>訳</translation>
+        <translation type="obsolete">訳</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="1699"/>
         <source>Translation does not end with the same punctuation as the source text.</source>
         <translation type="obsolete">訳がソーステキストと同じ句読点で終わっていません。</translation>
     </message>
     <message>
-        <location filename="trwindow.cpp" line="1772"/>
         <source>Translation does not refer to the same place markers as in the source text.</source>
         <translation type="obsolete">訳語にはソーステキストと同じ数の &quot;%&quot; がありません。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="496"/>
         <source>unresolved</source>
-        <translation>未解決</translation>
+        <translation type="obsolete">未解決</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1642"/>
         <source>Validation</source>
-        <translation>検証</translation>
+        <translation type="obsolete">検証</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="963"/>
         <source>Version %1</source>
-        <translation>バージョン %1</translation>
+        <translation type="obsolete">バージョン %1</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1579"/>
         <source>&amp;Window</source>
-        <translation>ウィンドウ(&amp;W)</translation>
+        <translation type="obsolete">ウィンドウ(&amp;W)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="181"/>
-        <source>Strings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="203"/>
-        <source>Phrases and guesses</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="213"/>
-        <source>Source code</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="223"/>
-        <source>Warnings</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="398"/>
-        <source>Open Translation File</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="399"/>
-        <source>Qt translation sources (*.ts);;XLIFF localization files (*.xlf);;All files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="419"/>
-        <source>Qt translation source (*.ts)
-XLIFF localization file (*.xlf)
-All files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="808"/>
-        <source>Qt phrase books (*.qph);;All files (*)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="908"/>
-        <source>Add to phrase book</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="899"/>
-        <source>Adding phrase to phrasebook %1</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="909"/>
-        <source>Select phrase book to add to</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="946"/>
-        <source>Unable to launch Qt Assistant (%1)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="982"/>
-        <source>This program is licensed to you under the terms of the Qt %1 License Agreement. For details, see the license file that came with this software distribution.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="996"/>
-        <source>&lt;center&gt;&lt;img src=&quot;:/images/splash.png&quot;/&gt;&lt;/img&gt;&lt;p&gt;%1&lt;/p&gt;&lt;/center&gt;&lt;p&gt;Qt Linguist is a tool for adding translations to Qt applications.&lt;/p&gt;&lt;p&gt;%2&lt;/p&gt;&lt;p&gt;Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).&lt;/p&gt;&lt;p&gt;The program is provided AS IS with NO WARRANTY OF ANY KIND, INCLUDING THE WARRANTY OF DESIGN, MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE.&lt;/p&gt;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1064"/>
-        <source>Qt Linguist by Trolltech[*]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1066"/>
-        <source>%1 - %2[*]</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="1777"/>
-        <source>Do you want to save phrasebook &apos;%1&apos;?</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/trwindow.cpp" line="14"/>
+        <location filename="../tools/linguist/linguist/trwindow.cpp" line="+14"/>
         <source></source>
         <comment>This is the application&apos;s main window.</comment>
-        <translation type="unfinished"></translation>
+        <translation></translation>
     </message>
 </context>
 <context>
     <name>TranslateDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="219"/>
+        <location filename="../tools/linguist/linguist/translatedialog.ui"/>
         <source>Cancel</source>
         <translation>キャンセル</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="216"/>
+        <location/>
         <source>Click here to close this window.</source>
         <translation>このウィンドウを閉じるにはここをクリックします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="186"/>
+        <location/>
         <source>Click here to find the next occurrence of the text you typed in.</source>
         <translation>入力したテキストが次に出てくる箇所を見つけるにはここをクリックします。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="189"/>
+        <location/>
         <source>Find Next</source>
         <translation>次を検索</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="99"/>
+        <location/>
         <source>Find &amp;source text:</source>
         <translation>ソーステキストを検索(&amp;S):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="144"/>
+        <location/>
         <source>Mark new translation as &amp;finished</source>
         <translation>新しく翻訳した項目を完了にする(&amp;F)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="137"/>
+        <location/>
         <source>Match &amp;case</source>
         <translation>大文字・小文字の区別(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="31"/>
         <source>Qt Linguist</source>
-        <translation>Qt Linguist</translation>
+        <translation type="obsolete">Qt Linguist</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="128"/>
+        <location/>
         <source>Search options</source>
         <translation>検索オプション</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="134"/>
+        <location/>
         <source>Texts such as &apos;TeX&apos; and &apos;tex&apos; are considered as different when checked.</source>
         <translation>これを選択すると、たとえば &apos;TeX&apos; と &apos;tex&apos; は異なるものと見なされます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="34"/>
+        <location/>
         <source>This window allows you to search for some text in the translation source file.</source>
         <translation>このウィンドウで翻訳ソースファイル内のテキストを検索できます。</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="202"/>
+        <location/>
         <source>Translate</source>
         <translation>翻訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="209"/>
+        <location/>
         <source>Translate All</source>
         <translation>すべて翻訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="109"/>
+        <location/>
         <source>&amp;Translate to:</source>
         <translation>訳語(&amp;T):</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translatedialog.ui" line="119"/>
+        <location/>
         <source>Type in the text to search for.</source>
         <translation>検索するテキストを入力してください。</translation>
     </message>
@@ -2103,90 +2669,97 @@ All files (*)</source>
 <context>
     <name>TranslationSettings</name>
     <message>
-        <location filename="translationsettings.ui" line="53"/>
         <source>Country</source>
         <translation type="obsolete">国</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translationsettings.ui" line="40"/>
         <source>Language</source>
-        <translation>言語</translation>
+        <translation type="obsolete">言語</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translationsettings.ui" line="13"/>
         <source>Qt Linguist - Translation file settings</source>
-        <translation>Qt Linguist - 翻訳ファイルの設定</translation>
+        <translation type="obsolete">Qt Linguist - 翻訳ファイルの設定</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/translationsettings.ui" line="25"/>
         <source>Target language</source>
-        <translation>翻訳先の言語</translation>
-    </message>
-    <message>
-        <location filename="../tools/linguist/linguist/translationsettings.ui" line="53"/>
-        <source>Country/Region</source>
-        <translation type="unfinished"></translation>
+        <translation type="obsolete">翻訳先の言語</translation>
     </message>
 </context>
 <context>
     <name>TranslationSettingsDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/translationsettingsdialog.cpp" line="36"/>
+        <location filename="../tools/linguist/linguist/translationsettingsdialog.cpp" line="+38"/>
         <source>Any Country</source>
         <translation>指定しない</translation>
+    </message>
+    <message>
+        <location line="+11"/>
+        <location line="+8"/>
+        <source>Settings for &apos;%1&apos; - Qt Linguist</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../tools/linguist/linguist/translationsettings.ui"/>
+        <source>Source language</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Language</source>
+        <translation type="unfinished">言語</translation>
+    </message>
+    <message>
+        <location/>
+        <source>Country/Region</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location/>
+        <source>Target language</source>
+        <translation type="unfinished">翻訳先の言語</translation>
     </message>
 </context>
 <context>
     <name>databaseTranslationDialog</name>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="197"/>
         <source>&amp;Cancel</source>
-        <translation>キャンセル(&amp;C)</translation>
+        <translation type="obsolete">キャンセル(&amp;C)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="132"/>
         <source>Move down</source>
-        <translation>下に移動</translation>
+        <translation type="obsolete">下に移動</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="125"/>
         <source>Move up</source>
-        <translation>上に移動</translation>
+        <translation type="obsolete">上に移動</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="59"/>
         <source>Only translate entries with no translation</source>
-        <translation>訳語がない項目だけを翻訳する</translation>
+        <translation type="obsolete">訳語がない項目だけを翻訳する</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="47"/>
         <source>Options</source>
-        <translation>オプション</translation>
+        <translation type="obsolete">オプション</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="90"/>
         <source>Phrase book preference</source>
-        <translation>フレーズブックの優先度</translation>
+        <translation type="obsolete">フレーズブックの優先度</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="27"/>
         <source>Qt Linguist - Batch Translation</source>
-        <translation>Qt Linguist - 一括翻訳</translation>
+        <translation type="obsolete">Qt Linguist - 一括翻訳</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="190"/>
         <source>&amp;Run</source>
-        <translation>実行(&amp;R)</translation>
+        <translation type="obsolete">実行(&amp;R)</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="69"/>
         <source>Set translated entries to finished</source>
-        <translation>翻訳された項目を完了にする</translation>
+        <translation type="obsolete">翻訳された項目を完了にする</translation>
     </message>
     <message>
-        <location filename="../tools/linguist/linguist/batchtranslation.ui" line="156"/>
         <source>The batch translator will search through the selected phrasebooks in the order given above.</source>
-        <translation>一括翻訳機能は、上記で指定された順にフレーズブックを検索します。</translation>
+        <translation type="obsolete">一括翻訳機能は、上記で指定された順にフレーズブックを検索します。</translation>
     </message>
 </context>
 </TS>

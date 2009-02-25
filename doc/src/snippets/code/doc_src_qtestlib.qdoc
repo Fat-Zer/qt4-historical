@@ -84,3 +84,19 @@ QCOMPARE(QString("Hello").toUpper(), QString("HELLO"));
 QCOMPARE(QString("HellO").toUpper(), QString("HELLO"));
 QCOMPARE(QString("HELLO").toUpper(), QString("HELLO"));
 //! [11]
+
+//! [12]
+class MyFirstBenchmark: public QObject
+{
+    Q_OBJECT
+private slots:
+    void myFirstBenchmark()
+    { 
+        QString string1;
+        QString string2;
+        QBENCHMARK {
+            string1.localeAwareCompare(string2);
+        }
+    }
+};
+//! [12]

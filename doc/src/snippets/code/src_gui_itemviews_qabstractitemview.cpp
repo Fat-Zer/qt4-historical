@@ -4,3 +4,15 @@ void MyView::resizeEvent(QResizeEvent *event) {
     ...
 }
 //! [0]
+
+//! [1]
+setIndexWidget(index, new QLineEdit);
+...
+setIndexWidget(index, new QTextEdit);
+//! [1]
+
+//! [2]
+QItemSelectionModel *m = view->selectionModel();
+view->setModel(new model);
+delete m;
+//! [2]

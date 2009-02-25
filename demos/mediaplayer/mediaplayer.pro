@@ -20,3 +20,9 @@ target.path = $$[QT_INSTALL_DEMOS]/mediaplayer
 sources.files = $$SOURCES $$HEADERS $$FORMS $$RESOURCES *.pro *.html *.doc images
 sources.path = $$[QT_INSTALL_DEMOS]/mediaplayer
 INSTALLS += target sources
+
+wince*{
+DEPLOYMENT_PLUGIN += phonon_ds9 phonon_waveout
+}
+
+

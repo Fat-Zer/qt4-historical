@@ -10,17 +10,20 @@ edit->setValidator(validator);
 //! [1]
 QString str;
 int pos = 0;
-QIntValidator v(100, 999, this);
+QIntValidator v(100, 900, this);
 
 str = "1";
 v.validate(str, pos);     // returns Intermediate
-str = "12";
+str = "012";
 v.validate(str, pos);     // returns Intermediate
 
 str = "123";
 v.validate(str, pos);     // returns Acceptable
 str = "678";
 v.validate(str, pos);     // returns Acceptable
+
+str = "999";
+v.validate(str, pos);    // returns Intermediate
 
 str = "1234";
 v.validate(str, pos);     // returns Invalid

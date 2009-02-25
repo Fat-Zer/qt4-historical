@@ -18,6 +18,10 @@ no-png {
      win32:!wince*:!contains(QT_EDITION, OpenSource|Console):SUBDIRS += activeqt
 }
 
+mac {
+    SUBDIRS += macdeployqt
+}
+
 contains(QT_CONFIG, dbus):SUBDIRS += qdbus
 !wince*:contains(QT_CONFIG, xmlpatterns): SUBDIRS += xmlpatterns
 embedded: SUBDIRS += makeqpf

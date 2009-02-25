@@ -1,7 +1,7 @@
 SOURCES += main.cpp xform.cpp
 HEADERS += xform.h
 
-contains(QT_CONFIG, opengl) {
+contains(QT_CONFIG, opengl)|contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles2) {
 	DEFINES += QT_OPENGL_SUPPORT
 	QT += opengl
 }
@@ -19,8 +19,5 @@ sources.path = $$[QT_INSTALL_DEMOS]/affine
 INSTALLS += target sources
 
 wince*: {
-    CONFIG(debug, debug|release):imageFormatsPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/*d4.dll
-    CONFIG(release, debug|release):imageFormatsPlugins.sources = $$QT_BUILD_TREE/plugins/imageformats/*[^d]4.dll
-    imageFormatsPlugins.path = imageformats
-    DEPLOYMENT += imageFormatsPlugins
+    DEPLOYMENT_PLUGIN += qjpeg
 }

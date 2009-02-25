@@ -1,3 +1,5 @@
+#ifndef QT_QTCORE_MODULE_H
+#define QT_QTCORE_MODULE_H
 #include "qtextcodec.h"
 #include "qtextcodecplugin.h"
 #include "qfuture.h"
@@ -101,6 +103,7 @@
 #include "qregexp.h"
 #include "qset.h"
 #include "qshareddata.h"
+#include "qsharedpointer.h"
 #include "qsize.h"
 #include "qstack.h"
 #include "qstring.h"
@@ -111,3 +114,4 @@
 #include "qvarlengtharray.h"
 #include "qvector.h"
 #include "qxmlstream.h"
+#endif

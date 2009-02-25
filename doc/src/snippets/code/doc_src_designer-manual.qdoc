@@ -9,7 +9,7 @@ CONFIG += uitools
 
 
 //! [2]
-void on_<widget name>_<signal name>(<signal parameters>);
+void on_<object name>_<signal name>(<signal parameters>);
 //! [2]
 
 

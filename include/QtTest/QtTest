@@ -1,4 +1,7 @@
+#ifndef QT_QTTEST_MODULE_H
+#define QT_QTTEST_MODULE_H
 #include <QtCore/QtCore>
+#include "qbenchmark.h"
 #include "qsignalspy.h"
 #include "qtest.h"
 #include "qtestassert.h"
@@ -6,3 +9,4 @@
 #include "qtestdata.h"
 #include "qtesteventloop.h"
 #include "qtestsystem.h"
+#endif

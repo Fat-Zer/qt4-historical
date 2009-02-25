@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -41,7 +45,7 @@
   \title QtScript Module
   \contentspage Qt's Modules
   \previouspage QtOpenGL
-  \nextpage QtSql
+  \nextpage QtScriptTools
   \ingroup modules
   \ingroup scripting
 
@@ -63,7 +67,11 @@
   \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 1
 
   The QtScript module is part of the \l{Qt Full Framework Edition} and the
-  \l{Qt Open Source Edition}.
+  \l{Open Source Versions of Qt}.
+
+  The QtScript module only provides core scripting facilities; the
+  QtScriptTools module provides additional Qt Script-related
+  components that application developers may find useful.
 
   \section1 Language Overview
 
@@ -291,9 +299,9 @@
   pick the overload with the argument count that best matches the
   actual number of arguments passed to the slot.
 
-  For overloaded signals, QtScript will connect to the most general
-  overload, unless you refer to the signal with its full normalized
-  signature.
+  For overloaded signals, Qt Script will throw an error if you try to connect
+  to the signal by name; you have to refer to the signal with the full
+  normalized signature of the particular overload you want to connect to.
 
   \section2 Accessing Properties
 
@@ -481,7 +489,7 @@
 
     \table 80%
     \header \o C++ Type \o Default Conversion
-    \row    \o bool \o QScriptValue::toBoolean()
+    \row    \o bool \o QScriptValue::toBool()
     \row    \o int \o QScriptValue::toInt32()
     \row    \o uint \o QScriptValue::toUInt32()
     \row    \o float \o float(QScriptValue::toNumber())
@@ -492,7 +500,8 @@
     \row    \o uchar \o unsigned char(QScriptValue::toInt32())
     \row    \o qlonglong \o qlonglong(QScriptValue::toInteger())
     \row    \o qulonglong \o qulonglong(QScriptValue::toInteger())
-    \row    \o QString \o QScriptValue::toString()
+    \row    \o QString \o An empty string if the QScriptValue is null
+               or undefined; QScriptValue::toString() otherwise.
     \row    \o QDateTime \o QScriptValue::toDateTime()
     \row    \o QDate \o QScriptValue::toDateTime().date()
     \row    \o QRegExp \o QScriptValue::toRegExp()
@@ -780,15 +789,56 @@
   concepts and techniques is important to understand what's actually
   going on when script functions are executed.
 
+  \section2 Calling a Qt Script Function from C++
+
+  Calling a Qt Script function from C++ is achieved with the
+  QScriptValue::call() function. A typical scenario is that you evaluate a
+  script that defines a function, and at some point you want to call that
+  function from C++, perhaps passing it some arguments, and then handle the
+  result. The following script defines a Qt Script object that has a
+  toKelvin() function:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 90
+
+  The toKelvin() function takes a temperature in Kelvin as argument, and
+  returns the temperature converted to Celsius. The following snippet shows
+  how the toKelvin() function might be obtained and called from C++:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 91
+
+  If a script defines a global function, you can access the function as a
+  property of QScriptEngine::globalObject(). For example, the following script
+  defines a global function add():
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 56
+
+  C++ code might call the add() function as follows:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 92
+
+  As already mentioned, functions are just values in Qt Script; a function by
+  itself is not "tied to" a particular object. This is why you have to specify
+  a \c{this} object (the first argument to QScriptValue::call()) that the
+  function should be applied to.
+
+ If the function is supposed to act as a method (i.e. it can only be applied
+  to a certain class of objects), it is up to the function itself to check
+  that it is being called with a compatible \c{this} object.
+
+ Passing an invalid QScriptValue as the \c{this} argument to
+  QScriptValue::call() indicates that the Global Object should be used as the
+  \c{this} object; in other words, that the function should be invoked as a
+  global function.
+
   \section2 The \c this Object
 
-  When a Qt Script function is invoked, the \e{way} in which it is invoked
-  determines the \c this object when the function body is executed, as
-  the following script example illustrates:
+  When a Qt Script function is invoked from a script, the \e{way} in which it
+  is invoked determines the \c this object when the function body is executed,
+  as the following script example illustrates:
 
     \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 49
 
-  An import thing to note is that in Qt Script, unlike C++ and Java, the
+  An important thing to note is that in Qt Script, unlike C++ and Java, the
   \c this object is not part of the execution scope. This means that
   member functions (i.e., functions that operate on \c this) must always
   use the \c this keyword to access the object's properties. For example,
@@ -996,7 +1046,7 @@
   On the caller side, this makes it harder for scripts to accidentally
   call the wrong overload (since they don't know or don't comprehend
   your custom sophisticated overloading resolution rules), and on the
-  caller side, you avoid the need for potentially complex (read:
+  callee side, you avoid the need for potentially complex (read:
   error-prone) checks to resolve ambiguity.
 
   \section3 Accessing the Arguments Object
@@ -1184,11 +1234,11 @@
 
   This is an advanced topic; feel free to skip it.
 
-  A nested function can be used to "capture" the execution context in
-  which a nested function object is created. When, at some later time,
-  the nested function is invoked, it can access the variables that were
-  created when the enclosing function was invoked. This can perhaps
-  best be illustrated through a small example:
+  A nested function can be used to "capture" the execution context in which a
+  nested function object is created; this is typically referred to as creating
+  a \e closure. When, at some later time, the nested function is invoked, it
+  can access the variables that were created when the enclosing function was
+  invoked. This can perhaps best be illustrated through a small example:
 
     \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 70
 
@@ -1549,6 +1599,46 @@
   with the arguments you may want to signal this by throwing a script
   exception; see QScriptContext::throwError().
 
+  \section2 Managing Non-QObject-based Objects
+
+  For value-based types (e.g. QPoint), the C++ object will be destroyed when
+  the Qt Script object is garbage-collected, so managing the memory of the C++
+  object is not an issue. For QObjects, Qt Script provides several
+  alternatives for managing the underlying C++ object's lifetime; see the
+  \l{Controlling QObject Ownership} section. However, for polymorphic types
+  that don't inherit from QObject, and when you can't (or won't) wrap the type
+  in a QObject, you have to manage the lifetime of the C++ object yourself.
+
+  A behavior that's often reasonable when a Qt Script object wraps a C++
+  object, is that the C++ object is deleted when the Qt Script object is
+  garbage-collected; this is typically the case when the objects can be
+  constructed by scripts, as opposed to the application providing the scripts
+  with pre-made "environment" objects. A way of making the lifetime of the C++
+  object follow the lifetime of the Qt Script object is by using a shared
+  pointer class, such as QSharedPointer, to hold a pointer to your object;
+  when the Qt Script object containing the QSharedPointer is
+  garbage-collected, the underlying C++ object will be deleted if there are no
+  other references to the object.
+
+  The following snippet shows a constructor function that constructs
+  QXmlStreamReader objects that are stored using QSharedPointer:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 93
+
+  Prototype functions can use qscriptvalue_cast() to cast the \c this object
+  to the proper type:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 94
+
+  The prototype and constructor objects are set up in the usual way:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 95
+
+  Scripts can now construct QXmlStreamReader objects by calling the \c
+  XmlStreamReader constructor, and when the Qt Script object is
+  garbage-collected (or the script engine is destroyed), the QXmlStreamReader
+  object is destroyed as well.
+
   \section1 Defining Custom Script Classes with QScriptClass
 
   There are cases where neither the dynamic QObject binding provided
@@ -1599,6 +1689,9 @@
   doesn't provide any debugging-specific functionality (e.g. setting
   breakpoints), but it is the basis of tools that do.
 
+  The QScriptEngineDebugger class introduced in Qt 4.5 provides a Qt Script
+  debugger that can be embedded into your application.
+
   \section2 Redefining print()
 
   Qt Script provides a built-in print() function that can be useful for
@@ -1630,6 +1723,128 @@
   If you are implementing some Qt Script functionality that you want other
   Qt application developers to be able to use, developing an extension (e.g.
   by subclassing QScriptExtensionPlugin) is worth looking into.
+
+  \section1 Internationalization
+
+  Since Qt 4.5, Qt Script supports internationalization of scripts by building
+  on the C++ internationalization functionality (see \l{Internationalization
+  with Qt}).
+
+  \section2 Use qsTr() for All Literal Text
+
+  Wherever your script uses "quoted text" for text that will be presented to
+  the user, ensure that it is processed by the QCoreApplication::translate()
+  function. Essentially all that is necessary to achieve this is to use
+  the qsTr() script function. Example:
+
+  \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 82
+
+  This accounts for 99% of the user-visible strings you're likely to write.
+
+  The qsTr() function uses the basename of the script's filename (see
+  QFileInfo::baseName()) as the translation context; if the filename is not
+  unique in your project, you should use the qsTranslate() function and pass a
+  suitable context as the first argument. Example:
+
+  \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 83
+
+  If you need to have translatable text completely outside a function, there
+  are two functions to help: QT_TR_NOOP() and QT_TRANSLATE_NOOP(). They merely
+  mark the text for extraction by the \c lupdate utility described below.  At
+  runtime, these functions simply return the text to translate unmodified.
+
+  Example of QT_TR_NOOP():
+
+  \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 84
+
+  Example of QT_TRANSLATE_NOOP():
+
+  \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 85
+
+  \section2 Use String.prototype.arg() for Dynamic Text
+
+  The String.prototype.arg() function (which is modeled after QString::arg())
+  offers a simple means for substituting arguments:
+
+  \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 86
+
+    \section2 Produce Translations
+
+    Once you are using qsTr() and/or qsTranslate() throughout your scripts, you
+    can start producing translations of the user-visible text in your program.
+
+    The \l{Qt Linguist manual} provides further information about
+    Qt's translation tools, \e{Qt Linguist}, \c lupdate and \c
+    lrelease.
+
+    Translation of Qt Script scripts is a three-step process:
+
+    \list 1
+
+    \o Run \c lupdate to extract translatable text from the script source code
+    of the Qt application, resulting in a message file for translators (a \c
+    .ts file). The utility recognizes qsTr(), qsTranslate() and the
+    \c{QT_TR*_NOOP()} functions described above and produces \c .ts files
+    (usually one per language).
+
+    \o Provide translations for the source texts in the \c .ts file, using
+    \e{Qt Linguist}. Since \c .ts files are in XML format, you can also
+    edit them by hand.
+
+    \o Run \c lrelease to obtain a light-weight message file (a \c .qm
+    file) from the \c .ts file, suitable only for end use. Think of the \c
+    .ts files as "source files", and \c .qm files as "object files". The
+    translator edits the \c .ts files, but the users of your application
+    only need the \c .qm files. Both kinds of files are platform and
+    locale independent.
+
+    \endlist
+
+    Typically, you will repeat these steps for every release of your
+    application. The \c lupdate utility does its best to reuse the
+    translations from previous releases.
+
+    When running \c lupdate, you must specify the location of the script(s),
+    and the name of the \c{.ts} file to produce. Examples:
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 87
+
+    will extract translatable text from \c myscript.qs and create the
+    translation file \c myscript_la.qs.
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 88
+
+    will extract translatable text from all files ending with \c{.qs} in the
+    \c scripts folder and create the translation file \c scripts_la.qs.
+
+    Alternatively, you can create a separate qmake project file that sets up
+    the \c SOURCES and \c TRANSLATIONS variables appropriately; then run
+    \c lupdate with the project file as input.
+
+    \snippet doc/src/snippets/code/doc_src_qtscript.qdoc 89
+
+    When running \c lrelease, you must specify the name of the \c{.ts} input
+    file; or, if you are using a qmake project file to manage script
+    translations, you specify the name of that file. \c lrelease will create
+    \c myscript_la.qm, the binary representation of the translation.
+
+    \section2 Apply Translations
+
+    In your application, you must use QTranslator::load() to load the
+    translation files appropriate for the user's language, and install them
+    using QCoreApplication::installTranslator(). Finally, you must call
+    QScriptEngine::installTranslatorFunctions() to make the script translation
+    functions (qsTr(), qsTranslate() and \c{QT_TR*_NOOP()}) available to scripts
+    that are subsequently evaluated by QScriptEngine::evaluate(). For scripts
+    that are using the qsTr() function, the proper filename must be passed as
+    second argument to QScriptEngine::evaluate().
+
+    \c linguist, \c lupdate and \c lrelease are installed in the \c bin
+    subdirectory of the base directory Qt is installed into. Click Help|Manual
+    in \e{Qt Linguist} to access the user's manual; it contains a tutorial
+    to get you started.
+
+    See also the \l{Hello Script Example}.
 
   \section1 ECMAScript Compatibility
 

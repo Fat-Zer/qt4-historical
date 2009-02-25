@@ -1,42 +1,58 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <!--************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 **************************************************************************-->
 <Rules>
-    <Count>3793</Count>
+    <Count>3796</Count>
+    <item Type="RenamedHeader" >
+        <Qt4>q3buttongroup.h</Qt4>
+        <Qt3>qvbuttongroup.h</Qt3>
+    </item> 
+    <item Type="RenamedHeader" >
+        <Qt4>qcombobox.h</Qt4>
+        <Qt3>qcombo.h</Qt3>
+    </item>
+    <item Type="RenamedHeader" >
+        <Qt4>qtextstream.h</Qt4>
+        <Qt3>qtstream.h</Qt3>
+    </item>
     <item Type="RenamedHeader" >
         <Qt4>q3objectdict.h</Qt4>
         <Qt3>qobjcoll.h</Qt3>
@@ -6522,6 +6538,10 @@
         <Qt3>QStrList</Qt3>
     </item>
     <item Type="RenamedClass" >
+        <Qt4>Q3StrListIterator</Qt4>
+        <Qt3>QStrListIterator</Qt3>
+    </item>
+    <item Type="RenamedClass" >
         <Qt4>Q3StrVec</Qt4>
         <Qt3>QStrVec</Qt3>
     </item>
@@ -6959,6 +6979,30 @@
     <item Type="RenamedEnumvalue" >
         <Qt4>QDir::NoSort</Qt4>
         <Qt3>QDir::DefaultSort</Qt3>
+    </item>
+     <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::Box</Qt4>
+        <Qt3>Q3Frame::GroupBoxPanel</Qt3>
+    </item>
+     <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::StyledPanel</Qt4>
+        <Qt3>Q3Frame::LineEditPanel</Qt3>
+    </item>
+     <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::StyledPanel</Qt4>
+        <Qt3>Q3Frame::PopupPanel</Qt3>
+    </item>
+     <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::StyledPanel</Qt4>
+        <Qt3>Q3Frame::MenuBarPanel</Qt3>
+    </item>
+    <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::StyledPanel</Qt4>
+        <Qt3>Q3Frame::ToolBarPanel</Qt3>
+    </item>
+    <item Type="RenamedEnumvalue" >
+        <Qt4>QFrame::StyledPanel</Qt4>
+        <Qt3>Q3Frame::TabWidgetPanel</Qt3>
     </item>
     <item Type="RenamedEnumvalue" >
         <Qt4>QEvent::Shortcut</Qt4>
@@ -7839,14 +7883,6 @@
     <item Type="RenamedEnumvalue" >
         <Qt4>Qt::Vertical</Qt4>
         <Qt3>Qt::Vertical</Qt3>
-    </item>
-    <item Type="RenamedEnumvalue" >
-        <Qt4>Qt::Ascending</Qt4>
-        <Qt3>Qt::Ascending</Qt3>
-    </item>
-    <item Type="RenamedEnumvalue" >
-        <Qt4>Qt::Descending</Qt4>
-        <Qt3>Qt::Descending</Qt3>
     </item>
     <item Type="RenamedEnumvalue" >
         <Qt4>Qt::AlignAuto</Qt4>
@@ -10189,6 +10225,10 @@
         <Qt3>QCollection</Qt3>
     </item>
     <item Type="NeedHeader" >
+        <Class>Q3SqlFieldInfo</Class>
+        <Header>Q3SqlFieldInfo</Header>
+    </item>
+    <item Type="NeedHeader" >
          <Class>Q3TextStream</Class>
          <Header>Q3TextStream</Header>
      </item>
@@ -10413,12 +10453,12 @@
         <Header>q3mimefactory.h</Header>
     </item>
     <item Type="NeedHeader" >
-        <Class>Q3SqlFiledInfo</Class>
-        <Header>Q3SqlFiledInfo</Header>
+        <Class>Q3SqlFieldInfo</Class>
+        <Header>Q3SqlFieldInfo</Header>
     </item>
     <item Type="NeedHeader" >
-        <Class>Q3SqlFiledInfoList</Class>
-        <Header>Q3SqlFiledInfoList</Header>
+        <Class>Q3SqlFieldInfoList</Class>
+        <Header>Q3SqlFieldInfoList</Header>
     </item>
     <item Type="NeedHeader" >
         <Class>Q3SqlCursor</Class>

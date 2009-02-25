@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -1407,14 +1411,17 @@
     \snippet doc/src/snippets/stringlistmodel/model.cpp 4
     \snippet doc/src/snippets/stringlistmodel/model.cpp 5
 
-    In this model, the item in the string list that corresponds to the model
-    index is replaced by the value provided. However, before we can modify
-    the string list, we must make sure that the index is valid, the item is
-    of the correct type, and that the role is supported. By convention, we
-    insist that the role is the \l{Qt::ItemDataRole}{EditRole} since
-    this is the role used by the standard item delegate. The underlying data
-    in this model is the same for all roles, so this detail just makes it
-    easier to integrate the model with standard components.
+    In this model, the item in the string list that corresponds to the
+    model index is replaced by the value provided. However, before we
+    can modify the string list, we must make sure that the index is
+    valid, the item is of the correct type, and that the role is
+    supported. By convention, we insist that the role is the
+    \l{Qt::ItemDataRole}{EditRole} since this is the role used by the
+    standard item delegate. For boolean values, however, you can use
+    Qt::CheckStateRole and set the Qt::ItemIsUserCheckable flag; a
+    checkbox will then be used for editing the value. The underlying
+    data in this model is the same for all roles, so this detail just
+    makes it easier to integrate the model with standard components.
 
     When the data has been set, the model must let the views know that some
     data has changed. This is done by emitting the
@@ -1989,7 +1996,7 @@
     \snippet doc/src/snippets/qsortfilterproxymodel/main.cpp 1
 
     Since proxy models are inherit from QAbstractItemModel, they can be connected to
-    any kind of view, and can be shared between views. They can be also be used to
+    any kind of view, and can be shared between views. They can also be used to
     process the information obtained from other proxy models in a pipeline arrangement.
 
     The QSortFilterProxyModel class is designed to be instantiated and used directly
@@ -2075,7 +2082,7 @@
        other components and applications can understand.
     \endlist
 
-    For more information, see the \l{http://www.phptr.com/content/images/0131872494/samplechapter/blanchette_ch10.pdf}
+    For more information, see the \l
     {"Item View Classes" Chapter of C++ GUI Programming with Qt 4}.
 
     \section1 Item Data Handling
@@ -2412,22 +2419,24 @@
 
     \section1 Performance Optimization for Large Amounts of Data
 
-    The \l{QAbstractItemModel::canFetchMore()}{canFetchMore()} function checks
-    if the parent has more data available and returns true or false accordingly.
-    The \l{QAbstractItemModel::fetchMore()}{fetchMore()} function fetches data
-    based on the parent specified. Both these functions can be combined, for
-    example, in a database query involving incremental data to populate a
-    QAbstractItemModel. We reimplement \l{QAbstractItemModel::canFetchMore()}
-    {canFetchMore()} to indicate if there is more data to be fetched and
-    \l{QAbstractItemModel::fetchMore()}{fetchMore()} to populate the model
-    as required.
+    The \l{QAbstractItemModel::}{canFetchMore()} function checks if the parent
+    has more data available and returns true or false accordingly. The
+    \l{QAbstractItemModel::}{fetchMore()} function fetches data based on the
+    parent specified. Both these functions can be combined, for example, in a
+    database query involving incremental data to populate a QAbstractItemModel.
+    We reimplement \l{QAbstractItemModel::}{canFetchMore()} to indicate if there
+    is more data to be fetched and \l{QAbstractItemModel::}{fetchMore()} to
+    populate the model as required.
 
-    Another example would be dynamically populated tree models, where we reimplement
-    \l{QAbstractItemModel::fetchMore()}{fetchMore()} when a branch in the tree model
-    is expanded.
+    Another example would be dynamically populated tree models, where we
+    reimplement \l{QAbstractItemModel::}{fetchMore()} when a branch in the tree
+    model is expanded.
 
-    \note Both functions must be reimplemented as the default implementation of
-    \l{QAbstractItemModel::canFetchMore()}{canFetchMore()} returns false and
-    \l{QAbstractItemModel::fetchMore()}{fetchMore()} does nothing.
-
+    If your reimplementation of \l{QAbstractItemModel::}{fetchMore()} adds rows
+    to the model, you need to call \l{QAbstractItemModel::}{beginInsertRows()}
+    and \l{QAbstractItemModel::}{endInsertRows()}. Also, both
+    \l{QAbstractItemModel::}{canFetchMore()} and  \l{QAbstractItemModel::}
+    {fetchMore()} must be reimplemented as their default implementation returns
+    false and does nothing.
 */
+

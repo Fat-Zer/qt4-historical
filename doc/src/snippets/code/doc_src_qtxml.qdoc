@@ -19,13 +19,13 @@ QT += xml
 
 
 //! [4]
-<document xmlns:book = 'http://trolltech.com/fnord/book/'
-          xmlns      = 'http://trolltech.com/fnord/' >
+<document xmlns:book = 'http://qtsoftware.com/fnord/book/'
+          xmlns      = 'http://qtsoftware.com/fnord/' >
 //! [4]
 
 
 //! [5]
-<author xmlns:fnord = 'http://trolltech.com/fnord/'
+<author xmlns:fnord = 'http://qtsoftware.com/fnord/'
              title="Ms" 
              fnord:title="Goddess" 
              name="Eris Kallisti"/>
@@ -51,21 +51,21 @@ QT += xml
 
 
 //! [8]
-xmlns="http://trolltech.com/fnord/"
+xmlns="http://qtsoftware.com/fnord/"
 //! [8]
 
 
 //! [9]
-xmlns:book="http://trolltech.com/fnord/book/"
+xmlns:book="http://qtsoftware.com/fnord/book/"
 //! [9]
 
 
 //! [10]
-<document xmlns:book = 'http://trolltech.com/fnord/book/'
-          xmlns      = 'http://trolltech.com/fnord/' >
+<document xmlns:book = 'http://qtsoftware.com/fnord/book/'
+          xmlns      = 'http://qtsoftware.com/fnord/' >
 <book>
   <book:title>Practical XML</book:title>
-  <book:author xmlns:fnord = 'http://trolltech.com/fnord/'
+  <book:author xmlns:fnord = 'http://qtsoftware.com/fnord/'
                title="Ms"
                fnord:title="Goddess"
                name="Eris Kallisti"/>

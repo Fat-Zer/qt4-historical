@@ -1,3 +1,5 @@
+#ifndef QT_QT3SUPPORT_MODULE_H
+#define QT_QT3SUPPORT_MODULE_H
 #include <QtCore/QtCore>
 #include <QtGui/QtGui>
 #include <QtNetwork/QtNetwork>
@@ -110,3 +112,4 @@
 #include "q3vgroupbox.h"
 #include "q3whatsthis.h"
 #include "q3widgetstack.h"
+#endif

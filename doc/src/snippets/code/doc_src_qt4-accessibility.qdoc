@@ -1,3 +1,7 @@
+//! [environment]
+export QT_ACCESSIBILITY=1
+//! [environment]
+
 //! [0]
 class MyWidgetInterface : public QAccessibleWidget
 {

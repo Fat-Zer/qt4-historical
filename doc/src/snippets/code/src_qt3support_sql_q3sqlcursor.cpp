@@ -3,7 +3,7 @@ Q3SqlCursor cur( "staff" ); // Specify the table/view name
 cur.select(); // We'll retrieve every record
 while ( cur.next() ) {
     qDebug( cur.value( "id" ).toString() + ": " +
-    cur.value( "surname" ).toString() + " " +
+    cur.value( "surname" ).toString() + ' ' +
     cur.value( "salary" ).toString() );
 }
 //! [0]

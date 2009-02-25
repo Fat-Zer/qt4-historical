@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -73,6 +77,27 @@
     \section1 Recent Additions to Qt 4
 
     The following features have been added to Qt since the first release of Qt 4:
+
+    In Qt 4.4:
+    \list
+    \o \l{QtWebkit Module}{Qt WebKit integration}, making it possible for developers
+    to use a fully-featured Web browser to display documents and access online
+    services.
+    \o A multimedia API provided by the \l{Phonon Overview}{Phonon Multimedia Framework}.
+    \o \l{QtXmlPatterns Module}{XQuery and XPath} support, providing facilities for
+    XML processing beyond that supported by the QtXml module.
+    \o Support for embedded widgets in \l{Graphics View} scenes.
+    \o The \l{Threading and Concurrent Programming}{QtConcurrent framework} for
+    concurrent programming using Qt paradigms and threading features.
+    \o An \l{QtHelp Module}{improved help system} that can be used in conjunction
+    with Qt Assistant or as an independent help resource manager.
+    \o Printing system improvements, including the QPrinterInfo, QPrintPreviewWidget
+    and QPrintPreviewDialog classes.
+    \o Support for \l{Windows CE - Introduction to using Qt}{Qt for Windows CE} as
+    a mainstream Qt platform.
+    \o Improvements in performance of Qt for Embedded Linux and extended support for
+    display hardware.
+    \endlist
 
     In Qt 4.3:
     \list
@@ -137,7 +162,7 @@
     \endlist
 
     For more information about improvements in the current release, see
-    the \l{http://www.trolltech.com/developer/notes/changes/changes-4.1.4/}
+    the \l{http://www.qtsoftware.com/developer/changes/changes-4.1.4/}
     {detailed list of changes}.
 
     \section1 Significant Improvements
@@ -410,21 +435,22 @@
 */
 
 /*!
-  \page qt4-4-intro.html
-  \title What's New in Qt 4.4
+  \page qt4-5-intro.html
+  \title What's New in Qt 4.5
 
-  Qt 4.4 provides many improvements and enhancements over the previous releases
-  in the Qt 4 series. This documents covers the most important features in this
+  Qt 4.5 provides many improvements and enhancements over the previous releases
+  in the Qt 4 series. This document covers the most important features in this
   release, separated by category.
 
-  A comprehensive list of changes between Qt 4.3 and Qt 4.4 is included
-  in the \c changes-4.4.0 file
-  \l{http://www.trolltech.com/developer/resources/notes/changes/changes-4.4.0}{available
-  online}.
+  A comprehensive list of changes between Qt 4.4 and Qt 4.5 is included
+  in the \c changes-4.5.0 file
+  \l{http://www.qtsoftware.com/developer/changes/changes-4.5.0}{available online}.
+  A \l{Known Issues in 4.5.0}{list of known issues} for this release is also
+  available.
   \omit
   Changes between this release and the previous release are provided
-  in the \c{changes-4.4.3} file (also
-  \l{http://www.trolltech.com/developer/notes/changes/changes-4.4.3}{available online}).
+  in the \c{changes-4.5.0} file (also
+  \l{http://www.qtsoftware.com/developer/changes/changes-4.5.0}{available online}).
   \endomit
 
   A list of other Qt 4 features can be found on the
@@ -436,120 +462,171 @@
 
   \section1 Qt WebKit Integration
 
-  As Web-based technologies and services become more important to users, access
-  to an integrated browser component has become a requirement for application
-  developers.
+  The WebKit browser engine included with Qt has been upgraded to the latest
+  upstream (trunk) version of WebKit, bringing the latest features and
+  improvements to Qt applications. These include:
 
-  Qt 4.4 includes the QtWebKit module which provides a Qt-style API for the open
-  source WebKit browser engine, making it possible for developers to use a fully-featured
-  Web browser to display documents and access online services. The module also
-  provides a level of integration beyond support for simple Web browsing tasks,
-  enabling other application components to communicate with the browser via
-  Qt's \l{signals and slots} inter-object communication mechanism.
+  \list
+  \o Support for full page zooming, with appropriate rescaling of images and fonts.
+  \o The CSS-based transformation and animation features provided by a WebKit
+  extension.
+  \o Performance improvements due to faster JavaScript engine and optimized
+  page loading.
+  \endlist
 
-  \image browser-demo.png
+  Standards compatibility improvements include provision for the Netscape plugin
+  API, allowing most Netscape plugins to be used in-process, support for HTML 5
+  audio and video elements using Qt's Phonon integration, and
+  \l{Web Application Support}{facilities for client-side storage of Web content}.
 
-  A \l{Browser}{Web browser demo application} is provided as a proof of concept
-  to show what can be achieved with Qt and WebKit.
+  \section1 Performance Improvements
 
-  \section1 Multimedia API
+  The introduction of the QtBenchLib performance benchmarking library enables
+  performance benchmarking and regression testing. Core parts of Qt itself have
+  undergone focused re-engineering for improved graphics performance, including
+  paint engine and text rendering improvements, Graphics View and style sheet
+  performance improvements.
 
-  Long-awaited multimedia support for Qt applications has arrived in the form of
-  the \l{Phonon Overview}{Phonon Multimedia Framework}, created in partnership
-  with the KDE community. This allows developers to write cross-platform code
-  for playing audio and video streams from files or over the network.
+  The X11 paint engine now uses XSHM (the X shared memory extension), resulting
+  in reduced overhead for painting operations.
 
-  A graph-based architecture provides an intuitive, extensible way to configure
-  Phonon for playback. The use of native multimedia backends for each platform
-  enables applications to support platform-specific media formats in addition to
-  those commonly used on multiple platforms.
+  A new OpenGL ES 2.0-based paint engine complements the existing OpenGL paint
+  engine, but with a focus on embedded devices.
 
-  \image mediaplayer-demo.png
+  Qt now features a pluggable graphics system, making it possible for users
+  and developers to select raster, OpenGL or native graphics systems to take
+  into account the specific needs of their applications and get the best
+  performance out of them.
 
-  \l{Qt Examples#Phonon Multimedia Framework}{Examples and demonstrations}
-  provided with Qt show how to use Phonon for your multimedia applications.
+  \section1 Mac OS X Cocoa Support
 
-  \section1 XQuery and XPath Support
+  Qt for Mac OS X has been substantially rewritten to use Apple's Cocoa API,
+  enabling Qt applications to be deployed on 64-bit Macintosh hardware.
+  In addition, the new QMacCocoaViewContainer and QMacNativeWidget classes
+  provide integration with Cocoa's own features and controls.
 
-  The new QtXmlPatterns module provides facilities for XML processing beyond that
-  supported by the QtXml module. Support for XQuery 1.0 and XPath 2.0 are provided
-  in a way that integrates use of the query language and its data types with
-  standard features in Qt, such as \l{QAbstractXmlNodeModel}{data models} and
-  \l{signals and slots}.
+  For many applications, a simple recompilation is all that is required
+  to produce an executable for 64-bit systems. Applications that use
+  specific features may require a few changes first.
 
-  \section1 Widgets in Graphics View
+  \section1 Windows CE Feature Parity
 
-  Many applications that use the interactive features provided by the \l{Graphics View}
-  framework also use separate Qt widgets to control the way scenes are displayed to the
-  user, often providing controls to allow zooming and rotation. Other specialized
-  applications need to provide standard Qt widgets alongside graphics items within
-  graphics scenes themselves.
+  Qt for Windows CE has been updated to bring features of Qt 4.4 and Qt 4.5
+  to the Windows CE platform, including:
 
-  \image embeddeddialogs-demo.png
+  \list
+  \o Phonon Multimedia Framework, using a Direct-Show based backend for audio
+  and video playback and a Simple WaveOut backend for devices without DirectShow.
+  \o The inclusion of Qt WebKit integration features previously unavailable for
+  Qt 4.4 on Windows CE.
+  \endlist
 
-  Qt 4.4 provides a set of classes to allow standard Qt widgets to be added to
-  graphics scenes, augmenting the collection of
-  \l{Graphics View Classes}{Graphics View classes}. Widgets used in this way
-  remain just as functional and responsive as normal widgets
+  Support on all Windows CE platforms; recommended for 
+  WinCE 6 and higher.
 
-  \section1 Concurrent Programming
+  The inclusion of these features enables developers to easily integrate Web and
+  multimedia content into Qt applications on Windows CE Standard Edition while
+  retaining full cross-platform compatibility with other Qt platforms.
 
-  The QtConcurrent framework builds on Qt's threading features to make it easier to
-  write certain kinds of multi-threaded application by integrating implementations
-  of the well-known map-reduce and filter-reduce algorithms with Qt's container
-  classes and object model.
+  \section1 XML Transformations with XSLT
 
-  A synchonous (blocking) API is supplemented with an asynchronous (non-blocking)
-  API which uses the concept of \l{QFuture}{futures} to handle synchronization
-  between a main thread and several worker threads, simplifying the delivery of
-  results.
+  The QtXmlPatterns module has been extended to cover XSLT, a transformation language
+  for XML documents. A common application of this is the transformation of XML data
+  into human-readable formats for reporting purposes.
 
-  \section1 Improved Help System
+  XSLT makes it simple to reformat XML content without changing data structures,
+  removes the need for an intermediate DOM layer for presentation, and enables
+  rapid solutions to be created; for example, creating reports as HTML or PDF.
 
-  Qt Assistant has been redesigned to use a self-contained help format for documentation
-  packages that makes it easier to maintain collections of documents. The indexing
-  facilities provided by Qt Assistant have been improved to allow multiple co-existing
-  collections of documents to be searched, and results from advanced searches are
-  presented in a familiar webpage-style result page.
+  \section1 Qt Script Debugger
 
-  With the arrival of the new help formats, the way Qt applications provide online
-  help has also been updated. Qt Assistant has been improved to support automation
-  as a child process of any Qt application, allowing applications to request specific
-  items of documentation, perform searches, and even customize the user interface of
-  Qt Assistant itself.
+  Developers using Qt Script in their applications can take advantage of
+  the new \l{Qt Script Debugger Manual}{Qt Script Debugger} to provide
+  error reporting for scripts, and to let users track down bugs in their
+  own scripts.
 
-  \section1 Printing System Improvements
+  Many standard features of GUI debugging tools are present, allowing the
+  developer to step through running script code, inspect variables,
+  automatically catch exceptions, and set conditional breakpoints.
 
-  Improvements to printing in Qt 4.4 include support for custom page sizes and
-  custom margins, as well as the ability to programatically enumerate printers via
-  the new QPrinterInfo class.
+  \section1 OpenDocument File Format Support
 
-  \image qprintpreviewdialog.png
+  Qt 4.5 includes support for writing rich text documents as OpenDocument files via
+  the newly-introduced QTextDocumentWriter class. This provides an generic mechanism
+  for file export that can be used to introduce support for additional formats in
+  future releases.
 
-  A couple of new classes, QPrintPreviewWidget and QPrintPreviewDialog, have been
-  added to make it easy to add a print preview to an application. The QPrintDialog
-  and QPageSetupDialog classes for X11 have been redesigned to be easier to use.
+  \section1 Improved Network Proxy Support
 
-  \section1 Qt for Windows CE
+  Qt's networking classes have been updated with improved proxy support. This includes
+  improved integration with system proxy settings and the added ability to handle
+  non-trivial proxy cases.
 
-  Qt 4.4 is the first release to include provision for Windows CE as
-  a supported platform. Qt for Windows CE contains all functions
-  necessary to develop end-to-end applications, as well as integrated
-  developer tools, such as powerful graphical user interface (GUI) and
-  forms builder and robust features for translation of applications
-  into new languages.
+  \section1 Qt Designer Improvements
 
-  \image qt-for-wince-landscape.png
+  Qt Designer 4.5 boasts some improvements on usability, for example:
 
-  \section1 Qt for Embedded Linux
+  \list
+    \o  \bold{Icon Mode} for the widget box which substantially reduces
+        scrolling.
+    \o  \bold{Morphing Widgets} which lets you morph similar widget types,
+        e.g., a QWidget to a QFrame, types via the context menu's
+        \e{Morph into} entry.
+    \o  \bold{Filters} for the \gui{Property Editor} that lets you find
+        properties or widgets quickly.
+    \o  \bold{Find option} for the \gui{Object Inspector} that performs an
+        incremental search on the form's widgets. Also, the objects' layout
+        state is displayed here with using an icon on the left. Broken
+        layouts are represented with the same icon used for the
+        \e{Break Layout} action.
+  \endlist
 
-  Qt 4.4 contains a number of improvements specifically for the Embedded Linux platform,
-  many of which are related to performance and extending the range of supported display
-  hardware. These include a screen driver DirectFB and a driver that uses the ATI Handheld
-  Interface library.
+  In addition, Qt Designer now features an \gui{Embedded Design} tab that can
+  be found in the \gui Preferences dialog. Within this tab, you can define
+  embedded device profiles. These profiles contains screen settings, e.g.,
+  display resolution, default font and default style. Qt Designer will use
+  these settings when you edit forms.
 
-  \image embedded-demo-launcher.png
+  More information about these improvements can be found in the
+  \l{What's New in Qt Designer 4.5} overview.
 
-  In addition, a new selection of demonstrations and examples has been included to
-  showcase the graphical features of Qt for Embedded Linux.
+  \section1 Qt Linguist Improvements
+
+  Qt Linguist can now load and edit multiple translation files simultaneously.
+
+  Support for XML Localization Interchange File Format (XLIFF) files, previously added
+  to the \c lupdate tool in Qt 4.3, has been improved and extended to the rest of the
+  Qt Linguist toolchain. This enables files stored in Qt's TS translation format to
+  be exported for use with other tools.
+
+  The GNU Gettext PO format, which is commonly used in Open Source projects,
+  is now supported by Qt Linguist.
+
+  Support for a new way to annotate messages, using comments in the source code,
+  has been added to the toolchain. See the QObject::tr() documentation for a detailed
+  description and examples.
+
+  The new \c lconvert filter tool facilitates conversion between file formats and
+  can be used to perform other transformations on collections of translatable strings.
+
+  \section1 Graphics Enhancements
+
+  In addition to the performance improvements in this release, a number of graphics
+  enhancements extend support for existing features to more platforms and expand Qt's
+  core set of features with successful add-ons.
+
+  Widget style sheets can now be used on Mac OS X, making this approach to theming
+  and styling viable for truly cross-platform applications.
+
+  Support for ARGB top-level widgets, previously available as a separate solution,
+  is now provided as an integral part of Qt. This makes it possible to create windows
+  with translucent regions on systems with the appropriate support from the user's
+  window system. See the \l{QWidget#Creating Translucent Windows}{Creating Translucent
+  Windows} section of the QWidget documentation for details of this feature.
+
+  \image gtk-style-screenshot.png
+
+  Improved GTK integration provided by the QGtkStyle class improves the look and feel
+  of Qt applications in GNOME and other GTK-based environments. The screenshot above
+  illustrates this clearly.
 */

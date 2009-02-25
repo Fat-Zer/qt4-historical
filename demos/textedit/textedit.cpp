@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -55,6 +59,7 @@
 #include <QTextEdit>
 #include <QToolBar>
 #include <QTextCursor>
+#include <QTextDocumentWriter>
 #include <QTextList>
 #include <QtDebug>
 #include <QCloseEvent>
@@ -178,6 +183,7 @@ void TextEdit::setupFileActions()
     menu->addAction(a);
     menu->addSeparator();
 
+#ifndef QT_NO_PRINTER
     a = new QAction(QIcon(rsrcPath + "/fileprint.png"), tr("&Print..."), this);
     a->setShortcut(QKeySequence::Print);
     connect(a, SIGNAL(triggered()), this, SLOT(filePrint()));
@@ -195,6 +201,7 @@ void TextEdit::setupFileActions()
     menu->addAction(a);
 
     menu->addSeparator();
+#endif
 
     a = new QAction(tr("&Quit"), this);
     a->setShortcut(Qt::CTRL + Qt::Key_Q);
@@ -280,16 +287,24 @@ void TextEdit::setupTextActions()
     QActionGroup *grp = new QActionGroup(this);
     connect(grp, SIGNAL(triggered(QAction *)), this, SLOT(textAlign(QAction *)));
 
-    actionAlignLeft = new QAction(QIcon(rsrcPath + "/textleft.png"), tr("&Left"), grp);
+    // Make sure the alignLeft  is always left of the alignRight
+    if (QApplication::isLeftToRight()) {
+        actionAlignLeft = new QAction(QIcon(rsrcPath + "/textleft.png"), tr("&Left"), grp);
+        actionAlignCenter = new QAction(QIcon(rsrcPath + "/textcenter.png"), tr("C&enter"), grp);
+        actionAlignRight = new QAction(QIcon(rsrcPath + "/textright.png"), tr("&Right"), grp);
+    } else {
+        actionAlignRight = new QAction(QIcon(rsrcPath + "/textright.png"), tr("&Right"), grp);
+        actionAlignCenter = new QAction(QIcon(rsrcPath + "/textcenter.png"), tr("C&enter"), grp);
+        actionAlignLeft = new QAction(QIcon(rsrcPath + "/textleft.png"), tr("&Left"), grp);
+    }
+    actionAlignJustify = new QAction(QIcon(rsrcPath + "/textjustify.png"), tr("&Justify"), grp);
+
     actionAlignLeft->setShortcut(Qt::CTRL + Qt::Key_L);
     actionAlignLeft->setCheckable(true);
-    actionAlignCenter = new QAction(QIcon(rsrcPath + "/textcenter.png"), tr("C&enter"), grp);
     actionAlignCenter->setShortcut(Qt::CTRL + Qt::Key_E);
     actionAlignCenter->setCheckable(true);
-    actionAlignRight = new QAction(QIcon(rsrcPath + "/textright.png"), tr("&Right"), grp);
     actionAlignRight->setShortcut(Qt::CTRL + Qt::Key_R);
     actionAlignRight->setCheckable(true);
-    actionAlignJustify = new QAction(QIcon(rsrcPath + "/textjustify.png"), tr("&Justify"), grp);
     actionAlignJustify->setShortcut(Qt::CTRL + Qt::Key_J);
     actionAlignJustify->setCheckable(true);
 
@@ -421,22 +436,21 @@ bool TextEdit::fileSave()
     if (fileName.isEmpty())
         return fileSaveAs();
 
-    QFile file(fileName);
-    if (!file.open(QFile::WriteOnly))
-        return false;
-    QTextStream ts(&file);
-    ts.setCodec(QTextCodec::codecForName("UTF-8"));
-    ts << textEdit->document()->toHtml("UTF-8");
-    textEdit->document()->setModified(false);
-    return true;
+    QTextDocumentWriter writer(fileName);
+    bool success = writer.write(textEdit->document());
+    if (success)
+        textEdit->document()->setModified(false);
+    return success;
 }
 
 bool TextEdit::fileSaveAs()
 {
     QString fn = QFileDialog::getSaveFileName(this, tr("Save as..."),
-                                              QString(), tr("HTML-Files (*.htm *.html);;All Files (*)"));
+                                              QString(), tr("ODF files (*.odt);;HTML-Files (*.htm *.html);;All Files (*)"));
     if (fn.isEmpty())
         return false;
+    if (! (fn.endsWith(".odt", Qt::CaseInsensitive) || fn.endsWith(".htm", Qt::CaseInsensitive) || fn.endsWith(".html", Qt::CaseInsensitive)) )
+        fn += ".odt"; // default
     setCurrentFileName(fn);
     return fileSave();
 }
@@ -524,9 +538,12 @@ void TextEdit::textFamily(const QString &f)
 
 void TextEdit::textSize(const QString &p)
 {
-    QTextCharFormat fmt;
-    fmt.setFontPointSize(p.toFloat());
-    mergeFormatOnWordOrSelection(fmt);
+    qreal pointSize = p.toFloat();
+    if (p.toFloat() > 0) {
+        QTextCharFormat fmt;
+        fmt.setFontPointSize(pointSize);
+        mergeFormatOnWordOrSelection(fmt);
+    }
 }
 
 void TextEdit::textStyle(int styleIndex)
@@ -599,11 +616,11 @@ void TextEdit::textColor()
 void TextEdit::textAlign(QAction *a)
 {
     if (a == actionAlignLeft)
-        textEdit->setAlignment(Qt::AlignLeft);
+        textEdit->setAlignment(Qt::AlignLeft | Qt::AlignAbsolute);
     else if (a == actionAlignCenter)
         textEdit->setAlignment(Qt::AlignHCenter);
     else if (a == actionAlignRight)
-        textEdit->setAlignment(Qt::AlignRight);
+        textEdit->setAlignment(Qt::AlignRight | Qt::AlignAbsolute);
     else if (a == actionAlignJustify)
         textEdit->setAlignment(Qt::AlignJustify);
 }

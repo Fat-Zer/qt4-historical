@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -209,11 +213,11 @@
 
     The paint engine's state is stored in the private member
     variables, and we reimplement the \l
-    {QRasterPaintEngine::}{updateState()} function to ensure that our
+    {QPaintEngine::}{updateState()} function to ensure that our
     custom paint engine's state is updated properly whenever it is
     required. The private \c setClip() and \c updateClip() functions
     are only helper function used to simplify the \l
-    {QRasterPaintEngine::}{updateState()} implementation.
+    {QPaintEngine::}{updateState()} implementation.
 
     We also reimplement QRasterPaintEngine's \l
     {QRasterPaintEngine::}{begin()} and \l
@@ -255,7 +259,7 @@
 
     \snippet examples/qws/svgalib/svgalibpaintengine.cpp 2
 
-    The \l {QRasterPaintEngine::}{updateState()} function updates our
+    The \l {QPaintEngine::}{updateState()} function updates our
     custom paint engine's state. The QPaintEngineState class provides
     information about the active paint engine's current state.
 
@@ -263,7 +267,7 @@
     do any shearing. The pen is accepted if it is opaque and only one
     pixel wide. The rest of the engine's properties are updated
     following the same pattern. Again it is important that the
-    QRasterPaintEngine::updateState() function is called to update the
+    QPaintEngine::updateState() function is called to update the
     parts inherited from the base class.
 
     \snippet examples/qws/svgalib/svgalibpaintengine.cpp 3
@@ -271,7 +275,7 @@
     \snippet examples/qws/svgalib/svgalibpaintengine.cpp 4
 
     The \c setClip() helper function is called from our custom
-    implementation of \l {QRasterPaintEngine::}{updateState()}, and
+    implementation of \l {QPaintEngine::}{updateState()}, and
     enables clipping to the given region. An empty region means that
     clipping is disabled.
 

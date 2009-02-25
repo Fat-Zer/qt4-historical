@@ -1,11 +1,9 @@
 HEADERS       = mainwindow.h \
-                svgview.h \
-                svgwindow.h
+                svgview.h
 RESOURCES     = svgviewer.qrc
 SOURCES       = main.cpp \
                 mainwindow.cpp \
-                svgview.cpp \
-                svgwindow.cpp
+                svgview.cpp
 QT           += svg xml
 
 contains(QT_CONFIG, opengl): QT += opengl

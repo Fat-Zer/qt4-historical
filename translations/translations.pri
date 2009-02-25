@@ -8,17 +8,23 @@ defineReplace(prependAll) {
     return ($$result)
 }
 
-LUPDATE = $$QT_BUILD_TREE/bin/lupdate
-LRELEASE = $$QT_BUILD_TREE/bin/lrelease
+defineReplace(fixPath) {
+WIN {
+    return ($$replace($$1, /, \))
+} ELSE {
+    return ($$1)
+}
+}
 
+LUPDATE = $$fixPath($$QT_BUILD_TREE/bin/lupdate) -locations relative -no-ui-lines
+LRELEASE = $$fixPath($$QT_BUILD_TREE/bin/lrelease)
 
 ###### Qt Libraries
 
 QT_TS        = de fr zh_CN untranslated ar es iw ja_jp pl pt ru sk sv uk zh_TW 
 
 ts-qt.commands = (cd $$QT_SOURCE_TREE/src && $$LUPDATE \
-                                    3rdparty/kdebase \
-                                    3rdparty/kdelibs \
+                                    3rdparty/phonon \
                                     3rdparty/webkit \
                                     activeqt \
                                     corelib \

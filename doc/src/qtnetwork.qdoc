@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -54,7 +58,7 @@
     QNetworkReply and QNetworkAccessManager to perform network operations using common protocols.
 
     The QtNetwork module is part of the \l{Qt Full Framework Edition} and the
-    \l{Qt Open Source Edition}.
+    \l{Open Source Versions of Qt}.
 
     Topics:
 
@@ -317,4 +321,38 @@
     non-GUI thread. (Calling this function in a GUI thread may cause
     your user interface to freeze while the function blocks as
     it performs the lookup.)
+
+    \section1 Support for Network Proxies
+
+    Network communication with Qt can be performed through proxies,
+    which direct or filter network traffic between local and remote
+    connections.
+
+    Individual proxies are represented by the QNetworkProxy class,
+    which is used to describe and configure the connection to a proxy.
+    Proxy types which operate on different levels of network communication
+    are supported, with SOCKS 5 support allowing proxying of network
+    traffic at a low level, and HTTP and FTP proxying working at the
+    protocol level. See QNetworkProxy::ProxyType for more information.
+
+    Proxying can be enabled on a per-socket basis or for all network
+    communication in an application. A newly opened socket can be
+    made to use a proxy by calling its QAbstractSocket::setProxy()
+    function before it is connected. Application-wide proxying can
+    be enabled for all subsequent socket connections through the use
+    of the QNetworkProxy::setApplicationProxy() function.
+
+    Proxy factories are used to create policies for proxy use.
+    QNetworkProxyFactory supplies proxies based on queries for specific
+    proxy types. The queries themselves are encoded in QNetworkProxyQuery
+    objects which enable proxies to be selected based on key criteria,
+    such as the purpose of the proxy (TCP, UDP, TCP server, URL request),
+    local port, remote host and port, and the protocol in use (HTTP, FTP,
+    etc.).
+
+    QNetworkProxyFactory::proxyForQuery() is used to query the factory
+    directly. An application-wide policy for proxying can be implemented
+    by passing a factory to QNetworkProxyFactory::setApplicationProxyFactory()
+    and a custom proxying policy can be created by subclassing
+    QNetworkProxyFactory; see the class documentation for details.
 */

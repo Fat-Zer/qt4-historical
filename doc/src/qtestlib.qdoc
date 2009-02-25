@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -78,6 +82,9 @@
         \o \bold {Basic GUI testing}
         \o QTestLib offers functionality for mouse and keyboard simulation.
     \row
+        \o \bold {Benchmarking}
+        \o QTestLib supports benchmarking and provides several measurement back-ends.
+    \row
          \o \bold {IDE friendly}
          \o QTestLib outputs messages that can be interpreted by Visual
             Studio and KDevelop.
@@ -106,7 +113,7 @@
 
     \section1 Using QTestLib
 
-    \section2 Creating a test
+    \section2 Creating a Test
 
     To create a test, subclass QObject and add one or more private slots to it. Each
     private slot is a testfunction in your test. QTest::qExec() can be used to execute
@@ -221,6 +228,52 @@
     sets the maximum number of warnings to output. 0 for unlimited, defaults to 2000.
     \endlist
 
+    \section2 Creating a Benchmark
+    
+    To create a benchmark, follow the instructions for crating a test and then add a
+    QBENCHMARK macro to the test function that you want to benchmark.
+    
+    \snippet doc/src/snippets/code/doc_src_qtestlib.qdoc 12
+    
+    The code insde the QBENCHMARK macro will be measured, and possibly also repeated
+    several times in order to get an accurate measurement. This depends on the selected
+    measurement back-end. Several back-ends are available an can be selected on the
+    command line:
+    
+    \target testlib-benchmarking-measurement
+
+    \table
+    \header \o Name
+         \o Commmand-line Arguemnt
+         \o Availability
+    \row \o Walltime
+         \o (default)
+         \o All platforms
+    \row \o CPU tick counter
+         \o -tickcounter
+         \o Windows, Mac OS X, Linux, many UNIX-like systems.
+    \row \o Valgrind/Callgrind
+         \o -callgrind
+         \o Linux (if installed)
+    \row \o Event Counter
+         \o -eventcounter
+         \o All platforms
+    \endtable
+    
+    In short, walltime is always available but requires many repetitions to
+    get a useful result. 
+    Tick counters are usually available and can provide 
+    results with fewer repetitions, but can be susceptible to CPU frequency 
+    scaling issues. 
+    Valgrind provides exact results, but does not take
+    I/O waits into account, and is only available on a limited number of
+    platforms.
+    Event counting is available on all platforms and it provides the number of events
+    that were received by the event loop before they are sent to their corresponding
+    targets (this might include non-Qt events).
+       
+    See the chapter 5 in the \l{QTestLib Tutorial} for more benchmarking examples.
+
     \section1 Using QTestLib remotely on Windows CE
     \c cetest is a convenience application which helps the user to launch an 
     application remotely on a Windows CE device or emulator.
@@ -287,6 +340,35 @@
 
     Note that Qt will remember the path, so you do not need to set it again
     after switching the environments for cross-compilation.
+
+    \section1 3rd Party Code
+
+    The CPU tick counters used for benchmarking is licensed under the following
+    license: (from src/testlib/3rdparty/cycle.h)
+                    
+    \legalese
+    Copyright (c) 2003, 2006 Matteo Frigo\br
+    Copyright (c) 2003, 2006 Massachusetts Institute of Technology
+
+    Permission is hereby granted, free of charge, to any person obtaining
+    a copy of this software and associated documentation files (the
+    "Software"), to deal in the Software without restriction, including
+    without limitation the rights to use, copy, modify, merge, publish,
+    distribute, sublicense, and/or sell copies of the Software, and to
+    permit persons to whom the Software is furnished to do so, subject to
+    the following conditions:
+
+    The above copyright notice and this permission notice shall be
+    included in all copies or substantial portions of the Software.
+
+    THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS OR IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF
+    MERCHANTABILITY, FITNESS FOR A PARTICULAR PURPOSE AND
+    NONINFRINGEMENT. IN NO EVENT SHALL THE AUTHORS OR COPYRIGHT HOLDERS BE
+    LIABLE FOR ANY CLAIM, DAMAGES OR OTHER LIABILITY, WHETHER IN AN ACTION
+    OF CONTRACT, TORT OR OTHERWISE, ARISING FROM, OUT OF OR IN CONNECTION
+    WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE SOFTWARE.
+    \endlegalese
 */
 
 /*!
@@ -307,6 +389,7 @@
     \o \l {Chapter 2: Data Driven Testing}{Data Driven Testing}
     \o \l {Chapter 3: Simulating GUI Events}{Simulating GUI Events}
     \o \l {Chapter 4: Replaying GUI Events}{Replaying GUI Events}
+    \o \l {Chapter 5: Writing a Benchmark}{Writing a Benchmark}
     \endlist
 
 */
@@ -557,10 +640,11 @@
 
     \previouspage {Chapter 3: Simulating GUI Event}{Chapter 3}
     \contentspage {QTestLib Tutorial}{Contents}
+    \nextpage {Chapter 5: Writing a Benchmark}{Chapter 5}
 
     \title Chapter 4: Replaying GUI Events
 
-    In this final chapter, we will show how to simulate a GUI event,
+    In thischapter, we will show how to simulate a GUI event,
     and how to store a series of GUI events as well as replay them on
     a widget.
 
@@ -629,6 +713,61 @@
     the implementation of our test class are in a .cpp file, we also
     need to include the generated moc file to make Qt's introspection
     work.
+*/
+
+/*!
+    \example qtestlib/tutorial5
+
+    \previouspage {Chapter 4: Replaying GUI Events}{Chapter 4}
+    \contentspage {QTestLib Tutorial}{Contents}
+
+    \title Chapter 5: Writing a Benchmark
+
+    In this final chapter we will demonstrate how to write benchmarks
+    using QTestLib.
+
+    \section1 Writing a Benchmark
+    To crate a benchmark we extend a test function with a QBENCHMARK macro.
+    A benchmark test function will then typically consist of setup code and 
+    a QBENCHMARK macro that contains the code to be measured. This test
+    function benchmarks QString::localeAwareCompare().
+
+    \snippet examples/qtestlib/tutorial5/benchmarking.cpp 0
+
+    Setup can be done at the beginning of the function, the clock is not 
+    running at this point. The code inside the QBENCHMARK macro will be
+    measured, and possibly repeated several times in order to  get an 
+    accurate measurement.
+
+    Several \l {testlib-benchmarking-measurement}{back-ends} are available
+    and can be selected on the command line.
+
+    \section1 Data Functions
+
+    Data functions are useful for creating benchmarks that compare 
+    multiple data inputs, for example locale aware compare against standard
+    compare.
+
+    \snippet examples/qtestlib/tutorial5/benchmarking.cpp 1
+
+    The test function then uses the data to determine what to benchmark.
+
+    \snippet examples/qtestlib/tutorial5/benchmarking.cpp 2
+
+    The "if(useLocaleCompare)" switch is placed outside the QBENCHMARK 
+    macro to avoid measuring its overhead. Each benchmark test function
+    can have one active QBENCHMARK macro. 
+
+    \section1 External Tools
+
+    Tools for handling and visualizing test data are available as part of
+    the \l{qtestlib-tools} project on the Qt Labs Web site. These include
+    a tool for comparing performance data obtained from test runs and a
+    utility to generate Web-based graphs of performance data.
+
+    See the \l{qtestlib-tools Announcement} for more information on these
+    tools and a simple graphing example.
+
 */
 
 

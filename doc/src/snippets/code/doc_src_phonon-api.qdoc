@@ -154,12 +154,12 @@ void hasVideoChanged(bool b)
 
 
 //! [13]
-setMetaArtist (media->metaData("ARTIST"     ));
-setMetaAlbum  (media->metaData("ALBUM"      ));
-setMetaTitle  (media->metaData("TITLE"      ));
-setMetaDate   (media->metaData("DATE"       ));
-setMetaGenre  (media->metaData("GENRE"      ));
-setMetaTrack  (media->metaData("TRACKNUMBER"));
+setMetaArtist(media->metaData("ARTIST"));
+setMetaAlbum(media->metaData("ALBUM"));
+setMetaTitle(media->metaData("TITLE"));
+setMetaDate(media->metaData("DATE"));
+setMetaGenre(media->metaData("GENRE"));
+setMetaTrack(media->metaData("TRACKNUMBER"));
 setMetaComment(media->metaData("DESCRIPTION"));
 //! [13]
 

@@ -6,7 +6,7 @@ SHARED_FOLDER = ../shared
 include($$SHARED_FOLDER/shared.pri)
 
 RESOURCES += composition.qrc
-!embedded:!wince*:contains(QT_CONFIG, opengl) {
+contains(QT_CONFIG, opengl) {
 	DEFINES += QT_OPENGL_SUPPORT
 	QT += opengl
 }
@@ -22,3 +22,6 @@ win32-msvc* {
     QMAKE_CFLAGS += /Zm500
 }
 
+wince* {
+    DEPLOYMENT_PLUGIN += qjpeg
+}

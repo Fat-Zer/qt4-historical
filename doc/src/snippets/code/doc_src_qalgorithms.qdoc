@@ -77,9 +77,9 @@ qCopyBackward(list.begin(), list.end(), vect.end());
 
 //! [6]
 QStringList list;
-list << "one" << "two << "three";
+list << "one" << "two" << "three";
 
-QVector<QString> vect[3];
+QVector<QString> vect(3);
 vect[0] = "one";
 vect[1] = "two";
 vect[2] = "three";
@@ -88,7 +88,7 @@ bool ret1 = qEqual(list.begin(), list.end(), vect.begin());
 // ret1 == true
 
 vect[2] = "seven";
-bool rec2 = qEqual(list.begin(), list.end(), vect.begin());
+bool ret2 = qEqual(list.begin(), list.end(), vect.begin());
 // ret2 == false
 //! [6]
 

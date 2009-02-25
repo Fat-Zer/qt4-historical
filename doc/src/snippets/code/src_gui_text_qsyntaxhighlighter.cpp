@@ -28,7 +28,7 @@ QTextCharFormat multiLineCommentFormat;
 multiLineCommentFormat.setForeground(Qt::red);
 
 QRegExp startExpression("/\\*");
-QRegExp endExpression("\\* /");
+QRegExp endExpression("\\*/");
 
 setCurrentBlockState(0);
 

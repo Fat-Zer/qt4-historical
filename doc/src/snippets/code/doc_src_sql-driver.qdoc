@@ -225,3 +225,15 @@ nmake
 QSqlDatabase: QMYSQL driver not loaded
 QSqlDatabase: available drivers: QMYSQL
 //! [31]
+
+//! [32]
+configure -I /usr/include/oracle/10.1.0.3/client -L /usr/lib/oracle/10.1.0.3/client/lib -R /usr/lib/oracle/10.1.0.3/client/lib -lclntsh -lnnz10
+make
+//! [32]
+
+//! [33]
+cd $QTDIR/src/plugins/sqldrivers/oci
+qmake "INCLUDEPATH+=/usr/include/oracle/10.1.0.3/client" "LIBS+=-L/usr/lib/oracle/10.1.0.3/client/lib -Wl,-rpath,/usr/lib/oracle/10.1.0.3/client/lib -lclntsh -lnnz10" oci.pro
+make
+//! [33]
+

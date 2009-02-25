@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -1301,16 +1305,21 @@
     \table
     \header \o Qt 4 class \o When to use it
     \row \o QMultiHash<QString, T *>
-         \o Since Q3Dict<T> is pointer-based and allows duplicate keys, this
-            is usually the most straightforward conversion.
+
+         \o Since Q3Dict<T> is pointer-based and allows duplicate
+            keys, this is usually the most straightforward conversion.
+
     \row \o QMultiHash<QString, T>
+
          \o If type \c T is an \l{assignable data type}, you can use
-            \c T as the value type rather than \c{T *}. This often leads
-            to nicer code.
+            \c T as the value type rather than \c{T *}. This often
+            leads to nicer code.
+
     \row \o QHash<QString, T *>
+
          \o{1,2} If you don't use duplicate keys, you can use QHash
-                 instead of QMultiHash. QMultiHash inherits from
-                 QHash.
+            instead of QMultiHash. QMultiHash inherits from QHash.
+
     \row \o QHash<QString, T>
     \endtable
 
@@ -3936,6 +3945,23 @@
     Also, the QVariant(bool, int) constructor has been replaced by QVariant(bool).
     Old code like QVariant(true, 0) should be replaced with QVariant(true); otherwise,
     the QVariant(int, void *) overload might accidentally be triggered.
+
+    Many of QVariant's convenience functions in Qt 3, such as toColor() and
+    toKeySequence(), have been removed to enable QVariant to be part of the
+    QtCore module. QVariant is still able to hold values of these types.
+
+    Types which are not supported by any of the QVariant constructors can be
+    stored as variants with the QVariant::fromValue() function. Types with no
+    suitable convenience function for unpacking can be retrieved with the
+    QVariant::value() function or passed directly to classes that implement
+    the QVariant() operator.
+
+    \table
+    \header \o Qt 3 function \o Qt 4 function
+    \input porting4-removedvariantfunctions.qdocinc
+    \endtable
+
+    See the QVariant::Type enum for a list of types supported by QVariant.
 
     \section1 QVBox
 

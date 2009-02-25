@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -43,8 +47,8 @@
     \brief License information for third-party libraries supplied with Qt.
 
     Qt includes a number of third-party libraries that are used to provide
-    certain features. Unlike other
-    \l{Licenses for Code Used in Qt}{third-party code used in Qt}, these
+    certain features. Unlike the code described in the
+    \l{Other Licenses Used in Qt}{code used in Qt} document, these
     libraries are supplied alongside the Qt modules.
 
     Run \c{configure -help} to see any options that may be available for
@@ -149,9 +153,61 @@
     manipulation of TIFF image files.} -- quoted from \c
     src/libtiff/html/libtiff.html
 
+    \hr
+
+    Copyright (c) 1988-1997 Sam Leffler\br
+    Copyright (c) 1991-1997 Silicon Graphics, Inc.\br
+    Copyright (C) 2004, Andrey Kiselev <dron@ak4719.spb.edu>\br
+    Copyright (c) 1997 Greg Ward Larson
+
+    Permission to use, copy, modify, distribute, and sell this software and 
+    its documentation for any purpose is hereby granted without fee, provided
+    that (i) the above copyright notices and this permission notice appear in
+    all copies of the software and related documentation, and (ii) the names of
+    Sam Leffler and Silicon Graphics may not be used in any advertising or
+    publicity relating to the software without the specific, prior written
+    permission of Sam Leffler and Silicon Graphics.
+
+    THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+    EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+    WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+
+    IN NO EVENT SHALL SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
+    ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+    OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+    WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
+    LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+    OF THIS SOFTWARE.
+
+    \hr
+
+    Copyright (c) 1996-1997 Sam Leffler\br
+    Copyright (c) 1996 Pixar
+
+    Permission to use, copy, modify, distribute, and sell this software and 
+    its documentation for any purpose is hereby granted without fee, provided
+    that (i) the above copyright notices and this permission notice appear in
+    all copies of the software and related documentation, and (ii) the names of
+    Pixar, Sam Leffler and Silicon Graphics may not be used in any advertising or
+    publicity relating to the software without the specific, prior written
+    permission of Pixar, Sam Leffler and Silicon Graphics.
+
+    THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND, 
+    EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY 
+    WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.  
+
+    IN NO EVENT SHALL PIXAR, SAM LEFFLER OR SILICON GRAPHICS BE LIABLE FOR
+    ANY SPECIAL, INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND,
+    OR ANY DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+    WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY OF 
+    LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR PERFORMANCE 
+    OF THIS SOFTWARE.
+
+    \hr
+
     See \c src/3rdparty/libtiff/COPYRIGHT for license details.
 
-    \section1 SQLite (\c sqlite) version 3.5.4
+    \section1 SQLite (\c sqlite) version 3.5.9
 
     \e{SQLite is a small C library that implements a
     self-contained, embeddable, zero-configuration SQL database engine.}
@@ -177,4 +233,35 @@
     src/3rdparty/zlib/README.
 
     See \c src/3rdparty/zlib/README for license details.
+
+    \section1 The ptmalloc memory allocator (\c ptmalloc3) version 1.8
+
+    \e ptmcalloc3 is a scalable concurrent memory allocator suitable
+    for use in multi-threaded programs.
+
+    \hr
+
+    Copyright (c) 2001-2006 Wolfram Gloger
+
+    Permission to use, copy, modify, distribute, and sell this software
+    and its documentation for any purpose is hereby granted without fee,
+    provided that (i) the above copyright notices and this permission
+    notice appear in all copies of the software and related documentation,
+    and (ii) the name of Wolfram Gloger may not be used in any advertising
+    or publicity relating to the software.
+
+    THE SOFTWARE IS PROVIDED "AS-IS" AND WITHOUT WARRANTY OF ANY KIND,
+    EXPRESS, IMPLIED OR OTHERWISE, INCLUDING WITHOUT LIMITATION, ANY
+    WARRANTY OF MERCHANTABILITY OR FITNESS FOR A PARTICULAR PURPOSE.
+
+    IN NO EVENT SHALL WOLFRAM GLOGER BE LIABLE FOR ANY SPECIAL,
+    INCIDENTAL, INDIRECT OR CONSEQUENTIAL DAMAGES OF ANY KIND, OR ANY
+    DAMAGES WHATSOEVER RESULTING FROM LOSS OF USE, DATA OR PROFITS,
+    WHETHER OR NOT ADVISED OF THE POSSIBILITY OF DAMAGE, AND ON ANY THEORY
+    OF LIABILITY, ARISING OUT OF OR IN CONNECTION WITH THE USE OR
+    PERFORMANCE OF THIS SOFTWARE.
+
+    \hr
+
+    See \c src/3rdparty/ptmalloc/COPYRIGHT for license details.
 */

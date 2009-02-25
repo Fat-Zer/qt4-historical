@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -146,6 +150,11 @@
     \value AA_DontCreateNativeWidgetSiblings Ensures that siblings of native
            widgets stay non-native unless specifically set by the
            Qt::WA_NativeWindow attribute.
+
+    \value AA_MacPluginApplication Stops the a Qt mac application from doing
+           specific initializations that do not necessarily make sense when using Qt
+           to author a plugin. This includes avoiding loading our nib for the main
+           menu and not taking possession of the native menu bar.
 
     \omitvalue AA_AttributeCount
 */
@@ -454,8 +463,10 @@
     \value TextHideMnemonic Same as Qt::TextShowMnemonic but doesn't draw the underlines.
     \value TextDontPrint Treat this text as "hidden" and don't print
     it.
-    \value TextIncludeTrailingSpaces Don't automatically delete
-    trailing whitespace.
+    \value IncludeTrailingSpaces When this option is set, QTextLine::naturalTextWidth() and naturalTextRect() will
+                                 return a value that includes the width of trailing spaces in the text; otherwise
+                                 this width is excluded.
+    \value TextIncludeTrailingSpaces Same as IncludeTrailingSpaces
     \value TextJustificationForced Ensures that text lines are justified.
 
     \omitvalue BreakAnywhere
@@ -525,8 +536,10 @@
 /*!
     \enum Qt::DateFormat
 
-    \value TextDate The default Qt format. The day and month names will be localized names.
-    See QDate::toString() for more information.
+    \value TextDate The default Qt format, which includes the day and month name,
+    the day number in the month, and the year in full. The day and month names will
+    be short, localized names. This is basically equivalent to using the date format
+    string, "ddd MMM d yyyy". See QDate::toString() for more information.
 
     \value ISODate ISO 8601 extended format: either \c{YYYY-MM-DD} for dates or
     \c{YYYY-MM-DDTHH:MM:SS} for combined dates and times.
@@ -682,6 +695,7 @@
     \omitvalue Dither_Mask
     \omitvalue AlphaDither_Mask
     \omitvalue DitherMode_Mask
+    \omitvalue NoOpaqueDetection
 */
 
 /*! \enum Qt::GUIStyle
@@ -843,6 +857,9 @@
 
     \value WA_InputMethodEnabled Enables input methods for Asian languages.
     Must be set when creating custom text editing widgets.
+    On Windows CE this flag can be used in addition to
+    QApplication::autoSipEnabled to automatically display the SIP when
+    entering a widget.
 
     \value WA_KeyboardFocusChange Set on a toplevel window when
     the users changes focus with the keyboard (tab, backtab, or shortcut).
@@ -876,8 +893,12 @@
     when laying out this widget with QLayout. This makes a difference in
     QMacStyle and QPlastiqueStyle for some widgets.
 
-    \value WA_MacNoClickThrough Indicates that the window is only
-    activated when clicked.
+    \value WA_MacNoClickThrough When a widget that has this attribute set
+    is clicked, and its window is inactive, the click will make the window
+    active but won't be seen by the widget. Typical use of this attribute
+    is on widgets with "destructive" actions, such as a "Delete" button.
+    WA_MacNoClickThrough also applies to all child widgets of the widget
+    that has it set.
 
     \value WA_MacOpaqueSizeGrip Indicates that the native Carbon size grip
     should be opaque instead of transparent (the default). This attribute
@@ -945,234 +966,229 @@
     not want to receive ChildAdded or ChildRemoved events sent from its
     children. This is set by a widget's author.
 
-    \value WA_NoMouseReplay Used for pop-up widgets. Indicates that the
-    most recent mouse press event should not be replayed when the
-    pop-up widget closes. The flag is set by the widget's author and
-    cleared by the Qt kernel every time the widget receives a new
-    mouse event.
+    \value WA_NoMouseReplay Used for pop-up widgets. Indicates that the most
+    recent mouse press event should not be replayed when the pop-up widget
+    closes. The flag is set by the widget's author and cleared by the Qt kernel
+    every time the widget receives a new mouse event.
 
     \value WA_NoMousePropagation Prohibits mouse events from being propagated
-    to the widget's parent.
+    to the widget's parent. This attribute is disabled by default.
 
-    \value WA_NoSystemBackground Indicates that the widget has no
-    background, i.e. when the widget receives paint events, the
-    background is not automatically repainted. \bold{Note:} Unlike
-    WA_OpaquePaintEvent, newly exposed areas are \e never filled with the
-    background (e.g after showing a window for the first time the user
-    can see "through" it until the application processes the paint
-    events). This is set/cleared by the widget's author.
+    \value WA_TransparentForMouseEvents When enabled, this attribute disables
+    the delivery of mouse events to the widget and its children. Mouse events
+    are delivered to other widgets as if the widget and its children were not
+    present in the widget hierarchy; mouse clicks and other events effectively
+    "pass through" them. This attribute is disabled by default.
 
-    \value WA_OpaquePaintEvent Indicates that the widget paints all its
-    pixels when it receives a paint event. It is thus not required for
-    operations like updating, resizing, scrolling and focus changes to
-    erase the widget before generating paint events. Using
-    WA_OpaquePaintEvent is a small optimization. It can help to reduce
-    flicker on systems that do not provide double buffer support, and
-    it avoids the computational cycles necessary to erase the
-    background prior to paint. \bold{Note:} Unlike WA_NoSystemBackground,
-    WA_OpaquePaintEvent makes an effort to avoid transparent window
-    backgrounds. This is set/cleared by the widget's author.
+    \value WA_NoSystemBackground Indicates that the widget has no background,
+    i.e. when the widget receives paint events, the background is not
+    automatically repainted. \note Unlike WA_OpaquePaintEvent, newly exposed
+    areas are \bold never filled with the background (e.g., after showing a
+    window for the first time the user can see "through" it until the
+    application processes the paint events). This flag is set or cleared by the
+    widget's author.
+
+    \value WA_OpaquePaintEvent Indicates that the widget paints all its pixels
+    when it receives a paint event. Thus, it is not required for operations
+    like updating, resizing, scrolling and focus changes to erase the widget
+    before generating paint events. The use of WA_OpaquePaintEvent provides a
+    small optimization by helping to reduce flicker on systems that do not
+    support double buffering and avoiding computational cycles necessary to
+    erase the background prior to painting. \note Unlike
+    WA_NoSystemBackground, WA_OpaquePaintEvent makes an effort to avoid
+    transparent window backgrounds. This flag is set or cleared by the widget's
+    author.
 
     \value WA_OutsideWSRange Indicates that the widget is outside
     the valid range of the window system's coordinate system. A widget
     outside the valid range cannot be mapped on screen. This is
     set/cleared by the Qt kernel.
 
-    \value WA_PaintOnScreen Indicates that the widget wants to draw
-    directly onto the screen. Widgets with this attribute set do not
-    participate in composition management, i.e. they cannot be
-    semi-transparent or shine through semi-transparent overlapping
-    widgets. This is only supported on X11. On Qt for Embedded Linux,
-    the flag currently only works when set on a top-level widget and
-    relies on support from the active screen driver. The flag is set or
-    cleared by the widget's author. For rendering outside of Qt's
-    paint system; e.g. if you need to use native X11 painting primitives,
-    you need to reimplement QWidget::paintEngine() to return 0 and set
-    this flag. \note This flag disables double buffering.
+    \value WA_PaintOnScreen Indicates that the widget wants to draw directly
+    onto the screen. Widgets with this attribute set do not participate in
+    composition management, i.e. they cannot be semi-transparent or shine
+    through semi-transparent overlapping widgets. \note This flag is only
+    supported on X11 and it disables double buffering. On Qt for Embedded
+    Linux, the flag only works when set on a top-level widget and it relies on
+    support from the active screen driver. This flag is set or cleared by the
+    widget's author. To render outside of Qt's paint system, e.g., if you
+    require native painting primitives, you need to reimplement
+    QWidget::paintEngine() to return 0 and set this flag.
 
-    \value WA_PaintOutsidePaintEvent Makes it possible to use QPainter
-    to paint on the widget outside
-    \l{QWidget::paintEvent()}{paintEvent()}. This is not supported on
-    Windows, Mac OS X or Embedded Linux. We recommend that you
-    use this attribute only when porting Qt 3 code to Qt 4.
+    \value WA_PaintOutsidePaintEvent Makes it possible to use QPainter to
+    paint on the widget outside \l{QWidget::paintEvent()}{paintEvent()}. This
+    flag is not supported on Windows, Mac OS X or Embedded Linux. We recommend
+    that you use it only when porting Qt 3 code to Qt 4.
 
-    \value WA_PaintUnclipped Makes all painters operating on this
-    widget unclipped. Children of this widget or other widgets in
-    front of it do not clip the area the painter can paint on. This
-    flag is only supported for widgets for which the WA_PaintOnScreen
-    flag is set. The preferred way to do this in a cross platform way
-    is to create a transparent widget that lies in front of the other
-    widgets.
+    \value WA_PaintUnclipped Makes all painters operating on this widget
+    unclipped. Children of this widget or other widgets in front of it do not
+    clip the area the painter can paint on. This flag is only supported for
+    widgets with the WA_PaintOnScreen flag set. The preferred way to do this in
+    a cross platform way is to create a transparent widget that lies in front
+    of the other widgets.
 
-    \value WA_PendingMoveEvent Indicates that a move event is
-    pending, e.g. when a hidden widget was moved. This is set/cleared
-    by the Qt kernel.
+    \value WA_PendingMoveEvent Indicates that a move event is pending, e.g.,
+    when a hidden widget was moved. This flag is set or cleared by the Qt
+    kernel.
 
-    \value WA_PendingResizeEvent Indicates that a resize event is
-    pending, e.g. when a hidden widget was resized. This is
-    set/cleared by the Qt kernel.
+    \value WA_PendingResizeEvent Indicates that a resize event is pending,
+    e.g., when a hidden widget was resized. This flag is set or cleared by the
+    Qt kernel.
 
-    \value WA_QuitOnClose Makes Qt quit the application when the last
-    widget with the attribute set has accepted closeEvent(). This
-    behavior can be adjusted with the
-    QApplication::quitOnLastWindowClosed property. By default the
-    attribute is set for all widgets of type Qt::Window.
+    \value WA_QuitOnClose Makes Qt quit the application when the last widget
+    with the attribute set has accepted closeEvent(). This behavior can be
+    modified with the QApplication::quitOnLastWindowClosed property. By default
+    this attribute is set for all widgets of type Qt::Window.
 
-    \value WA_Resized Indicates that the widget has an explicit
-    size. This is set/cleared by QWidget::resize() and
-    by QWidget::setGeometry().
+    \value WA_Resized Indicates that the widget has an explicit size. This flag
+    is set or cleared by QWidget::resize() and QWidget::setGeometry().
 
     \value WA_RightToLeft Indicates that the layout direction for the widget
     is right to left.
 
-    \value WA_SetCursor Indicates that the widget has a cursor of its
-    own. This is set/cleared by QWidget::setCursor() and
-    QWidget::unsetCursor().
+    \value WA_SetCursor Indicates that the widget has a cursor of its own. This
+    flag is set or cleared by QWidget::setCursor() and QWidget::unsetCursor().
 
-    \value WA_SetFont Indicates that the widget has a font of its
-    own. This is set/cleared by QWidget::setFont().
+    \value WA_SetFont Indicates that the widget has a font of its own. This
+    flag is set or cleared by QWidget::setFont().
 
-    \value WA_SetPalette Indicates that the widget has a palette
-    of its own. This is set/cleared by QWidget::setPalette().
+    \value WA_SetPalette Indicates that the widget has a palette of its own.
+    This flag is set or cleared by QWidget::setPalette().
 
-    \value WA_SetStyle Indicates that the widget has a style of its
-    own. This is set/cleared by QWidget::setStyle().
+    \value WA_SetStyle Indicates that the widget has a style of its own. This
+    flag is set or cleared by QWidget::setStyle().
 
-    \value WA_ShowModal \e{This attribute has been deprecated.}
-    Use QWidget::windowModality instead.
+    \value WA_ShowModal \e{This attribute has been deprecated.} Use
+    QWidget::windowModality instead.
 
-    \value WA_StaticContents Indicates that the widget contents
-    are north-west aligned and static. On resize, such a widget will
-    receive paint events only for the newly visible part of itself.
-    This is set/cleared by the widget's author.
+    \value WA_StaticContents Indicates that the widget contents are north-west
+    aligned and static. On resize, such a widget will receive paint events only
+    for parts of itself that are newly visible. This flag is set or cleared by
+    the widget's author.
 
-    \value WA_StyleSheet Indicates that the widget is styled using
-    a \l{Qt Style Sheets}{style sheet}.
+    \value WA_StyleSheet Indicates that the widget is styled using a
+    \l{Qt Style Sheets}{style sheet}.
 
-    \value WA_UnderMouse Indicates that the widget is under the
-    mouse cursor. The value is not updated correctly during drag and
-    drop operations. There is also a getter function
-    QWidget::underMouse(). This is set/cleared by the Qt kernel.
+    \value WA_TranslucentBackground Indicates that the widget should have a
+    translucent background, i.e., any non-opaque regions of the widgets will be
+    translucent because the widget will have an alpha channel. Setting this
+    flag causes WA_NoSystemBackground to be set. This flag is set or cleared by
+    the widget's author.
 
-    \value WA_UpdatesDisabled Indicates that updates are blocked
-    (including the system background). This flag must never be
-    set/cleared by the widget author. It is set/cleared by the Qt
-    kernel.
+    \value WA_UnderMouse Indicates that the widget is under the mouse cursor.
+    The value is not updated correctly during drag and drop operations. There
+    is also a getter function, QWidget::underMouse(). This flag is set or
+    cleared by the Qt kernel.
 
-    \value WA_WindowModified Indicates that the window is marked as
-    modified. On some platforms this will mean nothing, on others
-    (including Mac OS X and Windows) the window will take a modified
-    appearance. This is set/cleared by QWidget::setWindowModified().
+    \value WA_UpdatesDisabled Indicates that updates are blocked (including the
+    system background). This flag is set or cleared by the Qt kernel.
+    \warning This flag must \e never be set or cleared by the widget's author.
 
-    \value WA_WindowPropagation Makes a toplevel window inherit font
-    and palette from its parent.
+    \value WA_WindowModified Indicates that the window is marked as modified.
+    On some platforms this flag will do nothing, on others (including Mac OS X
+    and Windows) the window will take a modified appearance. This flag is set
+    or cleared by QWidget::setWindowModified().
 
-    \value WA_MacAlwaysShowToolWindow On Mac OS X, show the tool
-    window even when the application is not active.  By default, all
-    tool windows are hidden when the application is inactive.
+    \value WA_WindowPropagation Makes a toplevel window inherit font and
+    palette from its parent.
 
-    \value WA_SetLocale Indicates the local should be taken into
-    consideration in the widget.
+    \value WA_MacAlwaysShowToolWindow On Mac OS X, show the tool window even
+    when the application is not active.  By default, all tool windows are
+    hidden when the application is inactive.
 
-    \value WA_StyledBackground Indicates the widget should be drawn
-    using a styled background.
+    \value WA_SetLocale Indicates the locale should be taken into consideration
+    in the widget.
 
-    \value WA_ShowWithoutActivating Show the widget without making it
-    active.
+    \value WA_StyledBackground Indicates the widget should be drawn using a
+    styled background.
 
-    \value WA_NativeWindow Indicates that a native window is created
-    for the widget. Enabling this will also force a native window
-    for the widget's ancestors unless Qt::WA_DontCreateNativeAncestors
-    is set.
+    \value WA_ShowWithoutActivating Show the widget without making it active.
 
-    \value WA_DontCreateNativeAncestors Indicates that the widget's
-    ancestors are kept non-native even though the widget itself is
-    native.
+    \value WA_NativeWindow Indicates that a native window is created for the
+    widget. Enabling this flag will also force a native window for the widget's
+    ancestors unless Qt::WA_DontCreateNativeAncestors is set.
 
-    \value WA_X11NetWmWindowTypeDesktop Adds
-    _NET_WM_WINDOW_TYPE_DESKTOP to the window's _NET_WM_WINDOW_TYPE
-    X11 window property. See http://standards.freedesktop.org/wm-spec/
-    for more details. This attribute has no effect on non-X11
-    platforms.
+    \value WA_DontCreateNativeAncestors Indicates that the widget's ancestors
+    are kept non-native even though the widget itself is native.
 
-    \value WA_X11NetWmWindowTypeDock Adds _NET_WM_WINDOW_TYPE_DOCK to
-    the window's _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms.
+    \value WA_X11NetWmWindowTypeDesktop Adds _NET_WM_WINDOW_TYPE_DESKTOP to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms.
 
-    \value WA_X11NetWmWindowTypeToolBar Adds
-    _NET_WM_WINDOW_TYPE_TOOLBAR to the window's _NET_WM_WINDOW_TYPE
-    X11 window property. See http://standards.freedesktop.org/wm-spec/
-    for more details. This attribute has no effect on non-X11
-    platforms. Note that Qt automaticaly sets this attribute for
-    QToolBar.
+    \value WA_X11NetWmWindowTypeDock Adds _NET_WM_WINDOW_TYPE_DOCK to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms.
 
-    \value WA_X11NetWmWindowTypeMenu Adds _NET_WM_WINDOW_TYPE_MENU to
-    the window's _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
-    automatically sets this attribute for QMenu when torn-off.
+    \value WA_X11NetWmWindowTypeToolBar Adds _NET_WM_WINDOW_TYPE_TOOLBAR to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automaticaly sets this
+    attribute for QToolBar.
 
-    \value WA_X11NetWmWindowTypeUtility Adds
-    _NET_WM_WINDOW_TYPE_UTILITY to the window's _NET_WM_WINDOW_TYPE
-    X11 window property. See http://standards.freedesktop.org/wm-spec/
-    for more details. This attribute has no effect on non-X11
-    platforms. Note that Qt automatically sets this attribute for the
-    Qt::Tool window type.
+    \value WA_X11NetWmWindowTypeMenu Adds _NET_WM_WINDOW_TYPE_MENU to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for QMenu when torn-off.
 
-    \value WA_X11NetWmWindowTypeSplash Adds _NET_WM_WINDOW_TYPE_SPLASH
-    to the window's _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
-    automatically sets this attribute for the Qt::SplashScreen window
-    type.
+    \value WA_X11NetWmWindowTypeUtility Adds _NET_WM_WINDOW_TYPE_UTILITY to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for the Qt::Tool window type.
+
+    \value WA_X11NetWmWindowTypeSplash Adds _NET_WM_WINDOW_TYPE_SPLASH to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for the Qt::SplashScreen window type.
 
     \value WA_X11NetWmWindowTypeDialog Adds _NET_WM_WINDOW_TYPE_DIALOG
     to the window's _NET_WM_WINDOW_TYPE X11 window property. See
     http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
-    automatically sets this attribute for the Qt::Dialog and Qt::Sheet
-    window types.
+    attribute has no effect on non-X11 platforms. \note Qt automatically sets
+    this attribute for the Qt::Dialog and Qt::Sheet window types.
 
     \value WA_X11NetWmWindowTypeDropDownMenu Adds
-    _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's
-    _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
+    _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's _NET_WM_WINDOW_TYPE X11
+    window property. See http://standards.freedesktop.org/wm-spec/ for more
+    details. This attribute has no effect on non-X11 platforms. \notw Qt
     automatically sets this attribute for QMenus added to a QMenuBar.
 
-    \value WA_X11NetWmWindowTypePopupMenu Adds
-    _NET_WM_WINDOW_TYPE_POPUP_MENU to the window's _NET_WM_WINDOW_TYPE
-    X11 window property. See http://standards.freedesktop.org/wm-spec/
-    for more details. This attribute has no effect on non-X11
-    platforms. Note that Qt automatically sets this attribute for
-    QMenu.
+    \value WA_X11NetWmWindowTypePopupMenu Adds _NET_WM_WINDOW_TYPE_POPUP_MENU
+    to the window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for QMenu.
 
-    \value WA_X11NetWmWindowTypeToolTip Adds
-    _NET_WM_WINDOW_TYPE_TOOLTIP to the window's _NET_WM_WINDOW_TYPE
-    X11 window property. See http://standards.freedesktop.org/wm-spec/
-    for more details. This attribute has no effect on non-X11
-    platforms. Note that Qt automatically sets this attribute for the
-    Qt::ToolTip window type.
+    \value WA_X11NetWmWindowTypeToolTip Adds _NET_WM_WINDOW_TYPE_TOOLTIP to the
+    window's _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for the Qt::ToolTip window type.
 
     \value WA_X11NetWmWindowTypeNotification Adds
-    _NET_WM_WINDOW_TYPE_NOTIFICATION to the window's
-    _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms.
+    _NET_WM_WINDOW_TYPE_NOTIFICATION to the window's _NET_WM_WINDOW_TYPE X11
+    window property. See http://standards.freedesktop.org/wm-spec/ for more
+    details. This attribute has no effect on non-X11 platforms.
 
     \value WA_X11NetWmWindowTypeCombo Adds _NET_WM_WINDOW_TYPE_COMBO
     to the window's _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
-    automatically sets this attribute for the QComboBox pop-up.
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute for the QComboBox pop-up.
 
     \value WA_X11NetWmWindowTypeDND Adds _NET_WM_WINDOW_TYPE_DND to
     the window's _NET_WM_WINDOW_TYPE X11 window property. See
-    http://standards.freedesktop.org/wm-spec/ for more details. This
-    attribute has no effect on non-X11 platforms. Note that Qt
-    automatically sets this attribute on the feedback widget used
-    during a drag.
+    http://standards.freedesktop.org/wm-spec/ for more details. This attribute
+    has no effect on non-X11 platforms. \note Qt automatically sets this
+    attribute on the feedback widget used during a drag.
+
+    \value WA_MacFrameworkScaled Enables resolution independence aware mode
+    on Mac when using Carbon. This attribute has no effect on Cocoa.
+    The attribute is off by default and can be enabled on a per-window basis.
 
     \omitvalue WA_SetLayoutDirection
     \omitvalue WA_InputMethodTransparent
@@ -1192,7 +1208,6 @@
     \omitvalue WA_LaidOut
     \omitvalue WA_GrabbedShortcut
     \omitvalue WA_DontShowOnScreen 
-    \omitvalue WA_TransparentForMouseEvents
     \omitvalue WA_InvalidSize
     \omitvalue WA_ForceUpdatesDisabled
     \omitvalue WA_NoX11EventCompression
@@ -1202,6 +1217,8 @@
     \omitvalue WA_AttributeCount
     \omitvalue WA_StyleSheet
     \omitvalue WA_X11BypassTransientForHint
+    \omitvalue WA_SetWindowModality
+    \omitvalue WA_WState_WindowOpacitySet
 */
 
 /*! \typedef Qt::HANDLE
@@ -1860,6 +1877,15 @@
                    system supports it, a tool window can be decorated
                    with a somewhat lighter frame. It can also be
                    combined with Qt::FramelessWindowHint.
+                   \br
+                   \br
+                   On Mac OS X, tool windows correspond to the
+                   \l{http://developer.apple.com/documentation/Carbon/Conceptual/HandlingWindowsControls/hitb-wind_cont_concept/chapter_2_section_2.html}{Floating}
+                   class of windows. This means that the window lives on a
+                   level above normal windows; it impossible to put a normal
+                   window on top of it. By default, tool windows will disappear
+                   when the application is inactive.  This can be controlled by
+                   the Qt::WA_MacAlwaysShowToolWindow attribute.
 
     \value ToolTip Indicates that the widget is a tooltip. This is
                    used internally to implement
@@ -1895,16 +1921,20 @@
            ability to understand Motif and/or NETWM hints. Most existing
            modern window managers can handle this.
 
-    The \c CustomizeWindowHint flag is used to enable customization of the window
-    controls. This flag must be set to allow the \c WindowTitleHint,
-    \c WindowSystemMenuHint, \c WindowMinimizeButtonHint and \c WindowMaximizeButtonHint
-    flags to be changed.
+    The \c CustomizeWindowHint flag is used to enable customization of
+    the window controls. This flag must be set to allow the \c
+    WindowTitleHint, \c WindowSystemMenuHint, \c
+    WindowMinimizeButtonHint, \c WindowMaximizeButtonHint and \c
+    WindowCloseButtonHint flags to be changed.
 
     \value CustomizeWindowHint  Turns off the default window title hints.
 
     \value WindowTitleHint  Gives the window a title bar.
 
-    \value WindowSystemMenuHint  Adds a window system menu, and possibly a close button.
+    \value WindowSystemMenuHint Adds a window system menu, and
+    possibly a close button (for example on Mac). If you need to hide
+    or show a close button, it is more portable to use \c
+    WindowCloseButtonHint.
 
     \value WindowMinimizeButtonHint  Adds a minimize button. On
            some platforms this implies Qt::WindowSystemMenuHint for it to work.
@@ -1915,8 +1945,22 @@
     \value WindowMinMaxButtonsHint  Adds a minimize and a maximize
            button. On some platforms this implies Qt::WindowSystemMenuHint for it to work.
 
+    \value WindowCloseButtonHint  Adds a close button. On
+           some platforms this implies Qt::WindowSystemMenuHint for it
+           to work.
+
     \value WindowContextHelpButtonHint  Adds a context help button to dialogs.
            On some platforms this implies Qt::WindowSystemMenuHint for it to work.
+
+    \value MacWindowToolBarButtonHint On Mac OS X adds a tool bar button (i.e.,
+           the oblong button that is on the top right of windows that have toolbars.
+
+    \value BypassGraphicsProxyWidget Prevents the window and its children from
+           automatically embedding themselves into a QGraphicsProxyWidget if the
+           parent widget is already embedded. You can set this flag if you
+           want your widget to always be a toplevel widget on the desktop,
+           regardless of whether the parent widget is embedded in a scene or
+           not.
 
     \value WindowShadeButtonHint
 
@@ -1925,6 +1969,14 @@
            on some window managers on X11 you also have to pass
            Qt::X11BypassWindowManagerHint for this flag to work
            correctly.
+
+    \value WindowStaysOnBottomHint Informs the window system that the
+           window should stay on bottom of all other windows. Note
+           that on X11 this hint will work only in window managers
+           that support _NET_WM_STATE_BELOW atom. If a window always
+           on the bottom has a parent, the parent will also be left on
+           the bottom.  This window hint is currently not implemented
+           for Mac OS X.
 
     \value WindowOkButtonHint Adds an OK button to the window decoration of a dialog.
            Only supported for Windows CE.
@@ -1992,8 +2044,14 @@
     \value LinkAction       Create a link from the source to the target.
     \value ActionMask
     \value IgnoreAction     Ignore the action (do nothing with the data).
+    \value TargetMoveAction On Windows, this value is used when the ownership of the D&D data
+                            should be taken over by the target application,
+                            i.e., the source application should not delete
+                            the data.
 
-    \omitvalue TargetMoveAction
+                            On X11 this value is used to do a move.
+
+                            TargetMoveAction is not used on the Mac.
 */
 
 #if defined(Q_OS_WIN) && defined(QT3_SUPPORT)
@@ -2337,6 +2395,8 @@
     \value ImMicroFocus       The rectangle covering the area of the input cursor in widget coordinates.
     \value ImFont             The currently used font for text input.
     \value ImCursorPosition   The logical position of the cursor within the text surrounding the input area (see ImSurroundingText).
+                              If any text is selected, the position returned will be at the logical end of the
+                              selection, even if the real cursor is located at the logical start.
     \value ImSurroundingText  The plain text around the input area, for example the current paragraph.
     \value ImCurrentSelection The currently selected text.
 */
@@ -2350,8 +2410,9 @@
 
     The general purpose roles are:
 
-    \value DisplayRole    The key data to be rendered (usually text).
-    \value DecorationRole The data to be rendered as a decoration (usually an icon).
+    \value DisplayRole    The key data to be rendered in the form of text.
+    \value DecorationRole The data to be rendered as a decoration in the form
+                          of an icon.
     \value EditRole       The data in a form suitable for editing in an
                           editor.
     \value ToolTipRole    The data displayed in the item's tooltip.
@@ -2386,8 +2447,13 @@
 
     User roles:
 
-    \value UserRole       The first role that can be used for
-                                     application-specific purposes.
+    \value UserRole       The first role that can be used for application-specific purposes.
+
+    \omitvalue DisplayPropertyRole
+    \omitvalue DecorationPropertyRole
+    \omitvalue ToolTipPropertyRole
+    \omitvalue StatusTipPropertyRole
+    \omitvalue WhatsThisPropertyRole
 */
 
 /*!
@@ -2451,7 +2517,7 @@
     \value ElideNone    Ellipsis should NOT appear in the text.
 
     Qt::ElideMiddle is normally the most appropriate choice for URLs (e.g.,
-    "\l{http://www.trolltech.com/careers/movingto/beijing/}{http://www.troll...ovingto/beijing/}"),
+    "\l{http://www.qtsoftware.com/careers/movingto/beijing/}{http://www.qtsof...ovingto/beijing/}"),
     whereas Qt::ElideRight is appropriate
     for other strings (e.g.,
     "\l{http://doc.trolltech.com/qq/qq09-mac-deployment.html}{Deploying Applications on Ma...}").

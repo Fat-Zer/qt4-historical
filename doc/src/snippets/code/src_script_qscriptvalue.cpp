@@ -3,7 +3,7 @@ QScriptEngine myEngine;
 QScriptValue myObject = myEngine.newObject();
 QScriptValue myOtherObject = myEngine.newObject();
 myObject.setProperty("myChild", myOtherObject);
-myObject.setProperty("name", QScriptValue(&myEngine, "John Doe"));
+myObject.setProperty("name", "John Doe");
 //! [0]
 
 
@@ -26,7 +26,7 @@ qDebug() << fullName.call(who).toString(); // "John Doe"
 engine.evaluate("function cube(x) { return x * x * x; }");
 QScriptValue cube = global.property("cube");
 QScriptValueList args;
-args << QScriptValue(&engine, 3);
+args << 3;
 qDebug() << cube.call(QScriptValue(), args).toNumber(); // 27
 //! [2]
 

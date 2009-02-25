@@ -1,3 +1,8 @@
+
+//![newstuff]
+    QFileInfo fi("c:/temp/foo"); => fi.absolutePath() => "C:/temp"
+//![newstuff]
+
 //! [0]
 #ifdef Q_OS_UNIX
 

@@ -22,7 +22,7 @@ SUBDIRS       = \
                 xml \
                 script
 
-contains(QT_CONFIG, phonon): SUBDIRS += phonon
+contains(QT_CONFIG, phonon):!static: SUBDIRS += phonon
 contains(QT_CONFIG, webkit): SUBDIRS += webkit
 embedded:SUBDIRS += qws
 !wince*: {
@@ -31,7 +31,7 @@ embedded:SUBDIRS += qws
 } else {
 	contains(QT_BUILD_PARTS, tools):SUBDIRS += qtestlib
 }
-!embedded:contains(QT_CONFIG, opengl): SUBDIRS += opengl
+contains(QT_CONFIG, opengl): SUBDIRS += opengl
 contains(QT_CONFIG, dbus): SUBDIRS += dbus
 win32:!contains(QT_EDITION, OpenSource|Console):SUBDIRS += activeqt
 contains(QT_CONFIG, xmlpatterns): SUBDIRS += xmlpatterns

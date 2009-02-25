@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -41,49 +45,36 @@
 #include "domimage.h"
 
 #include <QPainter>
+#include <QPainterPath>
 #include <QString>
 #include <QStack>
 #include <QMetaType>
-#include <QExplicitlySharedDataPointer>
+#include <QTimerEvent>
 
-#include <qscriptengine.h>
-
-class CanvasGradientData;
-
-typedef QExplicitlySharedDataPointer<CanvasGradientData> CanvasGradient;
-
-class CanvasGradientData: public QSharedData
+// [3]
+class CanvasGradient
 {
 public:
-    CanvasGradientData(const QGradient &g)
-        : gradient(g) {}
+    CanvasGradient(const QGradient &v)
+        : value(v) {}
+    CanvasGradient() {}
 
-    const QGradient &qgradient() const
-    {
-        return gradient;
-    }
-
-    static void setup(QScriptEngine *e);
-
-private: // API
-    static QScriptValue addColorStop(QScriptContext *, QScriptEngine *);
-
-public: // attributes
-    QGradient gradient;
+    QGradient value;
 };
+// [3]
 
 Q_DECLARE_METATYPE(CanvasGradient)
-
+Q_DECLARE_METATYPE(CanvasGradient*)
 
 class ImageData {
 };
 
 class QContext2DCanvas;
 
+//! [0]
 class Context2D : public QObject
 {
     Q_OBJECT
-
     // compositing
     Q_PROPERTY(qreal globalAlpha READ globalAlpha WRITE setGlobalAlpha)
     Q_PROPERTY(QString globalCompositeOperation READ globalCompositeOperation WRITE setGlobalCompositeOperation)
@@ -98,16 +89,17 @@ class Context2D : public QObject
     Q_PROPERTY(qreal shadowOffsetX READ shadowOffsetX WRITE setShadowOffsetX)
     Q_PROPERTY(qreal shadowOffsetY READ shadowOffsetY WRITE setShadowOffsetY)
     Q_PROPERTY(qreal shadowBlur READ shadowBlur WRITE setShadowBlur)
-    Q_PROPERTY(QColor shadowColor READ shadowColor WRITE setShadowColor)
+    Q_PROPERTY(QString shadowColor READ shadowColor WRITE setShadowColor)
+//! [0]
 
 public:
-    Context2D(QContext2DCanvas *parent);
-    void setSize(int w, int h);
-
-    void begin();
-    const QImage &end();
+    Context2D(QObject *parent = 0);
+    void setSize(int width, int height);
+    void setSize(const QSize &size);
+    QSize size() const;
 
     void clear();
+    void reset();
 
     // compositing
     qreal globalAlpha() const; // (default 1.0)
@@ -135,13 +127,14 @@ public:
     qreal shadowOffsetX() const; // (default 0)
     qreal shadowOffsetY() const; // (default 0)
     qreal shadowBlur() const; // (default 0)
-    QColor shadowColor() const; // (default black)
+    QString shadowColor() const; // (default black)
 
     void setShadowOffsetX(qreal x);
     void setShadowOffsetY(qreal y);
     void setShadowBlur(qreal b);
-    void setShadowColor(const QColor &c);
+    void setShadowColor(const QString &str);
 
+//! [1]
 public slots:
     void save(); // push state on state stack
     void restore(); // pop state stack and restore state
@@ -182,6 +175,7 @@ public slots:
     void stroke();
     void clip();
     bool isPointInPath(qreal x, qreal y) const;
+//! [1]
 
     // drawing images
     void drawImage(DomImage *image, qreal dx, qreal dy);
@@ -194,17 +188,71 @@ public slots:
     // pixel manipulation
     ImageData getImageData(qreal sx, qreal sy, qreal sw, qreal sh);
     void putImageData(ImageData image, qreal dx, qreal dy);
+
+//! [2]
+signals:
+    void changed(const QImage &image);
+//! [2]
+
+protected:
+    void timerEvent(QTimerEvent *e);
+
 private:
-    QImage  m_cache;
+    void beginPainting();
+    const QImage &endPainting();
+    void scheduleChange();
+
+    int m_changeTimerId;
+    QImage  m_image;
     QPainter m_painter;
     QPainterPath m_path;
-    struct State {
-        State()
-            : creatingShape(false)
-        {}
 
-        QMatrix      matrix;
-        bool         creatingShape;
+    enum DirtyFlag {
+        DirtyTransformationMatrix = 0x00001,
+        DirtyClippingRegion       = 0x00002,
+        DirtyStrokeStyle          = 0x00004,
+        DirtyFillStyle            = 0x00008,
+        DirtyGlobalAlpha          = 0x00010,
+        DirtyLineWidth            = 0x00020,
+        DirtyLineCap              = 0x00040,
+        DirtyLineJoin             = 0x00080,
+        DirtyMiterLimit           = 0x00100,
+        MDirtyPen                 = DirtyStrokeStyle
+                                  | DirtyLineWidth
+                                  | DirtyLineCap
+                                  | DirtyLineJoin
+                                  | DirtyMiterLimit,
+        DirtyShadowOffsetX        = 0x00200,
+        DirtyShadowOffsetY        = 0x00400,
+        DirtyShadowBlur           = 0x00800,
+        DirtyShadowColor          = 0x01000,
+        DirtyGlobalCompositeOperation = 0x2000,
+        DirtyFont                 = 0x04000,
+        DirtyTextAlign            = 0x08000,
+        DirtyTextBaseline         = 0x10000,
+        AllIsFullOfDirt           = 0xfffff
+    };
+
+    struct State {
+        State() : flags(0) {}
+        QMatrix matrix;
+        QPainterPath clipPath;
+        QBrush strokeStyle;
+        QBrush fillStyle;
+        qreal globalAlpha;
+        qreal lineWidth;
+        Qt::PenCapStyle lineCap;
+        Qt::PenJoinStyle lineJoin;
+        qreal miterLimit;
+        qreal shadowOffsetX;
+        qreal shadowOffsetY;
+        qreal shadowBlur;
+        QColor shadowColor;
+        QPainter::CompositionMode globalCompositeOperation;
+        QFont font;
+        int textAlign;
+        int textBaseline;
+        int flags;
     };
     State m_state;
     QStack<State> m_stateStack;

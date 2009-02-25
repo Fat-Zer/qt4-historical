@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -48,12 +52,12 @@ XFormView::XFormView(QWidget *parent)
     : ArthurFrame(parent)
 {
     setAttribute(Qt::WA_MouseTracking);
-    type = VectorType;
+    m_type = VectorType;
     m_rotation = 0.0;
     m_scale = 1.0;
     m_shear = 0.0;
 
-    pixmap = QPixmap(":/trolltech/arthurplugin/bg1.jpg");
+    m_pixmap = QPixmap(":res/affine/bg1.jpg");
     pts = new HoverPoints(this, HoverPoints::CircleShape);
     pts->setConnectionType(HoverPoints::LineConnection);
     pts->setEditable(false);
@@ -67,6 +71,39 @@ XFormView::XFormView(QWidget *parent)
     connect(pts, SIGNAL(pointsChanged(const QPolygonF&)),
             this, SLOT(updateCtrlPoints(const QPolygonF &)));
     setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
+}
+
+XFormView::XFormType XFormView::type() const
+{
+    return m_type;
+}
+
+QPixmap XFormView::pixmap() const
+{
+    return m_pixmap;
+}
+
+QString XFormView::text() const
+{
+    return m_text;
+}
+
+void XFormView::setText(const QString &t)
+{
+    m_text = t;
+    update();
+}
+
+void XFormView::setPixmap(const QPixmap &p)
+{
+    m_pixmap = p;
+    update();
+}
+
+void XFormView::setType(XFormType t)
+{
+    m_type = t;
+    update();
 }
 
 void XFormView::mousePressEvent(QMouseEvent *)
@@ -85,7 +122,7 @@ void XFormView::paint(QPainter *p)
     p->save();
     p->setRenderHint(QPainter::Antialiasing);
     p->setRenderHint(QPainter::SmoothPixmapTransform);
-    switch (type) {
+    switch (m_type) {
     case VectorType:
         drawVectorType(p);
         break;
@@ -124,19 +161,19 @@ void XFormView::updateCtrlPoints(const QPolygonF &points)
 
 void XFormView::setVectorType()
 {
-    type = VectorType;
+    m_type = VectorType;
     update();
 }
 
 void XFormView::setPixmapType()
 {
-    type = PixmapType;
+    m_type = PixmapType;
     update();
 }
 
 void XFormView::setTextType()
 {
-    type = TextType;
+    m_type = TextType;
     update();
 }
 
@@ -234,7 +271,7 @@ void XFormView::reset()
 
 void XFormView::drawPixmapType(QPainter *painter)
 {
-    QPointF center(pixmap.width() / qreal(2), pixmap.height() / qreal(2));
+    QPointF center(m_pixmap.width() / qreal(2), m_pixmap.height() / qreal(2));
     painter->translate(ctrlPoints.at(0) - center);
 
     painter->translate(center);
@@ -243,10 +280,10 @@ void XFormView::drawPixmapType(QPainter *painter)
     painter->shear(0, m_shear);
     painter->translate(-center);
 
-    painter->drawPixmap(QPointF(0, 0), pixmap);
+    painter->drawPixmap(QPointF(0, 0), m_pixmap);
     painter->setPen(QPen(QColor(255, 0, 0, alpha), 0.25, Qt::SolidLine, Qt::FlatCap, Qt::BevelJoin));
     painter->setBrush(Qt::NoBrush);
-    painter->drawRect(QRectF(0, 0, pixmap.width(), pixmap.height()).adjusted(-2, -2, 2, 2));
+    painter->drawRect(QRectF(0, 0, m_pixmap.width(), m_pixmap.height()).adjusted(-2, -2, 2, 2));
 }
 
 void XFormView::drawTextType(QPainter *painter)
@@ -256,10 +293,10 @@ void XFormView::drawTextType(QPainter *painter)
     f.setStyleStrategy(QFont::ForceOutline);
     f.setPointSize(72);
     f.setStyleHint(QFont::Times);
-    path.addText(0, 0, f, textEditor->text());
+    path.addText(0, 0, f, m_text);
 
     QFontMetrics fm(f);
-    QRectF br(fm.boundingRect(textEditor->text()));
+    QRectF br(fm.boundingRect(m_text));
     QPointF center(br.center());
     painter->translate(ctrlPoints.at(0) - center);
 
@@ -735,68 +772,63 @@ void XFormView::drawVectorType(QPainter *painter)
 
 
 XFormWidget::XFormWidget(QWidget *parent)
-    : QWidget(parent)
+    : QWidget(parent), textEditor(new QLineEdit)
 {
-    setWindowTitle("Affine Transformations");
+    setWindowTitle(tr("Affine Transformations"));
 
     view = new XFormView(this);
     view->setMinimumSize(200, 200);
 
     QGroupBox *mainGroup = new QGroupBox(this);
     mainGroup->setFixedWidth(180);
-    mainGroup->setTitle("Affine Transformations");
+    mainGroup->setTitle(tr("Affine Transformations"));
 
     QGroupBox *rotateGroup = new QGroupBox(mainGroup);
-    rotateGroup->setAttribute(Qt::WA_ContentsPropagated);
-    rotateGroup->setTitle("Rotate");
+    rotateGroup->setTitle(tr("Rotate"));
     QSlider *rotateSlider = new QSlider(Qt::Horizontal, rotateGroup);
     rotateSlider->setRange(0, 3600);
     rotateSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *scaleGroup = new QGroupBox(mainGroup);
-    scaleGroup->setAttribute(Qt::WA_ContentsPropagated);
-    scaleGroup->setTitle("Scale");
+    scaleGroup->setTitle(tr("Scale"));
     QSlider *scaleSlider = new QSlider(Qt::Horizontal, scaleGroup);
     scaleSlider->setRange(1, 4000);
     scaleSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *shearGroup = new QGroupBox(mainGroup);
-    shearGroup->setAttribute(Qt::WA_ContentsPropagated);
-    shearGroup->setTitle("Shear");
+    shearGroup->setTitle(tr("Shear"));
     QSlider *shearSlider = new QSlider(Qt::Horizontal, shearGroup);
     shearSlider->setRange(-990, 990);
     shearSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *typeGroup = new QGroupBox(mainGroup);
-    typeGroup->setAttribute(Qt::WA_ContentsPropagated);
-    typeGroup->setTitle("Type");
+    typeGroup->setTitle(tr("Type"));
     QRadioButton *vectorType = new QRadioButton(typeGroup);
     QRadioButton *pixmapType = new QRadioButton(typeGroup);
     QRadioButton *textType= new QRadioButton(typeGroup);
-    vectorType->setText("Vector Image");
-    pixmapType->setText("Pixmap");
-    textType->setText("Text");
-    view->textEditor = new QLineEdit(typeGroup);
+    vectorType->setText(tr("Vector Image"));
+    pixmapType->setText(tr("Pixmap"));
+    textType->setText(tr("Text"));
 
     QPushButton *resetButton = new QPushButton(mainGroup);
-    resetButton->setText("Reset Transform");
+    resetButton->setText(tr("Reset Transform"));
 
     QPushButton *animateButton = new QPushButton(mainGroup);
-    animateButton->setText("Animate");
+    animateButton->setText(tr("Animate"));
     animateButton->setCheckable(true);
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
-    showSourceButton->setText("Show Source");
+    showSourceButton->setText(tr("Show Source"));
 #ifdef QT_OPENGL_SUPPORT
     QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(true);
     enableOpenGLButton->setChecked(view->usesOpenGL());
     if (!QGLFormat::hasOpenGL())
         enableOpenGLButton->hide();
 #endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
-    whatsThisButton->setText("What's This?");
+    whatsThisButton->setText(tr("What's This?"));
     whatsThisButton->setCheckable(true);
 
     QHBoxLayout *viewLayout = new QHBoxLayout(this);
@@ -817,7 +849,7 @@ XFormWidget::XFormWidget(QWidget *parent)
     typeGroupLayout->addWidget(pixmapType);
     typeGroupLayout->addWidget(textType);
     typeGroupLayout->addSpacing(4);
-    typeGroupLayout->addWidget(view->textEditor);
+    typeGroupLayout->addWidget(textEditor);
 
     QVBoxLayout *mainGroupLayout = new QVBoxLayout(mainGroup);
     mainGroupLayout->addWidget(rotateGroup);
@@ -840,8 +872,8 @@ XFormWidget::XFormWidget(QWidget *parent)
     connect(vectorType, SIGNAL(clicked()), view, SLOT(setVectorType()));
     connect(pixmapType, SIGNAL(clicked()), view, SLOT(setPixmapType()));
     connect(textType, SIGNAL(clicked()), view, SLOT(setTextType()));
-    connect(textType, SIGNAL(toggled(bool)), view->textEditor, SLOT(setEnabled(bool)));
-    connect(view->textEditor, SIGNAL(textChanged(const QString &)), view, SLOT(update()));
+    connect(textType, SIGNAL(toggled(bool)), textEditor, SLOT(setEnabled(bool)));
+    connect(textEditor, SIGNAL(textChanged(QString)), view, SLOT(setText(QString)));
 
     connect(view, SIGNAL(rotationChanged(int)), rotateSlider, SLOT(setValue(int)));
     connect(view, SIGNAL(scaleChanged(int)), scaleSlider, SLOT(setValue(int)));
@@ -857,14 +889,14 @@ XFormWidget::XFormWidget(QWidget *parent)
 #ifdef QT_OPENGL_SUPPORT
     connect(enableOpenGLButton, SIGNAL(clicked(bool)), view, SLOT(enableOpenGL(bool)));
 #endif
-    view->loadSourceFile(":/trolltech/arthurplugin/xform.cpp");
-    view->loadDescription(":/trolltech/arthurplugin/xform.html");
+    view->loadSourceFile(":res/affine/xform.cpp");
+    view->loadDescription(":res/affine/xform.html");
 
     // defaults
     view->reset();
     vectorType->setChecked(true);
-    view->textEditor->setText("Trolltech");
-    view->textEditor->setEnabled(false);
+    textEditor->setText("Qt Software");
+    textEditor->setEnabled(false);
 
     animateButton->animateClick();
 }

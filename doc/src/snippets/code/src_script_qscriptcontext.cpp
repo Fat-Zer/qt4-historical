@@ -11,7 +11,7 @@ QScriptValue Person_prototype_fullName(QScriptContext *context, QScriptEngine *e
     result += self.property("firstName").toString();
     result += QLatin1String(" ");
     result += self.property("lastName").toString();
-    return QScriptValue(engine, result);
+    return result;
 }
 //! [1]
 

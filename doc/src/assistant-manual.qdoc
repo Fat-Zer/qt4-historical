@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -128,12 +132,12 @@
         \row
             \o -showUrl URL
             \o Shows the document referenced by URL.
-        \row        
+        \row
             \o -enableRemoteControl
             \o Enables \QA to be remotly controlled.
         \row
             \o -show <widget>
-            \o Shows the specified dockwidget which can be "contents", "index", 
+            \o Shows the specified dockwidget which can be "contents", "index",
             "bookmarks" or "search".
         \row
             \o -hide <widget>
@@ -152,6 +156,9 @@
             \o Unregisters the specified compressed help file from the given
             collection file.
         \row
+            \o -setCurrentFilter filter
+            \o Sets the given filter as the active filter.
+        \row
             \o -quiet
             \o Doesn't show any error, warning or success messages.
     \endtable
@@ -164,27 +171,27 @@
 
     \list
     \o The \gui{Contents} window presents a table of contents implemented as a
-    tree view for the documentation that is available. If you click an item, 
-    its documentation will appear in the \e{Documentation} window. If you double 
+    tree view for the documentation that is available. If you click an item,
+    its documentation will appear in the \e{Documentation} window. If you double
     click an item or click on the control to the left of it, the item's sub-items
-    will appear. Click a sub-item to make its page appear in the \e{Documentation} 
+    will appear. Click a sub-item to make its page appear in the \e{Documentation}
     window. Click on the control next to an open item to hide its sub-items.
     \o The \gui{Index} window is used to look up key words or phrases.
     See \l{The One-Minute Guide to Using Qt Assistant} for how to use this
     window.
-    \o The \gui{Bookmarks} window lists any bookmarks you have made. Double 
-    click a bookmark to make its page appear in the \e{Documentation} window. 
-    The \gui{Bookmarks} window provides a context menu with \gui{Show Item}, 
-    \gui{Delete Item} as well as \gui{Rename Item}. Click in the main menu 
-    \menu{Bookmark|Add Bookmark...} (or press \key{Ctrl+B}) to bookmark the 
-    page that is currently showing in the \e{Documentation} window. Right click 
+    \o The \gui{Bookmarks} window lists any bookmarks you have made. Double
+    click a bookmark to make its page appear in the \e{Documentation} window.
+    The \gui{Bookmarks} window provides a context menu with \gui{Show Item},
+    \gui{Delete Item} as well as \gui{Rename Item}. Click in the main menu
+    \menu{Bookmark|Add Bookmark...} (or press \key{Ctrl+B}) to bookmark the
+    page that is currently showing in the \e{Documentation} window. Right click
     a bookmark in the list to rename or delete the highlighted bookmark.
     \endlist
 
-    If you want the \gui{Documentation} window to use as much space as possible, 
+    If you want the \gui{Documentation} window to use as much space as possible,
     you can easily group, move or hide the tool windows. To group the windows,
     drag one on top of the other and release the mouse. If one or all tool
-    windows are not shown, press \key{Alt+C}, \key{Alt+I} or \key{Alt+O} to show 
+    windows are not shown, press \key{Alt+C}, \key{Alt+I} or \key{Alt+O} to show
     the required window.
 
     The tool windows can be docked into the main window, so you can drag them
@@ -215,8 +222,7 @@
     \row \o \gui{Next} \o Takes you to the next page in the history.
          \o \menu{Go|Next} \o \key{Alt+Right Arrow}
     \row \o \gui{Home}
-         \o Takes you to the home page (usually the first page shown when
-            \QA is started).
+         \o Takes you to the home page as specified in the Preferences Dialog.
          \o \menu{Go|Home} \o \key{Ctrl+Home}.
     \row \o \gui{Sync with Table of Contents}
          \o Synchronizes the \gui{Contents} tool window with the page currently
@@ -241,7 +247,7 @@
 
     \img assistant-address-toolbar.png
 
-    The address toolbar provides a fast way to enter a specific URL for a 
+    The address toolbar provides a fast way to enter a specific URL for a
     documentation file. By default, the address toolbar is not shown, so it
     has to be activated via \menu{View|Toolbars|Address Toolbar}.
 
@@ -287,7 +293,7 @@
     \o \menu{View|Zoom out} decreases the font size in the current tab.
     \o \menu{View|Normal Size} resets the font size in the current tab.
     \o \menu{View|Contents} toggles the display of the \gui{Contents} tool window.
-    \o \menu{View|Index} toggles the display of the \gui{Index} tool window.    
+    \o \menu{View|Index} toggles the display of the \gui{Index} tool window.
     \o \menu{View|Bookmarks} toggles the display of the \gui{Bookmarks} tool window.
     \o \menu{View|Search} toggles the display of the Search in the \gui{Documentation} window.
     \endlist
@@ -340,9 +346,18 @@
     To delete a help file, select a documentation set in the list and click
     \gui{Remove}.
 
+    \img assistant-preferences-options.png
+
+    The \menu{Options} page lets you specify the homepage \QA will display when
+    you click the \gui{Home} button in \QA's main user interface. You can specify
+    the hompage by typing it here or clicking on one of the buttons below the
+    textbox. \gui{Current Page} sets the currently displayed page as your home
+    page while \gui{Restore to default} will reset your home page to the default
+    home page.
+
     \section1 Find Text Control
 
-    This control is used to find text in the current page. Enter the text you want 
+    This control is used to find text in the current page. Enter the text you want
     to find in the line edit. The search is incremental, meaning that the most
     relevant result is shown as you enter characters into the line edit.
 
@@ -385,7 +400,7 @@
 
     \QA provides a powerful full text search engine. To search
     for certain words or text, click the \gui{Search} tab in the \gui{Documentation}
-    window. Then enter the text you want to look for and press \key{Enter} 
+    window. Then enter the text you want to look for and press \key{Enter}
     or click the \gui{Search} button. The search is not case sensitive, so,
     for example, Foo, fOo and FOO are all treated as the same. The following are
     examples of common search patterns:
@@ -399,8 +414,8 @@
     \o \c{"deep copy"} -- list all documents that contain the phrase 'deep copy'
     \endlist
 
-    It is also possible to use the \gui{Advanced search} to get more flexibility. 
-    You can specify some words so that hits containing these are excluded from the 
+    It is also possible to use the \gui{Advanced search} to get more flexibility.
+    You can specify some words so that hits containing these are excluded from the
     result, or you can search for an exact phrase. Searching for similar words will
     give results like these:
 
@@ -486,7 +501,7 @@
 
     To solve this dilemma, \QA creates user specific collection files which
     are more or less copied from the original collection file. The user-specific
-    collection file will be saved in a subdirectory of the path returned by 
+    collection file will be saved in a subdirectory of the path returned by
     QDesktopServices::DataLocation. The subdirectory, or \e{cache directory}
     within this user-specific location, can be defined in the help collection
     project file. For example:
@@ -506,7 +521,7 @@
     always be used. Also, when adding or removing documentation from the
     collection file (see next section) always use the normal collection file.
     \QA will take care of synchronizing the user collection files when the
-    list of installed documentation has changed.    
+    list of installed documentation has changed.
 
     \section1 Displaying Custom Documentation
 
@@ -566,11 +581,13 @@
             \o \c{<title>}
             \o This property is used to specify a window title for \QA.
         \row
+            \o \c{<homePage>}
+            \o This tag specifies which page should be display when
+            pressing the home button in \QA's main user interface.
+        \row
             \o \c{<startPage>}
             \o This tag specifies which page \QA should initially
-            display when the help collection is used. This property also
-            describes the default location to go to when pressing the home button
-            in \QA's main user interface.
+            display when the help collection is used.
         \row
             \o \c{<currentFilter>}
             \o This tag specifies the \l{Qt Assistant in More Detail#Preferences Dialog}{filter}
@@ -654,6 +671,10 @@
     create a QProcess and specify the path to the Assistant executable. In order
     to make Assistant listen to your application, turn on its remote control
     functionality by passing the \c{-enableRemoteControl} command line option.
+
+    \warning The trailing '\0' must be appended separately to the QByteArray,
+    e.g., \c{QByteArray("command" + '\0')}.
+
     The following example shows how this can be done:
 
     \snippet doc/src/snippets/code/doc_src_assistant-manual.qdoc 2
@@ -701,6 +722,10 @@
             \o Selects the item in the contents widget which corresponds to
             the currently displayed page.
         \row
+            \o \c{setCurrentFilter}
+            \o Selects the specified filter and updates the visual representation
+            accordingly.
+        \row
             \o \c{expandToc <Depth>}
             \o Expands the table of contents tree to the given depth. If depth
             is less than 1, the tree will be collapsed completely.
@@ -732,7 +757,7 @@
     file.
 
     Once the wizard is finished and the files created, run the \c qhelpgenerator
-    or the \c qcollectiongenerator tool to generate the binary help files used by \QA.    
+    or the \c qcollectiongenerator tool to generate the binary help files used by \QA.
 */
 
 /*
@@ -755,12 +780,12 @@
         \row
             \o -showUrl URL
             \o Shows the document referenced by URL.
-        \row        
+        \row
             \o -enableRemoteControl
             \o Enables \QA to be remotly controlled.
         \row
             \o -show <widget>
-            \o Shows the specified dockwidget which can be "contents", "index", 
+            \o Shows the specified dockwidget which can be "contents", "index",
             "bookmarks" or "search".
         \row
             \o -hide <widget>

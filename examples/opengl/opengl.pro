@@ -1,18 +1,26 @@
 TEMPLATE      = subdirs
-!wince*: {
-SUBDIRS       = 2dpainting \
+
+contains(QT_CONFIG, opengles1)|contains(QT_CONFIG, opengles1cl)|contains(QT_CONFIG, opengles2){
+    contains(QT_CONFIG, opengles2) {
+        SUBDIRS   = hellogl_es2
+    } else {
+        SUBDIRS   = hellogl_es
+    }
+} else {
+    SUBDIRS   = 2dpainting \
                 grabber \
                 hellogl \
                 overpainting \
                 pbuffers \
-                pbuffers2 \
-		framebufferobject \
-		framebufferobject2 \
+                framebufferobject2 \
                 samplebuffers \
                 textures
-}
-wince*: SUBDIRS += hellogl_es
 
+    contains(QT_CONFIG, svg) {
+        SUBDIRS += framebufferobject \
+                pbuffers2
+    }
+}
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/opengl

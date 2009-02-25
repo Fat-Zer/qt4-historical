@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -65,44 +69,40 @@ PathDeformControls::PathDeformControls(QWidget *parent, PathDeformRenderer* rend
 void PathDeformControls::layoutForDesktop()
 {
     QGroupBox* mainGroup = new QGroupBox(this);
-    mainGroup->setTitle("Controls");
+    mainGroup->setTitle(tr("Controls"));
 
     QGroupBox *radiusGroup = new QGroupBox(mainGroup);
-    radiusGroup->setAttribute(Qt::WA_ContentsPropagated);
-    radiusGroup->setTitle("Lens Radius");
+    radiusGroup->setTitle(tr("Lens Radius"));
     QSlider *radiusSlider = new QSlider(Qt::Horizontal, radiusGroup);
     radiusSlider->setRange(15, 150);
     radiusSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *deformGroup = new QGroupBox(mainGroup);
-    deformGroup->setAttribute(Qt::WA_ContentsPropagated);
-    deformGroup->setTitle("Deformation");
+    deformGroup->setTitle(tr("Deformation"));
     QSlider *deformSlider = new QSlider(Qt::Horizontal, deformGroup);
     deformSlider->setRange(-100, 100);
     deformSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *fontSizeGroup = new QGroupBox(mainGroup);
-    fontSizeGroup->setAttribute(Qt::WA_ContentsPropagated);
-    fontSizeGroup->setTitle("Font Size");
+    fontSizeGroup->setTitle(tr("Font Size"));
     QSlider *fontSizeSlider = new QSlider(Qt::Horizontal, fontSizeGroup);
     fontSizeSlider->setRange(16, 200);
     fontSizeSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
 
     QGroupBox *textGroup = new QGroupBox(mainGroup);
-    textGroup->setAttribute(Qt::WA_ContentsPropagated);
-    textGroup->setTitle("Text");
+    textGroup->setTitle(tr("Text"));
     QLineEdit *textInput = new QLineEdit(textGroup);
 
     QPushButton *animateButton = new QPushButton(mainGroup);
-    animateButton->setText("Animated");
+    animateButton->setText(tr("Animated"));
     animateButton->setCheckable(true);
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
-    showSourceButton->setText("Show Source");
+    showSourceButton->setText(tr("Show Source"));
 
 #ifdef QT_OPENGL_SUPPORT
     QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(true);
     enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
     if (!QGLFormat::hasOpenGL())
@@ -110,7 +110,7 @@ void PathDeformControls::layoutForDesktop()
 #endif
 
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
-    whatsThisButton->setText("What's This?");
+    whatsThisButton->setText(tr("What's This?"));
     whatsThisButton->setCheckable(true);
 
 
@@ -163,46 +163,46 @@ void PathDeformControls::layoutForDesktop()
     deformSlider->setValue(80);
     fontSizeSlider->setValue(120);
     radiusSlider->setValue(100);
-    textInput->setText("Qt");
+    textInput->setText(tr("Qt"));
 }
 
 void PathDeformControls::layoutForSmallScreen()
 {
     QGroupBox* mainGroup = new QGroupBox(this);
-    mainGroup->setTitle("Controls");
+    mainGroup->setTitle(tr("Controls"));
 
     QLabel *radiusLabel = new QLabel(mainGroup);
-    radiusLabel->setText("Lens Radius:");
+    radiusLabel->setText(tr("Lens Radius:"));
     QSlider *radiusSlider = new QSlider(Qt::Horizontal, mainGroup);
     radiusSlider->setRange(15, 150);
     radiusSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QLabel *deformLabel = new QLabel(mainGroup);
-    deformLabel->setText("Deformation:");
+    deformLabel->setText(tr("Deformation:"));
     QSlider *deformSlider = new QSlider(Qt::Horizontal, mainGroup);
     deformSlider->setRange(-100, 100);
     deformSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
     QLabel *fontSizeLabel = new QLabel(mainGroup);
-    fontSizeLabel->setText("Font Size:");
+    fontSizeLabel->setText(tr("Font Size:"));
     QSlider *fontSizeSlider = new QSlider(Qt::Horizontal, mainGroup);
     fontSizeSlider->setRange(16, 200);
     fontSizeSlider->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Fixed);
 
-    QPushButton *animateButton = new QPushButton("Animated", mainGroup);
+    QPushButton *animateButton = new QPushButton(tr("Animated"), mainGroup);
     animateButton->setCheckable(true);
 
 #ifdef QT_OPENGL_SUPPORT
     QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(mainGroup);
     enableOpenGLButton->setChecked(m_renderer->usesOpenGL());
     if (!QGLFormat::hasOpenGL())
         enableOpenGLButton->hide();
 #endif
 
-    QPushButton *quitButton = new QPushButton("Quit", mainGroup);
-    QPushButton *okButton = new QPushButton("OK", mainGroup);
+    QPushButton *quitButton = new QPushButton(tr("Quit"), mainGroup);
+    QPushButton *okButton = new QPushButton(tr("OK"), mainGroup);
 
 
     QGridLayout *mainGroupLayout = new QGridLayout(mainGroup);
@@ -241,7 +241,7 @@ void PathDeformControls::layoutForSmallScreen()
 
     QRect screen_size = QApplication::desktop()->screenGeometry();
     radiusSlider->setValue(qMin(screen_size.width(), screen_size.height())/5);
-    m_renderer->setText("Qt");
+    m_renderer->setText(tr("Qt"));
 }
 
 
@@ -255,7 +255,7 @@ void PathDeformControls::emitOkSignal()
 PathDeformWidget::PathDeformWidget(QWidget *parent, bool smallScreen)
     : QWidget(parent)
 {
-    setWindowTitle("Vector Deformation");
+    setWindowTitle(tr("Vector Deformation"));
 
     m_renderer = new PathDeformRenderer(this, smallScreen);
     m_renderer->setSizePolicy(QSizePolicy::Expanding, QSizePolicy::Expanding);
@@ -270,8 +270,8 @@ PathDeformWidget::PathDeformWidget(QWidget *parent, bool smallScreen)
     if (!smallScreen)
         mainLayout->addWidget(m_controls);
 
-    m_renderer->loadSourceFile(":res/pathdeform.cpp");
-    m_renderer->loadDescription(":res/pathdeform.html");
+    m_renderer->loadSourceFile(":res/deform/pathdeform.cpp");
+    m_renderer->loadDescription(":res/deform/pathdeform.html");
     m_renderer->setDescriptionEnabled(false);
 
     connect(m_renderer, SIGNAL(clicked()), this, SLOT(showControls()));

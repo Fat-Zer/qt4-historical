@@ -15,6 +15,10 @@ SUBDIRS     = \
         demos_embeddeddialogs \
         demos_undo 
 
+contains(QT_CONFIG, opengl):!contains(QT_CONFIG, opengles1):!contains(QT_CONFIG, opengles1cl):!contains(QT_CONFIG, opengles2):{
+SUBDIRS += demos_boxes
+}
+
 mac*: SUBDIRS += demos_macmainwindow
 wince*|embedded: SUBDIRS += embedded
 
@@ -26,8 +30,8 @@ contains(QT_BUILD_PARTS, tools):{
 wince*: SUBDIRS += demos_sqlbrowser
 }
 }
-contains(QT_CONFIG, phonon):SUBDIRS += demos_mediaplayer
-contains(QT_CONFIG, webkit):SUBDIRS += demos_browser
+contains(QT_CONFIG, phonon)!static:SUBDIRS += demos_mediaplayer
+contains(QT_CONFIG, webkit):contains(QT_CONFIG, svg):SUBDIRS += demos_browser
 
 # install
 sources.files = README *.pro
@@ -55,6 +59,8 @@ demos_qtdemo.subdir = qtdemo
 demos_mediaplayer.subdir = mediaplayer
 
 demos_browser.subdir = browser
+
+demos_boxes.subdir = boxes
 
 #CONFIG += ordered
 !ordered {

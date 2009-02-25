@@ -92,6 +92,7 @@ if (d1 == d2)
 //! [11]
 // The current directory is "/usr/local"
 QDir d1("/usr/local/bin");
+d1.setFilter(QDir::Executable);
 QDir d2("bin");
 if (d1 != d2)
     qDebug("They differ");

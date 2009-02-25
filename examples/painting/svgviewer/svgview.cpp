@@ -1,183 +1,188 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the example classes of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 #include "svgview.h"
 
-#include <QSvgRenderer>
-
-#include <QApplication>
-#include <QPainter>
-#include <QImage>
+#include <QFile>
 #include <QWheelEvent>
-#include <QtDebug>
-
-SvgRasterView::SvgRasterView(const QString &file, QWidget *parent)
-    : QWidget(parent)
-{
-    doc = new QSvgRenderer(file, this);
-    connect(doc, SIGNAL(repaintNeeded()),
-            this, SLOT(poluteImage()));
-}
-
-void SvgRasterView::paintEvent(QPaintEvent *)
-{
-    if (buffer.size() != size() ||
-        m_dirty) {
-        buffer = QImage(size(), QImage::Format_ARGB32_Premultiplied);
-        buffer.fill(0x0);
-        QPainter p(&buffer);
-        p.setViewport(0, 0, width(), height());
-        doc->render(&p);
-    }
-    QPainter pt(this);
-    pt.drawImage(0, 0, buffer);
-}
-
-QSize SvgRasterView::sizeHint() const
-{
-    if (doc)
-        return doc->defaultSize();
-    return QWidget::sizeHint();
-}
-
-
-void SvgRasterView::poluteImage()
-{
-    m_dirty = true;
-    update();
-}
-
-void SvgRasterView::wheelEvent(QWheelEvent *e)
-{
-    const double diff = 0.1;
-    QSize size = doc->defaultSize();
-    int width  = size.width();
-    int height = size.height();
-    if (e->delta() > 0) {
-        width = int(this->width()+this->width()*diff);
-        height = int(this->height()+this->height()*diff);
-    } else {
-        width  = int(this->width()-this->width()*diff);
-        height = int(this->height()-this->height()*diff);
-    }
-
-    resize(width, height);
-}
-
-SvgNativeView::SvgNativeView(const QString &file, QWidget *parent)
-    : QWidget(parent)
-{
-    doc = new QSvgRenderer(file, this);
-    connect(doc, SIGNAL(repaintNeeded()),
-            this, SLOT(update()));
-}
-
-void SvgNativeView::paintEvent(QPaintEvent *)
-{
-    QPainter p(this);
-    p.setViewport(0, 0, width(), height());
-    doc->render(&p);
-}
-
-QSize SvgNativeView::sizeHint() const
-{
-    if (doc)
-        return doc->defaultSize();
-    return QWidget::sizeHint();
-}
-
-void SvgNativeView::wheelEvent(QWheelEvent *e)
-{
-    const double diff = 0.1;
-    QSize size = doc->defaultSize();
-    int width  = size.width();
-    int height = size.height();
-    if (e->delta() > 0) {
-        width = int(this->width()+this->width()*diff);
-        height = int(this->height()+this->height()*diff);
-    } else {
-        width  = int(this->width()-this->width()*diff);
-        height = int(this->height()-this->height()*diff);
-    }
-    resize(width, height);
-}
+#include <QMouseEvent>
+#include <QGraphicsRectItem>
+#include <QGraphicsSvgItem>
+#include <QPaintEvent>
+#include <qmath.h>
 
 #ifndef QT_NO_OPENGL
-SvgGLView::SvgGLView(const QString &file, QWidget *parent)
-    : QGLWidget(QGLFormat(QGL::SampleBuffers), parent),
-      highQualityAntialiasing(false)
-{
-    doc = new QSvgRenderer(file, this);
-    connect(doc, SIGNAL(repaintNeeded()),
-            this, SLOT(update()));
-}
-
-void SvgGLView::setHighQualityAntialiasing(bool hq)
-{
-    highQualityAntialiasing = hq;
-    update();
-}
-
-void SvgGLView::paintEvent(QPaintEvent *)
-{
-    QPainter p(this);
-    p.setRenderHint(QPainter::HighQualityAntialiasing, highQualityAntialiasing);
-    doc->render(&p);
-}
-
-QSize SvgGLView::sizeHint() const
-{
-    if (doc)
-        return doc->defaultSize();
-    return QGLWidget::sizeHint();
-}
-
-void SvgGLView::wheelEvent(QWheelEvent *e)
-{
-    const double diff = 0.1;
-    QSize size = doc->defaultSize();
-    int width  = size.width();
-    int height = size.height();
-    if (e->delta() > 0) {
-        width = int(this->width()+this->width()*diff);
-        height = int(this->height()+this->height()*diff);
-    } else {
-        width  = int(this->width()-this->width()*diff);
-        height = int(this->height()-this->height()*diff);
-    }
-    resize(width, height);
-}
+#include <QGLWidget>
 #endif
+
+SvgView::SvgView(QWidget *parent)
+    : QGraphicsView(parent)
+    , m_renderer(Native)
+    , m_svgItem(0)
+    , m_backgroundItem(0)
+    , m_outlineItem(0)
+{
+    setScene(new QGraphicsScene(this));
+    setTransformationAnchor(AnchorUnderMouse);
+    setDragMode(ScrollHandDrag);
+
+    // Prepare background check-board pattern
+    QPixmap tilePixmap(64, 64);
+    tilePixmap.fill(Qt::white);
+    QPainter tilePainter(&tilePixmap);
+    QColor color(220, 220, 220);
+    tilePainter.fillRect(0, 0, 32, 32, color);
+    tilePainter.fillRect(32, 32, 32, 32, color);
+    tilePainter.end();
+
+    setBackgroundBrush(tilePixmap);
+}
+
+void SvgView::drawBackground(QPainter *p, const QRectF &)
+{
+    p->save();
+    p->resetTransform();
+    p->drawTiledPixmap(viewport()->rect(), backgroundBrush().texture());
+    p->restore();
+}
+
+void SvgView::openFile(const QFile &file)
+{
+    if (!file.exists())
+        return;
+
+    QGraphicsScene *s = scene();
+
+    bool drawBackground = (m_backgroundItem ? m_backgroundItem->isVisible() : false);
+    bool drawOutline = (m_outlineItem ? m_outlineItem->isVisible() : true);
+
+    s->clear();
+    resetTransform();
+
+    m_svgItem = new QGraphicsSvgItem(file.fileName());
+    m_svgItem->setFlags(QGraphicsItem::ItemClipsToShape);
+    m_svgItem->setCacheMode(QGraphicsItem::NoCache);
+    m_svgItem->setZValue(0);
+
+    m_backgroundItem = new QGraphicsRectItem(m_svgItem->boundingRect());
+    m_backgroundItem->setBrush(Qt::white);
+    m_backgroundItem->setPen(Qt::NoPen);
+    m_backgroundItem->setVisible(drawBackground);
+    m_backgroundItem->setZValue(-1);
+
+    m_outlineItem = new QGraphicsRectItem(m_svgItem->boundingRect());
+    QPen outline(Qt::black, 2, Qt::DashLine);
+    outline.setCosmetic(true);
+    m_outlineItem->setPen(outline);
+    m_outlineItem->setBrush(Qt::NoBrush);
+    m_outlineItem->setVisible(drawOutline);
+    m_outlineItem->setZValue(1);
+
+    s->addItem(m_backgroundItem);
+    s->addItem(m_svgItem);
+    s->addItem(m_outlineItem);
+
+    s->setSceneRect(m_outlineItem->boundingRect().adjusted(-10, -10, 10, 10));
+}
+
+void SvgView::setRenderer(RendererType type)
+{
+    m_renderer = type;
+
+    if (m_renderer == OpenGL) {
+#ifndef QT_NO_OPENGL
+        setViewport(new QGLWidget(QGLFormat(QGL::SampleBuffers)));
+#endif
+    } else {
+        setViewport(new QWidget);
+    }
+}
+
+void SvgView::setHighQualityAntialiasing(bool highQualityAntialiasing)
+{
+#ifndef QT_NO_OPENGL
+    setRenderHint(QPainter::HighQualityAntialiasing, highQualityAntialiasing);
+#else
+    Q_UNUSED(highQualityAntialiasing);
+#endif
+}
+
+void SvgView::setViewBackground(bool enable)
+{
+    if (!m_backgroundItem)
+          return;
+
+    m_backgroundItem->setVisible(enable);
+}
+
+void SvgView::setViewOutline(bool enable)
+{
+    if (!m_outlineItem)
+        return;
+
+    m_outlineItem->setVisible(enable);
+}
+
+void SvgView::paintEvent(QPaintEvent *event)
+{
+    if (m_renderer == Image) {
+        if (m_image.size() != viewport()->size()) {
+            m_image = QImage(viewport()->size(), QImage::Format_ARGB32_Premultiplied);
+        }
+
+        QPainter imagePainter(&m_image);
+        QGraphicsView::render(&imagePainter);
+        imagePainter.end();
+
+        QPainter p(viewport());
+        p.drawImage(0, 0, m_image);
+
+    } else {
+        QGraphicsView::paintEvent(event);
+    }
+}
+
+void SvgView::wheelEvent(QWheelEvent *event)
+{
+    qreal factor = qPow(1.2, event->delta() / 240.0);
+    scale(factor, factor);
+    event->accept();
+}
+

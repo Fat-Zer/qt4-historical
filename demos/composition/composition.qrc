@@ -1,5 +1,5 @@
 <!DOCTYPE RCC><RCC version="1.0">
-<qresource prefix="/trolltech/arthurplugin">
+<qresource prefix="/res/composition">
    <file>composition.cpp</file>
    <file>composition.html</file>
    <file>flower.jpg</file>

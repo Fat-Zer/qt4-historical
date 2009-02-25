@@ -4,7 +4,7 @@ assistant -collectionFile file
 
 
 //! [1]
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <QHelpCollectionProject version="1.0">
     <assistant>
         <title>My Application Help</title>
@@ -53,21 +53,24 @@ if (!process->waitForStarted())
 
 
 //! [3]
-QTextStream str(process);
-str << QLatin1String("setSource qthelp://com.mycompany.1_0_0/doc/index.html\0") << endl;
+QByteArray ba;
+ba.append("setSource qthelp://com.mycompany.1_0_0/doc/index.html");
+ba.append('\0');
+process->write(ba);
 //! [3]
 
 
 //! [4]
-QTextStream str(process);
-str << QLatin1String("hide bookmarks;")
-    << QLatin1String("hide index;")
-    << QLatin1String("setSource qthelp://com.mycompany.1_0_0/doc/index.html\0")
-    << endl;
+QByteArray ba;
+ba.append("hide bookmarks;");
+ba.append("hide index;");
+ba.append("setSource qthelp://com.mycompany.1_0_0/doc/index.html");
+ba.append('\0');
+process->write(ba);
 //! [4]
 
 //! [5]
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <QHelpCollectionProject version="1.0">
     ...
     <docFiles>
@@ -84,13 +87,13 @@ assistant -collectionFile mycollection.qhc -register myapplication-manual.qch
 //! [6]
 
 //! [7]
-<?xml version="1.0" encoding="utf-8" ?> 
+<?xml version="1.0" encoding="utf-8" ?>
 <QHelpCollectionProject version="1.0">
     <assistant>
         <title>My Application Help</title>
         <cacheDirectory>mycompany/myapplication</cacheDirectory>
         ...
-    </assistant>        
+    </assistant>
 </QHelpCollectionProject>
 //! [7]
 

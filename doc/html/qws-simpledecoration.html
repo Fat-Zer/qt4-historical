@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="iso-8859-1"?>
+<!DOCTYPE html
+    PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/doc/src/examples/simpledecoration.qdoc -->
+<head>
+  <title>Qt 4.5: Simple Decoration Example</title>
+  <link href="classic.css" rel="stylesheet" type="text/css" />
+</head>
+<body>
+<table border="0" cellpadding="0" cellspacing="0" width="100%">
+<tr>
+<td align="left" valign="top" width="32"><a href="http://qtsoftware.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
+<td width="1">&nbsp;&nbsp;</td><td class="postheader" valign="center"><a href="index.html"><font color="#004faf">Home</font></a>&nbsp;&middot; <a href="namespaces.html"><font color="#004faf">All&nbsp;Namespaces</font></a>&nbsp;&middot; <a href="classes.html"><font color="#004faf">All&nbsp;Classes</font></a>&nbsp;&middot; <a href="mainclasses.html"><font color="#004faf">Main&nbsp;Classes</font></a>&nbsp;&middot; <a href="groups.html"><font color="#004faf">Grouped&nbsp;Classes</font></a>&nbsp;&middot; <a href="modules.html"><font color="#004faf">Modules</font></a>&nbsp;&middot; <a href="functions.html"><font color="#004faf">Functions</font></a></td>
+<td align="right" valign="top" width="230"></td></tr></table><h1 class="title">Simple Decoration Example<br /><span class="subtitle"></span>
+</h1>
+<p>The Simple Decoration example shows how to create a custom window decoration for embedded applications.</p>
+<p align="center"><img src="images/embedded-simpledecoration-example.png" /></p><p>By default, Qt for Embedded Linux applications display windows with one of the standard window decorations provided by Qt which are perfectly suitable for many situations. Nonetheless, for certain applications and devices, it is necessary to provide custom window decorations.</p>
+<p>In this document, we examine the fundamental features of custom window decorations, and create a simple decoration as an example.</p>
+<a name="styles-and-window-decorations"></a>
+<h2>Styles and Window Decorations</h2>
+<p>On many platforms, the style used for the contents of a window (including scroll bars) and the style used for the window decorations (the title bar, window borders, close, maximize and other buttons) are handled differently. This is usually because each application is responsible for rendering the contents of its own windows and the window manager renders the window decorations.</p>
+<p>Although the situation is not quite like this on Qt for Embedded Linux because <a href="qapplication.html">QApplication</a> automatically handles window decorations as well, there are still two style mechanisms at work: <a href="qstyle.html">QStyle</a> and its associated classes are responsible for rendering widgets and subclasses of QDecoration are responsible for rendering window decorations.</p>
+<p align="center"><img src="images/embedded-simpledecoration-example-styles.png" /></p><p>Three decorations are provided with Qt for Embedded Linux: <i>default</i> is a basic style, <i>windows</i> resembles the classic Windows look and feel, and <i>styled</i> uses the <a href="qstyle.html">QStyle</a> classes for <a href="qmdisubwindow.html">QMdiSubWindow</a> to draw window decorations. Of these, <i>styled</i> is the most useful if you want to impose a consistent look and feel, but the window decorations may be too large for some use cases.</p>
+<p>If none of these built-in decorations are suitable, a custom style can easily be created and used. To do this, we simply need to create a subclass of QDecorationDefault and apply it to a <a href="qapplication.html">QApplication</a> instance in a running application.</p>
+<a name="mydecoration-class-definition"></a>
+<h2>MyDecoration Class Definition</h2>
+<p>The <tt>MyDecoration</tt> class is a subclass of QDecorationDefault, a subclass of QDecoration that provides reasonable default behavior for a decoration:</p>
+<pre></pre>
+<p>We only need to implement a constructor and reimplement the region() and paint() functions to provide our own custom appearance for window decorations.</p>
+<p>To make things fairly general, we provide a number of private variables to hold parameters which control certain aspects of the decoration's appearance. We also define some data structures that we will use to relate buttons in the window decorations to regions.</p>
+<a name="mydecoration-class-implementation"></a>
+<h2>MyDecoration Class Implementation</h2>
+<p>In the constructor of the <tt>MyDecoration</tt> class, we set up some default values for the decoration, specifying a thin window border, a title bar that is just taller than the buttons it will hold, and we create a list of buttons that we support:</p>
+<pre></pre>
+<p>We map each of these <a href="qt.html#WindowType-enum">Qt::WindowFlags</a> to QDecoration::DecorationRegion enum values to help with the implementation of the <a href="#finding-regions">region() function implementation</a>.</p>
+<pre></pre>
+<p>In this decoration, we implement the buttons used in the decoration as pixmaps. To help us relate regions of the window to these, we define mappings between each DecorationRegion and its corresponding pixmap for two situations: when a window is shown normally and when it has been maximized. This is purely for cosmetic purposes.</p>
+<pre></pre>
+<p>We finish the constructor by defining the regions for buttons that we understand. This will be useful when we are asked to give regions for window decoration buttons.</p>
+<pre></pre>
+<a name="finding-regions"></a>
+<h3>Finding Regions</h3>
+<p>Each decoration needs to be able to describe the regions used for parts of the window furniture, such as the close button, window borders and title bar. We reimplement the region() function to do this for our decoration. This function returns a <a href="qregion.html">QRegion</a> object that describes an arbitrarily-shaped region of the screen that can itself be made up of several distinct areas.</p>
+<pre></pre>
+<p>The function is called for a given <i>widget</i>, occupying a region specified by <i>insideRect</i>, and is expected to return a region for the collection of DecorationRegion enum values supplied in the <i>decorationRegion</i> parameter.</p>
+<p>We begin by figuring out how much space in the decoration we will need to allocate for buttons, and where to place them:</p>
+<pre></pre>
+<p>In a more sophisticated implementation, we might test the <i>decorationRegion</i> supplied for regions related to buttons and the title bar, and only perform this space allocation if asked for regions related to these.</p>
+<p>We also use the information about the area occupied by buttons to determine how large an area we can use for the window title:</p>
+<pre></pre>
+<p>With these basic calculations done, we can start to compose a region, first checking whether we have been asked for all of the window, and we return immediately if so.</p>
+<pre></pre>
+<p>We examine each decoration region in turn, adding the corresponding region to the <tt>region</tt> object created earlier. We take care to avoid &quot;off by one&quot; errors in the coordinate calculations.</p>
+<pre></pre>
+<p>Unlike the window borders and title bar, the regions occupied by buttons many of the window decorations do not occupy fixed places in the window. Instead, their locations depend on which other buttons are present. We only add regions for buttons we can handle (defined in the <tt>stateRegions</tt>) member variable, and only for those that are present (defined in the <tt>buttons</tt> hash).</p>
+<pre></pre>
+<p>The fully composed region can then be returned:</p>
+<pre></pre>
+<p>The information returned by this function is used when the decoration is painted. Ideally, this function should be implemented to perform all the calculations necessary to place elements of the decoration; this makes the implementation of the <tt>paint()</tt> function much easier.</p>
+<a name="painting-the-decoration"></a>
+<h3>Painting the Decoration</h3>
+<p>The <tt>paint()</tt> function is responsible for drawing each window element for a given widget. Information about the decoration region, its state and the widget itself is provided along with a <a href="qpainter.html">QPainter</a> object to use.</p>
+<p>The first check we make is for a call with no regions:</p>
+<pre></pre>
+<p>We return false to indicate that we have not painted anything. If we paint something, we must return true so that the window can be composed, if necessary.</p>
+<p>Just as with the <tt>region()</tt> function, we test the decoration region to determine which elements need to be drawn. If we paint anything, we set the <tt>handled</tt> variable to true so that we can return the correct value when we have finished.</p>
+<pre></pre>
+<p>Note that we use our own <tt>region()</tt> implementation to determine where to draw decorations.</p>
+<p>Since the <tt>region()</tt> function performs calculations to place buttons, we can simply test the window flags against the buttons we support (using the <tt>buttonHintMap</tt> defined in the constructor), and draw each button in the relevant region:</p>
+<pre></pre>
+<p>Finally, we return the value of <tt>handled</tt> to indicate whether any painting was performed:</p>
+<pre></pre>
+<p>We now have a decoration class that we can use in an application.</p>
+<a name="using-the-decoration"></a>
+<h2>Using the Decoration</h2>
+<p>In the <tt>main.cpp</tt> file, we set up the application as usual, but we also create an instance of our decoration and set it as the standard decoration for the application:</p>
+<pre></pre>
+<p>This causes all windows opened by this application to use our decoration. To demonstrate this, we show the analog clock widget from the <a href="widgets-analogclock.html">Analog Clock Example</a>, which we build into the application:</p>
+<pre></pre>
+<p>The application can be run either <a href="qt-embedded-running.html">as a server or a client application</a>. In both cases, it will use our decoration rather than the default one provided with Qt.</p>
+<a name="notes"></a>
+<h2>Notes</h2>
+<p>This example does not cache any information about the state or buttons used for each window. This means that the <tt>region()</tt> function calculates the locations and regions of buttons in cases where it could re-use existing information.</p>
+<p>If you run the application as a window server, you may expect client applications to use our decoration in preference to the default Qt decoration. However, it is up to each application to draw its own decoration, so this will not happen automatically. One way to achieve this is to compile the decoration with each application that needs it; another way is to build the decoration as a plugin, using the QDecorationPlugin class, and load it into the server and client applications.</p>
+<p /><address><hr /><div align="center">
+<table width="100%" cellspacing="0" border="0"><tr class="address">
+<td width="30%" align="left">Copyright &copy; 2009 Nokia Corporation and/or its subsidiary(-ies)</td>
+<td width="40%" align="center"><a href="trademarks.html">Trademarks</a></td>
+<td width="30%" align="right"><div align="right">Qt 4.5.0</div></td>
+</tr></table></div></address></body>
+</html>

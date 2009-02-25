@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -65,9 +69,9 @@
     for querying XML data \e{and} for querying
     \l{QAbstractXmlNodeModel} {non-XML data that can be modeled to
     look like XML}. The QtXmlPatterns module is included in the \l{Qt
-    Full Framework Edition}, and the \l{Qt Open Source Edition}.  Readers who
-    are not familiar with the XQuery/XPath language can read \l {A
-    Short Path to XQuery} for a brief introduction.
+    Full Framework Edition}, and the \l{Open Source Versions of Qt}.
+    Readers who are not familiar with the XQuery/XPath language can read
+    \l {A Short Path to XQuery} for a brief introduction.
 
     \section1 Advantages of using QtXmlPatterns and XQuery
 
@@ -200,7 +204,7 @@
 
     When you want to run a parameterized XQuery from your Qt
     application, you will need to \l{QXmlQuery::bindVariable()} {bind
-    variables} in your program to $name variables in your XQuery. 
+    variables} in your program to $name variables in your XQuery.
 
     Suppose you want to parameterize the bibliography XQuery in the
     example above. You could define variables for the catalog that
@@ -237,8 +241,8 @@
     \row
         \o QVariant::Int
         \o \c xs:integer
- 
-   \row
+
+    \row
         \o QVariant::UInt
         \o \c xs:nonNegativeInteger
 
@@ -610,74 +614,59 @@
 
     \section2 Code Injection
 
-    Like SQL, XQuery is vulnerable to
+    XQuery is vulnerable to
     \l{http://en.wikipedia.org/wiki/Code_injection} {code injection
-    attacks}. If an XQuery is constructed by concatenation, where
-    concatenated strings can come from user input, the final XQuery
-    can become malevolent. The best way to prevent code injection
-    attacks is to not construct XQueries from user-written strings, but
-    only accept user data input using QVariant and variable bindings. See
-    QXmlQuery::bindVariable()
+    attacks} in the same way as the SQL language. If an XQuery is
+    constructed by concatenating strings, and the strings come from
+    user input, the constructed XQuery could be malevolent. The best
+    way to prevent code injection attacks is to not construct XQueries
+    from user-written strings, but only accept user data input using
+    QVariant and variable bindings. See QXmlQuery::bindVariable().
 
     The articles
     \l{http://www.ibm.com/developerworks/xml/library/x-xpathinjection.html}
-    {Avoid the dangers of XPath injection, Robi Sen} and
+    {Avoid the dangers of XPath injection}, by Robi Sen and
     \l{http://www.packetstormsecurity.org/papers/bypass/Blind_XPath_Injection_20040518.pdf}
-    {Blind XPath Injection, Amit Klein} discuss the XQuery code
+    {Blind XPath Injection}, by Amit Klein, discuss the XQuery code
     injection problem in more detail.
 
     \section2 Denial of Service Attacks
 
     Applications using QtXmlPatterns are subject to the same
-    software limits as any other system. Generally, these can not be
-    checked. This means QtXmlPatterns does not prevent rogue queries
-    from consuming too many resources. For example, a query could take
-    too much time to execute, or could attempt to transfer too much
-    data. Or a query could cause an unreasonable amount of recursion,
-    which could crash the system.  XQueries can do these things
-    accidentally, but they can also be meant as deliberate, denial of
-    service attacks.
+    limitations of software as other systems. Generally, these can not
+    be checked. This means QtXmlPatterns does not prevent rogue
+    queries from consuming too many resources. For example, a query
+    could take too much time to execute or try to transfer too much
+    data. A query could also do too much recursion, which could crash
+    the system.  XQueries can do these things accidentally, but they
+    can also be done as deliberate denial of service attacks.
 
     \section1 Features and Conformance
 
-    \section2 Conformance
+    \section2 XQuery 1.0
 
     QtXmlPatterns aims at being a
     \l{http://www.w3.org/TR/xquery/#id-xquery-conformance} {conformant
-    XQuery processor}. Apart from adhering to
-    {http://www.w3.org/TR/xquery/#id-minimal-conformance} {Minimal
-    Conformance}, QtXmlPatterns supports the
+    XQuery processor}. It adheres to
+    \l{http://www.w3.org/TR/xquery/#id-minimal-conformance} {Minimal
+    Conformance} and supports the
     \l{http://www.w3.org/TR/xquery/#id-serialization-feature}
     {Serialization Feature} and the
     \l{http://www.w3.org/TR/xquery/#id-full-axis-feature} {Full Axis
-    Feature}. QtXmlPatterns passes 97% of the tests in the
-    \l{http://www.w3.org/XML/Query/test-suite} {XML Query Test Suite},
-    and it is expected this will improve over time. Areas where
-    conformance may be questionable and where behavior may be changed
-    in future releases are:
+    Feature}. QtXmlPatterns currently passes 97% of the tests in the
+    \l{http://www.w3.org/XML/Query/test-suite} {XML Query Test Suite}.
+    Areas where conformance may be questionable and where behavior may
+    be changed in future releases include:
 
     \list
 
-    \o Regular expression support is currently not conformant
-           but follows Qt's QRegExp standard syntax.
+    \o Some corner cases involving namespaces and element constructors
+       are incorrect.
 
-    \o Operators for \c xs:time, \c xs:date, and \c xs:dateTime
-    are incomplete.
-
-    \o Formatting of very large or very small \c xs:double, \c
-    xs:float, and \c xs:decimal values may be incorrect.
-
-    \o Some corner cases involving namespaces and element
-        constructors are incorrect.
+    \o XPath is a subset of XQuery and the implementation of
+       QtXmlPatterns uses XPath 2.0 with XQuery 1.0.
 
     \endlist
-
-    XML 1.0 and XML Namespaces 1.0 are supported, as opposed to the
-    1.1 versions. When a strings is passed to a query as a QString,
-    the characters must be XML 1.0 characters. Otherwise, the behavior
-    is undefined. This is not checked.
-
-    Since XPath 2.0 is a subset of XQuery 1.0, it is supported.
 
     The specifications discusses conformance further:
     \l{http://www.w3.org/TR/xquery/}{XQuery 1.0: An XML Query
@@ -691,17 +680,169 @@
     sequence. We intend to provide functionality for this in a future
     release of Qt.
 
-    Processing of XML files supports \c xml:id. In practice, this
-    allows elements that have an attribute named \c xml:id to be
-    looked up efficiently with the \c fn:id() function. See
-    \l{http://www.w3.org/TR/xml-id/}{xml:id Version 1.0} for details.
-
     Only queries encoded in UTF-8 are supported.
+
+    \section2 XSLT 2.0
+
+    Partial support for XSLT was introduced in Qt 4.5. Future
+    releases of QtXmlPatterns will aim to support these XSLT
+    features:
+
+    \list
+        \o Basic XSLT 2.0 processor
+        \o Serialization feature
+        \o Backwards Compatibility feature
+    \endlist
+
+    For details, see \l{http://www.w3.org/TR/xslt20/#conformance}{XSL
+    Transformations (XSLT) Version 2.0, 21 Conformance}.
+
+    \note In this release, XSLT support is considered experimental.
+
+    Unsupported or partially supported XSLT features are documented
+    in the following table. The implementation of XSLT in Qt 4.5 can
+    be seen as XSLT 1.0 but with the data model of XPath 2.0 and
+    XSLT 2.0, and using the using the functionality of XPath 2.0 and
+    its accompanying function library. When QtXmlPatterns encounters
+    an unsupported or partially support feature, it will either report
+    a syntax error or silently continue, unless otherwise noted in the
+    table.
+
+    The implementation currently passes 42% of W3C's XSLT test suite,
+    which focus on features introduced in XSLT 2.0.
+
+    \table
+    \header
+        \o XSL Feature
+        \o Support Status
+    \row
+        \o \c xsl:key and \c fn:key()
+        \o not supported
+    \row
+        \o \c xsl:include
+        \o not supported
+    \row
+        \o \c xsl:import
+        \o not supported
+    \row
+        \o \c xsl:copy
+
+        \o The \c copy-namespaces and \c inherit-namespaces attributes
+           have no effect. For copied comments, attributes and
+           processing instructions, the copy has the same node
+           identity as the original.
+
+    \row
+        \o \c xsl:copy-of
+        \o The \c copy-namespaces attribute has no effect.
+    \row
+        \o \c fn:format-number()
+        \o not supported
+    \row
+        \o \c xsl:message
+        \o not supported
+    \row
+        \o \c xsl:use-when
+        \o not supported
+    \row
+        \o \c Tunnel Parameters
+        \o not supported
+    \row
+        \o \c xsl:attribute-set
+        \o not supported
+    \row
+        \o \c xsl:decimal-format
+        \o not supported
+    \row
+        \o \c xsl:fallback
+        \o not supported
+    \row
+        \o \c xsl:apply-imports
+        \o not supported
+    \row
+        \o \c xsl:character-map
+        \o not supported
+    \row
+        \o \c xsl:number
+        \o not supported
+    \row
+        \o \c xsl:namespace-alias
+        \o not supported
+    \row
+        \o \c xsl:output
+        \o not supported
+    \row
+        \o \c xsl:output-character
+        \o not supported
+    \row
+        \o \c xsl:preserve-space
+        \o not supported
+    \row
+        \o \c xsl:result-document
+        \o not supported
+    \row
+        \o Patterns
+        \o Complex patterns or patterns with predicates have issues.
+    \row
+        \o \c 2.0 Compatibility Mode
+
+        \o Stylesheets are interpreted as XSLT 2.0 stylesheets, even
+           if the \c version attribute is in the XSLT source is
+           1.0. In other words, the version attribute is ignored.
+
+    \row
+        \o Grouping
+
+        \o \c fn:current-group(), \c fn:grouping-key() and \c
+           xsl:for-each-group.
+
+    \row
+        \o Regexp elements
+        \o \c xsl:analyze-string, \c xsl:matching-substring,
+           \c xsl:non-matching-substring, and \c fn:regex-group()
+    \row
+        \o Date & Time formatting
+        \o \c fn:format-dateTime(), \c fn:format-date() and fn:format-time().
+
+    \row
+        \o XPath Conformance
+        \o Since XPath is a subset of XSLT, its issues are in affect too.
+    \endtable
+
+    The QtXmlPatterns implementation of the XPath Data Model does not
+    include entities (due to QXmlStreamReader not reporting them).
+    This means that functions \c unparsed-entity-uri() and \c
+    unparsed-entity-public-id() always return negatively.
+
+    \section2 XPath 2.0
+
+    Since XPath 2.0 is a subset of XQuery 1.0, XPath 2.0 is
+    supported. Areas where conformance may be questionable and,
+    consequently, where behavior may be changed in future releases
+    include:
+
+    \list
+    \o Regular expression support is currently not conformant
+       but follows Qt's QRegExp standard syntax.
+
+    \o Operators for \c xs:time, \c xs:date, and \c xs:dateTime
+       are incomplete.
+
+    \o Formatting of very large or very small \c xs:double, \c
+       xs:float, and \c xs:decimal values may be incorrect.
+    \endlist
+
+    \section2 xml:id
+
+    Processing of XML files supports \c xml:id. This allows elements
+    that have an attribute named \c xml:id to be looked up efficiently
+    with the \c fn:id() function. See
+    \l{http://www.w3.org/TR/xml-id/}{xml:id Version 1.0} for details.
 
     \section2 Resource Loading
 
-    When QtXmlPatterns loads an XML resource, e.g., using \c fn:doc()
-    function, the following schemes are supported:
+    When QtXmlPatterns loads an XML resource, e.g., using the
+    \c fn:doc() function, the following schemes are supported:
 
     \table
     \header
@@ -712,8 +853,9 @@
         \o Local files.
     \row
         \o \c data
-        \o The bytes are encoded in the URI itself. For instance, \c
-        data:application/xml,%3Ce%2F%3E is \c <e/>.
+
+        \o The bytes are encoded in the URI itself. e.g., \c
+           data:application/xml,%3Ce%2F%3E is \c <e/>.
 
     \row
         \o \c ftp
@@ -723,15 +865,21 @@
         \o Resources retrieved via HTTP.
     \row
         \o \c https
-    \o Resources retrieved via HTTPS. This will succeed if no SSL
-    errors are encountered.
-
+        \o Resources retrieved via HTTPS. This will succeed if no SSL
+           errors are encountered.
     \row
         \o \c qrc
         \o Qt Resource files. Expressing it as an empty scheme, :/...,
-        is not supported.
+           is not supported.
 
     \endtable
+
+    \section2 XML
+
+    XML 1.0 and XML Namespaces 1.0 are supported, as opposed to the
+    1.1 versions. When a strings is passed to a query as a QString,
+    the characters must be XML 1.0 characters. Otherwise, the behavior
+    is undefined. This is not checked.
 
     URIs are first passed to QAbstractUriResolver. Check
     QXmlQuery::setUriResolver() for possible rewrites.

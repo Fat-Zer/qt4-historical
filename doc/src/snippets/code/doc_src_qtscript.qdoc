@@ -312,7 +312,7 @@ print(e instanceof Array);    // false
 QScriptValue Person_ctor(QScriptContext *context, QScriptEngine *engine)
 {
   QString name = context->argument(0).toString();
-  context->thisObject().setProperty("name", QScriptValue(engine, name));
+  context->thisObject().setProperty("name", name);
   return engine->undefinedValue();
 }
 //! [34]
@@ -323,7 +323,7 @@ QScriptValue Person_prototype_toString(QScriptContext *context, QScriptEngine *e
 {
   QString name = context->thisObject().property("name").toString();
   QString result = QString::fromLatin1("Person(name: %0)").arg(name);
-  return QScriptValue(engine, result);
+  return result;
 }
 //! [35]
 
@@ -363,7 +363,7 @@ QScriptValue QPointF_prototype_x(QScriptContext *context, QScriptEngine *engine)
 {
   // Since the point is not to be modified, it's OK to cast to a value here
     QPointF point = qscriptvalue_cast<QPointF>(context->thisObject());
-    return QScriptValue(engine, point.x());
+    return point.x();
 }
 
 QScriptValue QPointF_prototype_setX(QScriptContext *context, QScriptEngine *engine)
@@ -482,9 +482,9 @@ QLineEdit *edit2 = new QLineEdit(...);
 
 QScriptValue handler = eng.evaluate("function() { print('I am', this.name); }");
 QScriptValue obj1 = eng.newObject();
-obj1.setProperty("name", QScriptValue(&eng, "the walrus"));
+obj1.setProperty("name", "the walrus");
 QScriptValue obj2 = eng.newObject();
-obj2.setProperty("name", QScriptValue(&eng, "Sam"));
+obj2.setProperty("name", "Sam");
 
 qScriptConnect(edit1, SIGNAL(returnPressed()), obj1, handler);
 qScriptConnect(edit2, SIGNAL(returnPressed()), obj2, handler);
@@ -537,7 +537,7 @@ QScriptValue myCompare(QScriptContext *ctx, QScriptEngine *eng)
         result = -1;
     else
         result = 1;
-    return QScriptValue(eng, result);
+    return result;
 }
 //! [53]
 
@@ -584,7 +584,7 @@ QScriptValue add(QScriptContext *ctx, QScriptEngine *eng)
 {
     double a = ctx->argument(0).toNumber();
     double b = ctx->argument(1).toNumber();
-    return QScriptValue(eng, a + b);
+    return a + b;
 }
 //! [58]
 
@@ -623,7 +623,7 @@ QScriptValue add(QScriptContext *ctx, QScriptEngine *eng)
         return ctx->throwError("add() takes exactly two arguments");
     double a = ctx->argument(0).toNumber();
     double b = ctx->argument(1).toNumber();
-    return QScriptValue(eng, a + b);
+    return a + b;
 }
 //! [62]
 
@@ -638,7 +638,7 @@ QScriptValue add(QScriptContext *ctx, QScriptEngine *eng)
         return ctx->throwError(QScriptContext::TypeError, "add(): second argument is not a number");
     double a = ctx->argument(0).toNumber();
     double b = ctx->argument(1).toNumber();
-    return QScriptValue(eng, a + b);
+    return a + b;
 }
 //! [63]
 
@@ -657,7 +657,7 @@ QScriptValue concat(QScriptContext *ctx, QScriptEngine *eng)
     QString result = "";
     for (int i = 0; i < ctx->argumentCount(); ++i)
         result += ctx->argument(i).toString();
-    return QScriptValue(eng, result);
+    return result;
 }
 //! [65]
 
@@ -727,7 +727,7 @@ print(c2()); // 1
 QScriptValue counter(QScriptContext *ctx, QScriptEngine *eng)
 {
     QScriptValue act = ctx->activationObject();
-    act.setProperty("count", QScriptValue(eng, 0));
+    act.setProperty("count", 0);
     QScriptValue result = eng->newFunction(counter_inner);
     result.setScope(act);
     return result;
@@ -739,8 +739,8 @@ QScriptValue counter_inner(QScriptContext *ctx, QScriptEngine *eng)
 {
     QScriptValue outerAct = ctx->callee().scope();
     double count = outerAct.property("count").toNumber();
-    outerAct.setProperty("count", QScriptValue(eng, count+1));
-    return QScriptValue(eng, count);
+    outerAct.setProperty("count", count+1);
+    return count;
 }
 //! [73]
 
@@ -748,7 +748,7 @@ QScriptValue counter_inner(QScriptContext *ctx, QScriptEngine *eng)
 QScriptValue counter_hybrid(QScriptContext *ctx, QScriptEngine *eng)
 {
     QScriptValue act = ctx->activationObject();
-    act.setProperty("count", QScriptValue(eng, 0));
+    act.setProperty("count", 0);
     return eng->evaluate("function() { return count++; }");
 }
 //! [74]
@@ -780,7 +780,7 @@ QScriptValue Person_ctor(QScriptContext *ctx, QScriptEngine *eng)
 //! [77]
 QScriptContext *ctx = eng.pushContext();
 QScriptValue act = ctx->activationObject();
-act.setProperty("digit", QScriptValue(&eng, 7));
+act.setProperty("digit", 7);
 
 qDebug() << eng.evaluate("digit + 1").toNumber(); // 8
 
@@ -800,7 +800,7 @@ QScriptValue getSet(QScriptContext *ctx, QScriptEngine *eng)
     if (ctx->argumentCount() == 1) {
         QString str = ctx->argument(0).toString();
         str.replace("Roberta", "Ken");
-        result = QScriptValue(eng, str);
+        result = str;
         data.setProperty("x", result);
     } else {
         result = data.property("x");
@@ -829,3 +829,120 @@ obj.__defineGetter__("x", function() { return this._x; });
 obj.__defineSetter__("x", function(v) { print("setting x to", v); this._x = v; });
 obj.x = 123;
 //! [81]
+
+//! [82]
+myButton.text = qsTr("Hello world!");
+//! [82]
+
+//! [83]
+myButton.text = qsTranslate("MyAwesomeScript", "Hello world!");
+//! [83]
+
+//! [84]
+FriendlyConversation.prototype.greeting = function(type)
+{
+    if (FriendlyConversation['greeting_strings'] == undefined) {
+        FriendlyConversation['greeting_strings'] = [
+            QT_TR_NOOP("Hello"),
+            QT_TR_NOOP("Goodbye")
+        ];
+    }
+    return qsTr(FriendlyConversation.greeting_strings[type]);
+}
+//! [84]
+
+//! [85]
+FriendlyConversation.prototype.greeting = function(type)
+{
+    if (FriendlyConversation['greeting_strings'] == undefined) {
+        FriendlyConversation['greeting_strings'] = [
+            QT_TRANSLATE_NOOP("FriendlyConversation", "Hello"),
+            QT_TRANSLATE_NOOP("FriendlyConversation", "Goodbye")
+        ];
+    }
+    return qsTranslate("FriendlyConversation", FriendlyConversation.greeting_strings[type]);
+}
+//! [85]
+
+//! [86]
+FileCopier.prototype.showProgress = function(done, total, currentFileName)
+{
+    this.label.text = qsTr("%1 of %2 files copied.\nCopying: %3")
+                      .arg(done)
+                      .arg(total)
+                      .arg(currentFileName));
+}
+//! [86]
+
+//! [87]
+lupdate myscript.qs -ts myscript_la.ts
+//! [87]
+
+//! [88]
+lupdate -extensions qs scripts/ -ts scripts_la.ts
+//! [88]
+
+//! [89]
+lrelease myscript_la.ts
+//! [89]
+
+//! [90]
+({ unitName: "Celsius",
+   toKelvin: function(x) { return x + 273; }
+ })
+//! [90]
+
+//! [91]
+QScriptValue object = engine.evaluate("({ unitName: 'Celsius', toKelvin: function(x) { return x + 273; } })");
+QScriptValue toKelvin = object.property("toKelvin");
+QScriptValue result = toKelvin.call(object, QScriptValueList() << 100);
+qDebug() << result.toNumber(); // 373
+//! [91]
+
+//! [92]
+QScriptValue add = engine.globalObject().property("add");
+qDebug() << add.call(QScriptValue(), QScriptValueList() << 1 << 2).toNumber(); // 3
+//! [92]
+
+//! [93]
+typedef QSharedPointer<QXmlStreamReader> XmlStreamReaderPointer;
+
+Q_DECLARE_METATYPE(XmlStreamReaderPointer)
+
+QScriptValue constructXmlStreamReader(QScriptContext *context, QScriptEngine *engine)
+{
+    if (!context->isCalledAsConstructor())
+        return context->throwError(QScriptContext::SyntaxError, "please use the 'new' operator");
+
+    QIODevice *device = qobject_cast<QIODevice*>(context->argument(0).toQObject());
+    if (!device)
+        return context->throwError(QScriptContext::TypeError, "please supply a QIODevice as first argument");
+
+    // Create the C++ object
+    QXmlStreamReader *reader = new QXmlStreamReader(device);
+
+    XmlStreamReaderPointer pointer(reader);
+
+    // store the shared pointer in the script object that we are constructing
+    return engine->newVariant(context->thisObject(), qVariantFromValue(pointer));
+}
+//! [93]
+
+//! [94]
+QScriptValue xmlStreamReader_atEnd(QScriptContext *context, QScriptEngine *)
+{
+    XmlStreamReaderPointer reader = qscriptvalue_cast<XmlStreamReaderPointer>(context->thisObject());
+    if (!reader)
+        return context->throwError(QScriptContext::TypeError, "this object is not an XmlStreamReader");
+    return reader->atEnd();
+}
+//! [94]
+
+//! [95]
+    QScriptEngine engine;
+    QScriptValue xmlStreamReaderProto = engine.newObject();
+    xmlStreamReaderProto.setProperty("atEnd", engine.newFunction(xmlStreamReader_atEnd));
+
+    QScriptValue xmlStreamReaderCtor = engine.newFunction(constructXmlStreamReader, xmlStreamReaderProto);
+    engine.globalObject().setProperty("XmlStreamReader", xmlStreamReaderCtor);
+//! [95]

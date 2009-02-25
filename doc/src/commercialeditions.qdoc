@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -47,14 +51,8 @@
     Two editions of Qt are available under a commercial license:
     Qt GUI Framework Edition, and Qt Full Framework Edition.
 
-    You may write commercial, proprietary, or otherwise non-free
-    software \e only if you have purchased a commercial edition of
-    Qt. If you purchase a commercial edition, you are entitled to
-    technical support and upgrades.
-
-    If you want to develop Free or Open Source software for release
-    using a recognized Open Source license, you can use the \l{Qt
-    Open Source Edition}.
+    If you want to develop Free or Open Source software for release using a recognized
+    Open Source license, you can use the \l{Open Source Versions of Qt}.
 
     The table below summarizes the differences between the three
     commercial editions:
@@ -68,6 +66,7 @@
     \row    \o \l{QtNetwork}{Networking (QtNetwork)}              \o                  \o \bold{X}
     \row    \o \l{QtOpenGL}{OpenGL (QtOpenGL)}                    \o                  \o \bold{X}
     \row    \o \l{QtScript}{Scripting (QtScript)}                 \o                  \o \bold{X}
+    \row    \o \l{QtScriptTools}{Script Debugging (QtScriptTools)}\o                  \o \bold{X}
     \row    \o \l{QtSql}{Database/SQL (QtSql)}                    \o                  \o \bold{X}
     \row    \o \l{QtSvg}{SVG (QtSvg)}                             \o                  \o \bold{X}
     \row    \o \l{QtWebKit}{WebKit integration (QtWebKit)}        \o                  \o \bold{X}
@@ -111,7 +110,7 @@
     For further information and assistance, please contact Qt
     sales.
 
-    Email: \l{mailto:sales@trolltech.com}{sales@trolltech.com}.
+    Email: \l{mailto:qt-sales@nokia.com}{qt-sales@nokia.com}.
 
     Phone, U.S. office (for North America): \bold{1-650-813-1676}.
 

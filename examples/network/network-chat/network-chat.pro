@@ -13,7 +13,7 @@ FORMS         = chatdialog.ui
 QT           += network
 
 # install
-target.path = $$[QT_INSTALL_EXAMPLES]/network/chat
+target.path = $$[QT_INSTALL_EXAMPLES]/network/network-chat
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS network-chat.pro *.chat
-sources.path = $$[QT_INSTALL_EXAMPLES]/network/chat
+sources.path = $$[QT_INSTALL_EXAMPLES]/network/network-chat
 INSTALLS += target sources

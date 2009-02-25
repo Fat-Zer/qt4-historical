@@ -1,3 +1,5 @@
+#ifndef QT_QTGUI_MODULE_H
+#define QT_QTGUI_MODULE_H
 #include <QtCore/QtCore>
 #include "qaccessible.h"
 #include "qaccessible2.h"
@@ -118,6 +120,7 @@
 #include "qcdestyle.h"
 #include "qcleanlooksstyle.h"
 #include "qcommonstyle.h"
+#include "qgtkstyle.h"
 #include "qmotifstyle.h"
 #include "qplastiquestyle.h"
 #include "qstyle.h"
@@ -138,6 +141,7 @@
 #include "qtextcursor.h"
 #include "qtextdocument.h"
 #include "qtextdocumentfragment.h"
+#include "qtextdocumentwriter.h"
 #include "qtextformat.h"
 #include "qtextlayout.h"
 #include "qtextlist.h"
@@ -200,3 +204,4 @@
 #include "qtoolbutton.h"
 #include "qvalidator.h"
 #include "qworkspace.h"
+#endif

@@ -63,5 +63,27 @@ for(int i = metaObject->propertyOffset(); i < metaObject->propertyCount(); ++i)
 const QMetaObject* metaObject = obj->metaObject();
 QStringList methods;
 for(int i = metaObject->methodOffset(); i < metaObject->methodCount(); ++i)
-    methods << QString::fromLatin1(metaObject->property(i).signature());
+    methods << QString::fromLatin1(metaObject->method(i).signature());
 //! [methodCount]
+
+//! [6]
+int methodIndex = pushButton->metaObject()->indexForMethod("animateClick");
+QMetaMethod method = metaObject->method(methodIndex);
+method.invoke(pushButton, Qt::QueuedConnection);
+//! [6]
+
+//! [7]
+QMetaMethod::invoke: Unable to handle unregistered datatype 'MyType'
+//! [7]
+
+//! [8]
+QString retVal;
+int methodIndex = obj->metaObject()->indexForMethod("compute");
+QMetaMethod method = metaObject->method(methodIndex);
+method.invoke(obj,
+              Qt::DirectConnection,
+              Q_RETURN_ARG(QString, retVal),
+              Q_ARG(QString, "sqrt"),
+              Q_ARG(int, 42),
+              Q_ARG(double, 9.7));
+//! [8]

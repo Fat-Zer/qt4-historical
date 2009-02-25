@@ -307,7 +307,7 @@
 
 
 //! [33]
-    void on_<widget name>_<signal name>(<signal parameters>);
+    void on_<object name>_<signal name>(<signal parameters>);
 //! [33]
 
 
@@ -368,3 +368,11 @@
 //! [39]
 
 
+//! [40]
+    //: Hello translator
+    //: This comment should help you. Does it?
+    label->setText(tr("Highly ambiguous example"));
+
+    /*: C style comments are supported, too. */
+    QString example = tr("None");
+//! [40]

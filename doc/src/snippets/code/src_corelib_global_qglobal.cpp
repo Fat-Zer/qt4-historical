@@ -20,6 +20,9 @@ public:
 Q_DECLARE_OPERATORS_FOR_FLAGS(MyClass::Options)
 //! [1]
 
+//! [meta-object flags]
+Q_FLAGS(Options)
+//! [meta-object flags]
 
 //! [2]
 typedef QFlags<Enum> Flags;

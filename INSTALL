@@ -1,4 +1,4 @@
-                  INSTALLING Qt/All Source Version 4.4.3.
+                  INSTALLING Qt/All Source Version 4.5.0.
 
 1.  If you have the commercial edition of Qt, install your license
     file as $HOME/.qt-license if you are on Unix. If you are on
@@ -22,7 +22,7 @@
     archiving utility. Note that on some systems it is called gtar.
 
     On Windows, uncompress the files into the directory you want Qt
-    installed, e.g. C:\Qt\4.4.3.
+    installed, e.g. C:\Qt\4.5.0.
 
     NOTE: The install path must not contain any spaces.
 
@@ -33,7 +33,7 @@
 
         PATH               - to locate qmake, moc and other Qt tools
 
-   On Windows, this is done by adding c:\Qt\4.4.3\bin
+   On Windows, this is done by adding c:\Qt\4.5.0\bin
    to the PATH variable. On Unix, this is done by adding
    /tmp/%DISTNAME%.
 
@@ -43,19 +43,19 @@
 
    In .profile (if your Unix shell is bash), add the following lines:
 
-        PATH=/usr/local/Trolltech/Qt-4.4.3/bin:$PATH
+        PATH=/usr/local/Trolltech/Qt-4.5.0/bin:$PATH
         export PATH
 
    In .login (in case your Unix shell is csh or tcsh), add the following line:
 
-        setenv PATH /usr/local/Trolltech/Qt-4.4.3/bin:$PATH
+        setenv PATH /usr/local/Trolltech/Qt-4.5.0/bin:$PATH
 
    If you use a different Unix shell, please modify your environment
    variables accordingly.
 
    For some X11 compilers that do not support rpath you must also
    extended the LD_LIBRARY_PATH environment variable to include
-   /usr/local/Trolltech/Qt-4.4.3/lib. On Linux or Mac with GCC
+   /usr/local/Trolltech/Qt-4.5.0/lib. On Linux or Mac with GCC
    this step is not needed.
 
 4.  Building
@@ -66,7 +66,7 @@
     ./configure script in the package directory.
 
     By default, Qt is configured for installation in the
-    /usr/local/Trolltech/Qt-4.4.3 directory, but this can be
+    /usr/local/Trolltech/Qt-4.5.0 directory, but this can be
     changed by using the -prefix option. Alternatively, the
     -prefix-install option can be used to specify a "local"
     installation within the source directory.
@@ -112,7 +112,7 @@
     To configure the Qt library for your machine type:
 
         C:
-        cd \Qt\4.4.3
+        cd \Qt\4.5.0
         configure
 
     Type "configure -help" to get a list of all available options.
@@ -145,8 +145,8 @@
 
     You might also want to try the following links:
 
-        http://doc.trolltech.com/4.4.3/how-to-learn-qt.html
-        http://doc.trolltech.com/4.4.3/tutorial.html
-        http://www.trolltech.com/developer
+        http://doc.trolltech.com/4.5.0/how-to-learn-qt.html
+        http://doc.trolltech.com/4.5.0/tutorial.html
+        http://qtsoftware.com/developer
 
     We hope you will enjoy using Qt. Good luck!

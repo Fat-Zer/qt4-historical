@@ -3,6 +3,8 @@ CONFIG += uitools
 RESOURCES += calculator.qrc
 SOURCES += main.cpp
 
+contains(QT_CONFIG, scripttools): QT += scripttools
+
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/script/calculator
 sources.files = $$SOURCES $$HEADERS $$RESOURCES $$FORMS *.pro *.js *.ui

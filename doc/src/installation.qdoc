@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -67,12 +71,12 @@ in the \l{Qt for X11 Requirements} document.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-x11-opensource-desktop-4.4.3.tar.gz}
+    if you have the \c{qt-x11-opensource-desktop-4.5.0.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 0
 
-    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.4.3}
+    This creates the directory \c{/tmp/qt-x11-opensource-desktop-4.5.0}
     containing the files from the archive. We only support the GNU version of
     the tar archiving utility. Note that on some systems it is called gtar.
 
@@ -82,10 +86,8 @@ in the \l{Qt for X11 Requirements} document.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.3} directory, but this can be
-    changed by using the \c{-prefix} option. Alternatively, the
-    \c{-prefix-install} option can be used to specify a "local"
-    installation within the source directory.
+    \c{/usr/local/Trolltech/Qt-4.5.0} directory, but this can be
+    changed by using the \c{-prefix} option.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 1
 
@@ -96,13 +98,13 @@ in the \l{Qt for X11 Requirements} document.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 2
 
-    If you did not configure Qt using the \c{-prefix-install} option,
-    you need to install the library, demos, examples, tools, and
-    tutorials in the appropriate place. To do this, type:
+    If \c{-prefix} is outside the build directory, you need to install
+    the library, demos, examples, tools, and tutorials in the appropriate
+    place. To do this, type:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 3
 
-    and enter the root password.
+    , as root if necessary.
 
     Note that on some systems the make utility is named differently,
     e.g. gmake. The configure script tells you which make utility to
@@ -136,7 +138,7 @@ in the \l{Qt for X11 Requirements} document.
 
     For compilers that do not support rpath you must also extended the
     \c LD_LIBRARY_PATH environment variable to include
-    \c{/usr/local/Trolltech/Qt-4.4.3/lib}. On Linux with GCC this step
+    \c{/usr/local/Trolltech/Qt-4.5.0/lib}. On Linux with GCC this step
     is not needed.
 
 \o  That's all. Qt is now installed.
@@ -151,7 +153,7 @@ in the \l{Qt for X11 Requirements} document.
     \list
     \o \l{Configuring Qt}
     \o \l{How to Learn Qt}
-    \o \l{Qt Tutorial}
+    \o \l{Tutorials}
     \o \l{Developer Zone}
     \o \l{Deploying Qt Applications}
     \endlist
@@ -177,7 +179,7 @@ in the \l{Qt for Windows Requirements} document.
 \o If you have obtained a binary package for this platform,
 consult the installation instructions provided instead of the ones in
 this document.
-\o \l{Qt Open Source Edition} is not officially supported for use with
+\o \l{Open Source Versions of Qt} is not officially supported for use with
 any version of Visual Studio. Integration with Visual Studio is available
 as part of the \l{Qt Commercial Editions}.
 
@@ -196,7 +198,7 @@ as part of the \l{Qt Commercial Editions}.
     For the open source version you do not need a license file.
 
 \o  Uncompress the files into the directory you want Qt installed;
-    e.g. \c{C:\Qt\4.4.3}.
+    e.g. \c{C:\Qt\4.5.0}.
 
     \note The install path must not contain any spaces or Windows specific
     file system characters.
@@ -208,7 +210,7 @@ as part of the \l{Qt Commercial Editions}.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 7
 
-    This is done by adding \c{c:\Qt\4.4.3\bin} to the \c PATH variable.
+    This is done by adding \c{c:\Qt\4.5.0\bin} to the \c PATH variable.
 
     For newer versions of Windows, \c PATH can be extended through
     the \menu{Control Panel|System|Advanced|Environment variables} menu.
@@ -218,8 +220,8 @@ as part of the \l{Qt Commercial Editions}.
     on your choice of software development environment.
 
     \bold{Note}: If you don't use the configured shells, which is
-    available in the application menu, in the \l{Qt Open Source
-    Edition}, \c configure requires that \c sh.exe is not in the path
+    available in the application menu, in the \l{Open Source Versions of Qt},
+    \c configure requires that \c sh.exe is not in the path
     or that it is run from \c msys. This also goes for mingw32-make.
 
 \o Building
@@ -268,7 +270,7 @@ as part of the \l{Qt Commercial Editions}.
 
     \list
     \o \l{How to Learn Qt}
-    \o \l{Qt Tutorial}
+    \o \l{Tutorials}
     \o \l{Developer Zone}
     \o \l{Deploying Qt Applications}
     \endlist
@@ -302,12 +304,12 @@ The following instructions describe how to install Qt from the source package.
     For the open source version you do not need a license file.
 
 \o  Unpack the archive if you have not done so already. For example,
-    if you have the \c{qt-mac-opensource-desktop-4.4.3.tar.gz}
+    if you have the \c{qt-mac-opensource-desktop-4.5.0.tar.gz}
     package, type the following commands at a command line prompt:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 11
 
-    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.4.3}
+    This creates the directory \c{/tmp/qt-mac-opensource-desktop-4.5.0}
     containing the files from the archive.
 
 \o  Building
@@ -316,10 +318,8 @@ The following instructions describe how to install Qt from the source package.
     \c{./configure} script in the package directory.
 
     By default, Qt is configured for installation in the
-    \c{/usr/local/Trolltech/Qt-4.4.3} directory, but this can be
-    changed by using the \c{-prefix} option. Alternatively, the
-    \c{-prefix-install} option can be used to specify a "local"
-    installation within the source directory.
+    \c{/usr/local/Trolltech/Qt-4.5.0} directory, but this can be
+    changed by using the \c{-prefix} option.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 12
 
@@ -341,14 +341,17 @@ The following instructions describe how to install Qt from the source package.
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 13
 
-    If you did not configure Qt using the \c{-prefix-install} option,
-    you need to install the library, demos, examples, tools, and
-    tutorials in the appropriate place. To do this, type:
+    If \c{-prefix} is outside the build directory, you need to install
+    the library, demos, examples, tools, and tutorials in the appropriate
+    place. To do this, type:
 
 \snippet doc/src/snippets/code/doc_src_installation.qdoc 14
 
-    and enter your password, this requires that you have administrator access
-    to your machine.
+    as root, if neccessary (note that this requires that you have administrator access
+    to your machine).
+
+    There is a potential race condition when running make install with multiple
+    jobs. It is best to only run one make job (-j1) for the install.
 
     \bold{Note:} If you later need to reconfigure and rebuild Qt from the
     same location, ensure that all traces of the previous configuration are
@@ -386,7 +389,7 @@ The following instructions describe how to install Qt from the source package.
 
     \list
     \o \l{How to Learn Qt}
-    \o \l{Qt Tutorial}
+    \o \l{Tutorials}
     \o \l{Developer Zone}
     \o \l{Deploying Qt Applications}
     \endlist
@@ -408,7 +411,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
 \list 1
     \o  Uncompress the files into the directory you want to install Qt into;
-        e.g., \c{C:\Qt\4.4.3}.
+        e.g., \c{C:\Qt\4.5.0}.
 
         \note The install path must not contain any spaces.
 
@@ -419,7 +422,7 @@ in the \l{Qt for Windows CE Requirements} document.
 
         \snippet doc/src/snippets/code/doc_src_installation.qdoc 18
 
-        This is done by adding \c{c:\Qt\4.4.3\bin} to the \c PATH variable.
+        This is done by adding \c{c:\Qt\4.5.0\bin} to the \c PATH variable.
 
         For newer versions of Windows, \c PATH can be extended through
         "Control Panel->System->Advanced->Environment variables" and for
@@ -472,7 +475,7 @@ in the \l{Qt for Windows CE Requirements} document.
         The links below provide further information for using Qt:
         \list
         \o \l{How to Learn Qt}
-        \o \l{Qt Tutorial}
+        \o \l{Tutorials}
         \o \l{Developer Zone}
         \o \l{Deploying Qt Applications}
         \endlist
@@ -484,6 +487,12 @@ in the \l{Qt for Windows CE Requirements} document.
         \o \l{Windows CE - Using shadow builds}
         \endlist
 
+        Information on feature and performance tuning for embedded builds can
+        be found on the following pages:
+        \list
+        \o \l{Fine-Tuning Features in Qt}
+        \o \l{Qt Performance Tuning}
+        \endlist
 \endlist
 
     We hope you will enjoy using Qt. Good luck!
@@ -540,7 +549,7 @@ in the \l{Qt for Windows CE Requirements} document.
         \l{http://www.microsoft.com/downloads/details.aspx?FamilyID=0baf2b35-c656-4969-ace8-e4c0c0716adb&DisplayLang=en}{here}.
     \endlist
 
-    \sa {Known Issues in 4.4.3}
+    \sa {Known Issues in 4.5.0}
 */
 
 /*!
@@ -550,7 +559,7 @@ in the \l{Qt for Windows CE Requirements} document.
     \brief Setting up the Mac OS X environment for Qt.
     \previouspage General Qt Requirements
 
-    \sa {Known Issues in 4.4.3}
+    \sa {Known Issues in 4.5.0}
 */
 
 /*!
@@ -559,6 +568,10 @@ in the \l{Qt for Windows CE Requirements} document.
     \ingroup installation
     \brief Setting up the X11 environment for Qt.
     \previouspage General Qt Requirements
+
+    \tableofcontents
+
+    \section1 QtGui Dependencies
 
     \image x11_dependencies.png Qt for X11 Dependencies
 
@@ -626,7 +639,18 @@ in the \l{Qt for Windows CE Requirements} document.
     \note You must compile with XRender support to get alpha transparency
     support for pixmaps and images.
 
-    \sa {Known Issues in 4.4.3}
+    \section1 Phonon Dependencies
+
+    As described in the \l{Phonon Overview}, Phonon uses the GStreamer multimedia
+    framework as the backend for audio and video playback on X11. The minimum required
+    version of GStreamer is 0.10.
+
+    To build Phonon, you need the GStreamer library, base plugins, and development
+    files for your system. The package names for GStreamer vary between Linux
+    distributions; try searching for \c gstreamer or \c libgstreamer in your
+    distribution's package repository to find suitable packages.
+
+    \sa {Known Issues in 4.5.0}
 */
 
 /*!
@@ -640,23 +664,47 @@ in the \l{Qt for Windows CE Requirements} document.
     Windows CE development on Windows XP and Windows Vista:
 
     \list
-    \o Windows CE 5.0 Standard SDK for ARM, X86, SH-4 and MIPS
-    \o Windows CE 6.0 SDKs for ARM generated using the defaults found in
-       Platform Builder
-    \o Windows Mobile 5.0 (\e{Pocket PC}, \e{Smartphone} and
-       \e{Pocket PC with Phone} editions)
-    \o Windows Mobile 6.0 (\e{Standard}, \e{Classic} and
-       \e{Professional} editions)
+        \o  Windows CE 5.0 Standard SDK for ARM, X86, and MIPS
+        \o  Windows CE 6.0 SDKs for ARM generated using the defaults found in
+            Platform Builder
+        \o  Windows Mobile 5.0 (\e{Pocket PC}, \e{Smartphone} and
+            \e{Pocket PC with Phone} editions)
+        \o  Windows Mobile 6.0 (\e{Standard}, \e{Classic} and
+            \e{Professional} editions)
     \endlist
 
-    \note There is currently no "out of the box" support for the Windows CE
-    Automotive or Portable Media SDKs from Microsoft.
+    Below is a list of links to download the SDKs:
+
+    \list
+        \o \l{http://www.microsoft.com/downloads/details.aspx?familyid=fa1a3d66-3f61-4ddc-9510-ae450e2318c3&displaylang=en}
+            {Windows CE 5 Standard SDK}
+        \o  \l{http://www.microsoft.com/downloads/details.aspx?familyid=83A52AF2-F524-4EC5-9155-717CBE5D25ED&displaylang=en}
+            {Windows Mobile 5 Pocket PC}
+        \o  \l{http://www.microsoft.com/downloads/details.aspx?familyid=DC6C00CB-738A-4B97-8910-5CD29AB5F8D9&displaylang=en}
+            {Windows Mobile 5 Smartphone}
+        \o  \l{http://www.microsoft.com/downloads/details.aspx?familyid=06111A3A-A651-4745-88EF-3D48091A390B&displaylang=en }
+            {Windows Mobile 6 Professional/Standard}
+    \endlist
+
+    \table
+        \row \bold{Note:}
+            \o
+            \list 1
+                \o Currently, there is only compile support for Windows CE 5.0
+                   Standard SDK for SH-4.
+                \o There is currently no "out of the box" support for the
+                   Windows CE Automotive or Portable Media SDKs from Microsoft.
+            \endlist
+    \endtable
+
 
     Device manufacturers may prefer to make their own customized version of
     Windows CE using Platform Builder. In order for Qt for Windows CE to
-    support a custom SDK, a build specification needs to be created.
+    support a custom SDK, a build specification needs to be created. More
+    information on Windows CE Customization can be found
+    \l{Windows CE - Working with Custom SDKs}{here}.
 
-    \sa {Known Issues in 4.4.3}
+    \sa {Known Issues in 4.5.0}
 */
 
 /*!
@@ -666,12 +714,40 @@ in the \l{Qt for Windows CE Requirements} document.
     \brief Setting up the Embedded Linux environment for Qt.
     \previouspage General Qt Requirements
 
-    \sa {Known Issues in 4.4.3}
+    \sa {Known Issues in 4.5.0}
 
     \section1 Building Qt for Embedded Linux with uclibc
 
-    If you intend to use WebKit then you should use at least version 0.9.29
-    of uclibc as that is the earliest version with sufficient pthread support.
+    If you intend to include the QtWebKit module in your Qt build then you should
+    use version \bold{uClibc 0.9.29 or greater} as that is the earliest version
+    with sufficient pthread support.
+
+    \section1 Memory Requirements
+
+    The memory and storage requirements for Qt for Embedded Linux depend on a
+    an variety of different factors, including the target architecture and the
+    features enabled in the Qt build.
+
+    The following table shows typical library sizes for the most common Qt
+    libraries on different architectures, built in release mode with different
+    feature profiles.
+
+    \table
+    \header \o{1,2} Architecture \o{1,2} Compiler  \o{2,1} QtCore       \o{2,1} QtGui        \o{2,1} QtNetwork    \o{2,1} QtWebKit
+    \header                                        \o Minimal \o Normal \o Minimal \o Normal \o Minimal \o Normal \o Minimal \o Normal 
+    \row    \o linux-x86-g++ \o GCC 4.2.4          \o 1.7M    \o 2.7M   \o 3.3M    \o 9.9M   \o 653K    \o 1.1M   \o N/A     \o 17M
+    \row    \o linux-arm-g++ \o GCC 4.1.1          \o 1.9M    \o 3.2M   \o 4.1M    \o 11M    \o 507K    \o 1.0M   \o N/A     \o 17M
+    \row    \o linux-arm-g++ (thumb)
+                             \o GCC 4.1.1          \o 1.7M    \o 2.8M   \o 4.0M    \o 9.8M   \o 409K    \o 796K   \o N/A     \o 17M
+    \row    \o linux-mips-g++ (MIPS32)
+                             \o GCC 4.2.4          \o 2.0M    \o 3.2M   \o 4.5M    \o 12M    \o 505K    \o 1003K  \o N/A     \o 21M
+    \endtable
+
+    Library sizes are given in the following units: K = 1024 bytes; M = 1024K.
+    QtWebKit is excluded from the minimal configuration.
+
+    The \l{Fine-Tuning Features in Qt} document covers the process of configuring
+    Qt builds to avoid the inclusion of unnecessary features.
 
     \section1 Additional X11 Libraries for QVFb
 

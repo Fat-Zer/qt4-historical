@@ -1,30 +1,30 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!DOCTYPE TS><TS version="1.1" language="de">
+<!DOCTYPE TS><TS version="2.0" language="de">
 <defaultcodec></defaultcodec>
 <context>
     <name>QCLuceneResultWidget</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="82"/>
+        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="+80"/>
         <source>Search Results</source>
         <translation>Ergebnisse</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="89"/>
+        <location line="+7"/>
         <source>Note:</source>
         <translation>Achtung:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="91"/>
+        <location line="+1"/>
         <source>The search results may not be complete since the documentation is still being indexed!</source>
-        <translation type="unfinished">Es können nicht alle möglichen Ergebnisse angezeigt werden, da die Dokumentation noch indiziert wird!</translation>
+        <translation>Es können nicht alle möglichen Ergebnisse angezeigt werden, da die Dokumentation noch indiziert wird!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="102"/>
+        <location line="+11"/>
         <source>Your search did not match any documents.</source>
         <translation>Es wurden keine mit Ihrer Suche übereinstimmenden Dokumente gefunden.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="107"/>
+        <location line="+4"/>
         <source>(The reason for this might be that the documentation is still being indexed.)</source>
         <translation>(Ein Möglichkeit dafür könnte sein, das die Dokumentation noch nicht vollständig indiziert ist.)</translation>
     </message>
@@ -32,257 +32,253 @@
 <context>
     <name>QHelpCollectionHandler</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="48"/>
+        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="+49"/>
         <source>The collection file is not set up yet!</source>
+        <translation>Das &quot;Collection File&quot; ist noch nicht eingerichtet.</translation>
+    </message>
+    <message>
+        <location line="+22"/>
+        <source>Cannot load sqlite database driver!</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="120"/>
+        <location line="+11"/>
+        <location line="+48"/>
         <source>Cannot open collection file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann &quot;Collection File&quot; nicht öffnen: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="82"/>
+        <location line="-39"/>
         <source>Cannot create tables in file %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann keine Tabellen in Datei %1 anlegen!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="98"/>
+        <location line="+16"/>
         <source>The specified collection file already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Das angegebene &quot;Collection File&quot; existiert bereits!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="103"/>
+        <location line="+5"/>
         <source>Cannot create directory: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Verzeichnis nicht anlegen: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="125"/>
+        <location line="+23"/>
         <source>Cannot copy collection file: %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann &quot;Collection File&quot; nicht kopieren: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="244"/>
+        <location line="+119"/>
         <source>Unknown filter!</source>
-        <translation type="unfinished"></translation>
+        <translation>Unbekannter Filter!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="299"/>
+        <location line="+55"/>
         <source>Cannot register filter %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Filter nicht registrieren: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="342"/>
+        <location line="+44"/>
         <source>Cannot open documentation file %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Dokumentations-Datei nicht öffnen: %1</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="348"/>
+        <location line="+6"/>
         <source>Invalid documentation file!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Dokumentations-Datei!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="382"/>
+        <location line="+34"/>
         <source>The namespace %1 was not registered!</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Namensraum %1 wurde nicht registriert!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="502"/>
+        <location line="+120"/>
         <source>Namespace %1 already exists!</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Namensraum %1 existiert bereits!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="515"/>
+        <location line="+13"/>
         <source>Cannot register namespace!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann den Namensraum nicht registrieren!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpcollectionhandler.cpp" line="539"/>
+        <location line="+24"/>
         <source>Cannot open database to optimize!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann die Datenbank zur Optimierung nicht öffnen!</translation>
     </message>
 </context>
 <context>
     <name>QHelpDBReader</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpdbreader.cpp" line="52"/>
-        <source>Cannot open DB!</source>
-        <translation type="unfinished"></translation>
+        <location filename="../tools/assistant/lib/qhelpdbreader.cpp" line="+65"/>
+        <source>Cannot open database &apos;%1&apos; &apos;%2&apos;: %3</source>
+        <translation>Kann Datenbank nicht öffnen: &apos;%1&apos; &apos;%2&apos;: %3</translation>
     </message>
 </context>
 <context>
     <name>QHelpEngineCore</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpenginecore.cpp" line="618"/>
+        <location filename="../tools/assistant/lib/qhelpenginecore.cpp" line="+482"/>
         <source>The specified namespace does not exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Der angegebene Namensraum existiert nicht!</translation>
     </message>
 </context>
 <context>
     <name>QHelpEngineCorePrivate</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpenginecore.cpp" line="69"/>
-        <source>Cannot open collection file %1!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/lib/qhelpenginecore.cpp" line="87"/>
-        <source>Cannot open documentation file %1!</source>
-        <translation type="unfinished"></translation>
+        <location line="-390"/>
+        <source>Cannot open documentation file %1: %2!</source>
+        <translation>Kann Dokumentations-Datei nicht öffnen: %1: %2!</translation>
     </message>
 </context>
 <context>
     <name>QHelpGenerator</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="127"/>
+        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="+127"/>
         <source>Invalid help data!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ungültige Hilfe-Daten!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="133"/>
+        <location line="+6"/>
         <source>No output file name specified!</source>
-        <translation type="unfinished"></translation>
+        <translation>Name für die Ausgabe-Datei wurde nicht angegeben!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="141"/>
-        <source>The file %1 already exists!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="147"/>
+        <location line="+14"/>
         <source>Building up file structure...</source>
-        <translation type="unfinished"></translation>
+        <translation>Erzeuge Dateistruktur...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="158"/>
-        <source>Cannot open DB!</source>
-        <translation type="unfinished"></translation>
+        <location line="-7"/>
+        <source>The file %1 cannot be overwritten!</source>
+        <translation>Die Datei %1 kann nicht überschrieben werden!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="169"/>
+        <location line="+18"/>
+        <source>Cannot open data base file %1!</source>
+        <translation>Kann Datenbank-Datei nicht öffnen: %1!</translation>
+    </message>
+    <message>
+        <location line="+11"/>
         <source>Cannot register namespace %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Namensraum %1 nicht registrieren!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="175"/>
+        <location line="+6"/>
         <source>Insert custom filters...</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge benutzerdefinierte Filter ein...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="188"/>
+        <location line="+12"/>
         <source>Insert help data for filter section (%1 of %2)...</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Hilfe-Daten für Filter-Sektion (%1 von %2) ein...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="205"/>
+        <location line="+18"/>
         <source>Documentation successfully generated.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dokumentation erfolgreich generiert.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="277"/>
+        <location line="+72"/>
         <source>Some tables already exist!</source>
-        <translation type="unfinished"></translation>
+        <translation>Einige Tabellen existieren bereits!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="338"/>
+        <location line="+61"/>
         <source>Cannot create tables!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann keine Tabellen erstellen!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="424"/>
+        <location line="+86"/>
         <source>Cannot register virtual folder!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann virtuelles Verzeichnis nicht registrieren!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="434"/>
+        <location line="+10"/>
         <source>Insert files...</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Dateien ein...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="465"/>
+        <location line="+41"/>
         <source>The file %1 does not exist! Skipping it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Datei %1 existiert nicht! Überspringe sie.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="481"/>
+        <location line="+7"/>
         <source>Cannot open file %1! Skipping it.</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Datei %1 nicht öffnen! Überspringe sie.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="510"/>
-        <source>Cannot insert file data into database!</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="582"/>
+        <location line="+132"/>
         <source>The filter %1 is already registered!</source>
-        <translation type="unfinished"></translation>
+        <translation>Der Filter %1 is bereits registriert!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="587"/>
+        <location line="+5"/>
         <source>Cannot register filter %1!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann filter nicht registrieren: %1!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="611"/>
+        <location line="+24"/>
         <source>Insert indices...</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Indizes ein...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="691"/>
+        <location line="+80"/>
         <source>Insert contents...</source>
-        <translation type="unfinished"></translation>
+        <translation>Füge Inhalt ein...</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="699"/>
+        <location line="+8"/>
         <source>Cannot insert contents!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Inhalt nicht einfügen!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpgenerator.cpp" line="711"/>
+        <location line="+12"/>
         <source>Cannot register contents!</source>
-        <translation type="unfinished"></translation>
+        <translation>Kann Inhalt nicht registrieren!</translation>
     </message>
 </context>
 <context>
     <name>QHelpSearchQueryWidget</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="171"/>
+        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="+170"/>
         <source>Search for:</source>
         <translation>Suche nach:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="173"/>
+        <location line="+2"/>
         <source>Search</source>
         <translation>Suche</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="189"/>
+        <location line="+16"/>
         <source>Advanced search</source>
         <translation>Erweiterte Suche</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="207"/>
+        <location line="+18"/>
         <source>words &lt;B&gt;similar&lt;/B&gt; to:</source>
         <translation>Worte &lt;B&gt;ähnlich&lt;/B&gt; zu:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="212"/>
+        <location line="+5"/>
         <source>&lt;B&gt;without&lt;/B&gt; the words:</source>
         <translation>&lt;B&gt;ohne&lt;/B&gt; die Wörter:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="217"/>
+        <location line="+5"/>
         <source>with &lt;B&gt;exact phrase&lt;/B&gt;:</source>
         <translation>mit der &lt;B&gt;genauen Wortgruppe&lt;/B&gt;:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="222"/>
+        <location line="+5"/>
         <source>with &lt;B&gt;all&lt;/B&gt; of the words:</source>
         <translation>mit &lt;B&gt;allen&lt;/B&gt; Wörtern:</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchquerywidget.cpp" line="227"/>
+        <location line="+5"/>
         <source>with &lt;B&gt;at least one&lt;/B&gt; of the words:</source>
         <translation>mit &lt;B&gt;irgendeinem&lt;/B&gt; der Wörter:</translation>
     </message>
@@ -290,7 +286,7 @@
 <context>
     <name>QHelpSearchResultWidget</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="336"/>
+        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="+232"/>
         <source>0 - 0 of 0 Hits</source>
         <translation>0 - 0 von 0 Treffern</translation>
     </message>
@@ -298,7 +294,7 @@
 <context>
     <name>QHelpSearchResultWidgetPrivate</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelpsearchresultwidget.cpp" line="276"/>
+        <location line="-61"/>
         <source>%1 - %2 of %3 Hits</source>
         <translation>%1 - %2 von %3 Treffern</translation>
     </message>
@@ -306,49 +302,54 @@
 <context>
     <name>QObject</name>
     <message>
-        <location filename="../tools/assistant/lib/qhelp_global.h" line="46"/>
+        <location filename="../tools/assistant/lib/qhelp_global.h" line="+53"/>
         <source>Untitled</source>
-        <translation type="unfinished"></translation>
+        <translation>Ohne Titel</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="53"/>
-        <source>Unknown token at line %1.</source>
-        <translation type="unfinished"></translation>
+        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="+50"/>
+        <source>Unknown token.</source>
+        <translation>Unbekanntes Token.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="67"/>
-        <source>Unknown token at line %1. Expected &quot;QtHelpProject&quot;!</source>
-        <translation type="unfinished"></translation>
+        <location line="+13"/>
+        <source>Unknown token. Expected &quot;QtHelpProject&quot;!</source>
+        <translation>Unbekanntes Token. Erwartete &quot;QtHelpProject&quot;!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="80"/>
+        <location line="+5"/>
+        <source>Error in line %1: %2</source>
+        <translation>Fehler in Zeile %1: %2</translation>
+    </message>
+    <message>
+        <location line="+13"/>
         <source>A virtual folder must not contain a &apos;/&apos; character!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein virtuelles Verzeichnis darf kein &apos;/&apos;-Zeichen enthalten!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="84"/>
+        <location line="+4"/>
         <source>A namespace must not contain a &apos;/&apos; character!</source>
-        <translation type="unfinished"></translation>
+        <translation>Ein Namensraum darf kein &apos;/&apos;-Zeichen enthalten!</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="100"/>
+        <location line="+16"/>
         <source>Missing namespace in QtHelpProject.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlender Namensraum in QtHelpProject.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="102"/>
+        <location line="+2"/>
         <source>Missing virtual folder in QtHelpProject</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlendes virtuelles Verzeichnis in QtHelpProject.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="191"/>
+        <location line="+88"/>
         <source>Missing attribute in keyword at line %1.</source>
-        <translation type="unfinished"></translation>
+        <translation>Fehlendes Attribut in Schlagwort in Zeile %1.</translation>
     </message>
     <message>
-        <location filename="../tools/assistant/lib/qhelpprojectdata.cpp" line="273"/>
+        <location line="+83"/>
         <source>The input file %1 could not be opened!</source>
-        <translation type="unfinished"></translation>
+        <translation>Die Eingabe-Datei %1 konnte nicht geöffnet werden!</translation>
     </message>
 </context>
 </TS>

@@ -7,7 +7,7 @@ QScriptValue three = myEngine.evaluate("1 + 2");
 //! [1]
 QScriptValue fun = myEngine.evaluate("function(a, b) { return a + b; }");
 QScriptValueList args;
-args << QScriptValue(&myEngine, 1) << QScriptValue(&myEngine, 2);
+args << 1 << 2;
 QScriptValue threeAgain = fun.call(QScriptValue(), args);
 //! [1]
 
@@ -25,8 +25,7 @@ myEngine.evaluate(contents, fileName);
 
 
 //! [3]
-QScriptValue myNumber = QScriptValue(&myEngine, 123);
-myEngine.globalObject().setProperty("myNumber", myNumber);
+myEngine.globalObject().setProperty("myNumber", 123);
 ...
 QScriptValue myNumberPlusOne = myEngine.evaluate("myNumber + 1");
 //! [3]
@@ -58,7 +57,7 @@ QScriptValue myAdd(QScriptContext *context, QScriptEngine *engine)
 {
    QScriptValue a = context->argument(0);
    QScriptValue b = context->argument(1);
-   return QScriptValue(engine, a.toNumber() + b.toNumber());
+   return a.toNumber() + b.toNumber();
 }
 //! [6]
 
@@ -195,7 +194,7 @@ foo["bar"]
 //! [19]
 QScriptEngine engine;
 QScriptContext *context = engine.pushContext();
-context->activationObject().setProperty("myArg", QScriptValue(&engine, 123));
+context->activationObject().setProperty("myArg", 123);
 engine.evaluate("var tmp = myArg + 42");
 ...
 engine.popContext();
@@ -219,8 +218,8 @@ Q_DECLARE_METATYPE(MyStruct)
 QScriptValue toScriptValue(QScriptEngine *engine, const MyStruct &s)
 {
   QScriptValue obj = engine->newObject();
-  obj.setProperty("x", QScriptValue(engine, s.x));
-  obj.setProperty("y", QScriptValue(engine, s.y));
+  obj.setProperty("x", s.x);
+  obj.setProperty("y", s.y);
   return obj;
 }
 

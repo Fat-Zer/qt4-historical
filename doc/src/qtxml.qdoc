@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -78,7 +82,7 @@
     Qt XML classes. 
 
     This module is part of the \l{Qt Full Framework Edition} and the
-    \l{Qt Open Source Edition}.
+    \l{Open Source Versions of Qt}.
 
     Topics:
 
@@ -324,7 +328,7 @@
     for reporting local names, namespace prefixes and URIs. With \e
     http://xml.org/sax/features/namespaces set to true the parser will
     report \e title as the local name of the \e fnord:title attribute, \e
-    fnord being the namespace prefix and \e http://trolltech.com/fnord/ as
+    fnord being the namespace prefix and \e http://www.qtsoftware.com/fnord/ as
     the namespace URI. When \e http://xml.org/sax/features/namespaces is
     false none of them are reported.
 
@@ -507,18 +511,18 @@
     Before we can apply a namespace to element or attribute names we must
     declare it.
 
-    Namespaces are URIs like \e http://trolltech.com/fnord/book/. This
+    Namespaces are URIs like \e http://www.qtsoftware.com/fnord/book/. This
     does not mean that data must be available at this address; the URI is
     simply used to provide a unique name.
 
     We declare namespaces in the same way as attributes; strictly speaking
     they \e are attributes. To make for example \e
-    http://trolltech.com/fnord/ the document's default XML namespace \e
+    http://www.qtsoftware.com/fnord/ the document's default XML namespace \e
     xmlns we write
 
     \snippet doc/src/snippets/code/doc_src_qtxml.qdoc 8
 
-    To distinguish the \e http://trolltech.com/fnord/book/ namespace from
+    To distinguish the \e http://www.qtsoftware.com/fnord/book/ namespace from
     the default, we must supply it with a prefix:
 
     \snippet doc/src/snippets/code/doc_src_qtxml.qdoc 9
@@ -545,12 +549,12 @@
     \snippet doc/src/snippets/code/doc_src_qtxml.qdoc 10
 
     Within the \e document element we have two namespaces declared. The
-    default namespace \e http://trolltech.com/fnord/ applies to the \e
+    default namespace \e http://www.qtsoftware.com/fnord/ applies to the \e
     book element, the \e chapter element, the appropriate \e title element
     and of course to \e document itself.
 
     The \e book:author and \e book:title elements belong to the namespace
-    with the URI \e http://trolltech.com/fnord/book/.
+    with the URI \e http://www.qtsoftware.com/fnord/book/.
 
     The two \e book:author attributes \e title and \e name have no XML
     namespace assigned. They are only members of the "traditional"
@@ -558,7 +562,7 @@
     \e title attributes in \e book:author are forbidden.
 
     In the above example we circumvent the last rule by adding a \e title
-    attribute from the \e http://trolltech.com/fnord/ namespace to \e
+    attribute from the \e http://www.qtsoftware.com/fnord/ namespace to \e
     book:author: the \e fnord:title comes from the namespace with the
     prefix \e fnord that is declared in the \e book:author element.
 
@@ -599,7 +603,7 @@
         local part of \e book:title.)
     \o  The \e {namespace URI} ("Uniform Resource Identifier") is a unique
         identifier for a namespace. It looks like a URL
-        (e.g. \e http://trolltech.com/fnord/ ) but does not require
+        (e.g. \e http://www.qtsoftware.com/fnord/ ) but does not require
         data to be accessible by the given protocol at the named address.
     \endlist
 

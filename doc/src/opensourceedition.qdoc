@@ -1,44 +1,48 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
 /*! 
     \page opensourceedition.html
 
-    \title Qt Open Source Edition
+    \title Open Source Versions of Qt
     \ingroup licensing
     \brief Information about the license and features of the Open Source Edition.
 
@@ -49,58 +53,22 @@
     money. The Free Software Foundation (creators of the GNU GPL) speaks
     of free in this context as in "free speech", not as in "no cost".
 
-    Nokia supports the free software concept by providing the Qt Open Source
-    Edition. You can use this edition of Qt to create free software, i.e.
-    software that is licensed under the GNU GPL or a similarly recognized
-    open source license. The support of open source with the Qt Open
-    Source Edition has enabled large successful software projects like KDE to
-    thrive, with thousands of developers around the world using Qt Open Source
-    Edition at no cost to themselves. With the release of Qt 4, Qt Open Source
-    Edition is available for Unix/X11, Mac OS X, and Windows.
-    \omit
-    A separate Edition of Qt is also available for embedded Linux.
-    \endomit
+    Qt Software supports the free software concept by providing the Qt Open Source
+    Edition, which is licensed under the \l{GNU General Public License (GPL)}
+    (version 3) and the \l{GNU Lesser General Public License (LGPL)} (version 2.1).
+    You can use this edition of Qt to create and distribute software with licenses
+    that are compatible to these free software licenses.
 
-    The Open Source Edition can be downloaded from the
-    \l{Downloads}{Qt website}.
+    The support of open source with the Open Source Versions of Qt has enabled large
+    successful software projects like KDE to thrive, with thousands of developers
+    around the world using open source versions of Qt at no cost to themselves. With
+    the release of Qt 4, open source versions of Qt became available for Unix/X11,
+    Mac OS X, and Windows platforms.
 
-    It is also possible to develop commercial software using Qt: but to do
-    so you must buy a commercial license for one of the \l{Qt Commercial Editions}.
-    If you buy a commercial edition of Qt you can sell your software for any
-    price and with any license you like. Thousands of commercial companies
-    use the commercial edition of Qt to develop the products they sell.
+    The Open Source Edition can be downloaded from the \l{Downloads}{Qt website}.
 
-    If you use the Qt Open Source Edition, there are certain licensing
-    conditions that the GNU GPL imposes on you, to ensure that your users
-    enjoy the freedoms guaranteed by the GPL. Users are entitled to:
-
-    \list 1
-    \o Run your software for any purpose.
-    \o Obtain and study your software's source code, and adapt it to their
-       needs.
-    \o Redistribute your software and its source code to others (under the
-       same terms).
-    \o Improve or modify your software, and release these changes to the
-       public.
-    \endlist
-
-    These freedoms apply to all the source code for all the modules your
-    software is based on, regardless of whether they have been written by
-    you or by others. The freedoms also apply to any associated interface
-    definition files, and even include the scripts and control files used
-    to control compilation and installation of the executable; otherwise
-    users could not exercise their rights.
-
-    This means that you cannot use a Qt Open Source Edition if your software
-    must be built with any modules that impose conditions on you that
-    contradict the conditions of the GNU GPL, including, but not limited
-    to, software patents, commercial license agreements, copyrighted
-    interface definitions or any sort of non-disclosure agreement (NDA).
-    In these circumstances you must use a commercial edition of Qt.
-
-    See the \l{Licensing Information} documents for more information
-    or look in the online \l{License FAQ} for answers to frequently asked
-    questions on Qt Open Source Edition licensing and its implications.
+    Please refer to the online \l{License FAQ} for answers to frequently asked
+    questions on open source licensing and its implications.
 
     More information on Free and Open Source software is available online:
 
@@ -109,9 +77,12 @@
     \o Open Source licensing: \l http://www.opensource.org/.
     \endlist
 
+    See \l{Licensing Information} for a collection of documents about licenses
+    used in Qt.
+
     Information about Qt Commercial License Agreements is available
     in the \l{Qt Licensing Overview} on the Qt website or by email
-    from \l{mailto:sales@trolltech.com}{sales@trolltech.com}.
+    from \l{mailto:qt-sales@nokia.com}{qt-sales@nokia.com}.
 
     If you are in doubt what edition of Qt is right for your project,
     please contact

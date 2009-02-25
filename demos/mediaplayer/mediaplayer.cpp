@@ -1,44 +1,47 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ***************************************************************************/
 
 #include <QtGui>
 
 #define SLIDER_RANGE 8
-#define TICKINTERVAL 4
 
 #include "mediaplayer.h"
 #include "ui_settings.h"
@@ -56,7 +59,7 @@ public:
         m_action.setShortcutContext(Qt::WindowShortcut);
         connect(&m_action, SIGNAL(toggled(bool)), SLOT(setFullScreen(bool)));
         addAction(&m_action);
-        setAcceptDrops(true);     
+        setAcceptDrops(true);
     }
 
 protected:
@@ -90,7 +93,9 @@ protected:
             e->ignore(); 
             return true;
         case QEvent::MouseMove:
+#ifndef QT_NO_CURSOR
             unsetCursor();
+#endif
             //fall through
         case QEvent::WindowStateChange:
             {
@@ -101,7 +106,9 @@ protected:
                     m_timer.start(1000, this);
                 } else {
                     m_timer.stop();
+#ifndef QT_NO_CURSOR
                     unsetCursor();
+#endif
                 }
             }
             break;
@@ -116,7 +123,9 @@ protected:
     {
         if (e->timerId() == m_timer.timerId()) {
             //let's store the cursor shape
+#ifndef QT_NO_CURSOR
             setCursor(Qt::BlankCursor);
+#endif
         }
         Phonon::VideoWidget::timerEvent(e);
     }
@@ -139,11 +148,11 @@ private:
 
 
 MediaPlayer::MediaPlayer(const QString &filePath) :
-        playButton(0), volumeLabel(0), nextEffect(0), settingsDialog(0), ui(0), 
+        playButton(0), nextEffect(0), settingsDialog(0), ui(0), 
             m_AudioOutput(Phonon::VideoCategory),
             m_videoWidget(new MediaVideoWidget(this))
 {
-    setWindowTitle("Media Player");
+    setWindowTitle(tr("Media Player"));
     setContextMenuPolicy(Qt::CustomContextMenu);
     m_videoWidget->setContextMenuPolicy(Qt::CustomContextMenu);
  
@@ -173,8 +182,8 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
 
     slider = new Phonon::SeekSlider(this);
     slider->setMediaObject(&m_MediaObject);
-    volume = new QSlider(Qt::Horizontal, this);
-
+    volume = new Phonon::VolumeSlider(&m_AudioOutput);
+ 
     QVBoxLayout *vLayout = new QVBoxLayout(this);
     vLayout->setContentsMargins(8, 8, 8, 8);    
 
@@ -198,24 +207,16 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
 #endif
     info->setStyleSheet("border-image:url(:/images/screen.png) ; border-width:3px");
     info->setPalette(palette);
-    info->setText("<center>No media</center>");
+    info->setText(tr("<center>No media</center>"));
 
-    volume->setRange(0, 100);
-    volume->setValue(100);
-    volume->setMinimumWidth(40);
+    volume->setFixedWidth(120);
 
     layout->addWidget(openButton);
     layout->addWidget(rewindButton);
     layout->addWidget(playButton);
     layout->addWidget(forwardButton);
 
-    volumeLabel = new QLabel(this);
-    volumeIcon = style()->standardPixmap(QStyle::SP_MediaVolume);
-    mutedIcon = style()->standardPixmap(QStyle::SP_MediaVolumeMuted);
-    volumeLabel->setPixmap(volumeIcon);
-    volume->setFixedWidth(100);
     layout->addStretch();
-    layout->addWidget(volumeLabel);
     layout->addWidget(volume);
 
     vLayout->addWidget(info);
@@ -269,17 +270,17 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
     QActionGroup *aspectGroup = new QActionGroup(aspectMenu);
     connect(aspectGroup, SIGNAL(triggered(QAction *)), this, SLOT(aspectChanged(QAction *)));
     aspectGroup->setExclusive(true);
-    QAction *aspectActionAuto = aspectMenu->addAction("Auto");
+    QAction *aspectActionAuto = aspectMenu->addAction(tr("Auto"));
     aspectActionAuto->setCheckable(true);
     aspectActionAuto->setChecked(true);
     aspectGroup->addAction(aspectActionAuto);
-    QAction *aspectActionScale = aspectMenu->addAction("Scale");
+    QAction *aspectActionScale = aspectMenu->addAction(tr("Scale"));
     aspectActionScale->setCheckable(true);
     aspectGroup->addAction(aspectActionScale);
-    QAction *aspectAction16_9 = aspectMenu->addAction("16/9");
+    QAction *aspectAction16_9 = aspectMenu->addAction(tr("16/9"));
     aspectAction16_9->setCheckable(true);
     aspectGroup->addAction(aspectAction16_9);
-    QAction *aspectAction4_3 = aspectMenu->addAction("4/3");
+    QAction *aspectAction4_3 = aspectMenu->addAction(tr("4/3"));
     aspectAction4_3->setCheckable(true);
     aspectGroup->addAction(aspectAction4_3);
 
@@ -287,11 +288,11 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
     QActionGroup *scaleGroup = new QActionGroup(scaleMenu);
     connect(scaleGroup, SIGNAL(triggered(QAction *)), this, SLOT(scaleChanged(QAction *)));
     scaleGroup->setExclusive(true);
-    QAction *scaleActionFit = scaleMenu->addAction("Fit in view");
+    QAction *scaleActionFit = scaleMenu->addAction(tr("Fit in view"));
     scaleActionFit->setCheckable(true);
     scaleActionFit->setChecked(true);
     scaleGroup->addAction(scaleActionFit);
-    QAction *scaleActionCrop = scaleMenu->addAction("Scale and crop");
+    QAction *scaleActionCrop = scaleMenu->addAction(tr("Scale and crop"));
     scaleActionCrop->setCheckable(true);
     scaleGroup->addAction(scaleActionCrop);
     
@@ -305,7 +306,6 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
     
     connect(playButton, SIGNAL(clicked()), this, SLOT(playPause()));
     connect(forwardButton, SIGNAL(clicked()), this, SLOT(forward()));
-    connect(volume, SIGNAL(valueChanged(int)), this, SLOT(setVolume(int)));
     //connect(openButton, SIGNAL(clicked()), this, SLOT(openFile()));
     connect(settingsAction, SIGNAL(triggered(bool)), this, SLOT(showSettingsDialog()));
     connect(openUrlAction, SIGNAL(triggered(bool)), this, SLOT(openUrl()));
@@ -323,8 +323,6 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
     rewindButton->setEnabled(false);
     playButton->setEnabled(false);
     setAcceptDrops(true);
-
-    m_MediaObject.setTickInterval(250);
 
     m_audioOutputPath = Phonon::createPath(&m_MediaObject, &m_AudioOutput);
     Phonon::createPath(&m_MediaObject, m_videoWidget);
@@ -433,7 +431,7 @@ void MediaPlayer::initSettingsDialog()
     }
 
     // Insert audio effects:
-    ui->audioEffectsCombo->addItem("<no effect>");
+    ui->audioEffectsCombo->addItem(tr("<no effect>"));
     QList<Phonon::Effect *> currEffects = m_audioOutputPath.effects();
     Phonon::Effect *currEffect = currEffects.size() ? currEffects[0] : 0;
     QList<Phonon::EffectDescription> availableEffects = Phonon::BackendCapabilities::availableAudioEffects();
@@ -449,9 +447,9 @@ void MediaPlayer::initSettingsDialog()
 void MediaPlayer::effectChanged()
 {
     int currentIndex = ui->audioEffectsCombo->currentIndex();
-    if (ui->audioEffectsCombo->currentIndex()) {
+    if (currentIndex) {
         QList<Phonon::EffectDescription> availableEffects = Phonon::BackendCapabilities::availableAudioEffects();
-        Phonon::EffectDescription chosenEffect = availableEffects[ui->audioEffectsCombo->currentIndex() - 1];
+        Phonon::EffectDescription chosenEffect = availableEffects[currentIndex - 1];
 
         QList<Phonon::Effect *> currEffects = m_audioOutputPath.effects();
         Phonon::Effect *currentEffect = currEffects.size() ? currEffects[0] : 0;
@@ -523,50 +521,16 @@ void MediaPlayer::initVideoWindow()
     m_videoWindow.setMinimumSize(100, 100);
 }
 
-void MediaPlayer::updateEffect()
-{
-    for (int k=0 ; k< nextEffect->parameters().size() ; ++k) {
-        Phonon::EffectParameter param = nextEffect->parameters()[k];
-        switch(param.type()) {
-        case QVariant::Int: 
-            {
-                QSpinBox *spin = (QSpinBox*)propertyControllers.value(param.name());
-                nextEffect->setParameterValue(param, spin->value());
-            }            
-            break;
-        case QVariant::Double:
-            if (param.minimumValue() == -1.0 && param.maximumValue() == 1.0) {
-                QSlider *slider = (QSlider*)propertyControllers.value(param.name());
-                nextEffect->setParameterValue(param, (double)(slider->value() / (double)SLIDER_RANGE));
-            } else {                        
-                QDoubleSpinBox *spin = (QDoubleSpinBox*)propertyControllers.value(param.name());
-                nextEffect->setParameterValue(param, spin->value());
-            }
-            break;
-        case QVariant::Bool: 
-            {
-                QCheckBox *cb = (QCheckBox*)propertyControllers.value(param.name());
-                nextEffect->setParameterValue(param, cb->isChecked());
-            }            
-            break;
-        case QVariant::String: 
-            {
-                QLineEdit *edit = (QLineEdit*)propertyControllers.value(param.name());
-                nextEffect->setParameterValue(param, edit->text());
-            }            
-            break;
-        default:
-            break;
-        }
-    }    
-}
 
 void MediaPlayer::configureEffect()
 {
+    if (!nextEffect)
+        return;
+
+
     QList<Phonon::Effect *> currEffects = m_audioOutputPath.effects();
-    QList<Phonon::EffectDescription> availableEffects = Phonon::BackendCapabilities::availableAudioEffects();
-    if (ui->audioEffectsCombo->currentIndex() > 0){
-        QList<Phonon::EffectDescription> availableEffects = Phonon::BackendCapabilities::availableAudioEffects();
+    const QList<Phonon::EffectDescription> availableEffects = Phonon::BackendCapabilities::availableAudioEffects();
+    if (ui->audioEffectsCombo->currentIndex() > 0) {
         Phonon::EffectDescription chosenEffect = availableEffects[ui->audioEffectsCombo->currentIndex() - 1];
 
         QDialog effectDialog;
@@ -580,138 +544,43 @@ void MediaPlayer::configureEffect()
         QScrollArea *scrollArea = new QScrollArea(&effectDialog);
         topLayout->addWidget(scrollArea);
 
-        QWidget *scrollWidget = new QWidget(&effectDialog);
-        QVBoxLayout *scrollLayout = new QVBoxLayout(scrollWidget);
+        QVariantList savedParamValues;
+        foreach(Phonon::EffectParameter param, nextEffect->parameters()) {
+            savedParamValues << nextEffect->parameterValue(param);
+        }
+
+        QWidget *scrollWidget = new Phonon::EffectWidget(nextEffect);
         scrollWidget->setMinimumWidth(320);
+        scrollWidget->setContentsMargins(10, 10, 10,10);
         scrollArea->setWidget(scrollWidget);
 
-        if (nextEffect) {
-            for (int k=0 ; k< nextEffect->parameters().size() ; ++k) {
-                Phonon::EffectParameter param = nextEffect->parameters()[k];
-                QHBoxLayout *hlayout = new QHBoxLayout();
-                QString labelName = param.name();
-                labelName[0] = labelName[0].toUpper();
-                hlayout->addWidget(new QLabel("<b>" + labelName + ":</b> "));
-                if (param.type() == QVariant::Int) {
-                    QSpinBox *spin = new QSpinBox(&effectDialog);
-                    spin->setMinimum(param.minimumValue().toInt());
-                    spin->setMaximum(param.maximumValue().toInt());
-                    QVariant currentValue = nextEffect->parameterValue(param);
-                    spin->setProperty("oldValue", currentValue.toInt());
-                    spin->setValue(currentValue.toInt());
-                    connect(spin, SIGNAL(valueChanged(int)), this, SLOT(updateEffect()));
-                    hlayout->addWidget(spin);
-                    propertyControllers.insert(param.name(), spin);
-               } else if (param.type() == QVariant::Double) {
-                    if (param.minimumValue() == -1.0 && param.maximumValue() == 1.0) {
-                        //Special case values between -1 and 1.0 to use a slider for improved usability
-                        QSlider *slider = new QSlider(Qt::Horizontal, &effectDialog);
-                        slider->setMinimum(-SLIDER_RANGE);
-                        slider->setMaximum(SLIDER_RANGE);
-                        QVariant currentValue = nextEffect->parameterValue(param);
-                        slider->setProperty("oldValue", currentValue.toDouble());
-                        slider->setValue((int)(SLIDER_RANGE * currentValue.toDouble()));
-                        slider->setTickPosition(QSlider::TicksBelow);
-                        slider->setTickInterval(4);
-                        hlayout->addWidget(slider);
-                        connect(slider, SIGNAL(valueChanged(int)), this, SLOT(updateEffect()));
-                        propertyControllers.insert(param.name(), slider);
-                    } else {
-                        QDoubleSpinBox *spin = new QDoubleSpinBox(&effectDialog);
-                        spin->setSingleStep(0.1);                        
-                        spin->setMinimum(param.minimumValue().toDouble());
-                        spin->setMaximum(param.maximumValue().toDouble());
-                        QVariant currentValue = nextEffect->parameterValue(param);
-                        spin->setProperty("oldValue", currentValue);
-                        spin->setValue(currentValue.toDouble());
-                        connect(spin, SIGNAL(valueChanged(double)), this, SLOT(updateEffect()));
-                        hlayout->addWidget(spin);
-                        propertyControllers.insert(param.name(), spin);
-                    }
-                } else if (param.type() == QVariant::Bool) {
-                    QCheckBox *cb = new QCheckBox(&effectDialog);
-                    QVariant currentValue = nextEffect->parameterValue(param);
-                    cb->setProperty("oldValue", currentValue);
-                    cb->setChecked(currentValue.toBool());
-                    connect(cb, SIGNAL(stateChanged(int)), this, SLOT(updateEffect()));
-                    hlayout->addWidget(cb);
-                    propertyControllers.insert(param.name(), cb);
-                } else if (param.type() == QVariant::String) {
-                    QLineEdit *edit = new QLineEdit(&effectDialog);
-                    QVariant currentValue = nextEffect->parameterValue(param);
-                    edit->setProperty("oldValue", currentValue.toString());
-                    edit->setText(currentValue.toString());
-                    connect(edit, SIGNAL(returnPressed()), this, SLOT(updateEffect()));
-                    hlayout->addWidget(edit);
-                    propertyControllers.insert(param.name(), edit);
-                }
-                scrollLayout->addLayout(hlayout);
-            }
-            QDialogButtonBox *bbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &effectDialog);
-            connect(bbox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), &effectDialog, SLOT(accept()));
-            connect(bbox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), &effectDialog, SLOT(reject()));
-            topLayout->addWidget(bbox);
+        QDialogButtonBox *bbox = new QDialogButtonBox(QDialogButtonBox::Ok | QDialogButtonBox::Cancel, Qt::Horizontal, &effectDialog);
+        connect(bbox->button(QDialogButtonBox::Ok), SIGNAL(clicked()), &effectDialog, SLOT(accept()));
+        connect(bbox->button(QDialogButtonBox::Cancel), SIGNAL(clicked()), &effectDialog, SLOT(reject()));
+        topLayout->addWidget(bbox);
 
-            scrollWidget->adjustSize();
-            effectDialog.adjustSize();
-            
-            effectDialog.exec();
-            if (effectDialog.result() != QDialog::Accepted){
-                // Revert any changes
-                for (int k=0 ; k< nextEffect->parameters().size() ; ++k) {
-                    Phonon::EffectParameter param = nextEffect->parameters()[k];
-                    switch(param.type()) {
-                    case QVariant::Int: 
-                        {
-                            QSpinBox *spin = (QSpinBox*)propertyControllers.value(param.name());
-                            nextEffect->setParameterValue(param, spin->property("oldValue").toInt());
-                        }            
-                        break;
-                    case QVariant::Double:
-                        if (param.minimumValue() == -1.0 && param.maximumValue() == 1.0) {
-                            QSlider *slider = (QSlider*)propertyControllers.value(param.name());
-                            nextEffect->setParameterValue(param, slider->property("oldValue").toDouble());
-                        } else {                        
-                            QDoubleSpinBox *spin = (QDoubleSpinBox*)propertyControllers.value(param.name());
-                            nextEffect->setParameterValue(param, spin->property("oldValue").toDouble());
-                        }
-                        break;
-                    case QVariant::Bool: 
-                        {
-                            QCheckBox *cb = (QCheckBox*)propertyControllers.value(param.name());
-                            nextEffect->setParameterValue(param, cb->property("oldValue").toBool());
-                        }            
-                        break;
-                    case QVariant::String: 
-                        {
-                            QLineEdit *edit = (QLineEdit*)propertyControllers.value(param.name());
-                            nextEffect->setParameterValue(param, edit->property("oldValue").toString());
-                        }            
-                        break;
-                    default:
-                        break;
-                    }
-                }
+        effectDialog.exec();
+
+        if (effectDialog.result() != QDialog::Accepted) {
+            //we need to restore the paramaters values
+            int currentIndex = 0;
+            foreach(Phonon::EffectParameter param, nextEffect->parameters()) {
+                nextEffect->setParameterValue(param, savedParamValues.at(currentIndex++));
             }
-            propertyControllers.clear();
+
         }
     }
-}
-
-void MediaPlayer::pause()
-{
-    m_MediaObject.pause();
 }
 
 void MediaPlayer::handleDrop(QDropEvent *e)
 {
     QList<QUrl> urls = e->mimeData()->urls();
     if (e->proposedAction() == Qt::MoveAction){
-        // Just add to the que:
+        // Just add to the queue:
         for (int i=0; i<urls.size(); i++)
             m_MediaObject.enqueue(Phonon::MediaSource(urls[i].toLocalFile()));
     } else {
-        // Create new que:
+        // Create new queue:
         m_MediaObject.clearQueue();
         if (urls.size() > 0) {
             QString fileName = urls[0].toLocalFile();
@@ -732,7 +601,7 @@ void MediaPlayer::handleDrop(QDropEvent *e)
         }
     }
     forwardButton->setEnabled(m_MediaObject.queue().size() > 0);
-    play();
+    m_MediaObject.play();
 }
 
 void MediaPlayer::dropEvent(QDropEvent *e)
@@ -770,23 +639,6 @@ void MediaPlayer::playPause()
     }
 }
 
-void MediaPlayer::play()
-{
-    m_MediaObject.play();
-}
-
-void MediaPlayer::setVolume(int volume)
-{
-    Q_UNUSED(volume);
-    m_AudioOutput.setVolume(volume/100.0f);
-    if (volumeLabel) {
-        if (volume == 0)
-            volumeLabel->setPixmap(mutedIcon);
-        else
-            volumeLabel->setPixmap(volumeIcon);    
-    }
-}
-
 void MediaPlayer::setFile(const QString &fileName)
 {
     setWindowTitle(fileName.right(fileName.length() - fileName.lastIndexOf('/') - 1));
@@ -810,11 +662,9 @@ void MediaPlayer::openFile()
 void MediaPlayer::bufferStatus(int percent)
 {
     if (percent == 0 || percent == 100)
-        progressLabel->setText("");
+        progressLabel->setText(QString());
     else {
-        QString str("(");
-        str += QString::number(percent);
-        str += "%)";
+        QString str = QString::fromLatin1("(%1%)").arg(percent);
         progressLabel->setText(str);
     }
 }
@@ -931,7 +781,6 @@ void MediaPlayer::updateTime()
 
 void MediaPlayer::rewind()
 {
-    m_MediaObject.setTickInterval(50);
     m_MediaObject.seek(0);
 }
 
@@ -970,7 +819,7 @@ void MediaPlayer::showContextMenu(const QPoint &p)
 
 void MediaPlayer::scaleChanged(QAction *act)
 {
-    if (act->text() == "Scale and crop")
+    if (act->text() == tr("Scale and crop"))
         m_videoWidget->setScaleMode(Phonon::VideoWidget::ScaleAndCrop);
     else 
         m_videoWidget->setScaleMode(Phonon::VideoWidget::FitInView);    
@@ -978,11 +827,11 @@ void MediaPlayer::scaleChanged(QAction *act)
 
 void MediaPlayer::aspectChanged(QAction *act)
 {
-    if (act->text() == "16/9")
+    if (act->text() == tr("16/9"))
         m_videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatio16_9);
-    else if (act->text() == "Scale")
+    else if (act->text() == tr("Scale"))
         m_videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatioWidget);
-    else if (act->text() == "4/3")
+    else if (act->text() == tr("4/3"))
         m_videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatio4_3);
     else
         m_videoWidget->setAspectRatio(Phonon::VideoWidget::AspectRatioAuto);    

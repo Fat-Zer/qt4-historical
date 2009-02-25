@@ -3,9 +3,11 @@ SUBDIRS       = addressbook \
                 basicsortfiltermodel \
                 chart \
                 coloreditorfactory \
+                combowidgetmapper \
                 customsortfiltermodel \
                 dirview \
                 editabletreemodel \
+                fetchmore \
                 pixelator \
                 puzzle \
                 simpledommodel \

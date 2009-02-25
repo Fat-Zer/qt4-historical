@@ -1,7 +1,6 @@
 TEMPLATE      = subdirs
 SUBDIRS       = \
-                addressbook \
-                tutorial
+                addressbook
 
 # install
 sources.files = README *.pro

@@ -1,3 +1,5 @@
+#ifndef QT_QTDESIGNER_MODULE_H
+#define QT_QTDESIGNER_MODULE_H
 #include <QtXml/QtXml>
 #include "extension.h"
 #include "qextensionmanager.h"
@@ -32,3 +34,4 @@
 #include "customwidget.h"
 #include "formbuilder.h"
 #include "qdesignerexportwidget.h"
+#endif

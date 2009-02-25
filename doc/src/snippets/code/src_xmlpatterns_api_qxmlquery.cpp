@@ -11,7 +11,7 @@
     buffer.open(QIODevice::ReadOnly);
     QXmlQuery query;
     query.bindVariable("myDocument", &buffer);
-    query.setQuery("declare variable $myDocument external; doc($myDocument)");
+    query.setQuery("doc($myDocument)");
 //! [1]
 }
 
@@ -47,11 +47,12 @@
     qlonglong year = 1234;
 
     QXmlQuery query;
-    query.setQuery(&xq, QUrl::fromLocalFile(xq.fileName()));
 
     query.bindVariable("file", QVariant(fileName));
     query.bindVariable("publisher", QVariant(publisherName));
     query.bindVariable("year", QVariant(year));
+
+    query.setQuery(&xq, QUrl::fromLocalFile(xq.fileName()));
 
     QXmlSerializer serializer(query, myOutputDevice);
     query.evaluateTo(&serializer);
@@ -66,11 +67,12 @@
     qlonglong year = 1234;
 
     QXmlQuery query;
-    query.setQuery(&xq, QUrl::fromLocalFile(xq.fileName()));
 
     query.bindVariable("file", QVariant(fileName));
     query.bindVariable("publisher", QVariant(publisherName));
     query.bindVariable("year", QVariant(year));
+
+    query.setQuery(&xq, QUrl::fromLocalFile(xq.fileName()));
 
     QXmlResultItems result;
     query.evaluateTo(&result);
@@ -139,3 +141,12 @@
 //! [6]
 }
 
+{
+    QIODevice *out = 0;
+//! [7]
+    QXmlQuery query(QXmlQuery::XSLT20);
+    query.setFocus(QUrl("myInput.xml"));
+    query.setQuery(QUrl("myStylesheet.xsl"));
+    query.evaluateTo(out);
+//! [7]
+}

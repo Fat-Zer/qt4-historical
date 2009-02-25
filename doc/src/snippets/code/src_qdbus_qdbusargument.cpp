@@ -6,7 +6,7 @@ struct MyStructure
 };
 QT_DECLARE_METATYPE(MyStructure)
 
-// Marshall the MyStructure data into a D-BUS argument
+// Marshall the MyStructure data into a D-Bus argument
 QDBusArgument &operator<<(QDBusArgument &argument, const MyStructure &mystruct)
 {
     argument.beginStructure();
@@ -15,7 +15,7 @@ QDBusArgument &operator<<(QDBusArgument &argument, const MyStructure &mystruct)
     return argument;
 }
 
-// Retrieve the MyStructure data from the D-BUS argument
+// Retrieve the MyStructure data from the D-Bus argument
 const QDBusArgument &operator>>(const QDBusArgument &argument, MyStructure &mystruct)
 {
     argument.beginStructure();

@@ -3,13 +3,16 @@ TARGET          = macmainwindow
 
 CONFIG          += qt warn_on console
 
-SOURCES += main.cpp macmainwindow.cpp
+OBJECTIVE_SOURCES += macmainwindow.mm
+SOURCES += main.cpp 
 HEADERS += macmainwindow.h
 
 build_all:!build_pass {
     CONFIG -= build_all
     CONFIG += release
 }
+
+LIBS += -framework Cocoa
 
 # install
 mac {

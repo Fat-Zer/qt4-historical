@@ -1,9 +1,20 @@
 TEMPLATE = app
 QT += script
 # Input
-HEADERS += qcontext2dcanvas.h context2d.h domimage.h window.h
-SOURCES += qcontext2dcanvas.cpp context2d.cpp domimage.cpp window.cpp main.cpp 
+HEADERS += qcontext2dcanvas.h \
+	   context2d.h \
+	   domimage.h \
+	   environment.h \
+	   window.h
+SOURCES += qcontext2dcanvas.cpp \
+	   context2d.cpp \
+	   domimage.cpp \
+	   environment.cpp \
+	   window.cpp \
+	   main.cpp
 RESOURCES += context2d.qrc
+
+contains(QT_CONFIG, scripttools): QT += scripttools
 
 # install
 target.path = $$[QT_INSTALL_EXAMPLES]/script/context2d

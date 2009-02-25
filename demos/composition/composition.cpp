@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -50,84 +54,80 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     CompositionRenderer *view = new CompositionRenderer(this);
 
     QGroupBox *mainGroup = new QGroupBox(parent);
-    mainGroup->setAttribute(Qt::WA_ContentsPropagated);
-    mainGroup->setTitle("Composition Modes");
+    mainGroup->setTitle(tr("Composition Modes"));
 
     QGroupBox *modesGroup = new QGroupBox(mainGroup);
-    modesGroup->setAttribute(Qt::WA_ContentsPropagated);
-    modesGroup->setTitle("Mode");
+    modesGroup->setTitle(tr("Mode"));
 
-    rbClear = new QRadioButton("Clear", modesGroup);
+    rbClear = new QRadioButton(tr("Clear"), modesGroup);
     connect(rbClear, SIGNAL(clicked()), view, SLOT(setClearMode()));
-    rbSource = new QRadioButton("Source", modesGroup);
+    rbSource = new QRadioButton(tr("Source"), modesGroup);
     connect(rbSource, SIGNAL(clicked()), view, SLOT(setSourceMode()));
-    rbDest = new QRadioButton("Destination", modesGroup);
+    rbDest = new QRadioButton(tr("Destination"), modesGroup);
     connect(rbDest, SIGNAL(clicked()), view, SLOT(setDestMode()));
-    rbSourceOver = new QRadioButton("Source Over", modesGroup);
+    rbSourceOver = new QRadioButton(tr("Source Over"), modesGroup);
     connect(rbSourceOver, SIGNAL(clicked()), view, SLOT(setSourceOverMode()));
-    rbDestOver = new QRadioButton("Destination Over", modesGroup);
+    rbDestOver = new QRadioButton(tr("Destination Over"), modesGroup);
     connect(rbDestOver, SIGNAL(clicked()), view, SLOT(setDestOverMode()));
-    rbSourceIn = new QRadioButton("Source In", modesGroup);
+    rbSourceIn = new QRadioButton(tr("Source In"), modesGroup);
     connect(rbSourceIn, SIGNAL(clicked()), view, SLOT(setSourceInMode()));
-    rbDestIn = new QRadioButton("Dest In", modesGroup);
+    rbDestIn = new QRadioButton(tr("Dest In"), modesGroup);
     connect(rbDestIn, SIGNAL(clicked()), view, SLOT(setDestInMode()));
-    rbSourceOut = new QRadioButton("Source Out", modesGroup);
+    rbSourceOut = new QRadioButton(tr("Source Out"), modesGroup);
     connect(rbSourceOut, SIGNAL(clicked()), view, SLOT(setSourceOutMode()));
-    rbDestOut = new QRadioButton("Dest Out", modesGroup);
+    rbDestOut = new QRadioButton(tr("Dest Out"), modesGroup);
     connect(rbDestOut, SIGNAL(clicked()), view, SLOT(setDestOutMode()));
-    rbSourceAtop = new QRadioButton("Source Atop", modesGroup);
+    rbSourceAtop = new QRadioButton(tr("Source Atop"), modesGroup);
     connect(rbSourceAtop, SIGNAL(clicked()), view, SLOT(setSourceAtopMode()));
-    rbDestAtop = new QRadioButton("Dest Atop", modesGroup);
+    rbDestAtop = new QRadioButton(tr("Dest Atop"), modesGroup);
     connect(rbDestAtop, SIGNAL(clicked()), view, SLOT(setDestAtopMode()));
-    rbXor = new QRadioButton("Xor", modesGroup);
+    rbXor = new QRadioButton(tr("Xor"), modesGroup);
     connect(rbXor, SIGNAL(clicked()), view, SLOT(setXorMode()));
 
-    rbPlus = new QRadioButton("Plus", modesGroup);
+    rbPlus = new QRadioButton(tr("Plus"), modesGroup);
     connect(rbPlus, SIGNAL(clicked()), view, SLOT(setPlusMode()));
-    rbMultiply = new QRadioButton("Multiply", modesGroup);
+    rbMultiply = new QRadioButton(tr("Multiply"), modesGroup);
     connect(rbMultiply, SIGNAL(clicked()), view, SLOT(setMultiplyMode()));
-    rbScreen = new QRadioButton("Screen", modesGroup);
+    rbScreen = new QRadioButton(tr("Screen"), modesGroup);
     connect(rbScreen, SIGNAL(clicked()), view, SLOT(setScreenMode()));
-    rbOverlay = new QRadioButton("Overlay", modesGroup);
+    rbOverlay = new QRadioButton(tr("Overlay"), modesGroup);
     connect(rbOverlay, SIGNAL(clicked()), view, SLOT(setOverlayMode()));
-    rbDarken = new QRadioButton("Darken", modesGroup);
+    rbDarken = new QRadioButton(tr("Darken"), modesGroup);
     connect(rbDarken, SIGNAL(clicked()), view, SLOT(setDarkenMode()));
-    rbLighten = new QRadioButton("Lighten", modesGroup);
+    rbLighten = new QRadioButton(tr("Lighten"), modesGroup);
     connect(rbLighten, SIGNAL(clicked()), view, SLOT(setLightenMode()));
-    rbColorDodge = new QRadioButton("Color Dodge", modesGroup);
+    rbColorDodge = new QRadioButton(tr("Color Dodge"), modesGroup);
     connect(rbColorDodge, SIGNAL(clicked()), view, SLOT(setColorDodgeMode()));
-    rbColorBurn = new QRadioButton("Color Burn", modesGroup);
+    rbColorBurn = new QRadioButton(tr("Color Burn"), modesGroup);
     connect(rbColorBurn, SIGNAL(clicked()), view, SLOT(setColorBurnMode()));
-    rbHardLight = new QRadioButton("Hard Light", modesGroup);
+    rbHardLight = new QRadioButton(tr("Hard Light"), modesGroup);
     connect(rbHardLight, SIGNAL(clicked()), view, SLOT(setHardLightMode()));
-    rbSoftLight = new QRadioButton("Soft Light", modesGroup);
+    rbSoftLight = new QRadioButton(tr("Soft Light"), modesGroup);
     connect(rbSoftLight, SIGNAL(clicked()), view, SLOT(setSoftLightMode()));
-    rbDifference = new QRadioButton("Difference", modesGroup);
+    rbDifference = new QRadioButton(tr("Difference"), modesGroup);
     connect(rbDifference, SIGNAL(clicked()), view, SLOT(setDifferenceMode()));
-    rbExclusion = new QRadioButton("Exclusion", modesGroup);
+    rbExclusion = new QRadioButton(tr("Exclusion"), modesGroup);
     connect(rbExclusion, SIGNAL(clicked()), view, SLOT(setExclusionMode()));
 
     QGroupBox *circleColorGroup = new QGroupBox(mainGroup);
-    circleColorGroup->setAttribute(Qt::WA_ContentsPropagated);
-    circleColorGroup->setTitle("Circle color");
+    circleColorGroup->setTitle(tr("Circle color"));
     QSlider *circleColorSlider = new QSlider(Qt::Horizontal, circleColorGroup);
     circleColorSlider->setRange(0, 359);
     circleColorSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(circleColorSlider, SIGNAL(valueChanged(int)), view, SLOT(setCircleColor(int)));
 
     QGroupBox *circleAlphaGroup = new QGroupBox(mainGroup);
-    circleAlphaGroup->setAttribute(Qt::WA_ContentsPropagated);
-    circleAlphaGroup->setTitle("Circle alpha");
+    circleAlphaGroup->setTitle(tr("Circle alpha"));
     QSlider *circleAlphaSlider = new QSlider(Qt::Horizontal, circleAlphaGroup);
     circleAlphaSlider->setRange(0, 255);
     circleAlphaSlider->setSizePolicy(QSizePolicy::Preferred, QSizePolicy::Fixed);
     connect(circleAlphaSlider, SIGNAL(valueChanged(int)), view, SLOT(setCircleAlpha(int)));
 
     QPushButton *showSourceButton = new QPushButton(mainGroup);
-    showSourceButton->setText("Show Source");
-#ifdef QT_OPENGL_SUPPORT
+    showSourceButton->setText(tr("Show Source"));
+#if defined(QT_OPENGL_SUPPORT) && !defined(QT_OPENGL_ES)
     QPushButton *enableOpenGLButton = new QPushButton(mainGroup);
-    enableOpenGLButton->setText("Use OpenGL");
+    enableOpenGLButton->setText(tr("Use OpenGL"));
     enableOpenGLButton->setCheckable(true);
     enableOpenGLButton->setChecked(view->usesOpenGL());
 
@@ -135,11 +135,11 @@ CompositionWidget::CompositionWidget(QWidget *parent)
         enableOpenGLButton->hide();
 #endif
     QPushButton *whatsThisButton = new QPushButton(mainGroup);
-    whatsThisButton->setText("What's This?");
+    whatsThisButton->setText(tr("What's This?"));
     whatsThisButton->setCheckable(true);
 
     QPushButton *animateButton = new QPushButton(mainGroup);
-    animateButton->setText("Animated");
+    animateButton->setText(tr("Animated"));
     animateButton->setCheckable(true);
     animateButton->setChecked(true);
 
@@ -155,7 +155,7 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     mainGroupLayout->addWidget(animateButton);
     mainGroupLayout->addWidget(whatsThisButton);
     mainGroupLayout->addWidget(showSourceButton);
-#ifdef QT_OPENGL_SUPPORT
+#if defined(QT_OPENGL_SUPPORT) && !defined(QT_OPENGL_ES)
     mainGroupLayout->addWidget(enableOpenGLButton);
 #endif
 
@@ -193,13 +193,13 @@ CompositionWidget::CompositionWidget(QWidget *parent)
     QVBoxLayout *circleAlphaLayout = new QVBoxLayout(circleAlphaGroup);
     circleAlphaLayout->addWidget(circleAlphaSlider);
 
-    view->loadDescription(":/trolltech/arthurplugin/composition.html");
-    view->loadSourceFile(":/trolltech/arthurplugin/composition.cpp");
+    view->loadDescription(":res/composition/composition.html");
+    view->loadSourceFile(":res/composition/composition.cpp");
 
     connect(whatsThisButton, SIGNAL(clicked(bool)), view, SLOT(setDescriptionEnabled(bool)));
     connect(view, SIGNAL(descriptionEnabledChanged(bool)), whatsThisButton, SLOT(setChecked(bool)));
     connect(showSourceButton, SIGNAL(clicked()), view, SLOT(showSource()));
-#ifdef QT_OPENGL_SUPPORT
+#if defined(QT_OPENGL_SUPPORT) && !defined(QT_OPENGL_ES)
     connect(enableOpenGLButton, SIGNAL(clicked(bool)), view, SLOT(enableOpenGL(bool)));
 #endif
     connect(animateButton, SIGNAL(toggled(bool)), view, SLOT(setAnimationEnabled(bool)));
@@ -237,11 +237,11 @@ CompositionRenderer::CompositionRenderer(QWidget *parent)
 {
     m_animation_enabled = true;
 #ifdef Q_WS_QWS
-    m_image = QPixmap(":/trolltech/arthurplugin/flower.jpg");
-    m_image.setAlphaChannel(QPixmap(":/trolltech/arthurplugin/flower_alpha.jpg"));
+    m_image = QPixmap(":res/composition/flower.jpg");
+    m_image.setAlphaChannel(QPixmap(":res/composition/flower_alpha.jpg"));
 #else
-    m_image = QImage(":/trolltech/arthurplugin/flower.jpg");
-    m_image.setAlphaChannel(QImage(":/trolltech/arthurplugin/flower_alpha.jpg"));
+    m_image = QImage(":res/composition/flower.jpg");
+    m_image.setAlphaChannel(QImage(":res/composition/flower_alpha.jpg"));
 #endif
     m_circle_alpha = 127;
     m_circle_hue = 255;
@@ -333,7 +333,7 @@ void CompositionRenderer::drawSource(QPainter &p)
 
 void CompositionRenderer::paint(QPainter *painter)
 {
-#ifdef QT_OPENGL_SUPPORT
+#if defined(QT_OPENGL_SUPPORT) && !defined(QT_OPENGL_ES)
     if (usesOpenGL()) {
 
         int new_pbuf_size = m_pbuffer_size;
@@ -501,7 +501,7 @@ void CompositionRenderer::setCirclePos(const QPointF &pos)
     const QRect oldRect = rectangle_around(m_circle_pos).toAlignedRect();
     m_circle_pos = pos;
     const QRect newRect = rectangle_around(m_circle_pos).toAlignedRect();
-#ifdef QT_OPENGL_SUPPORT
+#if defined(QT_OPENGL_SUPPORT) && !defined(QT_OPENGL_ES)
     if (usesOpenGL())
         update();
     else

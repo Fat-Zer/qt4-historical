@@ -1,8 +1,12 @@
+#ifndef QT_QTNETWORK_MODULE_H
+#define QT_QTNETWORK_MODULE_H
 #include <QtCore/QtCore>
+#include "qabstractnetworkcache.h"
 #include "qftp.h"
 #include "qhttp.h"
 #include "qnetworkaccessmanager.h"
 #include "qnetworkcookie.h"
+#include "qnetworkdiskcache.h"
 #include "qnetworkreply.h"
 #include "qnetworkrequest.h"
 #include "qauthenticator.h"
@@ -24,3 +28,4 @@
 #include "qsslerror.h"
 #include "qsslkey.h"
 #include "qsslsocket.h"
+#endif

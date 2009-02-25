@@ -33,7 +33,7 @@ public slots:
 
 //! [3]
 QGraphicsScene scene;
-scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
+scene.addRect(QRectF(0, 0, 100, 200), QPen(Qt::black), QBrush(Qt::green));
 
 QPrinter printer;
 if (QPrintDialog(&printer).exec() == QDialog::Accepted) {
@@ -46,7 +46,7 @@ if (QPrintDialog(&printer).exec() == QDialog::Accepted) {
 
 //! [4]
 QGraphicsScene scene;
-scene.addRect(QRectF(0, 0, 100, 200), Qt::black, QBrush(Qt::green));
+scene.addRect(QRectF(0, 0, 100, 200), QPen(Qt::black), QBrush(Qt::green));
 
 QPixmap pixmap;
 QPainter painter(&pixmap);

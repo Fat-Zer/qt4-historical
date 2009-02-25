@@ -1,37 +1,41 @@
 /****************************************************************************
 **
-** Copyright (C) 2008 Nokia Corporation and/or its subsidiary(-ies).
+** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
 ** This file is part of the documentation of the Qt Toolkit.
 **
+** $QT_BEGIN_LICENSE:LGPL$
 ** Commercial Usage
 ** Licensees holding valid Qt Commercial licenses may use this file in
 ** accordance with the Qt Commercial License Agreement provided with the
 ** Software or, alternatively, in accordance with the terms contained in
 ** a written agreement between you and Nokia.
 **
+** GNU Lesser General Public License Usage
+** Alternatively, this file may be used under the terms of the GNU Lesser
+** General Public License version 2.1 as published by the Free Software
+** Foundation and appearing in the file LICENSE.LGPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU Lesser General Public License version 2.1 requirements
+** will be met: http://www.gnu.org/licenses/old-licenses/lgpl-2.1.html.
+**
+** In addition, as a special exception, Nokia gives you certain
+** additional rights. These rights are described in the Nokia Qt LGPL
+** Exception version 1.0, included in the file LGPL_EXCEPTION.txt in this
+** package.
 **
 ** GNU General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU
-** General Public License versions 2.0 or 3.0 as published by the Free
-** Software Foundation and appearing in the file LICENSE.GPL included in
-** the packaging of this file.  Please review the following information
-** to ensure GNU General Public Licensing requirements will be met:
-** http://www.fsf.org/licensing/licenses/info/GPLv2.html and
-** http://www.gnu.org/copyleft/gpl.html.  In addition, as a special
-** exception, Nokia gives you certain additional rights. These rights
-** are described in the Nokia Qt GPL Exception version 1.3, included in
-** the file GPL_EXCEPTION.txt in this package.
-**
-** Qt for Windows(R) Licensees
-** As a special exception, Nokia, as the sole copyright holder for Qt
-** Designer, grants users of the Qt/Eclipse Integration plug-in the
-** right for the Qt/Eclipse Integration to link to functionality
-** provided by Qt Designer and its related libraries.
+** General Public License version 3.0 as published by the Free Software
+** Foundation and appearing in the file LICENSE.GPL included in the
+** packaging of this file.  Please review the following information to
+** ensure the GNU General Public License version 3.0 requirements will be
+** met: http://www.gnu.org/copyleft/gpl.html.
 **
 ** If you are unsure which license is appropriate for your use, please
 ** contact the sales department at qt-sales@nokia.com.
+** $QT_END_LICENSE$
 **
 ****************************************************************************/
 
@@ -704,9 +708,29 @@ Ideas for other sections:
 /*!
     \page richtext-html-subset.html
     \title Supported HTML Subset
+    \brief Describes the support for HTML markup in text widgets.
 
     \contentspage richtext.html Contents
     \previouspage Common Rich Text Editing Tasks
+
+    Qt's text widgets are able to display rich text, specified using a subset of \l{HTML 4}
+    markup. Widgets that use QTextDocument, such as QLabel, QTextEdit, QTreeWidgetItem and
+    the other item widgets, are able to display rich text specified in this way.
+
+    \tableofcontents
+
+    \section1 Using HTML Markup in Text Widgets
+
+    Widgets automatically detect HTML markup and display rich text accordingly. For example,
+    setting a label's \l{QLabel::}{text} property with the string \c{"<b>Hello</b> <i>Qt!</i>"}
+    will result in the label displaying text like this: \bold{Hello} \e{Qt!}
+
+    When HTML markup is used for text, Qt follows the rules defined by the \l{HTML 4}
+    specification. This includes default properties for text layout, such as the
+    direction of the text flow (left-to-right) which can be changed by applying the
+    \l{#Block Attributes}{\c dir} attribute to blocks of text.
+
+    \section1 Supported Tags
 
     The following table lists the HTML tags supported by Qt's
     \l{Rich Text Processing}{rich text} engine:
@@ -1031,7 +1055,8 @@ Ideas for other sections:
             \o Make it possible to enforce a page break after the paragraph/table
     \row    \o float
             \o [ left | right | none ]
-            \o Specifies where an image or a text will be placed in another element.
+            \o Specifies where an image or a text will be placed in another element. Note that the \c float property is
+               only supported for tables and images.
     \row    \o \c text-transform
             \o [ uppercase | lowercase | smallcaps ]
             \o Select the transformation that will be performed on the text prior to displaying it.

@@ -1,4 +1,5 @@
 QT += script
+RESOURCES += helloscript.qrc
 SOURCES += main.cpp
 
 # install

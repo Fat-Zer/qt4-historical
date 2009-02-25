@@ -143,8 +143,6 @@
        </spacer>
       </item>
      </layout>
-     <zorder></zorder>
-     <zorder>verticalSpacer</zorder>
     </widget>
    </item>
   </layout>

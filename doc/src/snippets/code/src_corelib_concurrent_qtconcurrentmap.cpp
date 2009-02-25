@@ -109,7 +109,7 @@ QImage QImage::scaledToWidth(int width, Qt::TransformationMode) const;
 
 
 //! [11]
-boost::bind(&QImage::scaledToWidth, 100 Qt::SmoothTransformation)
+boost::bind(&QImage::scaledToWidth, 100, Qt::SmoothTransformation)
 //! [11]
 
 
