@@ -109,7 +109,7 @@
         <keyword ref="phonon-qt7-audiograph.html#setStatusCannotPlay">setStatusCannotPlay</keyword>
         <keyword ref="phonon-qt7-audiograph.html#start">start</keyword>
         <keyword ref="phonon-qt7-audiograph.html#startAllOverFromScratch">startAllOverFromScratch</keyword>
-        <keyword ref="phonon-qt7-audiograph.html#stop">stop</keyword>
+        <keyword ref="phonon-qt7-audiograph.html#stopx">stop</keyword>
         <keyword ref="phonon-qt7-audiograph.html#tryStartGraph">tryStartGraph</keyword>
         <keyword ref="phonon-qt7-audiograph.html#update">update</keyword>
         <keyword ref="phonon-qt7-audiograph.html#updateStreamSpecifications">updateStreamSpecifications</keyword>
@@ -272,9 +272,9 @@
         <keyword ref="phonon-gstreamer-backend.html#connectNodes">connectNodes</keyword>
         <keyword ref="phonon-gstreamer-backend.html#createObject">createObject</keyword>
         <keyword ref="phonon-gstreamer-backend.html#debugLevel">debugLevel</keyword>
-        <keyword ref="phonon-gstreamer-backend.html#deviceManagerx">deviceManager</keyword>
+        <keyword ref="phonon-gstreamer-backend.html#deviceManager">deviceManager</keyword>
         <keyword ref="phonon-gstreamer-backend.html#disconnectNodes">disconnectNodes</keyword>
-        <keyword ref="phonon-gstreamer-backend.html#effectManager">effectManager</keyword>
+        <keyword ref="phonon-gstreamer-backend.html#effectManagerx">effectManager</keyword>
         <keyword ref="phonon-gstreamer-backend.html#endConnectionChange">endConnectionChange</keyword>
         <keyword ref="phonon-gstreamer-backend.html#isValid">isValid</keyword>
         <keyword ref="phonon-gstreamer-backend.html#logMessage">logMessage</keyword>
@@ -337,7 +337,7 @@
         <keyword ref="phonon-ds9-backendnode.html">BackendNode</keyword>
         <keyword ref="phonon-ds9-backendnode.html#connected">connected</keyword>
         <keyword ref="phonon-ds9-backendnode.html#filter">filter</keyword>
-        <keyword ref="phonon-ds9-backendnode.html#mediaObjectx">mediaObject</keyword>
+        <keyword ref="phonon-ds9-backendnode.html#mediaObject">mediaObject</keyword>
         <keyword ref="phonon-ds9-backendnode.html#pins">pins</keyword>
         <keyword ref="phonon-ds9-backendnode.html#setMediaObject">setMediaObject</keyword>
         <section ref="phonon-ds9-backendnode-members.html" title="List of all members"/>
@@ -697,7 +697,7 @@
     </section>
     <section ref="phonon-ds9-iodevicereader.html" title="IODeviceReader Class Reference">
         <keyword ref="phonon-ds9-iodevicereader.html">IODeviceReader</keyword>
-        <keyword ref="phonon-ds9-iodevicereader.html#Stopx">Stop</keyword>
+        <keyword ref="phonon-ds9-iodevicereader.html#Stop">Stop</keyword>
         <section ref="phonon-ds9-iodevicereader-members.html" title="List of all members"/>
     </section>
     <section ref="qhash-iterator.html" title="iterator Class Reference">
@@ -870,12 +870,12 @@
         <keyword ref="phonon-ds9-mediagraph.html#loadSource">loadSource</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#mediaSource">mediaSource</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#metadatax">metadata</keyword>
-        <keyword ref="phonon-ds9-mediagraph.html#pause">pause</keyword>
+        <keyword ref="phonon-ds9-mediagraph.html#pausex">pause</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#play">play</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#realSource">realSource</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#renderResult">renderResult</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#setStopPosition">setStopPosition</keyword>
-        <keyword ref="phonon-ds9-mediagraph.html#stop">stop</keyword>
+        <keyword ref="phonon-ds9-mediagraph.html#stopx">stop</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#stopPosition">stopPosition</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#switchFilters">switchFilters</keyword>
         <keyword ref="phonon-ds9-mediagraph.html#syncGetRealState">syncGetRealState</keyword>
@@ -979,7 +979,7 @@
         <keyword ref="phonon-ds9-mediaobject.html#isSeekable">isSeekable</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#loadingFinished">loadingFinished</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#metaDataChanged">metaDataChanged</keyword>
-        <keyword ref="phonon-ds9-mediaobject.html#pause">pause</keyword>
+        <keyword ref="phonon-ds9-mediaobject.html#pausex">pause</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#play">play</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#prefinishMark">prefinishMark</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#prefinishMarkReached">prefinishMarkReached</keyword>
@@ -996,7 +996,7 @@
         <keyword ref="phonon-ds9-mediaobject.html#source">source</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#state">state</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#stateChanged">stateChanged</keyword>
-        <keyword ref="phonon-ds9-mediaobject.html#stop">stop</keyword>
+        <keyword ref="phonon-ds9-mediaobject.html#stopx">stop</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#switchFilters">switchFilters</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#tick">tick</keyword>
         <keyword ref="phonon-ds9-mediaobject.html#tickInterval">tickInterval</keyword>
@@ -1014,7 +1014,7 @@
         <keyword ref="phonon-gstreamer-mediaobject.html#addMissingCodecName">addMissingCodecName</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#audioAvailable">audioAvailable</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#audioElement">audioElement</keyword>
-        <keyword ref="phonon-gstreamer-mediaobject.html#audioGraphx">audioGraph</keyword>
+        <keyword ref="phonon-gstreamer-mediaobject.html#audioGraph">audioGraph</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#beginLoad">beginLoad</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#bufferStatus">bufferStatus</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#capsHandler">capsHandler</keyword>
@@ -1044,7 +1044,7 @@
         <keyword ref="phonon-gstreamer-mediaobject.html#metaData">metaData</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#metaDataChanged">metaDataChanged</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#newPadAvailable">newPadAvailable</keyword>
-        <keyword ref="phonon-gstreamer-mediaobject.html#pause">pause</keyword>
+        <keyword ref="phonon-gstreamer-mediaobject.html#pausex">pause</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#pipeline">pipeline</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#play">play</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#prefinishMark">prefinishMark</keyword>
@@ -1065,7 +1065,7 @@
         <keyword ref="phonon-gstreamer-mediaobject.html#source">source</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#state">state</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#stateChanged">stateChanged</keyword>
-        <keyword ref="phonon-gstreamer-mediaobject.html#stop">stop</keyword>
+        <keyword ref="phonon-gstreamer-mediaobject.html#stopx">stop</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#tick">tick</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#tickInterval">tickInterval</keyword>
         <keyword ref="phonon-gstreamer-mediaobject.html#totalTime">totalTime</keyword>
@@ -1101,7 +1101,7 @@
         <keyword ref="phonon-mediaobject.html#isSeekable">isSeekable</keyword>
         <keyword ref="phonon-mediaobject.html#metaData">metaData</keyword>
         <keyword ref="phonon-mediaobject.html#metaDataChanged">metaDataChanged</keyword>
-        <keyword ref="phonon-mediaobject.html#pause">pause</keyword>
+        <keyword ref="phonon-mediaobject.html#pausex">pause</keyword>
         <keyword ref="phonon-mediaobject.html#play">play</keyword>
         <keyword ref="phonon-mediaobject.html#prefinishMarkReached">prefinishMarkReached</keyword>
         <keyword ref="phonon-mediaobject.html#queue">queue</keyword>
@@ -1112,7 +1112,7 @@
         <keyword ref="phonon-mediaobject.html#setQueue">setQueue</keyword>
         <keyword ref="phonon-mediaobject.html#state">state</keyword>
         <keyword ref="phonon-mediaobject.html#stateChanged">stateChanged</keyword>
-        <keyword ref="phonon-mediaobject.html#stop">stop</keyword>
+        <keyword ref="phonon-mediaobject.html#stopx">stop</keyword>
         <keyword ref="phonon-mediaobject.html#tick">tick</keyword>
         <keyword ref="phonon-mediaobject.html#totalTime">totalTime</keyword>
         <keyword ref="phonon-mediaobject.html#totalTimeChanged">totalTimeChanged</keyword>
@@ -1142,7 +1142,7 @@
         <keyword ref="phonon-qt7-mediaobject.html#isSeekable">isSeekable</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#mediaNodeEvent">mediaNodeEvent</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#metaDataChanged">metaDataChanged</keyword>
-        <keyword ref="phonon-qt7-mediaobject.html#pause">pause</keyword>
+        <keyword ref="phonon-qt7-mediaobject.html#pausex">pause</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#play">play</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#prefinishMark">prefinishMark</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#prefinishMarkReached">prefinishMarkReached</keyword>
@@ -1161,7 +1161,7 @@
         <keyword ref="phonon-qt7-mediaobject.html#source">source</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#state">state</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#stateChanged">stateChanged</keyword>
-        <keyword ref="phonon-qt7-mediaobject.html#stop">stop</keyword>
+        <keyword ref="phonon-qt7-mediaobject.html#stopx">stop</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#tick">tick</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#tickInterval">tickInterval</keyword>
         <keyword ref="phonon-qt7-mediaobject.html#totalTime">totalTime</keyword>
@@ -1185,7 +1185,7 @@
         <keyword ref="phonon-waveout-mediaobject.html#isSeekable">isSeekable</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#metaDataChanged">metaDataChanged</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#outOfData">outOfData</keyword>
-        <keyword ref="phonon-waveout-mediaobject.html#pause">pause</keyword>
+        <keyword ref="phonon-waveout-mediaobject.html#pausex">pause</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#play">play</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#prefinishMark">prefinishMark</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#prefinishMarkReached">prefinishMarkReached</keyword>
@@ -1201,7 +1201,7 @@
         <keyword ref="phonon-waveout-mediaobject.html#source">source</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#state">state</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#stateChanged">stateChanged</keyword>
-        <keyword ref="phonon-waveout-mediaobject.html#stop">stop</keyword>
+        <keyword ref="phonon-waveout-mediaobject.html#stopx">stop</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#tick">tick</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#tickInterval">tickInterval</keyword>
         <keyword ref="phonon-waveout-mediaobject.html#totalTime">totalTime</keyword>
@@ -2680,6 +2680,8 @@
         <keyword ref="qapplication.html#topLevelWidgets">topLevelWidgets</keyword>
         <keyword ref="qapplication.html#type">type</keyword>
         <keyword ref="qapplication.html#widgetAt">widgetAt</keyword>
+        <keyword ref="qapplication.html#winFocus">winFocus</keyword>
+        <keyword ref="qapplication.html#winMouseButtonUp">winMouseButtonUp</keyword>
         <keyword ref="qapplication.html#x11EventFilter">x11EventFilter</keyword>
         <keyword ref="qapplication.html#x11ProcessEvent">x11ProcessEvent</keyword>
         <keyword ref="qapplication.html#qApp">qApp</keyword>
@@ -2819,152 +2821,6 @@
         <keyword ref="qauthenticator.html#operator-eq-eq">operator==</keyword>
         <section ref="qauthenticator-members.html" title="List of all members"/>
     </section>
-    <section ref="qaxaggregated.html" title="QAxAggregated Class Reference">
-        <keyword ref="qaxaggregated.html">QAxAggregated</keyword>
-        <keyword ref="qaxaggregated.html#controllingUnknown">controllingUnknown</keyword>
-        <keyword ref="qaxaggregated.html#object">object</keyword>
-        <keyword ref="qaxaggregated.html#queryInterfacex">queryInterface</keyword>
-        <keyword ref="qaxaggregated.html#widget">widget</keyword>
-        <section ref="qaxaggregated-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxbase.html" title="QAxBase Class Reference">
-        <keyword ref="qaxbase.html">QAxBase</keyword>
-        <keyword ref="qaxbase.html#PropertyBag-typedef">PropertyBag</keyword>
-        <keyword ref="qaxbase.html#control-prop">control</keyword>
-        <keyword ref="qaxbase.html#control-prop">setControl</keyword>
-        <keyword ref="qaxbase.html#asVariant">asVariant</keyword>
-        <keyword ref="qaxbase.html#clear">clear</keyword>
-        <keyword ref="qaxbase.html#disableClassInfo">disableClassInfo</keyword>
-        <keyword ref="qaxbase.html#disableEventSink">disableEventSink</keyword>
-        <keyword ref="qaxbase.html#disableMetaObject">disableMetaObject</keyword>
-        <keyword ref="qaxbase.html#dynamicCall">dynamicCall</keyword>
-        <keyword ref="qaxbase.html#exception">exception</keyword>
-        <keyword ref="qaxbase.html#generateDocumentation">generateDocumentation</keyword>
-        <keyword ref="qaxbase.html#initialize">initialize</keyword>
-        <keyword ref="qaxbase.html#initializeActive">initializeActive</keyword>
-        <keyword ref="qaxbase.html#initializeFromFile">initializeFromFile</keyword>
-        <keyword ref="qaxbase.html#initializeLicensed">initializeLicensed</keyword>
-        <keyword ref="qaxbase.html#initializeRemote">initializeRemote</keyword>
-        <keyword ref="qaxbase.html#isNull">isNull</keyword>
-        <keyword ref="qaxbase.html#propertyBag">propertyBag</keyword>
-        <keyword ref="qaxbase.html#propertyChanged">propertyChanged</keyword>
-        <keyword ref="qaxbase.html#propertyWritable">propertyWritable</keyword>
-        <keyword ref="qaxbase.html#queryInterfacex">queryInterface</keyword>
-        <keyword ref="qaxbase.html#querySubObject">querySubObject</keyword>
-        <keyword ref="qaxbase.html#setPropertyBag">setPropertyBag</keyword>
-        <keyword ref="qaxbase.html#setPropertyWritable">setPropertyWritable</keyword>
-        <keyword ref="qaxbase.html#signal">signal</keyword>
-        <keyword ref="qaxbase.html#verbs">verbs</keyword>
-        <section ref="qaxbase-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxbindable.html" title="QAxBindable Class Reference">
-        <keyword ref="qaxbindable.html">QAxBindable</keyword>
-        <keyword ref="qaxbindable.html#clientSite">clientSite</keyword>
-        <keyword ref="qaxbindable.html#createAggregate">createAggregate</keyword>
-        <keyword ref="qaxbindable.html#propertyChanged">propertyChanged</keyword>
-        <keyword ref="qaxbindable.html#readData">readData</keyword>
-        <keyword ref="qaxbindable.html#reportError">reportError</keyword>
-        <keyword ref="qaxbindable.html#requestPropertyChange">requestPropertyChange</keyword>
-        <keyword ref="qaxbindable.html#writeData">writeData</keyword>
-        <section ref="qaxbindable-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxfactory.html" title="QAxFactory Class Reference">
-        <keyword ref="qaxfactory.html">QAxFactory</keyword>
-        <keyword ref="qaxfactory.html#ServerType-enum">ServerType</keyword>
-        <keyword ref="qaxfactory.html#ServerType-enum">QAxFactory::SingleInstance</keyword>
-        <keyword ref="qaxfactory.html#ServerType-enum">QAxFactory::MultipleInstances</keyword>
-        <keyword ref="qaxfactory.html#appID">appID</keyword>
-        <keyword ref="qaxfactory.html#classID">classID</keyword>
-        <keyword ref="qaxfactory.html#createObject">createObject</keyword>
-        <keyword ref="qaxfactory.html#createObjectWrapper">createObjectWrapper</keyword>
-        <keyword ref="qaxfactory.html#eventsID">eventsID</keyword>
-        <keyword ref="qaxfactory.html#exposeToSuperClass">exposeToSuperClass</keyword>
-        <keyword ref="qaxfactory.html#featureList">featureList</keyword>
-        <keyword ref="qaxfactory.html#hasStockEvents">hasStockEvents</keyword>
-        <keyword ref="qaxfactory.html#interfaceID">interfaceID</keyword>
-        <keyword ref="qaxfactory.html#isServer">isServer</keyword>
-        <keyword ref="qaxfactory.html#isService">isService</keyword>
-        <keyword ref="qaxfactory.html#metaObject">metaObject</keyword>
-        <keyword ref="qaxfactory.html#registerActiveObject">registerActiveObject</keyword>
-        <keyword ref="qaxfactory.html#registerClass">registerClass</keyword>
-        <keyword ref="qaxfactory.html#serverDirPath">serverDirPath</keyword>
-        <keyword ref="qaxfactory.html#serverFilePath">serverFilePath</keyword>
-        <keyword ref="qaxfactory.html#startServer">startServer</keyword>
-        <keyword ref="qaxfactory.html#stayTopLevel">stayTopLevel</keyword>
-        <keyword ref="qaxfactory.html#stopServer">stopServer</keyword>
-        <keyword ref="qaxfactory.html#typeLibID">typeLibID</keyword>
-        <keyword ref="qaxfactory.html#unregisterClass">unregisterClass</keyword>
-        <keyword ref="qaxfactory.html#validateLicenseKey">validateLicenseKey</keyword>
-        <keyword ref="qaxfactory.html#QAXCLASS">QAXCLASS</keyword>
-        <keyword ref="qaxfactory.html#QAXFACTORY_BEGIN">QAXFACTORY_BEGIN</keyword>
-        <keyword ref="qaxfactory.html#QAXFACTORY_DEFAULT">QAXFACTORY_DEFAULT</keyword>
-        <keyword ref="qaxfactory.html#QAXFACTORY_END">QAXFACTORY_END</keyword>
-        <keyword ref="qaxfactory.html#QAXFACTORY_EXPORT">QAXFACTORY_EXPORT</keyword>
-        <keyword ref="qaxfactory.html#QAXTYPE">QAXTYPE</keyword>
-        <section ref="qaxfactory-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxobject.html" title="QAxObject Class Reference">
-        <keyword ref="qaxobject.html">QAxObject</keyword>
-        <keyword ref="qaxobject.html#doVerb">doVerb</keyword>
-        <section ref="qaxobject-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxscript.html" title="QAxScript Class Reference">
-        <keyword ref="qaxscript.html">QAxScript</keyword>
-        <keyword ref="qaxscript.html#FunctionFlags-enum">FunctionFlags</keyword>
-        <keyword ref="qaxscript.html#FunctionFlags-enum">QAxScript::FunctionSignatures</keyword>
-        <keyword ref="qaxscript.html#FunctionFlags-enum">QAxScript::FunctionNames</keyword>
-        <keyword ref="qaxscript.html#call">call</keyword>
-        <keyword ref="qaxscript.html#entered">entered</keyword>
-        <keyword ref="qaxscript.html#error">error</keyword>
-        <keyword ref="qaxscript.html#finished">finished</keyword>
-        <keyword ref="qaxscript.html#functions">functions</keyword>
-        <keyword ref="qaxscript.html#load">load</keyword>
-        <keyword ref="qaxscript.html#scriptCode">scriptCode</keyword>
-        <keyword ref="qaxscript.html#scriptEngine">scriptEngine</keyword>
-        <keyword ref="qaxscript.html#scriptName">scriptName</keyword>
-        <keyword ref="qaxscript.html#stateChanged">stateChanged</keyword>
-        <section ref="qaxscript-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxscriptengine.html" title="QAxScriptEngine Class Reference">
-        <keyword ref="qaxscriptengine.html">QAxScriptEngine</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">State</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Initialized</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Connected</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Disconnected</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Closed</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Started</keyword>
-        <keyword ref="qaxscriptengine.html#State-enum">QAxScriptEngine::Uninitialized</keyword>
-        <keyword ref="qaxscriptengine.html#addItem">addItem</keyword>
-        <keyword ref="qaxscriptengine.html#hasIntrospection">hasIntrospection</keyword>
-        <keyword ref="qaxscriptengine.html#isValid">isValid</keyword>
-        <keyword ref="qaxscriptengine.html#queryInterfacex">queryInterface</keyword>
-        <keyword ref="qaxscriptengine.html#scriptLanguage">scriptLanguage</keyword>
-        <keyword ref="qaxscriptengine.html#setState">setState</keyword>
-        <keyword ref="qaxscriptengine.html#state">state</keyword>
-        <section ref="qaxscriptengine-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxscriptmanager.html" title="QAxScriptManager Class Reference">
-        <keyword ref="qaxscriptmanager.html">QAxScriptManager</keyword>
-        <keyword ref="qaxscriptmanager.html#addObject">addObject</keyword>
-        <keyword ref="qaxscriptmanager.html#call">call</keyword>
-        <keyword ref="qaxscriptmanager.html#error">error</keyword>
-        <keyword ref="qaxscriptmanager.html#functions">functions</keyword>
-        <keyword ref="qaxscriptmanager.html#load">load</keyword>
-        <keyword ref="qaxscriptmanager.html#registerEngine">registerEngine</keyword>
-        <keyword ref="qaxscriptmanager.html#script">script</keyword>
-        <keyword ref="qaxscriptmanager.html#scriptFileFilter">scriptFileFilter</keyword>
-        <keyword ref="qaxscriptmanager.html#scriptNames">scriptNames</keyword>
-        <section ref="qaxscriptmanager-members.html" title="List of all members"/>
-    </section>
-    <section ref="qaxwidget.html" title="QAxWidget Class Reference">
-        <keyword ref="qaxwidget.html">QAxWidget</keyword>
-        <keyword ref="qaxwidget.html#createAggregate">createAggregate</keyword>
-        <keyword ref="qaxwidget.html#createHostWindow">createHostWindow</keyword>
-        <keyword ref="qaxwidget.html#doVerb">doVerb</keyword>
-        <keyword ref="qaxwidget.html#initialize">initialize</keyword>
-        <keyword ref="qaxwidget.html#translateKeyEvent">translateKeyEvent</keyword>
-        <section ref="qaxwidget-members.html" title="List of all members"/>
-    </section>
     <section ref="phonon-ds9-qbasefilter.html" title="QBaseFilter Class Reference">
         <keyword ref="phonon-ds9-qbasefilter.html">QBaseFilter</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#CanSeekBackward">CanSeekBackward</keyword>
@@ -2992,18 +2848,18 @@
         <keyword ref="phonon-ds9-qbasefilter.html#IsFormatSupported">IsFormatSupported</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#IsUsingTimeFormat">IsUsingTimeFormat</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#JoinFilterGraph">JoinFilterGraph</keyword>
-        <keyword ref="phonon-ds9-qbasefilter.html#Pausex">Pause</keyword>
+        <keyword ref="phonon-ds9-qbasefilter.html#Pause">Pause</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#QueryFilterInfo">QueryFilterInfo</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#QueryInterface">QueryInterface</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#QueryPreferredFormat">QueryPreferredFormat</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#QueryVendorInfo">QueryVendorInfo</keyword>
-        <keyword ref="phonon-ds9-qbasefilter.html#Runx">Run</keyword>
+        <keyword ref="phonon-ds9-qbasefilter.html#Run">Run</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#STDMETHODIMP_">STDMETHODIMP_</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#SetPositions">SetPositions</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#SetRate">SetRate</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#SetSyncSource">SetSyncSource</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#SetTimeFormat">SetTimeFormat</keyword>
-        <keyword ref="phonon-ds9-qbasefilter.html#Stopx">Stop</keyword>
+        <keyword ref="phonon-ds9-qbasefilter.html#Stop">Stop</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#addPin">addPin</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#get_CurrentPosition">get_CurrentPosition</keyword>
         <keyword ref="phonon-ds9-qbasefilter.html#get_Duration">get_Duration</keyword>
@@ -3025,7 +2881,7 @@
         <keyword ref="qbasictimer.html">QBasicTimer</keyword>
         <keyword ref="qbasictimer.html#isActive">isActive</keyword>
         <keyword ref="qbasictimer.html#start">start</keyword>
-        <keyword ref="qbasictimer.html#stop">stop</keyword>
+        <keyword ref="qbasictimer.html#stopx">stop</keyword>
         <keyword ref="qbasictimer.html#timerId">timerId</keyword>
         <section ref="qbasictimer-members.html" title="List of all members"/>
     </section>
@@ -3472,6 +3328,10 @@
         <keyword ref="qchar.html#toUpper">toUpper</keyword>
         <keyword ref="qchar.html#unicode">unicode</keyword>
         <keyword ref="qchar.html#unicodeVersion">unicodeVersion</keyword>
+        <keyword ref="qchar.html#operator-lt">operator&lt;</keyword>
+        <keyword ref="qchar.html#operator-lt-eq">operator&lt;=</keyword>
+        <keyword ref="qchar.html#operator-gt">operator&gt;</keyword>
+        <keyword ref="qchar.html#operator-gt-eq">operator&gt;=</keyword>
         <section ref="qchar-members.html" title="List of all members"/>
         <section ref="qchar-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -5231,7 +5091,7 @@
         <keyword ref="qdomnode.html#lineNumber">lineNumber</keyword>
         <keyword ref="qdomnode.html#localName">localName</keyword>
         <keyword ref="qdomnode.html#namedItem">namedItem</keyword>
-        <keyword ref="qdomnode.html#namespaceURI">namespaceURI</keyword>
+        <keyword ref="qdomnode.html#namespaceURIx">namespaceURI</keyword>
         <keyword ref="qdomnode.html#nextSibling">nextSibling</keyword>
         <keyword ref="qdomnode.html#nextSiblingElement">nextSiblingElement</keyword>
         <keyword ref="qdomnode.html#nodeName">nodeName</keyword>
@@ -6294,12 +6154,26 @@
     </section>
     <section ref="qfsfileengine.html" title="QFSFileEngine Class Reference">
         <keyword ref="qfsfileengine.html">QFSFileEngine</keyword>
+        <keyword ref="qfsfileengine.html#caseSensitive">caseSensitive</keyword>
+        <keyword ref="qfsfileengine.html#copy">copy</keyword>
         <keyword ref="qfsfileengine.html#currentPath">currentPath</keyword>
         <keyword ref="qfsfileengine.html#drives">drives</keyword>
+        <keyword ref="qfsfileengine.html#fileName">fileName</keyword>
+        <keyword ref="qfsfileengine.html#fileTime">fileTime</keyword>
         <keyword ref="qfsfileengine.html#homePath">homePath</keyword>
+        <keyword ref="qfsfileengine.html#isRelativePath">isRelativePath</keyword>
+        <keyword ref="qfsfileengine.html#link">link</keyword>
+        <keyword ref="qfsfileengine.html#mkdir">mkdir</keyword>
         <keyword ref="qfsfileengine.html#open">open</keyword>
+        <keyword ref="qfsfileengine.html#owner">owner</keyword>
+        <keyword ref="qfsfileengine.html#ownerId">ownerId</keyword>
+        <keyword ref="qfsfileengine.html#remove">remove</keyword>
+        <keyword ref="qfsfileengine.html#rename">rename</keyword>
+        <keyword ref="qfsfileengine.html#rmdir">rmdir</keyword>
         <keyword ref="qfsfileengine.html#rootPath">rootPath</keyword>
         <keyword ref="qfsfileengine.html#setCurrentPath">setCurrentPath</keyword>
+        <keyword ref="qfsfileengine.html#setPermissions">setPermissions</keyword>
+        <keyword ref="qfsfileengine.html#setSize">setSize</keyword>
         <keyword ref="qfsfileengine.html#tempPath">tempPath</keyword>
         <section ref="qfsfileengine-members.html" title="List of all members"/>
     </section>
@@ -6391,7 +6265,7 @@
         <keyword ref="qfuture.html#isResultReadyAt">isResultReadyAt</keyword>
         <keyword ref="qfuture.html#isRunning">isRunning</keyword>
         <keyword ref="qfuture.html#isStarted">isStarted</keyword>
-        <keyword ref="qfuture.html#pause">pause</keyword>
+        <keyword ref="qfuture.html#pausex">pause</keyword>
         <keyword ref="qfuture.html#progressMaximum">progressMaximum</keyword>
         <keyword ref="qfuture.html#progressMinimum">progressMinimum</keyword>
         <keyword ref="qfuture.html#progressText">progressText</keyword>
@@ -6447,7 +6321,7 @@
         <keyword ref="qfuturewatcher.html#isPaused">isPaused</keyword>
         <keyword ref="qfuturewatcher.html#isRunning">isRunning</keyword>
         <keyword ref="qfuturewatcher.html#isStarted">isStarted</keyword>
-        <keyword ref="qfuturewatcher.html#pause">pause</keyword>
+        <keyword ref="qfuturewatcher.html#pausex">pause</keyword>
         <keyword ref="qfuturewatcher.html#paused">paused</keyword>
         <keyword ref="qfuturewatcher.html#progressMaximum">progressMaximum</keyword>
         <keyword ref="qfuturewatcher.html#progressMinimum">progressMinimum</keyword>
@@ -6547,6 +6421,7 @@
         <keyword ref="qglcontext.html#setWindowCreated">setWindowCreated</keyword>
         <keyword ref="qglcontext.html#swapBuffers">swapBuffers</keyword>
         <keyword ref="qglcontext.html#textureCacheLimit">textureCacheLimit</keyword>
+        <keyword ref="qglcontext.html#updatePaintDevice">updatePaintDevice</keyword>
         <keyword ref="qglcontext.html#windowCreated">windowCreated</keyword>
         <section ref="qglcontext-members.html" title="List of all members"/>
         <section ref="qglcontext-obsolete.html" title="Obsolete members"/>
@@ -9864,44 +9739,6 @@
         <keyword ref="qlocalsocket.html#waitForReadyRead">waitForReadyRead</keyword>
         <section ref="qlocalsocket-members.html" title="List of all members"/>
     </section>
-    <section ref="qmaccocoaviewcontainer.html" title="QMacCocoaViewContainer Class Reference">
-        <keyword ref="qmaccocoaviewcontainer.html">QMacCocoaViewContainer</keyword>
-        <keyword ref="qmaccocoaviewcontainer.html#cocoaView">cocoaView</keyword>
-        <keyword ref="qmaccocoaviewcontainer.html#setCocoaView">setCocoaView</keyword>
-        <section ref="qmaccocoaviewcontainer-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacnativewidget.html" title="QMacNativeWidget Class Reference">
-        <keyword ref="qmacnativewidget.html">QMacNativeWidget</keyword>
-        <section ref="qmacnativewidget-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacpasteboardmime.html" title="QMacPasteboardMime Class Reference">
-        <keyword ref="qmacpasteboardmime.html">QMacPasteboardMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#all">all</keyword>
-        <keyword ref="qmacpasteboardmime.html#canConvert">canConvert</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertFromMime">convertFromMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertToMime">convertToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertor">convertor</keyword>
-        <keyword ref="qmacpasteboardmime.html#convertorName">convertorName</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorFor">flavorFor</keyword>
-        <keyword ref="qmacpasteboardmime.html#flavorToMime">flavorToMime</keyword>
-        <keyword ref="qmacpasteboardmime.html#mimeFor">mimeFor</keyword>
-        <keyword ref="qmacpasteboardmime.html#qRegisterDraggedTypes">qRegisterDraggedTypes</keyword>
-        <section ref="qmacpasteboardmime-members.html" title="List of all members"/>
-    </section>
-    <section ref="qmacstyle.html" title="QMacStyle Class Reference">
-        <keyword ref="qmacstyle.html">QMacStyle</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">FocusRectPolicy</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusEnabled</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDefault</keyword>
-        <keyword ref="qmacstyle.html#FocusRectPolicy-enum">QMacStyle::FocusDisabled</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">WidgetSizePolicy</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeMini</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeDefault</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeSmall</keyword>
-        <keyword ref="qmacstyle.html#WidgetSizePolicy-enum">QMacStyle::SizeLarge</keyword>
-        <section ref="qmacstyle-members.html" title="List of all members"/>
-        <section ref="qmacstyle-obsolete.html" title="Obsolete members"/>
-    </section>
     <section ref="qmainwindow.html" title="QMainWindow Class Reference">
         <keyword ref="qmainwindow.html">QMainWindow</keyword>
         <keyword ref="qmainwindow.html#DockOption-enum">DockOption</keyword>
@@ -10168,6 +10005,7 @@
         <keyword ref="qmenu.html#insertSeparator">insertSeparator</keyword>
         <keyword ref="qmenu.html#isEmpty">isEmpty</keyword>
         <keyword ref="qmenu.html#isTearOffMenuVisible">isTearOffMenuVisible</keyword>
+        <keyword ref="qmenu.html#macMenu">macMenu</keyword>
         <keyword ref="qmenu.html#menuAction">menuAction</keyword>
         <keyword ref="qmenu.html#popup">popup</keyword>
         <keyword ref="qmenu.html#setActiveAction">setActiveAction</keyword>
@@ -10193,6 +10031,8 @@
         <keyword ref="qmenubar.html#initStyleOption">initStyleOption</keyword>
         <keyword ref="qmenubar.html#insertMenu">insertMenu</keyword>
         <keyword ref="qmenubar.html#insertSeparator">insertSeparator</keyword>
+        <keyword ref="qmenubar.html#macMenu">macMenu</keyword>
+        <keyword ref="qmenubar.html#macUpdateMenuBar">macUpdateMenuBar</keyword>
         <keyword ref="qmenubar.html#setActiveAction">setActiveAction</keyword>
         <keyword ref="qmenubar.html#setDefaultAction">setDefaultAction</keyword>
         <keyword ref="qmenubar.html#triggered">triggered</keyword>
@@ -10592,7 +10432,7 @@
         <keyword ref="qmovie.html#started">started</keyword>
         <keyword ref="qmovie.html#state">state</keyword>
         <keyword ref="qmovie.html#stateChanged">stateChanged</keyword>
-        <keyword ref="qmovie.html#stop">stop</keyword>
+        <keyword ref="qmovie.html#stopx">stop</keyword>
         <keyword ref="qmovie.html#supportedFormats">supportedFormats</keyword>
         <keyword ref="qmovie.html#updated">updated</keyword>
         <section ref="qmovie-members.html" title="List of all members"/>
@@ -11132,6 +10972,7 @@
         <keyword ref="qpagesetupdialog.html#open">open</keyword>
         <keyword ref="qpagesetupdialog.html#printer">printer</keyword>
         <keyword ref="qpagesetupdialog.html#setOption">setOption</keyword>
+        <keyword ref="qpagesetupdialog.html#setVisible">setVisible</keyword>
         <keyword ref="qpagesetupdialog.html#testOption">testOption</keyword>
         <section ref="qpagesetupdialog-members.html" title="List of all members"/>
         <section ref="qpagesetupdialog-obsolete.html" title="Obsolete members"/>
@@ -11150,6 +10991,7 @@
         <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmDpiY</keyword>
         <keyword ref="qpaintdevice.html#PaintDeviceMetric-enum">QPaintDevice::PdmNumColors</keyword>
         <keyword ref="qpaintdevice.html#depth">depth</keyword>
+        <keyword ref="qpaintdevice.html#getDC">getDC</keyword>
         <keyword ref="qpaintdevice.html#height">height</keyword>
         <keyword ref="qpaintdevice.html#heightMM">heightMM</keyword>
         <keyword ref="qpaintdevice.html#logicalDpiX">logicalDpiX</keyword>
@@ -11161,6 +11003,7 @@
         <keyword ref="qpaintdevice.html#physicalDpiX">physicalDpiX</keyword>
         <keyword ref="qpaintdevice.html#physicalDpiY">physicalDpiY</keyword>
         <keyword ref="qpaintdevice.html#qwsDisplay">qwsDisplay</keyword>
+        <keyword ref="qpaintdevice.html#releaseDC">releaseDC</keyword>
         <keyword ref="qpaintdevice.html#width">width</keyword>
         <keyword ref="qpaintdevice.html#widthMM">widthMM</keyword>
         <section ref="qpaintdevice-members.html" title="List of all members"/>
@@ -11510,14 +11353,6 @@
         <keyword ref="qpair.html#first-var">first</keyword>
         <keyword ref="qpair.html#second-var">second</keyword>
         <keyword ref="qpair.html#qMakePair">qMakePair</keyword>
-        <keyword ref="qpair.html#operator-not-eq">operator!=</keyword>
-        <keyword ref="qpair.html#operator-lt">operator&lt;</keyword>
-        <keyword ref="qpair.html#operator-lt-lt">operator&lt;&lt;</keyword>
-        <keyword ref="qpair.html#operator-lt-eq">operator&lt;=</keyword>
-        <keyword ref="qpair.html#operator-eq-eq">operator==</keyword>
-        <keyword ref="qpair.html#operator-gt">operator&gt;</keyword>
-        <keyword ref="qpair.html#operator-gt-eq">operator&gt;=</keyword>
-        <keyword ref="qpair.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qpair-members.html" title="List of all members"/>
     </section>
     <section ref="qpalette.html" title="QPalette Class Reference">
@@ -11729,9 +11564,6 @@
     <section ref="qpixmap.html" title="QPixmap Class Reference">
         <keyword ref="qpixmap.html">QPixmap</keyword>
         <keyword ref="qpixmap.html#HBitmapFormat-enum">HBitmapFormat</keyword>
-        <keyword ref="qpixmap.html#HBitmapFormat-enum">QPixmap::PremultipliedAlpha</keyword>
-        <keyword ref="qpixmap.html#HBitmapFormat-enum">QPixmap::NoAlpha</keyword>
-        <keyword ref="qpixmap.html#HBitmapFormat-enum">QPixmap::Alpha</keyword>
         <keyword ref="qpixmap.html#ShareMode-enum">ShareMode</keyword>
         <keyword ref="qpixmap.html#ShareMode-enum">QPixmap::ImplicitlyShared</keyword>
         <keyword ref="qpixmap.html#ShareMode-enum">QPixmap::ExplicitlyShared</keyword>
@@ -11924,10 +11756,14 @@
         <keyword ref="qpoint.html#operator-2b-eq">operator+=</keyword>
         <keyword ref="qpoint.html#operator--eq">operator-=</keyword>
         <keyword ref="qpoint.html#operator-2f-eq">operator/=</keyword>
+        <keyword ref="qpoint.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qpoint.html#operator-2a">operator*</keyword>
         <keyword ref="qpoint.html#operator-2b">operator+</keyword>
         <keyword ref="qpoint.html#operator-">operator-</keyword>
         <keyword ref="qpoint.html#operator-2f">operator/</keyword>
+        <keyword ref="qpoint.html#operator-lt-lt">operator&lt;&lt;</keyword>
+        <keyword ref="qpoint.html#operator-eq-eq">operator==</keyword>
+        <keyword ref="qpoint.html#operator-gt-gt">operator&gt;&gt;</keyword>
         <section ref="qpoint-members.html" title="List of all members"/>
     </section>
     <section ref="qpointer.html" title="QPointer Class Reference">
@@ -11994,6 +11830,7 @@
         <keyword ref="qprintdialog.html#printer">printer</keyword>
         <keyword ref="qprintdialog.html#setOption">setOption</keyword>
         <keyword ref="qprintdialog.html#setPrinter">setPrinter</keyword>
+        <keyword ref="qprintdialog.html#setVisible">setVisible</keyword>
         <keyword ref="qprintdialog.html#testOption">testOption</keyword>
         <section ref="qprintdialog-members.html" title="List of all members"/>
     </section>
@@ -12710,7 +12547,7 @@
     <section ref="qrunnable.html" title="QRunnable Class Reference">
         <keyword ref="qrunnable.html">QRunnable</keyword>
         <keyword ref="qrunnable.html#autoDelete">autoDelete</keyword>
-        <keyword ref="qrunnable.html#run">run</keyword>
+        <keyword ref="qrunnable.html#runx">run</keyword>
         <keyword ref="qrunnable.html#setAutoDelete">setAutoDelete</keyword>
         <section ref="qrunnable-members.html" title="List of all members"/>
     </section>
@@ -13529,7 +13366,7 @@
         <keyword ref="qsound.html#loopsRemaining">loopsRemaining</keyword>
         <keyword ref="qsound.html#play">play</keyword>
         <keyword ref="qsound.html#setLoops">setLoops</keyword>
-        <keyword ref="qsound.html#stop">stop</keyword>
+        <keyword ref="qsound.html#stopx">stop</keyword>
         <section ref="qsound-members.html" title="List of all members"/>
         <section ref="qsound-qt3.html" title="Qt 3 support members"/>
     </section>
@@ -17343,7 +17180,7 @@
         <keyword ref="qtconcurrentmap.html#map">map</keyword>
         <keyword ref="qtconcurrentmap.html#mapped">mapped</keyword>
         <keyword ref="qtconcurrentmap.html#mappedReduced">mappedReduced</keyword>
-        <keyword ref="qtconcurrentrun.html#run">run</keyword>
+        <keyword ref="qtconcurrentrun.html#runx">run</keyword>
     </section>
     <section ref="qtcpserver.html" title="QTcpServer Class Reference">
         <keyword ref="qtcpserver.html">QTcpServer</keyword>
@@ -18654,7 +18491,7 @@
         <keyword ref="qthread.html#msleep">msleep</keyword>
         <keyword ref="qthread.html#priority">priority</keyword>
         <keyword ref="qthread.html#quit">quit</keyword>
-        <keyword ref="qthread.html#run">run</keyword>
+        <keyword ref="qthread.html#runx">run</keyword>
         <keyword ref="qthread.html#setPriority">setPriority</keyword>
         <keyword ref="qthread.html#setStackSize">setStackSize</keyword>
         <keyword ref="qthread.html#setTerminationEnabled">setTerminationEnabled</keyword>
@@ -18769,7 +18606,7 @@
         <keyword ref="qtimeline.html#startFrame">startFrame</keyword>
         <keyword ref="qtimeline.html#state">state</keyword>
         <keyword ref="qtimeline.html#stateChanged">stateChanged</keyword>
-        <keyword ref="qtimeline.html#stop">stop</keyword>
+        <keyword ref="qtimeline.html#stopx">stop</keyword>
         <keyword ref="qtimeline.html#toggleDirection">toggleDirection</keyword>
         <keyword ref="qtimeline.html#valueChanged">valueChanged</keyword>
         <keyword ref="qtimeline.html#valueForTime">valueForTime</keyword>
@@ -18786,7 +18623,7 @@
         <keyword ref="qtimer.html#singleShot-prop">setSingleShot</keyword>
         <keyword ref="qtimer.html#singleShot">singleShot</keyword>
         <keyword ref="qtimer.html#start">start</keyword>
-        <keyword ref="qtimer.html#stop">stop</keyword>
+        <keyword ref="qtimer.html#stopx">stop</keyword>
         <keyword ref="qtimer.html#timeout">timeout</keyword>
         <keyword ref="qtimer.html#timerId">timerId</keyword>
         <section ref="qtimer-members.html" title="List of all members"/>
@@ -19233,7 +19070,7 @@
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#initializeAudioUnit">initializeAudioUnit</keyword>
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#isPlaying">isPlaying</keyword>
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#mediaNodeEvent">mediaNodeEvent</keyword>
-        <keyword ref="phonon-qt7-quicktimeaudioplayer.html#pause">pause</keyword>
+        <keyword ref="phonon-qt7-quicktimeaudioplayer.html#pausex">pause</keyword>
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#play">play</keyword>
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#regularTaskFrequency">regularTaskFrequency</keyword>
         <keyword ref="phonon-qt7-quicktimeaudioplayer.html#scheduleAudioToGraph">scheduleAudioToGraph</keyword>
@@ -19289,7 +19126,7 @@
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#isPlaying">isPlaying</keyword>
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#isSeekable">isSeekable</keyword>
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#mediaSource">mediaSource</keyword>
-        <keyword ref="phonon-qt7-quicktimevideoplayer.html#pause">pause</keyword>
+        <keyword ref="phonon-qt7-quicktimevideoplayer.html#pausex">pause</keyword>
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#percentageLoaded">percentageLoaded</keyword>
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#play">play</keyword>
         <keyword ref="phonon-qt7-quicktimevideoplayer.html#playbackRate">playbackRate</keyword>
@@ -20213,7 +20050,7 @@
         <keyword ref="qwebview.html#setTextSizeMultiplier">setTextSizeMultiplier</keyword>
         <keyword ref="qwebview.html#settings">settings</keyword>
         <keyword ref="qwebview.html#statusBarMessage">statusBarMessage</keyword>
-        <keyword ref="qwebview.html#stop">stop</keyword>
+        <keyword ref="qwebview.html#stopx">stop</keyword>
         <keyword ref="qwebview.html#textSizeMultiplier">textSizeMultiplier</keyword>
         <keyword ref="qwebview.html#titleChanged">titleChanged</keyword>
         <keyword ref="qwebview.html#triggerPageAction">triggerPageAction</keyword>
@@ -20560,17 +20397,6 @@
         <keyword ref="phonon-gstreamer-qwidgetvideosinkclass.html#get_type">get_type</keyword>
         <section ref="phonon-gstreamer-qwidgetvideosinkclass-members.html" title="List of all members"/>
     </section>
-    <section ref="qwindowsmime.html" title="QWindowsMime Class Reference">
-        <keyword ref="qwindowsmime.html">QWindowsMime</keyword>
-        <keyword ref="qwindowsmime.html#canConvertFromMime">canConvertFromMime</keyword>
-        <keyword ref="qwindowsmime.html#canConvertToMime">canConvertToMime</keyword>
-        <keyword ref="qwindowsmime.html#convertFromMime">convertFromMime</keyword>
-        <keyword ref="qwindowsmime.html#convertToMime">convertToMime</keyword>
-        <keyword ref="qwindowsmime.html#formatsForMime">formatsForMime</keyword>
-        <keyword ref="qwindowsmime.html#mimeForFormat">mimeForFormat</keyword>
-        <keyword ref="qwindowsmime.html#registerMimeType">registerMimeType</keyword>
-        <section ref="qwindowsmime-members.html" title="List of all members"/>
-    </section>
     <section ref="qwindowsstyle.html" title="QWindowsStyle Class Reference">
         <keyword ref="qwindowsstyle.html">QWindowsStyle</keyword>
         <section ref="qwindowsstyle-members.html" title="List of all members"/>
@@ -20908,7 +20734,7 @@
         <keyword ref="qxmlname.html#isNCName">isNCName</keyword>
         <keyword ref="qxmlname.html#isNull">isNull</keyword>
         <keyword ref="qxmlname.html#localName">localName</keyword>
-        <keyword ref="qxmlname.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlname.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlname.html#prefix">prefix</keyword>
         <keyword ref="qxmlname.html#toClarkName">toClarkName</keyword>
         <keyword ref="qxmlname.html#operator-not-eq">operator!=</keyword>
@@ -21039,7 +20865,7 @@
         <keyword ref="qxmlstreamattribute.html">QXmlStreamAttribute</keyword>
         <keyword ref="qxmlstreamattribute.html#isDefault">isDefault</keyword>
         <keyword ref="qxmlstreamattribute.html#name">name</keyword>
-        <keyword ref="qxmlstreamattribute.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamattribute.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamattribute.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamattribute.html#qualifiedName">qualifiedName</keyword>
         <keyword ref="qxmlstreamattribute.html#value">value</keyword>
@@ -21075,7 +20901,7 @@
     </section>
     <section ref="qxmlstreamnamespacedeclaration.html" title="QXmlStreamNamespaceDeclaration Class Reference">
         <keyword ref="qxmlstreamnamespacedeclaration.html">QXmlStreamNamespaceDeclaration</keyword>
-        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamnamespacedeclaration.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-not-eq">operator!=</keyword>
         <keyword ref="qxmlstreamnamespacedeclaration.html#operator-eq">operator=</keyword>
@@ -21150,7 +20976,7 @@
         <keyword ref="qxmlstreamreader.html#lineNumber">lineNumber</keyword>
         <keyword ref="qxmlstreamreader.html#name">name</keyword>
         <keyword ref="qxmlstreamreader.html#namespaceDeclarations">namespaceDeclarations</keyword>
-        <keyword ref="qxmlstreamreader.html#namespaceUrix">namespaceUri</keyword>
+        <keyword ref="qxmlstreamreader.html#namespaceUri">namespaceUri</keyword>
         <keyword ref="qxmlstreamreader.html#notationDeclarations">notationDeclarations</keyword>
         <keyword ref="qxmlstreamreader.html#prefix">prefix</keyword>
         <keyword ref="qxmlstreamreader.html#processingInstructionData">processingInstructionData</keyword>
@@ -23348,7 +23174,7 @@
         <keyword ref="q3networkprotocol.html#setAutoDelete">setAutoDelete</keyword>
         <keyword ref="q3networkprotocol.html#setUrl">setUrl</keyword>
         <keyword ref="q3networkprotocol.html#start">start</keyword>
-        <keyword ref="q3networkprotocol.html#stop">stop</keyword>
+        <keyword ref="q3networkprotocol.html#stopx">stop</keyword>
         <keyword ref="q3networkprotocol.html#supportedOperations">supportedOperations</keyword>
         <keyword ref="q3networkprotocol.html#url">url</keyword>
         <section ref="q3networkprotocol-members.html" title="List of all members"/>
@@ -24742,7 +24568,7 @@
         <keyword ref="q3urloperator.html#setNameFilter">setNameFilter</keyword>
         <keyword ref="q3urloperator.html#start">start</keyword>
         <keyword ref="q3urloperator.html#startedNextCopy">startedNextCopy</keyword>
-        <keyword ref="q3urloperator.html#stop">stop</keyword>
+        <keyword ref="q3urloperator.html#stopx">stop</keyword>
         <keyword ref="q3urloperator.html#operator-eq">operator=</keyword>
         <keyword ref="q3urloperator.html#q3InitNetworkProtocols">q3InitNetworkProtocols</keyword>
         <section ref="q3urloperator-members.html" title="List of all members"/>
@@ -24890,7 +24716,7 @@
         <keyword ref="phonon-seekslider.html#tracking-prop">tracking</keyword>
         <keyword ref="phonon-seekslider.html#tracking-prop">hasTracking</keyword>
         <keyword ref="phonon-seekslider.html#tracking-prop">setTracking</keyword>
-        <keyword ref="phonon-seekslider.html#mediaObjectx">mediaObject</keyword>
+        <keyword ref="phonon-seekslider.html#mediaObject">mediaObject</keyword>
         <keyword ref="phonon-seekslider.html#setMediaObject">setMediaObject</keyword>
         <section ref="phonon-seekslider-members.html" title="List of all members"/>
     </section>
@@ -24971,12 +24797,12 @@
         <keyword ref="phonon-videoplayer.html#isPaused">isPaused</keyword>
         <keyword ref="phonon-videoplayer.html#isPlaying">isPlaying</keyword>
         <keyword ref="phonon-videoplayer.html#load">load</keyword>
-        <keyword ref="phonon-videoplayer.html#mediaObjectx">mediaObject</keyword>
-        <keyword ref="phonon-videoplayer.html#pause">pause</keyword>
+        <keyword ref="phonon-videoplayer.html#mediaObject">mediaObject</keyword>
+        <keyword ref="phonon-videoplayer.html#pausex">pause</keyword>
         <keyword ref="phonon-videoplayer.html#play">play</keyword>
         <keyword ref="phonon-videoplayer.html#seek">seek</keyword>
         <keyword ref="phonon-videoplayer.html#setVolume">setVolume</keyword>
-        <keyword ref="phonon-videoplayer.html#stop">stop</keyword>
+        <keyword ref="phonon-videoplayer.html#stopx">stop</keyword>
         <keyword ref="phonon-videoplayer.html#totalTime">totalTime</keyword>
         <keyword ref="phonon-videoplayer.html#videoWidgetx">videoWidget</keyword>
         <keyword ref="phonon-videoplayer.html#volume">volume</keyword>
@@ -25177,7 +25003,7 @@
         <keyword ref="phonon-ds9-workerthread.html#asyncSeekingFinished">asyncSeekingFinished</keyword>
         <keyword ref="phonon-ds9-workerthread.html#eventReady">eventReady</keyword>
         <keyword ref="phonon-ds9-workerthread.html#replaceGraphForEventManagement">replaceGraphForEventManagement</keyword>
-        <keyword ref="phonon-ds9-workerthread.html#run">run</keyword>
+        <keyword ref="phonon-ds9-workerthread.html#runx">run</keyword>
         <keyword ref="phonon-ds9-workerthread.html#signalStop">signalStop</keyword>
         <keyword ref="phonon-ds9-workerthread.html#stateReady">stateReady</keyword>
         <section ref="phonon-ds9-workerthread-members.html" title="List of all members"/>
@@ -25237,7 +25063,7 @@
     </section>
     <section ref="qtconcurrentrun.html" title="&lt;QtConcurrentRun&gt; - Asynchronous Run">
         <keyword ref="qtconcurrentrun.html">&lt;QtConcurrentRun&gt; - Asynchronous Run</keyword>
-        <keyword ref="qtconcurrentrun.html#run">run</keyword>
+        <keyword ref="qtconcurrentrun.html#runx">run</keyword>
     </section>
     <section ref="qtendian.html" title="&lt;QtEndian&gt; - Endian Conversion Functions">
         <keyword ref="qtendian.html">&lt;QtEndian&gt; - Endian Conversion Functions</keyword>
@@ -25271,7 +25097,7 @@
         <keyword ref="qtglobal.html#uint-typedef">uint</keyword>
         <keyword ref="qtglobal.html#ulong-typedef">ulong</keyword>
         <keyword ref="qtglobal.html#ushort-typedef">ushort</keyword>
-        <keyword ref="qtglobal.html#qAbs">qAbs</keyword>
+        <keyword ref="qtglobal.html#qAbsx">qAbs</keyword>
         <keyword ref="qtglobal.html#qBound">qBound</keyword>
         <keyword ref="qtglobal.html#qCritical">qCritical</keyword>
         <keyword ref="qtglobal.html#qDebug">qDebug</keyword>
@@ -25280,8 +25106,8 @@
         <keyword ref="qtglobal.html#qFuzzyCompare-2">qFuzzyCompare</keyword>
         <keyword ref="qtglobal.html#qInstallMsgHandler">qInstallMsgHandler</keyword>
         <keyword ref="qtglobal.html#qMacVersion">qMacVersion</keyword>
-        <keyword ref="qtglobal.html#qMax">qMax</keyword>
-        <keyword ref="qtglobal.html#qMin">qMin</keyword>
+        <keyword ref="qtglobal.html#qMaxx">qMax</keyword>
+        <keyword ref="qtglobal.html#qMinx">qMin</keyword>
         <keyword ref="qtglobal.html#qRound64">qRound64</keyword>
         <keyword ref="qtglobal.html#qRound">qRound</keyword>
         <keyword ref="qtglobal.html#qVersion">qVersion</keyword>
@@ -25377,9 +25203,6 @@
     </section>
     <section ref="xquery-introduction.html" title="A Short Path to XQuery">
         <keyword ref="xquery-introduction.html">A Short Path to XQuery</keyword>
-    </section>
-    <section ref="qaxserver-demo-simple.html" title="A standard ActiveX and the &quot;simple&quot; ActiveQt widget">
-        <keyword ref="qaxserver-demo-simple.html">A standard ActiveX and the &quot;simple&quot; ActiveQt widget</keyword>
     </section>
     <section ref="abstractwidgets.html" title="Abstract Widget Classes">
         <keyword ref="abstractwidgets.html">Abstract Widget Classes</keyword>
@@ -25533,9 +25356,6 @@
     </section>
     <section ref="developing-on-mac.html" title="Developing Qt Applications on Mac OS X">
         <keyword ref="developing-on-mac.html">Developing Qt Applications on Mac OS X</keyword>
-    </section>
-    <section ref="activeqt-dotnet.html" title="Dot Net Example (ActiveQt)">
-        <keyword ref="activeqt-dotnet.html">Dot Net Example (ActiveQt)</keyword>
     </section>
     <section ref="dnd.html" title="Drag and Drop">
         <keyword ref="dnd.html">Drag and Drop</keyword>
@@ -25699,9 +25519,6 @@
     <section ref="functions.html" title="Member Function Index">
         <keyword ref="functions.html">Member Function Index</keyword>
     </section>
-    <section ref="qaxserver-demo-menus.html" title="Menubar Merging">
-        <keyword ref="qaxserver-demo-menus.html">Menubar Merging</keyword>
-    </section>
     <section ref="metaobjects.html" title="Meta-Object System">
         <keyword ref="metaobjects.html">Meta-Object System</keyword>
     </section>
@@ -25746,9 +25563,6 @@
     </section>
     <section ref="opensourceedition.html" title="Open Source Versions of Qt">
         <keyword ref="opensourceedition.html">Open Source Versions of Qt</keyword>
-    </section>
-    <section ref="qaxserver-demo-opengl.html" title="OpenGL in an HTML page">
-        <keyword ref="qaxserver-demo-opengl.html">OpenGL in an HTML page</keyword>
     </section>
     <section ref="organizers.html" title="Organizers">
         <keyword ref="organizers.html">Organizers</keyword>
@@ -25948,9 +25762,6 @@
     <section ref="gallery.html" title="Qt Widget Gallery">
         <keyword ref="gallery.html">Qt Widget Gallery</keyword>
     </section>
-    <section ref="qaxserver-demo-hierarchy.html" title="Qt Widget Hierarchy">
-        <keyword ref="qaxserver-demo-hierarchy.html">Qt Widget Hierarchy</keyword>
-    </section>
     <section ref="classes.html" title="Qt's Classes">
         <keyword ref="classes.html">Qt's Classes</keyword>
     </section>
@@ -26083,9 +25894,6 @@
     <section ref="dialogs.html" title="Standard Dialog Classes">
         <keyword ref="dialogs.html">Standard Dialog Classes</keyword>
     </section>
-    <section ref="qaxserver-demo-wrapper.html" title="Standard Qt widgets in an HTML page">
-        <keyword ref="qaxserver-demo-wrapper.html">Standard Qt widgets in an HTML page</keyword>
-    </section>
     <section ref="richtext-html-subset.html" title="Supported HTML Subset">
         <keyword ref="richtext-html-subset.html">Supported HTML Subset</keyword>
     </section>
@@ -26205,9 +26013,6 @@
     </section>
     <section ref="tutorials-addressbook-fr.html" title="Tutoriel &quot;Carnet d'adresses&quot;">
         <keyword ref="tutorials-addressbook-fr.html">Tutoriel &quot;Carnet d'adresses&quot;</keyword>
-    </section>
-    <section ref="qaxserver-demo-multiple.html" title="Two Simple Qt Widgets">
-        <keyword ref="qaxserver-demo-multiple.html">Two Simple Qt Widgets</keyword>
     </section>
     <section ref="unicode.html" title="Unicode">
         <keyword ref="unicode.html">Unicode</keyword>
@@ -26445,9 +26250,6 @@
     <section ref="itemviews-coloreditorfactory.html" title="Color Editor Factory Example">
         <keyword ref="itemviews-coloreditorfactory.html">Color Editor Factory Example</keyword>
     </section>
-    <section ref="activeqt-comapp.html" title="COM App Example (ActiveQt)">
-        <keyword ref="activeqt-comapp.html">COM App Example (ActiveQt)</keyword>
-    </section>
     <section ref="itemviews-combowidgetmapper.html" title="Combo Widget Mapper Example">
         <keyword ref="itemviews-combowidgetmapper.html">Combo Widget Mapper Example</keyword>
     </section>
@@ -26613,9 +26415,6 @@
     <section ref="linguist-hellotr.html" title="Hello tr() Example">
         <keyword ref="linguist-hellotr.html">Hello tr() Example</keyword>
     </section>
-    <section ref="activeqt-hierarchy.html" title="Hierarchy Example (ActiveQt)">
-        <keyword ref="activeqt-hierarchy.html">Hierarchy Example (ActiveQt)</keyword>
-    </section>
     <section ref="network-http.html" title="HTTP Example">
         <keyword ref="network-http.html">HTTP Example</keyword>
     </section>
@@ -26673,17 +26472,11 @@
     <section ref="mainwindows-menus.html" title="Menus Example">
         <keyword ref="mainwindows-menus.html">Menus Example</keyword>
     </section>
-    <section ref="activeqt-menus.html" title="Menus Example (ActiveQt)">
-        <keyword ref="activeqt-menus.html">Menus Example (ActiveQt)</keyword>
-    </section>
     <section ref="qws-mousecalibration.html" title="Mouse Calibration Example">
         <keyword ref="qws-mousecalibration.html">Mouse Calibration Example</keyword>
     </section>
     <section ref="widgets-movie.html" title="Movie Example">
         <keyword ref="widgets-movie.html">Movie Example</keyword>
-    </section>
-    <section ref="activeqt-multiple.html" title="Multiple Example (ActiveQt)">
-        <keyword ref="activeqt-multiple.html">Multiple Example (ActiveQt)</keyword>
     </section>
     <section ref="uitools-multipleinheritance.html" title="Multiple Inheritance Example">
         <keyword ref="uitools-multipleinheritance.html">Multiple Inheritance Example</keyword>
@@ -26693,9 +26486,6 @@
     </section>
     <section ref="network-network-chat.html" title="Network Chat Example">
         <keyword ref="network-network-chat.html">Network Chat Example</keyword>
-    </section>
-    <section ref="activeqt-opengl.html" title="OpenGL Example (ActiveQt)">
-        <keyword ref="activeqt-opengl.html">OpenGL Example (ActiveQt)</keyword>
     </section>
     <section ref="qws-ahigl.html" title="OpenGL for Embedded Systems Example">
         <keyword ref="qws-ahigl.html">OpenGL for Embedded Systems Example</keyword>
@@ -26769,9 +26559,6 @@
     <section ref="sql-querymodel.html" title="Query Model Example">
         <keyword ref="sql-querymodel.html">Query Model Example</keyword>
     </section>
-    <section ref="activeqt-qutlook.html" title="Qutlook Example (ActiveQt)">
-        <keyword ref="activeqt-qutlook.html">Qutlook Example (ActiveQt)</keyword>
-    </section>
     <section ref="xml-streambookmarks.html" title="QXmlStream Bookmarks Example">
         <keyword ref="xml-streambookmarks.html">QXmlStream Bookmarks Example</keyword>
     </section>
@@ -26828,9 +26615,6 @@
     </section>
     <section ref="itemviews-simpledommodel.html" title="Simple DOM Model Example">
         <keyword ref="itemviews-simpledommodel.html">Simple DOM Model Example</keyword>
-    </section>
-    <section ref="activeqt-simple.html" title="Simple Example (ActiveQt)">
-        <keyword ref="activeqt-simple.html">Simple Example (ActiveQt)</keyword>
     </section>
     <section ref="help-simpletextviewer.html" title="Simple Text Viewer Example">
         <keyword ref="help-simpletextviewer.html">Simple Text Viewer Example</keyword>
@@ -26949,9 +26733,6 @@
     <section ref="threads-waitconditions.html" title="Wait Conditions Example">
         <keyword ref="threads-waitconditions.html">Wait Conditions Example</keyword>
     </section>
-    <section ref="activeqt-webbrowser.html" title="Web Browser Example (ActiveQt)">
-        <keyword ref="activeqt-webbrowser.html">Web Browser Example (ActiveQt)</keyword>
-    </section>
     <section ref="widgets-wiggly.html" title="Wiggly Example">
         <keyword ref="widgets-wiggly.html">Wiggly Example</keyword>
     </section>
@@ -26963,9 +26744,6 @@
     </section>
     <section ref="designer-worldtimeclockplugin.html" title="World Time Clock Plugin Example">
         <keyword ref="designer-worldtimeclockplugin.html">World Time Clock Plugin Example</keyword>
-    </section>
-    <section ref="activeqt-wrapper.html" title="Wrapper Example (ActiveQt)">
-        <keyword ref="activeqt-wrapper.html">Wrapper Example (ActiveQt)</keyword>
     </section>
     <section ref="xml-xmlstreamlint.html" title="XML Stream Lint Example">
         <keyword ref="xml-xmlstreamlint.html">XML Stream Lint Example</keyword>

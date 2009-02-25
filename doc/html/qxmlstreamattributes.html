@@ -2,13 +2,12 @@
 <!DOCTYPE html
     PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "DTD/xhtml1-strict.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
-<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-all-opensource-src-4.5.0/src/corelib/xml/qxmlstream.cpp -->
+<!-- /fasttmp/mkdist-qt-4.5.0-1235596081/qt-x11-opensource-src-4.5.0/src/corelib/xml/qxmlstream.cpp -->
 <head>
   <title>Qt 4.5: QXmlStreamAttributes Class Reference</title>
   <link href="classic.css" rel="stylesheet" type="text/css" />
 </head>
 <body>
-<a name="//apple_ref/cpp/cl//QXmlStreamAttributes" />
 <table border="0" cellpadding="0" cellspacing="0" width="100%">
 <tr>
 <td align="left" valign="top" width="32"><a href="http://qtsoftware.com/products/qt"><img src="images/qt-logo.png" align="left" border="0" /></a></td>
@@ -53,7 +52,6 @@
 <p>New attributes can be added with <a href="qxmlstreamattributes.html#append">append</a>().</p>
 <hr />
 <h2>Member Function Documentation</h2>
-<a name="//apple_ref/cpp/instm/QXmlStreamAttributes/append" />
 <h3 class="fn"><a name="append"></a>void QXmlStreamAttributes::append ( const <a href="qstring.html">QString</a> &amp; <i>namespaceUri</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
 <p>Appends a new attribute with <i>name</i> in the namespace described with <i>namespaceUri</i>, and value <i>value</i>. The <i>namespaceUri</i> can be empty.</p>
 <h3 class="fn"><a name="append-2"></a>void QXmlStreamAttributes::append ( const <a href="qxmlstreamattribute.html">QXmlStreamAttribute</a> &amp; <i>attribute</i> )</h3>
@@ -62,7 +60,6 @@
 <h3 class="fn"><a name="append-3"></a>void QXmlStreamAttributes::append ( const <a href="qstring.html">QString</a> &amp; <i>qualifiedName</i>, const <a href="qstring.html">QString</a> &amp; <i>value</i> )</h3>
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Appends a new attribute with qualified name <i>qualifiedName</i> and value <i>value</i>.</p>
-<a name="//apple_ref/cpp/instm/QXmlStreamAttributes/hasAttribute" />
 <h3 class="fn"><a name="hasAttribute"></a>bool QXmlStreamAttributes::hasAttribute ( const <a href="qstring.html">QString</a> &amp; <i>qualifiedName</i> ) const</h3>
 <p>Returns true if this <a href="qxmlstreamattributes.html">QXmlStreamAttributes</a> has an attribute whose qualified name is <i>qualifiedName</i>; otherwise returns false.</p>
 <p>Note that this is not namespace aware. For instance, if this <a href="qxmlstreamattributes.html">QXmlStreamAttributes</a> contains an attribute whose lexical name is &quot;xlink:href&quot; this doesn't tell that an attribute named <tt>href</tt> in the XLink namespace is present, since the <tt>xlink</tt> prefix can be bound to any namespace. Use the overload that takes a namespace URI and a local name as parameter, for namespace aware code.</p>
@@ -74,7 +71,6 @@
 <p>This is an overloaded member function, provided for convenience.</p>
 <p>Returns true if this <a href="qxmlstreamattributes.html">QXmlStreamAttributes</a> has an attribute whose namespace URI and name correspond to <i>namespaceUri</i> and <i>name</i>; otherwise returns false.</p>
 <p>This function was introduced in Qt 4.5.</p>
-<a name="//apple_ref/cpp/instm/QXmlStreamAttributes/value" />
 <h3 class="fn"><a name="value"></a><a href="qstringref.html">QStringRef</a> QXmlStreamAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>namespaceUri</i>, const <a href="qstring.html">QString</a> &amp; <i>name</i> ) const</h3>
 <p>Returns the value of the attribute <i>name</i> in the namespace described with <i>namespaceUri</i>, or an empty string reference if the attribute is not defined. The <i>namespaceUri</i> can be empty.</p>
 <h3 class="fn"><a name="value-2"></a><a href="qstringref.html">QStringRef</a> QXmlStreamAttributes::value ( const <a href="qstring.html">QString</a> &amp; <i>namespaceUri</i>, const <a href="qlatin1string.html">QLatin1String</a> &amp; <i>name</i> ) const</h3>
