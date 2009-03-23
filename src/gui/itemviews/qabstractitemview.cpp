@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1374,6 +1374,11 @@ bool QAbstractItemView::event(QEvent *event)
 {
     Q_D(QAbstractItemView);
     switch (event->type()) {
+    case QEvent::Paint:
+        //we call this here because the scrollbars' visibility might be altered
+        //so this can't be done in the paintEvent method
+        d->executePostedLayout(); //make sure we set the layout properly
+        break;
     case QEvent::Show:
         {
             d->executePostedLayout(); //make sure we set the layout properly
@@ -1501,12 +1506,7 @@ void QAbstractItemView::mousePressEvent(QMouseEvent *event)
         // when the user is interacting with it (ie. clicking on it)
         bool autoScroll = d->autoScroll;
         d->autoScroll = false;
-        // setSelection will update the current item too
-        // and it seems that the two updates are not merged
-        bool updates = d->viewport->updatesEnabled();
-        d->viewport->setUpdatesEnabled(command == QItemSelectionModel::NoUpdate);
         d->selectionModel->setCurrentIndex(index, QItemSelectionModel::NoUpdate);
-        d->viewport->setUpdatesEnabled(updates);
         d->autoScroll = autoScroll;
         QRect rect(d->pressedPosition - offset, pos);
         setSelection(rect, command);
@@ -2369,6 +2369,7 @@ void QAbstractItemView::updateEditorGeometries()
         return;
     QStyleOptionViewItemV4 option = d->viewOptionsV4();
     QList<QEditorInfo>::iterator it = d->editors.begin();
+    QWidgetList editorsToRelease;
     while (it != d->editors.end()) {
         QModelIndex index = it->index;
         QWidget *editor = it->editor;
@@ -2385,8 +2386,14 @@ void QAbstractItemView::updateEditorGeometries()
             ++it;
         } else {
             it = d->editors.erase(it);
-            d->releaseEditor(editor);
+            editorsToRelease << editor;
         }
+    }
+
+    //we release the editor outside of the loop because it might change the focus and try
+    //to change the d->editors list.
+    foreach(QWidget *editor, editorsToRelease) {
+        d->releaseEditor(editor);
     }
 }
 

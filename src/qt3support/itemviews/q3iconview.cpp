@@ -6,11 +6,11 @@
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -514,7 +514,7 @@ bool Q3IconDragData::operator==(const Q3IconDragData &i) const
 
 
 /*!
-    \class Q3IconDrag qiconview.h
+    \class Q3IconDrag
     \brief The Q3IconDrag class supports drag and drop operations
     within a Q3IconView.
 
@@ -725,7 +725,7 @@ void Q3IconDragData::setTextRect(const QRect &r)
 
 
 /*!
-    \class Q3IconViewItem qiconview.h
+    \class Q3IconViewItem
     \brief The Q3IconViewItem class provides a single item in a Q3IconView.
 
     \compat

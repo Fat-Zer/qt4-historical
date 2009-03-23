@@ -7,11 +7,11 @@
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -228,7 +228,7 @@ protected:
 struct Token: public Item
 {
     inline Token(Item *parent = 0)
-        : m_parent(parent) {}
+        : m_tokenIndex(0), m_parent(parent) {}
 
     virtual Item *parent() const
     { return m_parent; }
@@ -416,15 +416,15 @@ struct PragmaDirective: public Directive
 
 struct IncludeDirective: public Directive
 {
+    enum IncludeType {QuoteInclude, AngleBracketInclude};
+
     IncludeDirective(Item *item)
-    : Directive(item) {}
+    : Directive(item), m_includeType(QuoteInclude) {}
 
     IncludeDirective() : Directive() {}
 
     virtual IncludeDirective *toIncludeDirective() const
     { return const_cast<IncludeDirective *>(this); }
-
-    enum IncludeType {QuoteInclude, AngleBracketInclude};
 
     void setFilenameTokens(const TokenEngine::TokenList &filenameTokens)
     { m_filenameTokens = filenameTokens; }

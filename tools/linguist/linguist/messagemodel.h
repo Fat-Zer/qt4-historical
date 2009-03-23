@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -210,7 +210,7 @@ public:
     static QString prettifyPlainFileName(const QString &fn);
     static QString prettifyFileName(const QString &fn);
 
-    void setLanguageAndCountry(QLocale::Language lang, QLocale::Country country);
+    bool setLanguageAndCountry(QLocale::Language lang, QLocale::Country country);
     QLocale::Language language() const { return m_language; }
     QLocale::Country country() const { return m_country; }
     void setSourceLanguageAndCountry(QLocale::Language lang, QLocale::Country country);

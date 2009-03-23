@@ -6,11 +6,11 @@
 ** This file is part of the qmake application of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -183,6 +183,25 @@ QMakeProperty::exec()
                     fprintf(stdout, "%s:%s\n", (*it2).toLatin1().constData(), ret.toLatin1().constData());
                 }
             }
+            QStringList specialProps;
+            specialProps.append("QT_INSTALL_PREFIX");
+            specialProps.append("QT_INSTALL_DATA");
+            specialProps.append("QT_INSTALL_DOCS");
+            specialProps.append("QT_INSTALL_HEADERS");
+            specialProps.append("QT_INSTALL_LIBS");
+            specialProps.append("QT_INSTALL_BINS");
+            specialProps.append("QT_INSTALL_PLUGINS");
+            specialProps.append("QT_INSTALL_TRANSLATIONS");
+            specialProps.append("QT_INSTALL_CONFIGURATION");
+            specialProps.append("QT_INSTALL_EXAMPLES");
+            specialProps.append("QT_INSTALL_DEMOS");
+            specialProps.append("QMAKE_MKSPECS");
+            specialProps.append("QMAKE_VERSION");
+#ifdef QT_VERSION_STR
+            specialProps.append("QT_VERSION");
+#endif
+            foreach (QString prop, specialProps)
+                fprintf(stdout, "%s:%s\n", prop.toLatin1().constData(), value(prop).toLatin1().constData());
             return true;
         }
         for(QStringList::ConstIterator it = Option::prop::properties.begin();

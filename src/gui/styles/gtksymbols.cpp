@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -629,17 +629,26 @@ GtkStyle* QGtk::gtkStyle(const QString &path)
         return gtkWidgetMap()->value(path)->style;
     return 0;
 }
+
+#ifdef Q_OS_LINUX
 QT_END_NAMESPACE
 
 int getresuid(uid_t *ruid, uid_t *euid, uid_t *suid);
 int getresgid(gid_t *rgid, gid_t *egid, gid_t *sgid);
 
 QT_BEGIN_NAMESPACE
+#endif
+
 void QGtk::initGtkWidgets()
 {
     // From gtkmain.c
+
     uid_t ruid, rgid, euid, egid, suid, sgid;
-    if (getresuid (&ruid, &euid, &suid) != 0 || getresgid (&rgid, &egid, &sgid) != 0) {
+
+#ifdef Q_OS_LINUX
+    if (getresuid (&ruid, &euid, &suid) != 0 || getresgid (&rgid, &egid, &sgid) != 0)
+#endif
+    {
         suid = ruid = getuid ();
         sgid = rgid = getgid ();
         euid = geteuid ();
@@ -652,7 +661,7 @@ void QGtk::initGtkWidgets()
                  "See http://www.gtk.org/setuid.html for more information.\n");
         return;
     }
-  
+
     init_gtk_window();
 
     if (QGtk::gtk_init) {

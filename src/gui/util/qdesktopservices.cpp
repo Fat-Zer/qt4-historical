@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -280,6 +280,17 @@ void QDesktopServices::unsetUrlHandler(const QString &scheme)
 
     \note The storage location returned can be a directory that does not exist; i.e., it
     may need to be created by the system or the user.
+
+    \note On Mac OS X, DataLocation does not include QCoreApplication::organizationName.
+    Use code like this to add it:
+
+    \code
+    QString location = QDesktopServices::storageLocation(QDesktopServices::DataLocation);
+    #ifdef Q_WS_MAC
+        location.insert(location.count() - QCoreApplication::applicationName().count(),
+            QCoreApplication::organizationName() + "/");
+    #endif
+    \endcode
 */
 
 /*!

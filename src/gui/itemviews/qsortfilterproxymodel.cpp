@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1180,6 +1180,9 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsInserted(
 {
     Q_Q(const QSortFilterProxyModel);
     source_items_inserted(source_parent, start, end, Qt::Horizontal);
+
+    if (source_parent.isValid())
+        return; //we sort according to the root column only
     if (source_sort_column == -1) {
         //we update the source_sort_column depending on the prox_sort_column
         if (update_source_sort_column())
@@ -1204,6 +1207,9 @@ void QSortFilterProxyModelPrivate::_q_sourceColumnsRemoved(
 {
     Q_Q(const QSortFilterProxyModel);
     source_items_removed(source_parent, start, end, Qt::Horizontal);
+
+    if (source_parent.isValid())
+        return; //we sort according to the root column only
     if (start <= source_sort_column) {
         if (end < source_sort_column)
             source_sort_column -= end - start + 1;

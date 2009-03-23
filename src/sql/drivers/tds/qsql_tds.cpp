@@ -6,11 +6,11 @@
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -718,22 +718,21 @@ QStringList QTDSDriver::tables(QSql::TableType type) const
     if (!isOpen())
         return list;
 
-    QString typeFilter;
+    QStringList typeFilter;
 
     if (type & QSql::Tables)
-        typeFilter += QLatin1String("type='U' or ");
+        typeFilter += QLatin1String("type='U'");
     if (type & QSql::SystemTables)
-        typeFilter += QLatin1String("type='S' or ");
+        typeFilter += QLatin1String("type='S'");
     if (type & QSql::Views)
-        typeFilter += QLatin1String("type='V' or ");
+        typeFilter += QLatin1String("type='V'");
 
     if (typeFilter.isEmpty())
         return list;
-    typeFilter.chop(4);
 
     QSqlQuery t(createResult());
     t.setForwardOnly(true);
-    t.exec(QLatin1String("select name from sysobjects where ") + typeFilter);
+    t.exec(QLatin1String("select name from sysobjects where ") + typeFilter.join(QLatin1String(" or ")));
     while (t.next())
         list.append(t.value(0).toString().simplified());
 

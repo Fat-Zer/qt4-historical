@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -65,7 +65,7 @@ QT_BEGIN_NAMESPACE
 */
 
 /*!
-    \class QFileSystemModel qfilesystemmodel.h
+    \class QFileSystemModel
     \since 4.4
 
     \brief The QFileSystemModel class provides a data model for the local filesystem.
@@ -1076,11 +1076,10 @@ private:
 /*
     \internal
 
-    Sort all of the children of parent (including their children)
+    Sort all of the children of parent
 */
-void QFileSystemModelPrivate::sortChildren(int column, Qt::SortOrder order, const QModelIndex &parent)
+void QFileSystemModelPrivate::sortChildren(int column, const QModelIndex &parent)
 {
-    Q_Q(QFileSystemModel);
     QFileSystemModelPrivate::QFileSystemNode *indexNode = node(parent);
     if (indexNode->children.count() == 0)
         return;
@@ -1104,9 +1103,6 @@ void QFileSystemModelPrivate::sortChildren(int column, Qt::SortOrder order, cons
         indexNode->visibleChildren.append(values.at(i).first->fileName);
         values.at(i).first->isVisible = true;
     }
-
-    for (int i = 0; i < q->rowCount(parent); ++i)
-        sortChildren(column, order, q->index(i, 0, parent));
 }
 
 /*!
@@ -1128,7 +1124,7 @@ void QFileSystemModel::sort(int column, Qt::SortOrder order)
 
     if (!(d->sortColumn == column && d->sortOrder != order && !d->forceSort)) {
         //we sort only from where we are, don't need to sort all the model
-        d->sortChildren(column, order, index(rootPath()));
+        d->sortChildren(column, index(rootPath()));
         d->sortColumn = column;
         d->forceSort = false;
     }

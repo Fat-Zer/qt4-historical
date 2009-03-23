@@ -6,11 +6,11 @@
 ** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -74,6 +74,8 @@ namespace QScript {
 
             InternalRange       = 0x0000ff00  // Not user-accessible (read as 0, don't change on write)
         };
+
+        inline Member() : m_nameId(0), m_id(0), m_flags(0) {}
 
         inline void resetFlags(uint flags);
         inline void setFlags(uint flags);

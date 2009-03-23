@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -289,7 +289,11 @@ bool DataModel::load(const QString &fileName, bool *langGuessed, QWidget *parent
         c = sys.country();
         *langGuessed = true;
     }
-    setLanguageAndCountry(l, c);
+    if (!setLanguageAndCountry(l, c))
+        QMessageBox::warning(parent, QObject::tr("Qt Linguist"),
+                             tr("Linguist does not know the plural rules for '%1'.\n"
+                                "Will assume a single universal form.")
+                             .arg(m_localizedLanguage));
     // Try to detect the correct source language in the following order
     // 1. Look for the language attribute in the ts
     //   if that fails
@@ -379,17 +383,17 @@ void DataModel::doCharCounting(const QString &text, int &trW, int &trC, int &trC
     }
 }
 
-void DataModel::setLanguageAndCountry(QLocale::Language lang, QLocale::Country country)
+bool DataModel::setLanguageAndCountry(QLocale::Language lang, QLocale::Country country)
 {
     if (m_language == lang && m_country == country)
-        return;
+        return true;
     m_language = lang;
     m_country = country;
 
     if (lang == QLocale::C || uint(lang) > uint(QLocale::LastLanguage)) // XXX does this make any sense?
         lang = QLocale::English;
     QByteArray rules;
-    getNumerusInfo(lang, country, &rules, &m_numerusForms);
+    bool ok = getNumerusInfo(lang, country, &rules, &m_numerusForms);
     m_localizedLanguage = QCoreApplication::translate("MessageEditor", QLocale::languageToString(lang).toAscii());
     m_countRefNeeds.clear();
     for (int i = 0; i < rules.size(); ++i) {
@@ -397,8 +401,13 @@ void DataModel::setLanguageAndCountry(QLocale::Language lang, QLocale::Country c
         while (++i < rules.size() && rules.at(i) != (char)Q_NEWRULE) {}
     }
     m_countRefNeeds.append(true);
+    if (!ok) {
+        m_numerusForms.clear();
+        m_numerusForms << tr("Universal Form");
+    }
     emit languageChanged();
     setModified(true);
+    return ok;
 }
 
 void DataModel::setSourceLanguageAndCountry(QLocale::Language lang, QLocale::Country country)

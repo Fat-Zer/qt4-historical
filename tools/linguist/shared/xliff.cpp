@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -744,7 +744,7 @@ bool saveXLIFF(const Translator &translator, QIODevice &dev, ConversionData &cd)
     int indent = 0;
 
     QTextStream ts(&dev);
-    //ts.setCodec( QTextCodec::codecForName("ISO-8859-1") );  // FIXME: Huh?
+    ts.setCodec(QTextCodec::codecForName("UTF-8"));
 
     QStringList dtgs = cd.dropTags();
     dtgs << QLatin1String("po-(old_)?msgid_plural");
@@ -776,7 +776,7 @@ bool saveXLIFF(const Translator &translator, QIODevice &dev, ConversionData &cd)
             << " datatype=\"" << dataType(messageOrder[fn].begin()->first()) << "\""
             << " source-language=\""
                 << (translator.sourceLanguageCode().isEmpty() ?
-                    "en" : translator.sourceLanguageCode().toLatin1()) << "\""
+                    QByteArray("en") : translator.sourceLanguageCode().toLatin1()) << "\""
             << " target-language=\"" << translator.languageCode() << "\""
             << "><body>\n";
         ++indent;

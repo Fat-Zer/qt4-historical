@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -107,6 +107,7 @@ enum {
 static QString yyFileName;
 static int yyCh;
 static bool yyCodecIsUtf8;
+static bool yyForceUtf8;
 static QString yyIdent;
 static QString yyComment;
 static QString yyString;
@@ -692,7 +693,7 @@ static void recordMessage(
         yyFileName, line, QStringList(),
         TranslatorMessage::Unfinished, plural);
     msg.setExtraComment(transcode(extracomment.simplified(), utf8));
-    if (utf8 && !yyCodecIsUtf8 && msg.needs8Bit())
+    if ((utf8 || yyForceUtf8) && !yyCodecIsUtf8 && msg.needs8Bit())
         msg.setUtf8(true);
     tor->extend(msg);
 }
@@ -1007,6 +1008,9 @@ void fetchtrInlinedCpp(const QString &in, Translator &translator, const QString 
     yyInStr = in;
     yyInPos = 0;
     yyFileName = QString();
+    yyCodecIsUtf8 = (translator.codecName() == "UTF-8");
+    yyForceUtf8 = true;
+    yySourceIsUnicode = true;
     yySavedBraceDepth.clear();
     yySavedParenDepth.clear();
     yyBraceDepth = 0;
@@ -1025,6 +1029,7 @@ bool loadCPP(Translator &translator, QIODevice &dev, ConversionData &cd)
     QString defaultContext = cd.m_defaultContext;
 
     yyCodecIsUtf8 = (translator.codecName() == "UTF-8");
+    yyForceUtf8 = false;
     QTextStream ts(&dev);
     QByteArray codecName = cd.m_codecForSource.isEmpty()
         ? translator.codecName() : cd.m_codecForSource;
@@ -1051,14 +1056,6 @@ bool loadCPP(Translator &translator, QIODevice &dev, ConversionData &cd)
     return true;
 }
 
-bool saveCPP(const Translator &translator, QIODevice &dev, ConversionData &cd) 
-{
-    Q_UNUSED(dev);
-    Q_UNUSED(translator);
-    cd.appendError(QLatin1String("Cannot save .cpp files"));
-    return false;
-}
-
 int initCPP()
 {
     Translator::FileFormat format;
@@ -1067,7 +1064,7 @@ int initCPP()
     format.priority = 0;
     format.description = QObject::tr("C++ source files");
     format.loader = &loadCPP;
-    format.saver = &saveCPP;
+    format.saver = 0;
     Translator::registerFileFormat(format);
     return 1;
 }

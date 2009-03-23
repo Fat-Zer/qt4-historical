@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -218,7 +218,7 @@ class QTreeWidgetPrivate : public QTreeViewPrivate
     friend class QTreeModel;
     Q_DECLARE_PUBLIC(QTreeWidget)
 public:
-    QTreeWidgetPrivate() : QTreeViewPrivate() {}
+    QTreeWidgetPrivate() : QTreeViewPrivate(), explicitSortColumn(-1) {}
     inline QTreeModel *model() const
         { return qobject_cast<QTreeModel*>(q_func()->model()); }
     inline QModelIndex index(const QTreeWidgetItem *item, int column = 0) const
@@ -237,6 +237,9 @@ public:
     void _q_sort();
     void _q_dataChanged(const QModelIndex &topLeft, const QModelIndex &bottomRight);
     void _q_selectionChanged(const QItemSelection &selected, const QItemSelection &deselected);
+
+     // used by QTreeWidgetItem::sortChildren to make sure the column argument is used
+    int explicitSortColumn;
 };
 
 QT_END_NAMESPACE

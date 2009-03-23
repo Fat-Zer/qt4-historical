@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -3104,6 +3104,9 @@ void QPainterPath::addRoundRect(const QRectF &r, int xRnd, int yRnd)
 
     Returns a path which is the union of this path's fill area and \a p's fill area.
 
+    Set operations on paths will treat the paths as areas. Non-closed
+    paths will be treated as implicitly closed.
+
     \sa intersected(), subtracted(), subtractedInverted()
 */
 QPainterPath QPainterPath::united(const QPainterPath &p) const
@@ -3131,6 +3134,10 @@ QPainterPath QPainterPath::intersected(const QPainterPath &p) const
     \since 4.3
 
     Returns a path which is \a p's fill area subtracted from this path's fill area.
+
+    Set operations on paths will treat the paths as areas. Non-closed
+    paths will be treated as implicitly closed.
+
 */
 QPainterPath QPainterPath::subtracted(const QPainterPath &p) const
 {
@@ -3174,6 +3181,9 @@ QPainterPath QPainterPath::simplified() const
   Returns true if the current path intersects at any point the given path \a p.
   Also returns true if the current path contains or is contained by any part of \a p.
 
+  Set operations on paths will treat the paths as areas. Non-closed
+  paths will be treated as implicitly closed.
+
   \sa contains()
  */
 bool QPainterPath::intersects(const QPainterPath &p) const
@@ -3192,6 +3202,9 @@ bool QPainterPath::intersects(const QPainterPath &p) const
   Returns true if the given path \a p is contained within
   the current path. Returns false if any edges of the current path and
   \a p intersect.
+
+  Set operations on paths will treat the paths as areas. Non-closed
+  paths will be treated as implicitly closed.
 
   \sa intersects()
  */

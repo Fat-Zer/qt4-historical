@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -444,26 +444,19 @@ void QScrollBar::contextMenuEvent(QContextMenuEvent *event)
 
 #ifndef QT_NO_MENU
     bool horiz = HORIZONTAL;
-    QMenu menu;
-        QAction *actScrollHere =
-            menu.addAction(tr("Scroll here"));
-        menu.addSeparator();
-        QAction *actScrollTop =
-            menu.addAction(horiz ? tr("Left edge") : tr("Top"));
-        QAction *actScrollBottom =
-            menu.addAction(horiz ? tr("Right edge") : tr("Bottom"));
-        menu.addSeparator();
-        QAction *actPageUp =
-            menu.addAction(horiz ? tr("Page left") : tr("Page up"));
-        QAction *actPageDn =
-            menu.addAction(horiz ? tr("Page right") : tr("Page down"));
-        menu.addSeparator();
-        QAction *actScrollUp =
-            menu.addAction(horiz ? tr("Scroll left") : tr("Scroll up"));
-        QAction *actScrollDn =
-            menu.addAction(horiz ? tr("Scroll right") : tr("Scroll down"));
-
-    QAction *actionSelected = menu.exec(event->globalPos());
+    QPointer<QMenu> menu = new QMenu(this);
+    QAction *actScrollHere = menu->addAction(tr("Scroll here"));
+    menu->addSeparator();
+    QAction *actScrollTop =  menu->addAction(horiz ? tr("Left edge") : tr("Top"));
+    QAction *actScrollBottom = menu->addAction(horiz ? tr("Right edge") : tr("Bottom"));
+    menu->addSeparator();
+    QAction *actPageUp = menu->addAction(horiz ? tr("Page left") : tr("Page up"));
+    QAction *actPageDn = menu->addAction(horiz ? tr("Page right") : tr("Page down"));
+    menu->addSeparator();
+    QAction *actScrollUp = menu->addAction(horiz ? tr("Scroll left") : tr("Scroll up"));
+    QAction *actScrollDn = menu->addAction(horiz ? tr("Scroll right") : tr("Scroll down"));
+    QAction *actionSelected = menu->exec(event->globalPos());
+    delete menu;
     if (actionSelected == 0)
         /* do nothing */ ;
     else if (actionSelected == actScrollHere)

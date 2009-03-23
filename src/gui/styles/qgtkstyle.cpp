@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -576,7 +576,7 @@ int QGtkStyle::styleHint(StyleHint hint, const QStyleOption *option, const QWidg
     break;
 
     case SH_SpinControls_DisableOnBounds:
-        return true;
+        return int(true);
 
     case SH_DitherDisabledText:
         return int(false);
@@ -587,6 +587,9 @@ int QGtkStyle::styleHint(StyleHint hint, const QStyleOption *option, const QWidg
         QGtk::gtk_widget_style_get((GtkWidget*)gtkComboBox, "appears-as-list", &appears_as_list, NULL);
         return appears_as_list ? 0 : 1;
     }
+
+    case SH_MenuBar_AltKeyNavigation:
+        return int(false);
 
     case SH_EtchDisabledText:
         return int(false);

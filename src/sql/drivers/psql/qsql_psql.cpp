@@ -6,11 +6,11 @@
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -511,11 +511,10 @@ static QString qCreateParamString(const QVector<QVariant> boundValues, const QSq
             f.clear();
         else
             f.setValue(val);
-        
-        params.append(driver->formatValue(f)).append(QLatin1String(", "));
+        if(!params.isNull())
+            params.append(QLatin1String(", "));
+        params.append(driver->formatValue(f));
     }
-
-    params.chop(2);
     return params;
 }
 
@@ -1141,9 +1140,11 @@ QString QPSQLDriver::formatValue(const QSqlField &field, bool trimStrings) const
 QString QPSQLDriver::escapeIdentifier(const QString &identifier, IdentifierType) const
 {
     QString res = identifier;
-    res.replace(QLatin1Char('"'), QLatin1String("\"\""));
-    res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
-    res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    if(!identifier.isEmpty() && identifier.left(1) != QString(QLatin1Char('"')) && identifier.right(1) != QString(QLatin1Char('"')) ) {
+        res.replace(QLatin1Char('"'), QLatin1String("\"\""));
+        res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+        res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    }
     return res;
 }
 

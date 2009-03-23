@@ -6,7 +6,7 @@ include(qt-defines.qdocconf)
 
 project                 = Qt
 versionsym              =
-version                 = 4.5.0
+version                 = %VERSION%
 description             = Qt Reference Documentation
 url                     = http://doc.trolltech.com/4.5
 
@@ -94,7 +94,11 @@ excludedirs             = $QTDIR/src/3rdparty/clucene \
                           $QTDIR/src/3rdparty/webkit/WebCore \
                           $QTDIR/src/3rdparty/wintab \
                           $QTDIR/src/3rdparty/zlib \
-                          $QTDIR/doc/src/snippets
+                          $QTDIR/doc/src/snippets \
+                          $QTDIR/src/3rdparty/phonon/gstreamer \
+                          $QTDIR/src/3rdparty/phonon/ds9 \
+                          $QTDIR/src/3rdparty/phonon/qt7 \
+                          $QTDIR/src/3rdparty/phonon/waveout
 
 sources.fileextensions  = "*.cpp *.qdoc *.mm"
 examples.fileextensions = "*.cpp *.h *.js *.xq *.svg *.xml *.ui *.qhp *.qhcp"

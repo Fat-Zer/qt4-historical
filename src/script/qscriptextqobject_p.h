@@ -6,11 +6,11 @@
 ** This file is part of the QtScript module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -87,7 +87,7 @@ public:
 
     class Instance: public QScriptObjectData {
     public:
-        Instance() { }
+        Instance() : ownership(QScriptEngine::QtOwnership) { }
         virtual void finalize(QScriptEnginePrivate *engine);
         virtual ~Instance() {}
 
@@ -248,7 +248,7 @@ public:
     };
 
     inline QScriptMetaType()
-        : m_kind(Invalid) { }
+        : m_kind(Invalid), m_typeId(0) { }
 
     inline Kind kind() const
     { return m_kind; }
@@ -305,6 +305,7 @@ class QScriptMetaMethod
 {
 public:
     inline QScriptMetaMethod()
+        : m_firstUnresolvedIndex(-1)
         { }
     inline QScriptMetaMethod(const QByteArray &name, const QVector<QScriptMetaType> &types)
         : m_name(name), m_types(types), m_firstUnresolvedIndex(-1)
@@ -367,7 +368,7 @@ struct QScriptMetaArguments
                                 const QVarLengthArray<QVariant, 9> &as)
         : matchDistance(dist), index(idx), method(mtd), args(as) { }
     inline QScriptMetaArguments()
-        : index(-1) { }
+        : matchDistance(0), index(-1) { }
 
     inline bool isValid() const
     { return (index != -1); }

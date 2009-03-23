@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -60,7 +60,8 @@ class UiReader : public QXmlDefaultHandler
 {
 public:
     UiReader(Translator &translator, ConversionData &cd)
-      : m_translator(translator), m_cd(cd), m_lineNumber(-1)
+      : m_translator(translator), m_cd(cd), m_lineNumber(-1),
+        m_needUtf8(translator.codecName() != "UTF-8")
     {}
 
     bool startElement(const QString &namespaceURI, const QString &localName,
@@ -85,6 +86,7 @@ private:
     QString m_accum;
     int m_lineNumber;
     bool m_isTrString;
+    bool m_needUtf8;
 };
 
 bool UiReader::startElement(const QString &namespaceURI,
@@ -159,6 +161,8 @@ void UiReader::flush()
         TranslatorMessage msg(m_context, m_source,
            m_comment, QString(), m_cd.m_sourceFileName,
            m_lineNumber, QStringList());
+        if (m_needUtf8 && msg.needs8Bit())
+            msg.setUtf8(true);
         m_translator.extend(msg);
     }
     m_source.clear();
@@ -171,8 +175,8 @@ bool loadUI(Translator &translator, QIODevice &dev, ConversionData &cd)
     QXmlSimpleReader reader;
     reader.setFeature(QLatin1String("http://xml.org/sax/features/namespaces"), false);
     reader.setFeature(QLatin1String("http://xml.org/sax/features/namespace-prefixes"), true);
-    reader.setFeature(QLatin1String("http://qtsoftware.com/xml/features/report-whitespace"
-                                     "-only-CharData"), false);
+    reader.setFeature(QLatin1String(
+            "http://trolltech.com/xml/features/report-whitespace-only-CharData"), false);
     UiReader handler(translator, cd);
     reader.setContentHandler(&handler);
     reader.setErrorHandler(&handler);

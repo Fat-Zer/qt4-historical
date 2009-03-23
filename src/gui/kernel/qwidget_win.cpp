@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1037,6 +1037,8 @@ void QWidget::setWindowState(Qt::WindowStates newstate)
 #else
                 UINT style = WS_POPUP;
 #endif
+		if (d->topData()->savedFlags & WS_SYSMENU)
+		    style |= WS_SYSMENU;
                 if (isVisible())
                     style |= WS_VISIBLE;
                 SetWindowLongA(internalWinId(), GWL_STYLE, style);
@@ -1560,8 +1562,8 @@ bool QWidgetPrivate::shouldShowMaximizeButton()
     if (data.window_flags & Qt::MSWindowsFixedSizeDialogHint)
         return false;
     if (extra) {
-        if ((extra->maxw && extra->maxw != QWIDGETSIZE_MAX)
-            || (extra->maxh && extra->maxh != QWIDGETSIZE_MAX))
+        if ((extra->maxw && extra->maxw != QWIDGETSIZE_MAX && extra->maxw != QLAYOUTSIZE_MAX)
+            || (extra->maxh && extra->maxh != QWIDGETSIZE_MAX && extra->maxh != QLAYOUTSIZE_MAX))
             return false;
     }
     return data.window_flags & Qt::WindowMaximizeButtonHint;

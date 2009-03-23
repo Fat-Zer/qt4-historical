@@ -7,11 +7,11 @@
 ** This file is part of the qt3to4 porting application of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -383,7 +383,7 @@ private:
 struct ClassType: public Type
 {
     ClassType()
-        : m_scope(0) {}
+        : m_parent(0), m_scope(0) {}
 
     ClassScope *scope() const
     { return m_scope; }
@@ -731,7 +731,7 @@ private:
 struct UsingDirectiveLink: public Item
 {
     UsingDirectiveLink()
-        : m_parent(0) {}
+        : m_parent(0), m_targetNamespace(0), m_insertionNamespace(0) {}
 
     QByteArray name() const
     { return QByteArray(); }

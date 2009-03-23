@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -44,19 +44,19 @@
 
 #include <stddef.h>
 
-#define QT_VERSION_STR "4.5.0"
+#define QT_VERSION_STR   "4.5.1"
 /*
    QT_VERSION is (major << 16) + (minor << 8) + patch.
 */
-#define QT_VERSION 0x040500
+#define QT_VERSION 0x040501
 /*
    can be used like #if (QT_VERSION >= QT_VERSION_CHECK(4, 4, 0))
 */
 #define QT_VERSION_CHECK(major, minor, patch) ((major<<16)|(minor<<8)|(patch))
 
-#define QT_PACKAGEDATE_STR "2009-02-25"
+#define QT_PACKAGEDATE_STR "YYYY-MM-DD"
 
-#define QT_PACKAGE_TAG "g05dab8490c8fe4c603c85122133b79672da85ce3"
+#define QT_PACKAGE_TAG ""
 
 #if !defined(QT_BUILD_MOC)
 #include <QtCore/qconfig.h>
@@ -273,6 +273,9 @@ namespace QT_NAMESPACE {}
 #ifdef AUTODETECT_COCOA
 #  ifdef Q_OS_MAC64
 #    define QT_MAC_USE_COCOA 1
+#    define QT_BUILD_KEY QT_BUILD_KEY_COCOA
+#  else
+#    define QT_BUILD_KEY QT_BUILD_KEY_CARBON
 #  endif
 #endif
 

@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1072,8 +1072,9 @@
     \value WA_TranslucentBackground Indicates that the widget should have a
     translucent background, i.e., any non-opaque regions of the widgets will be
     translucent because the widget will have an alpha channel. Setting this
-    flag causes WA_NoSystemBackground to be set. This flag is set or cleared by
-    the widget's author.
+    flag causes WA_NoSystemBackground to be set. On Windows the
+    widget also needs the Qt::FramelessWindowHint window flag to be set.
+    This flag is set or cleared by the widget's author.
 
     \value WA_UnderMouse Indicates that the widget is under the mouse cursor.
     The value is not updated correctly during drag and drop operations. There
@@ -1152,9 +1153,10 @@
     this attribute for the Qt::Dialog and Qt::Sheet window types.
 
     \value WA_X11NetWmWindowTypeDropDownMenu Adds
-    _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's _NET_WM_WINDOW_TYPE X11
-    window property. See http://standards.freedesktop.org/wm-spec/ for more
-    details. This attribute has no effect on non-X11 platforms. \notw Qt
+    _NET_WM_WINDOW_TYPE_DROPDOWN_MENU to the window's
+    _NET_WM_WINDOW_TYPE X11 window property. See
+    http://standards.freedesktop.org/wm-spec/ for more details. This
+    attribute has no effect on non-X11 platforms. \note Qt
     automatically sets this attribute for QMenus added to a QMenuBar.
 
     \value WA_X11NetWmWindowTypePopupMenu Adds _NET_WM_WINDOW_TYPE_POPUP_MENU

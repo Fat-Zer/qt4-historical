@@ -6,11 +6,11 @@
 ** This file is part of the plugins of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -86,7 +86,7 @@ int Q3AccessibleScrollView::itemCount() const
 }
 
 /*!
-  \class QAccessibleListView qaccessiblewidget.h
+  \class QAccessibleListView
   \brief The QAccessibleListView class implements the QAccessibleInterface for list views.
   \internal
 */
@@ -313,7 +313,7 @@ QVector<int> QAccessibleListView::selection() const
 }
 
 /*!
-  \class QAccessibleIconView qaccessiblewidget.h
+  \class QAccessibleIconView
   \brief The QAccessibleIconView class implements the QAccessibleInterface for icon views.
   \internal
 */
@@ -515,7 +515,7 @@ QVector<int> QAccessibleIconView::selection() const
 
 
 /*!
-  \class Q3AccessibleTextEdit qaccessiblewidget.h
+  \class Q3AccessibleTextEdit
   \brief The Q3AccessibleTextEdit class implements the QAccessibleInterface for richtext editors.
   \internal
 */
@@ -597,7 +597,7 @@ QAccessible::Role Q3AccessibleTextEdit::role(int child) const
 }
 
 /*!
-  \class QAccessibleWidgetStack qaccessible.h
+  \class QAccessibleWidgetStack
   \brief The QAccessibleWidgetStack class implements the QAccessibleInterface for widget stacks.
 
   \ingroup accessibility
@@ -668,7 +668,7 @@ int QAccessibleWidgetStack::navigate(RelationFlag rel, int entry,
 }
 
 /*!
-  \class QAccessibleListBox qaccessiblewidget.h
+  \class QAccessibleListBox
   \brief The QAccessibleListBox class implements the QAccessibleInterface for list boxes.
 
   \ingroup accessibility

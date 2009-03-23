@@ -6,11 +6,11 @@
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -200,7 +200,7 @@ MediaPlayer::MediaPlayer(const QString &filePath) :
     QPalette palette;
     palette.setBrush(QPalette::WindowText, Qt::white);
 #ifndef Q_WS_MAC
-    openButton->setMinimumSize(47, buttonSize.height());
+    openButton->setMinimumSize(54, buttonSize.height());
     rewindButton->setMinimumSize(buttonSize);
     forwardButton->setMinimumSize(buttonSize);
     playButton->setMinimumSize(buttonSize);
@@ -799,11 +799,12 @@ void MediaPlayer::openUrl()
     QSettings settings;
     settings.beginGroup(QLatin1String("BrowserMainWindow"));
     QString sourceURL = settings.value("location").toString();
-    sourceURL = QInputDialog::getText(this, tr("Open Location"), tr("Please enter a valid address here:"), QLineEdit::Normal, sourceURL);
-    if (!sourceURL.isEmpty()) {
-	    setWindowTitle(sourceURL.right(sourceURL.length() - sourceURL.lastIndexOf('/') - 1));
-	    m_MediaObject.setCurrentSource(Phonon::MediaSource(QUrl::fromEncoded(sourceURL.toUtf8())));
-	    m_MediaObject.play();
+    bool ok = false;
+    sourceURL = QInputDialog::getText(this, tr("Open Location"), tr("Please enter a valid address here:"), QLineEdit::Normal, sourceURL, &ok);
+    if (ok && !sourceURL.isEmpty()) {
+        setWindowTitle(sourceURL.right(sourceURL.length() - sourceURL.lastIndexOf('/') - 1));
+        m_MediaObject.setCurrentSource(Phonon::MediaSource(QUrl::fromEncoded(sourceURL.toUtf8())));
+        m_MediaObject.play();
         settings.setValue("location", sourceURL);
     }
 }

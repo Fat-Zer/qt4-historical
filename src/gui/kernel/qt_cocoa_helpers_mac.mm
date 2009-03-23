@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1050,6 +1050,31 @@ void *qt_mac_QStringListToNSMutableArrayVoid(const QStringList &list)
         [result addObject:reinterpret_cast<const NSString *>(QCFString::toCFStringRef(list[i]))];
     }
     return result;
+}
+
+void qt_syncCocoaTitleBarButtons(OSWindowRef window, QWidget *widgetForWindow)
+{
+    if (!widgetForWindow)
+        return;
+
+    Qt::WindowFlags flags = widgetForWindow->windowFlags();
+    bool customize = flags & Qt::CustomizeWindowHint;
+
+    NSButton *btn = [window standardWindowButton:NSWindowZoomButton];
+    // BOOL is not an int, so the bitwise AND doesn't work.
+    bool go = uint(customize && !(flags & Qt::WindowMaximizeButtonHint)) == 0;
+    [btn setEnabled:go];
+
+    btn = [window standardWindowButton:NSWindowMiniaturizeButton];
+    go = uint(customize && !(flags & Qt::WindowMinimizeButtonHint)) == 0;
+    [btn setEnabled:go];
+
+    btn = [window standardWindowButton:NSWindowCloseButton];
+    go = uint(customize && !(flags & Qt::WindowSystemMenuHint
+                             || flags & Qt::WindowCloseButtonHint)) == 0;
+    [btn setEnabled:go];
+
+    [window setShowsToolbarButton:uint(flags & Qt::MacWindowToolBarButtonHint) != 0];
 }
 
 // Carbon: Make sure you call QDEndContext on the context when done with it.

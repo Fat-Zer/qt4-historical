@@ -6,11 +6,11 @@
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -297,6 +297,11 @@ bool QSQLite2Result::reset (const QString& query)
     // we have to fetch one row to find out about
     // the structure of the result set
     d->skippedStatus = d->fetchNext(cache(), 0, true);
+    if (lastError().isValid()) {
+        setSelect(false);
+        setActive(false);
+        return false;
+    }
     setSelect(!d->rInf.isEmpty());
     setActive(true);
     return true;
@@ -537,6 +542,17 @@ QSqlRecord QSQLite2Driver::record(const QString &tbl) const
 QVariant QSQLite2Driver::handle() const
 {
     return qVariantFromValue(d->access);
+}
+
+QString QSQLite2Driver::escapeIdentifier(const QString &identifier, IdentifierType /*type*/) const
+{
+    QString res = identifier;
+    if(!identifier.isEmpty() && identifier.left(1) != QString(QLatin1Char('"')) && identifier.right(1) != QString(QLatin1Char('"')) ) {
+        res.replace(QLatin1Char('"'), QLatin1String("\"\""));
+        res.prepend(QLatin1Char('"')).append(QLatin1Char('"'));
+        res.replace(QLatin1Char('.'), QLatin1String("\".\""));
+    }
+    return res;
 }
 
 QT_END_NAMESPACE

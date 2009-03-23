@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -227,9 +227,14 @@
     \section2 Delegates
 
     QAbstractItemDelegate is the abstract base class for delegates in the
-    model/view framework. A default delegate implementation is provided by
-    the QItemDelegate class, and this is used as the default delegate by
-    Qt's standard views.
+    model/view framework. Since Qt 4.4, the default delegate implementation is
+    provided by QStyledItemDelegate, and this is used as the default delegate
+    by Qt's standard views. However, QStyledItemDelegate and QItemDelegate are
+    independent alternatives to painting and providing editors for items in
+    views. The difference between them is that QStyledItemDelegate uses the
+    current style to paint its items. We therefore recommend using
+    QStyledItemDelegate as the base class when implementing custom delegates or
+    when working with Qt style sheets.
 
     Delegates are described in the section on \l{Delegate Classes}.
 

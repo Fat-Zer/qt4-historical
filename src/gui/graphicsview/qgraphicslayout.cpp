@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -404,6 +404,10 @@ void QGraphicsLayout::widgetEvent(QEvent *e)
     QGraphicsLayout to remove the item at \a index. The
     reimplementation can assume that \a index is valid (i.e., it
     respects the value of count()).
+
+    The implementation must ensure that the parentLayoutItem() of
+    the removed item does not point to this layout, since the item is
+    considered to be removed from the layout hierarchy.
 
     If the layout is to be reused between applications, we recommend
     that the layout deletes the item, but the graphics view framework

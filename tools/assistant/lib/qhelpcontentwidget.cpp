@@ -6,11 +6,11 @@
 ** This file is part of the Qt Assistant of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -44,6 +44,7 @@
 #include "qhelpengine_p.h"
 #include "qhelpdbreader_p.h"
 
+#include <QtCore/QDir>
 #include <QtCore/QStack>
 #include <QtCore/QThread>
 #include <QtCore/QMutex>
@@ -555,7 +556,7 @@ bool QHelpContentWidget::searchContentItem(QHelpContentModel *model,
     if (!parentItem)
         return false;
 
-    if (parentItem->url().path() == path) {
+    if (QDir::cleanPath(parentItem->url().path()) == path) {
         m_syncIndex = parent;
         return true;
     }

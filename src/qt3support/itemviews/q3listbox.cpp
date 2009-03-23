@@ -6,11 +6,11 @@
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -162,7 +162,7 @@ Q3ListBoxPrivate::~Q3ListBoxPrivate()
 
 
 /*!
-    \class Q3ListBoxItem qlistbox.h
+    \class Q3ListBoxItem
     \brief The Q3ListBoxItem class is the base class of all list box items.
 
     \compat
@@ -330,7 +330,7 @@ const QPixmap *Q3ListBoxItem::pixmap() const
 
 
 /*!
-    \class Q3ListBoxText qlistbox.h
+    \class Q3ListBoxText
     \brief The Q3ListBoxText class provides list box items that display text.
 
     \compat
@@ -438,7 +438,7 @@ int Q3ListBoxText::rtti() const
 }
 
 /*!
-    \class Q3ListBoxPixmap qlistbox.h
+    \class Q3ListBoxPixmap
     \brief The Q3ListBoxPixmap class provides list box items with a
     pixmap and optional text.
 
@@ -607,7 +607,7 @@ int Q3ListBoxPixmap::rtti() const
 }
 
 /*!
-    \class Q3ListBox qlistbox.h
+    \class Q3ListBox
     \brief The Q3ListBox widget provides a list of selectable, read-only items.
 
     \compat

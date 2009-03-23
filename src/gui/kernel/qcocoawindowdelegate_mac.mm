@@ -6,11 +6,11 @@
  ** This file is part of the QtGui module of the Qt Toolkit.
  **
  ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -266,17 +266,18 @@ static void cleanupCocoaWindowDelegate()
 
 -(void)windowDidBecomeMain:(NSNotification*)notification
 {
-    NSWindow *window = [notification object];
-    if ([window isKeyWindow])
-        return;  // Should have already got an activate notification from "become key."
-
     QWidget *qwidget = m_windowHash->value([notification object]);
+    Q_ASSERT(qwidget);
+    if (qwidget->isActiveWindow())
+        return;  // Widget is already active, no need to go through re-activation.
+
     onApplicationWindowChangedActivation(qwidget, true);
 }
 
 -(void)windowDidResignMain:(NSNotification*)notification
 {
     QWidget *qwidget = m_windowHash->value([notification object]);
+    Q_ASSERT(qwidget);
     onApplicationWindowChangedActivation(qwidget, false);
 }
 
@@ -285,12 +286,18 @@ static void cleanupCocoaWindowDelegate()
 -(void)windowDidBecomeKey:(NSNotification*)notification
 {
     QWidget *qwidget = m_windowHash->value([notification object]);
+    Q_ASSERT(qwidget);
+    if (qwidget->isActiveWindow())
+        return;  // Widget is already active, no need to go through re-activation
+
+
     onApplicationWindowChangedActivation(qwidget, true);
 }
 
 -(void)windowDidResignKey:(NSNotification*)notification
 {
     QWidget *qwidget = m_windowHash->value([notification object]);
+    Q_ASSERT(qwidget);
     onApplicationWindowChangedActivation(qwidget, false);
 }
 

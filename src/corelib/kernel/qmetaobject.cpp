@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1025,9 +1025,10 @@ enum { MaximumParamCount = 11 }; // up to 10 arguments + 1 return value
     const reference of that type; Q_RETURN_ARG() takes a type name
     and a non-const reference.
 
-    To asynchronously invoke the
-    \l{QPushButton::animateClick()}{animateClick()} slot on a
-    QPushButton:
+    You only need to pass the name of the signal or slot to this function,
+    not the entire signature. For example, to asynchronously invoke
+    the \l{QPushButton::animateClick()}{animateClick()} slot on a
+    QPushButton, use the following code:
 
     \snippet doc/src/snippets/code/src_corelib_kernel_qmetaobject.cpp 2
 
@@ -1049,7 +1050,6 @@ enum { MaximumParamCount = 11 }; // up to 10 arguments + 1 return value
 
     If the "compute" slot does not take exactly one QString, one int
     and one double in the specified order, the call will fail.
-
 
     \sa Q_ARG(), Q_RETURN_ARG(), qRegisterMetaType(), QMetaMethod::invoke()
 */
@@ -1395,6 +1395,10 @@ QMetaMethod::MethodType QMetaMethod::methodType() const
     some arbitrary object \c obj retrieve its return value:
 
     \snippet doc/src/snippets/code/src_corelib_kernel_qmetaobject.cpp 8
+
+    QMetaObject::normalizedSignature() is used here to ensure that the format 
+    of the signature is what invoke() expects.  E.g. extra whitespace is 
+    removed.
 
     If the "compute" slot does not take exactly one QString, one int
     and one double in the specified order, the call will fail.

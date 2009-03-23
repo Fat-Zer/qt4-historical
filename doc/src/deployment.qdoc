@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -878,30 +878,44 @@
     HTML pages from the World Wide Web, you should include all text codec
     plugins to support as many HTML encodings possible. 
 
-    The search path for Qt plugins (as well as a few other paths) is
-    hard-coded into the QtCore library. By default, the first plugin
-    search path will be hard-coded to be a \c plugins subdirectory of
-    the Qt installation:
-
-    \snippet doc/src/snippets/code/doc_src_deployment.qdoc 25
-
-    Pre-determined paths like this one have certain disadvantages.
-    For example, they may not exist on the target machine. For that
-    reason you need to examine various alternatives to make sure that
-    the Qt plugins are found:
+    The search path for Qt plugins is hard-coded into the QtCore library. 
+    By default, the plugins subdirectory of the Qt installation is the first 
+    plugin search path. However, pre-determined paths like the default one 
+    have certain disadvantages. For example, they may not exist on the target 
+    machine. For that reason, you need to examine various alternatives to make 
+    sure that the Qt plugins are found:
 
     \list
 
-    \o \l{qt-conf.html}{Using \c qt.conf}. This is the recommended
-    approach since it provides the most flexibility.
-
+    \o \l{qt-conf.html}{Using \c qt.conf}. This approach is the recommended 
+    if you have executables in different places sharing the same plugins.
+    
     \o Using QApplication::addLibraryPath() or
-    QApplication::setLibraryPaths().
+    QApplication::setLibraryPaths(). This approach is recommended if you only 
+    have one executable that will use the plugin. 
 
     \o Using a third party installation utility to change the
     hard-coded paths in the QtCore library.
 
     \endlist
+    
+    If you add a custom path using QApplication::addLibraryPath it could 
+    look like this:
+    
+    \snippet doc/src/snippets/code/doc_src_deployment.qdoc 54
+
+    Then qApp->libraryPaths() would return something like this:
+
+    "C:/customPath/plugins " 
+    "C:/Qt/4.5.0/plugins" 
+    "E:/myApplication/directory/"
+
+    The executable will look for the plugins in these directories and 
+    the same order as the QStringList returned by qApp->libraryPaths(). 
+    The newly added path is prepended to the qApp->libraryPaths() which 
+    means that it will be searched through first. However, if you use 
+    qApp->setLibraryPaths(), you will be able to determend which paths 
+    and in which order they will be searched.
 
     The \l{How to Create Qt Plugins} document outlines the issues you
     need to pay attention to when building and deploying plugins for
@@ -1105,7 +1119,7 @@
     \snippet doc/src/snippets/code/doc_src_deployment.qdoc 38
 
     For the Qt frameworks, the first line (i.e. \c
-    {path/to/Qt/lib/QtGui.framework/Versions/4.0/QtGui (compatibility
+    {path/to/Qt/lib/QtGui.framework/Versions/4/QtGui (compatibility
     version 4.0.0, current version 4.0.1)}) becomes the framework's
     identification name which is used by the dynamic linker (\c dyld).
 
@@ -1430,7 +1444,7 @@
     
     \section1 The Mac Deployment Tool
     \target macdeploy
-    The Mac deployment tool can be found in QTDIR/bin/macdeploy. It is
+    The Mac deployment tool can be found in QTDIR/bin/macdeployqt. It is
     designed to automate the process of creating a deployable
     application bundle that contains the Qt libraries as private
     frameworks.
@@ -1448,4 +1462,11 @@
     \o The accessibility plugin is always deployed.
     \o Accessibility for Qt3Support is deployed if the application uses the Qt3Support module.
     \endlist
+
+    macdeployqt supports the following options:
+    \list
+    \o -no-plugins: Skip plugin deployment 
+    \o -dmg       : Create a .dmg disk image 
+    \o -no-strip  : Don't run 'strip' on the binaries 
+    \endlist    
 */

@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -54,7 +54,7 @@ PropertyDialog::PropertyDialog(QWidget *parent, Qt::WindowFlags f)
 
     buttonBox->setStandardButtons(QDialogButtonBox::Ok | QDialogButtonBox::Cancel);
     propertyTable->setColumnCount(2);
-    const QStringList labels = QStringList() << "Name" << "Value";
+    const QStringList labels = QStringList() << QLatin1String("Name") << QLatin1String("Value");
     propertyTable->setHorizontalHeaderLabels(labels);
     propertyTable->horizontalHeader()->setStretchLastSection(true);
     propertyTable->setEditTriggers(QAbstractItemView::AllEditTriggers);
@@ -80,8 +80,11 @@ void PropertyDialog::addProperty(const QString &aname, QVariant::Type type)
 
     QString name = aname;
     if (name.isEmpty())
-        name = "argument " + QString::number(rowCount + 1);
-    QTableWidgetItem *nameItem = new QTableWidgetItem(name + " (" + QVariant::typeToName(type) + ")");
+        name = QLatin1String("argument ") + QString::number(rowCount + 1);
+    name += QLatin1String(" (");
+    name += QLatin1String(QVariant::typeToName(type));
+    name += QLatin1String(")");
+    QTableWidgetItem *nameItem = new QTableWidgetItem(name);
     nameItem->setFlags(nameItem->flags() &
             ~(Qt::ItemIsEditable | Qt::ItemIsSelectable));
     propertyTable->setItem(rowCount, 0, nameItem);

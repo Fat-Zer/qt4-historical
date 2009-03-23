@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -866,7 +866,8 @@ void QWidget::setAutoFillBackground(bool enabled)
     \list
     \o X11: This feature relies on the use of an X server that supports ARGB visuals
     and a compositing window manager.
-    \o Windows: This feature requires Windows 2000 or later.
+    \o Windows: This feature requires Windows 2000 or later. The widget needs to have
+    the Qt::FramelessWindowHint window flag set for the translucency to work.
     \endlist
 
 
@@ -1018,8 +1019,16 @@ void QWidgetPrivate::adjustFlags(Qt::WindowFlags &flags, QWidget *w)
 
     if (flags & Qt::CustomizeWindowHint) {
         // modify window flags to make them consistent.
-        if (flags & (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint  | Qt::WindowContextHelpButtonHint)) {
+        // Only enable this on non-Mac platforms. Since the old way of doing this would
+        // interpret WindowSystemMenuHint as a close button and we can't change that behavior
+        // we can't just add this in.
+#ifndef Q_WS_MAC
+        if (flags & (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint | Qt::WindowContextHelpButtonHint)) {
             flags |= Qt::WindowSystemMenuHint;
+#else
+        if (flags & (Qt::WindowMinMaxButtonsHint | Qt::WindowCloseButtonHint
+                     | Qt::WindowSystemMenuHint)) {
+#endif
             flags |= Qt::WindowTitleHint;
             flags &= ~Qt::FramelessWindowHint;
         }
@@ -4190,7 +4199,11 @@ const QPalette &QWidget::palette() const
 {
     if (!isEnabled()) {
         data->pal.setCurrentColorGroup(QPalette::Disabled);
-    } else if (!isVisible() || isActiveWindow()) {
+    } else if ((!isVisible() || isActiveWindow())
+#if defined(Q_OS_WIN) && !defined(Q_OS_WINCE)
+        && !QApplicationPrivate::isBlockedByModal(const_cast<QWidget *>(this))
+#endif
+        ) {
         data->pal.setCurrentColorGroup(QPalette::Active);
     } else {
 #ifdef Q_WS_MAC
@@ -4640,6 +4653,8 @@ void QWidget::unsetCursor()
 */
 
 /*!
+    \since 4.3
+
     Renders the \a sourceRegion of this widget into the \a target
     using \a renderFlags to determine how to render. Rendering
     starts at \a targetOffset in the \a target. For example:
@@ -4649,12 +4664,13 @@ void QWidget::unsetCursor()
     If \a sourceRegion is a null region, this function will use QWidget::rect() as
     the region, i.e. the entire widget.
 
-    \bold{Note:} Make sure to call QPainter::end() for the given \a target's
+    Ensure that you call QPainter::end() for the \a target device's
     active painter (if any) before rendering. For example:
 
     \snippet doc/src/snippets/code/src_gui_kernel_qwidget.cpp 8
 
-    \since 4.3
+    \note To obtain the contents of an OpenGL widget, use QGLWidget::grabFrameBuffer()
+    or QGLWidget::renderPixmap() instead.
 */
 void QWidget::render(QPaintDevice *target, const QPoint &targetOffset,
                      const QRegion &sourceRegion, RenderFlags renderFlags)
@@ -5654,8 +5670,8 @@ bool QWidget::hasFocus() const
     called from focusOutEvent() or focusInEvent(), you may get an
     infinite recursion.
 
-    \sa hasFocus() clearFocus() focusInEvent() focusOutEvent()
-    setFocusPolicy() QApplication::focusWidget() grabKeyboard()
+    \sa hasFocus(), clearFocus(), focusInEvent(), focusOutEvent(),
+    setFocusPolicy(), QApplication::focusWidget(), grabKeyboard(),
     grabMouse(), {Keyboard Focus}
 */
 
@@ -5915,12 +5931,12 @@ bool QWidget::isActiveWindow() const
         return true;
 #endif
     if(style()->styleHint(QStyle::SH_Widget_ShareActivation, 0, this)) {
-        if(((tlw->windowType() == Qt::Dialog) || (tlw->windowType() == Qt::Tool)) &&
+        if(tlw->windowType() == Qt::Tool &&
            !tlw->isModal() &&
            (!tlw->parentWidget() || tlw->parentWidget()->isActiveWindow()))
            return true;
         QWidget *w = qApp->activeWindow();
-        while(w && ((tlw->windowType() == Qt::Dialog) || (tlw->windowType() == Qt::Tool)) &&
+        while(w && tlw->windowType() == Qt::Tool &&
               !w->isModal() && w->parentWidget()) {
             w = w->parentWidget()->window();
             if(w == tlw)
@@ -7435,8 +7451,7 @@ inline void setDisabledStyle(QWidget *w, bool setStyle)
             dwStyle &= ~WS_DISABLED;
         SetWindowLong(w->winId(), GWL_STYLE, dwStyle);
         // we might need to repaint in some situations (eg. menu)
-        if (setStyle)
-            w->repaint();
+        w->repaint();
     }
 }
 #endif
@@ -9132,10 +9147,14 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
     bool resized = testAttribute(Qt::WA_Resized);
     bool wasCreated = testAttribute(Qt::WA_WState_Created);
     QWidget *oldtlw = window();
-    bool newParent = (parent != parentWidget()) || !wasCreated;
+
+    QWidget *desktopWidget = 0;
+    if (parent && parent->windowType() == Qt::Desktop)
+        desktopWidget = parent;
+    bool newParent = (parent != parentWidget()) || !wasCreated || desktopWidget;
 
 #if defined(Q_WS_X11) || defined(Q_WS_WIN)
-    if (newParent && parent) {
+    if (newParent && parent && !desktopWidget) {
         if (testAttribute(Qt::WA_NativeWindow) && !qApp->testAttribute(Qt::AA_DontCreateNativeWidgetSiblings))
             parent->d_func()->enforceNativeChildren();
         else if (parent->d_func()->nativeChildrenForced() || parent->testAttribute(Qt::WA_PaintOnScreen))
@@ -9157,6 +9176,8 @@ void QWidget::setParent(QWidget *parent, Qt::WindowFlags f)
         focusWidget()->clearFocus();
 
     d->setParent_sys(parent, f);
+    if (desktopWidget)
+        parent = 0;
 
 #ifdef Q_BACKINGSTORE_SUBSURFACES
     QTLWExtra *extra = d->maybeTopData();
@@ -9620,7 +9641,7 @@ void QWidget::setAttribute(Qt::WidgetAttribute attribute, bool on)
                "QWidgetPrivate::high_attributes[] too small to contain all attributes in WidgetAttribute");
 
 #ifdef Q_WS_WIN
-    if (attribute == Qt::WA_PaintOnScreen) {
+    if (attribute == Qt::WA_PaintOnScreen && on) {
         // see qwidget_win.cpp, ::paintEngine for details
         paintEngine();
         if (d->noPaintOnScreen)
@@ -11250,7 +11271,7 @@ QT_END_NAMESPACE
     currently the active one then it will not make it the active
     window.  It will change the color of the taskbar entry to indicate
     that the window has changed in some way. This is because Microsoft
-    do not allow an application to interrupt what the user is currently
+    does not allow an application to interrupt what the user is currently
     doing in another application.
 
     \sa isActiveWindow(), window(), show()

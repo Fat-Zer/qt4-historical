@@ -6,11 +6,11 @@
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -202,12 +202,15 @@ namespace qdesigner_internal {
             isContainer = widgetItem->isContainer();
         }
 
+        // We might encounter temporary states with no layouts when re-layouting.
+        // Just default to Widget handling for the moment.
         if (isQLayoutWidget(w)) {
-            m_type = LayoutWidget;
-            const QLayout *layout = w->layout();
-            m_managedLayoutType = LayoutInfo::layoutType(ctx.core, layout);
-            m_className = QLatin1String(layout->metaObject()->className());
-            m_objectName = layout->objectName();
+            if (const QLayout *layout = w->layout()) {
+                m_type = LayoutWidget;
+                m_managedLayoutType = LayoutInfo::layoutType(ctx.core, layout);
+                m_className = QLatin1String(layout->metaObject()->className());
+                m_objectName = layout->objectName();
+            }
             return;
         }
 

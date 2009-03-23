@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -619,7 +619,6 @@ void QComboBoxPrivateContainer::changeEvent(QEvent *e)
 bool QComboBoxPrivateContainer::eventFilter(QObject *o, QEvent *e)
 {
     switch (e->type()) {
-    case QEvent::KeyPress:
     case QEvent::ShortcutOverride:
         switch (static_cast<QKeyEvent*>(e)->key()) {
         case Qt::Key_Enter:
@@ -858,7 +857,7 @@ QComboBox::QComboBox(bool rw, QWidget *parent, const char *name)
 #endif //QT3_SUPPORT
 
 /*!
-    \class QComboBox qcombobox.h
+    \class QComboBox
     \brief The QComboBox widget is a combined button and popup list.
 
     \ingroup basicwidgets
@@ -2306,10 +2305,11 @@ void QComboBox::showPopup()
         listRect.setHeight(listHeight);
     }
 
-    // ### Adjusting by PM_DefaultFrameWidth is not enough. Since QFrame supports
-    // SE_FrameContents, QFrame needs API to return the frameWidths
+    // add the frame size to the height.  (+the spacing for the top and the bottom item)
+    int marginTop, marginBottom;
+    view()->getContentsMargins(0, &marginTop, 0, &marginBottom);
     listRect.setHeight(listRect.height() + 2*container->spacing()
-                       + style->pixelMetric(QStyle::PM_DefaultFrameWidth, &opt, this) * 2);
+                       + marginTop + marginBottom);
 
     // Add space for margin at top and bottom if the style wants it.
     if (usePopup)
@@ -2322,6 +2322,8 @@ void QComboBox::showPopup()
             listRect.setWidth(listRect.width() + diff);
     }
 
+    //we need to activate the layout to make sure the min/maximum size are set when the widget was not yet show
+    container->layout()->activate();
     //takes account of the minimum/maximum size of the container
     listRect.setSize( listRect.size().expandedTo(container->minimumSize())
                       .boundedTo(container->maximumSize()));

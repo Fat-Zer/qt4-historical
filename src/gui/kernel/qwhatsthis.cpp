@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -659,7 +659,7 @@ void QWhatsThisPrivate::say(QWidget * widget, const QString &text, int x, int y)
     // make a fresh widget, and set it up
     QWhatsThat *whatsThat = new QWhatsThat(
         text,
-#if defined(Q_WS_X11)
+#if defined(Q_WS_X11) && !defined(QT_NO_CURSOR)
         QApplication::desktop()->screen(widget ? widget->x11Info().screen() : QCursor::x11Screen()),
 #else
         0,
@@ -672,7 +672,7 @@ void QWhatsThisPrivate::say(QWidget * widget, const QString &text, int x, int y)
 
     int scr = (widget ?
                 QApplication::desktop()->screenNumber(widget) :
-#if defined(Q_WS_X11)
+#if defined(Q_WS_X11) && !defined(QT_NO_CURSOR)
                 QCursor::x11Screen()
 #else
                 QApplication::desktop()->screenNumber(QPoint(x,y))

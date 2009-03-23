@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -48,6 +48,8 @@
 #include <QSet>
 #include <QDirIterator>
 #include "shared.h"
+
+bool runStripEnabled = true;
 
 using std::cout;
 using std::endl;
@@ -308,7 +310,21 @@ void changeInstallName(const QString &oldName, const QString &newName, const QSt
     runInstallNameTool(QStringList() << "-change" << oldName << newName << binaryPath);
 }
 
+void runStrip(const QString &binaryPath)
+{
+    if (runStripEnabled == false)
+        return;
 
+    QProcess strip;
+    strip.start("strip", QStringList() << "-x" << binaryPath);
+    strip.waitForFinished();
+    if (strip.exitCode() != 0) {
+        qDebug() << strip.readAllStandardError();
+        qDebug() << strip.readAllStandardOutput();
+    } else {
+        qDebug() << "stripped" << binaryPath;
+    }
+}
 
 /*
     Deploys the the listed frameworks listed into an app bundle.
@@ -351,6 +367,8 @@ DeploymentInfo deployQtFrameworks(QList<FrameworkInfo> frameworks, const QString
         if (deployedBinaryPath == QString())
             continue;
         
+        runStrip(deployedBinaryPath);
+
         // Install_name_tool it a new id.
         changeIdentification(framework.deployedInstallName, deployedBinaryPath);
         // Check for framework dependencies
@@ -382,11 +400,6 @@ void deployPlugins(const ApplicationBundleInfo &appBundleInfo, const QString &pl
 {
     QStringList plugins = QDir(pluginSourcePath).entryList(QStringList() << "*.dylib");
 
-    if (plugins.isEmpty() == false) {
-        QDir dir;
-        dir.mkpath(pluginDestinationPath);
-    }
-
     foreach (QString pluginName, plugins) {
         
         // Skip some Qt plugins based on what frameworks were deployed:
@@ -412,8 +425,8 @@ void deployPlugins(const ApplicationBundleInfo &appBundleInfo, const QString &pl
             if (deployedFrameworks.indexOf("Qt3Support.framework") == -1 && pluginName.contains("accessiblecompatwidgets"))
                 continue;
 
-            // Deploy the svg icon plugin if QtSVG.framework is in use.
-            if (deployedFrameworks.indexOf("QtSVG.framework") == -1 && pluginName.contains("svg"))
+            // Deploy the svg icon plugin if QtSvg.framework is in use.
+            if (deployedFrameworks.indexOf("QtSvg.framework") == -1 && pluginName.contains("svg"))
                 continue;
 
             // Deploy the phonon plugins if phonon.framework is in use
@@ -429,10 +442,15 @@ void deployPlugins(const ApplicationBundleInfo &appBundleInfo, const QString &pl
                 continue;
         }
 
+        QDir dir;
+        dir.mkpath(pluginDestinationPath);
+
         const QString sourcePath = pluginSourcePath + "/" + pluginName;
         const QString destinationPath = pluginDestinationPath + "/" + pluginName;
         if (copyFilePrintStatus(sourcePath, destinationPath)) {
         
+        runStrip(destinationPath);
+
         // Special case for the phonon plugin: CoreVideo is not available as a separate framework
         // on panther, link against the QuartzCore framework instead. (QuartzCore contians CoreVideo.)
         if (pluginName.contains("libphonon_qt7")) {
@@ -456,7 +474,7 @@ void deployPlugins(const ApplicationBundleInfo &appBundleInfo, const QString &pl
 
 void createQtConf(const QString &appBundlePath)
 {
-    QByteArray contents = "[Paths]\nPlugins = plugins\n";
+    QByteArray contents = "[Paths]\nPlugins = PlugIns\n";
     QString filePath = appBundlePath + "/Contents/Resources/";
     QString fileName = filePath + "qt.conf";
 
@@ -477,7 +495,7 @@ void createQtConf(const QString &appBundlePath)
     if (qtconf.write(contents) != -1) {
         qDebug() << "";
         qDebug() << "Created configuration file:" << fileName;
-        qDebug() << "This file sets the plugin search path to" << appBundlePath + "/Contents/plugins";
+        qDebug() << "This file sets the plugin search path to" << appBundlePath + "/Contents/PlugIns";
         qDebug() << "";
     }
 }
@@ -488,7 +506,7 @@ void deployPlugins(const QString &appBundlePath, DeploymentInfo deploymentInfo)
     applicationBundle.path = appBundlePath;
     applicationBundle.binaryPath = findAppBinary(appBundlePath);
    
-    const QString pluginDestinationPath = appBundlePath + "/" + "Contents/plugins";
+    const QString pluginDestinationPath = appBundlePath + "/" + "Contents/PlugIns";
     
 //    qDebug() << "";
 //    qDebug() << "recursively copying plugins from" << deploymentInfo.pluginPath << "to" << pluginDestinationPath;

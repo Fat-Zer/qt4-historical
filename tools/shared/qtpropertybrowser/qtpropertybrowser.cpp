@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -626,6 +626,14 @@ void QtAbstractPropertyManagerPrivate::propertyInserted(QtProperty *property,
     by this manager.
 
     \sa clear(), uninitializeProperty()
+*/
+
+/*!
+    \fn void QtAbstractPropertyBrowser::currentItemChanged(QtBrowserItem *current)
+
+    This signal is emitted when the current item changes. The current item is specified by \a current.
+
+    \sa QtAbstractPropertyBrowser::setCurrentItem()
 */
 
 /*!
@@ -1927,11 +1935,21 @@ void QtAbstractPropertyBrowser::unsetFactoryForManager(QtAbstractPropertyManager
     }
 }
 
+/*!
+    Returns the current item in the property browser.
+
+    \sa setCurrentItem()
+*/
 QtBrowserItem *QtAbstractPropertyBrowser::currentItem() const
 {
     return d_ptr->m_currentItem;
 }
 
+/*!
+    Sets the current item in the property browser to \a item.
+
+    \sa currentItem(), currentItemChanged()
+*/
 void QtAbstractPropertyBrowser::setCurrentItem(QtBrowserItem *item)
 {
     QtBrowserItem *oldItem = d_ptr->m_currentItem;

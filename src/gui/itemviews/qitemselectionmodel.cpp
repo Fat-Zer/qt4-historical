@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1218,8 +1218,12 @@ bool QItemSelectionModel::isRowSelected(int row, const QModelIndex &parent) cons
     for (int column = 0; column < colCount; ++column) {
         for (it = joined.constBegin(); it != joined.constEnd(); ++it) {
             if ((*it).contains(row, column, parent)) {
-                Qt::ItemFlags flags = d->model->index(row, column, parent).flags();
-                if ((flags & Qt::ItemIsSelectable) && (flags & Qt::ItemIsEnabled)) {
+                bool selectable = false;
+                for (int i = column; !selectable && i <= (*it).right(); ++i) {
+                    Qt::ItemFlags flags = d->model->index(row, i, parent).flags();
+                    selectable = flags & Qt::ItemIsSelectable;
+                }
+                if (selectable){
                     column = qMax(column, (*it).right());
                     break;
                 }

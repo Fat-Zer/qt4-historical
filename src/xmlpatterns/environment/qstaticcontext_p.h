@@ -3,14 +3,14 @@
 ** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
-** This file is part of the QtXMLPatterns module of the Qt Toolkit.
+** This file is part of the QtXmlPatterns module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -69,6 +69,7 @@ template<typename Key, typename T> class QHash;
 namespace QPatternist
 {
     class DynamicContext;
+    class Expression;
     class FunctionFactory;
     class SchemaTypeFactory;
 
@@ -262,7 +263,7 @@ namespace QPatternist
         virtual NamePool::Ptr namePool() const = 0;
 
         /**
-         * @short Adds @p location for @p expression.
+         * @short Adds @p location for @p reflection.
          */
         virtual void addLocation(const SourceLocationReflection *const reflection,
                                  const QSourceLocation &location) = 0;
@@ -278,6 +279,16 @@ namespace QPatternist
 
         virtual VariableSlotID currentRangeSlot() const = 0;
         virtual VariableSlotID allocateRangeSlot() = 0;
+
+        /**
+         * @short Ensures source locations are handled in such a manner that @p
+         * existingNode wraps @p newNode.
+         *
+         * Ensures that the source locations for @p existingNode, applies to
+         * @p newNode.
+         */
+        void wrapExpressionWith(const SourceLocationReflection *const existingNode,
+                                const QExplicitlySharedDataPointer<Expression> &newNode);
     };
 }
 

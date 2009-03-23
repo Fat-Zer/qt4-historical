@@ -6,11 +6,11 @@
  ** This file is part of the QtGui module of the Qt Toolkit.
  **
  ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -48,6 +48,7 @@
 #import <private/qcocoamenu_mac_p.h>
 #import <private/qcocoamenuloader_mac_p.h>
 #include <private/qt_cocoa_helpers_mac_p.h>
+#include <private/qapplication_p.h>
 
 #include <QtGui/QMenu>
 
@@ -96,6 +97,7 @@ QT_FORWARD_DECLARE_CLASS(QApplication)
 }
 
 - (BOOL)hasShortcut:(NSMenu *)menu forKey:(NSString *)key forModifiers:(NSUInteger)modifier
+  whichItem:(NSMenuItem**)outItem
 {
     for (NSMenuItem *item in [menu itemArray]) {
         if (![item isEnabled] || [item isHidden] || [item isSeparatorItem])
@@ -103,14 +105,22 @@ QT_FORWARD_DECLARE_CLASS(QApplication)
         if ([item hasSubmenu]) {
             if ([self hasShortcut:[item submenu]
                            forKey:key
-                     forModifiers:modifier])
+                     forModifiers:modifier whichItem:outItem]) {
+                if (outItem)
+                    *outItem = item;
                 return YES;
+            }
         }
         NSString *menuKey = [item keyEquivalent];
         if (menuKey && NSOrderedSame == [menuKey compare:key]
-            && (modifier == [item keyEquivalentModifierMask]))
+            && (modifier == [item keyEquivalentModifierMask])) {
+            if (outItem)
+                *outItem = item;
             return YES;
+        }
     }
+    if (outItem)
+        *outItem = 0;
     return NO;
 }
 
@@ -122,14 +132,28 @@ QT_FORWARD_DECLARE_CLASS(QApplication)
     // accepts the key event, we then return YES, but set the target and action to be nil,
     // which means that the action should not be triggered. In every other case we return
     // NO, which means that Cocoa can do as it pleases (i.e., fire the menu action).
+    NSMenuItem *whichItem;
     if ([self hasShortcut:menu
                    forKey:[event characters]
-             forModifiers:([event modifierFlags] & NSDeviceIndependentModifierFlagsMask)]) {
-        bool keyOK = false;
-        QWidget *widgetToGetKey = QApplication::focusWidget();
-        if (widgetToGetKey) {
-            keyOK = qt_dispatchKeyEvent(event, widgetToGetKey);
-            if (keyOK) {
+             forModifiers:([event modifierFlags] & NSDeviceIndependentModifierFlagsMask)
+                 whichItem:&whichItem]) {
+        QWidget *widget = 0;
+        QAction *qaction = 0;
+        if (whichItem && [whichItem tag]) {
+            qaction = reinterpret_cast<QAction *>([whichItem tag]);
+        }
+        if (qApp->activePopupWidget())
+            widget = (qApp->activePopupWidget()->focusWidget() ?
+                      qApp->activePopupWidget()->focusWidget() : qApp->activePopupWidget());
+        else if (QApplicationPrivate::focus_widget)
+            widget = QApplicationPrivate::focus_widget;
+        if (qaction && widget) {
+            int key = qaction->shortcut();
+            QKeyEvent accel_ev(QEvent::ShortcutOverride, (key & (~Qt::KeyboardModifierMask)),
+                               Qt::KeyboardModifiers(key & Qt::KeyboardModifierMask));
+            accel_ev.ignore();
+            qt_sendSpontaneousEvent(widget, &accel_ev);
+            if (accel_ev.isAccepted()) {
                 *target = nil;
                 *action = nil;
                 return YES;

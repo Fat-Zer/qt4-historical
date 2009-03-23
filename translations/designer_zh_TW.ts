@@ -1373,7 +1373,7 @@ There&apos;s nothing more here. You should get back to work.</source>
     </message>
 </context>
 <context>
-    <name>PluginDialog</name>
+    <name>qdesigner_internal::PluginDialog</name>
     <message>
         <location filename="../tools/designer/src/designer/plugindialog.cpp" line="40"/>
         <source>Components</source>

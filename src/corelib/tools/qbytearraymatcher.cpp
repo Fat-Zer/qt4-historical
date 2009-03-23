@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -123,6 +123,11 @@ QByteArrayMatcher::QByteArrayMatcher()
     qMemSet(p.q_skiptable, 0, sizeof(p.q_skiptable));
 }
 
+/*!
+  Constructs a byte array matcher from \a pattern. \a pattern
+  has the given \a length. \a pattern must remain in scope, but
+  the destructor does not delete \a pattern.
+ */
 QByteArrayMatcher::QByteArrayMatcher(const char *pattern, int length)
     : d(0)
 {
@@ -198,6 +203,13 @@ int QByteArrayMatcher::indexIn(const QByteArray &ba, int from) const
                    p.p, p.l, p.q_skiptable);
 }
 
+/*!
+    Searches the char string \a str, which has length \a len, from
+    byte position \a from (default 0, i.e. from the first byte), for
+    the byte array pattern() that was set in the constructor or in the
+    most recent call to setPattern(). Returns the position where the
+    pattern() matched in \a str, or -1 if no match was found.
+*/
 int QByteArrayMatcher::indexIn(const char *str, int len, int from) const
 {
     if (from < 0)

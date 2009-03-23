@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -49,8 +49,10 @@
 QT_BEGIN_NAMESPACE
 #endif
 
+
+
 class QtAbstractPropertyManager;
-class QtAbstractPropertyBrowserPrivate;
+class QtPropertyPrivate;
 
 class QtProperty
 {
@@ -87,8 +89,10 @@ protected:
     void propertyChanged();
 private:
     friend class QtAbstractPropertyManager;
-    class QtPropertyPrivate *d_ptr;
+    QtPropertyPrivate *d_ptr;
 };
+
+class QtAbstractPropertyManagerPrivate;
 
 class QtAbstractPropertyManager : public QObject
 {
@@ -118,7 +122,7 @@ protected:
     virtual QtProperty *createProperty();
 private:
     friend class QtProperty;
-    class QtAbstractPropertyManagerPrivate *d_ptr;
+    QtAbstractPropertyManagerPrivate *d_ptr;
     Q_DECLARE_PRIVATE(QtAbstractPropertyManager)
     Q_DISABLE_COPY(QtAbstractPropertyManager)
 };
@@ -223,6 +227,7 @@ private:
 };
 
 class QtAbstractPropertyBrowser;
+class QtBrowserItemPrivate;
 
 class QtBrowserItem
 {
@@ -234,9 +239,11 @@ public:
 private:
     explicit QtBrowserItem(QtAbstractPropertyBrowser *browser, QtProperty *property, QtBrowserItem *parent);
     ~QtBrowserItem();
-    class QtBrowserItemPrivate *d_ptr;
+    QtBrowserItemPrivate *d_ptr;
     friend class QtAbstractPropertyBrowserPrivate;
 };
+
+class QtAbstractPropertyBrowserPrivate;
 
 class QtAbstractPropertyBrowser : public QWidget
 {

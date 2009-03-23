@@ -1483,7 +1483,7 @@ Nie ma już nic więcej. Powinieneś zabrać się do pracy.</numerusform>
     </message>
 </context>
 <context>
-    <name>PluginDialog</name>
+    <name>qdesigner_internal::PluginDialog</name>
     <message>
         <location filename="../tools/designer/src/designer/plugindialog.cpp" line="+40"/>
         <source>Components</source>

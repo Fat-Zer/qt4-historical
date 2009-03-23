@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1009,6 +1009,10 @@ QGraphicsWidget *QGraphicsItem::window() const
     parent, it is first removed from the previous parent. If \a parent is 0,
     this item will become a top-level item.
 
+    Note that this implicitly adds this graphics item to the scene of
+    the parent. You should not \l{QGraphicsScene::addItem()}{add} the
+    item to the scene yourself.
+
     \sa parentItem(), children()
 */
 void QGraphicsItem::setParentItem(QGraphicsItem *parent)
@@ -1534,8 +1538,12 @@ void QGraphicsItemPrivate::setVisibleHelper(bool newVisible, bool explicitly, bo
     visible = newVisible;
 
     // Schedule redrawing
-    if (update)
+    if (update) {
+        QGraphicsItemCache *c = (QGraphicsItemCache *)qVariantValue<void *>(extra(ExtraCacheData));
+        if (c)
+            c->purge();
         updateHelper(QRectF(), /* force = */ true);
+    }
 
     // Certain properties are dropped as an item becomes invisible.
     if (!newVisible) {
@@ -7012,6 +7020,7 @@ QVariant QGraphicsLineItem::extension(const QVariant &variant) const
     QPixmap::createHeuristicMask().  The performance and memory consumption
     is similar to MaskShape.
 */
+extern QPainterPath qt_regionToPath(const QRegion &region);
 
 class QGraphicsPixmapItemPrivate : public QGraphicsItemPrivate
 {
@@ -7037,7 +7046,7 @@ public:
         case QGraphicsPixmapItem::MaskShape: {
             QBitmap mask = pixmap.mask();
             if (!mask.isNull()) {
-                shape.addRegion(QRegion(mask).translated(offset.toPoint()));
+                shape = qt_regionToPath(QRegion(mask).translated(offset.toPoint()));
                 break;
             }
             // FALL THROUGH
@@ -7047,7 +7056,7 @@ public:
             break;
         case QGraphicsPixmapItem::HeuristicMaskShape:
 #ifndef QT_NO_IMAGE_HEURISTIC_MASK
-            shape.addRegion(QRegion(pixmap.createHeuristicMask()).translated(offset.toPoint()));
+            shape = qt_regionToPath(QRegion(pixmap.createHeuristicMask()).translated(offset.toPoint()));
 #else
             shape.addRect(QRectF(offset.x(), offset.y(), pixmap.width(), pixmap.height()));
 #endif
@@ -7352,7 +7361,7 @@ QVariant QGraphicsPixmapItem::extension(const QVariant &variant) const
 
     \img graphicsview-textitem.png
 
-    \note QGraphicsTextItem accepts \l{QGraphicsItem::acceptHoverEvents()}{hoover events}
+    \note QGraphicsTextItem accepts \l{QGraphicsItem::acceptHoverEvents()}{hover events}
           by default. You can change this with \l{QGraphicsItem::}{setAcceptHoverEvents()}.
 
     \sa QGraphicsSimpleTextItem, QGraphicsPathItem, QGraphicsRectItem,

@@ -6,11 +6,11 @@
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -2148,7 +2148,7 @@ bool QFtp::hasPendingCommands() const
 /*!
     Deletes all pending commands from the list of scheduled commands.
     This does not affect the command that is being executed. If you
-    want to stop this this as well, use abort().
+    want to stop this as well, use abort().
 
     \sa hasPendingCommands() abort()
 */

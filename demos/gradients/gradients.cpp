@@ -6,11 +6,11 @@
 ** This file is part of the demonstration applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -374,7 +374,7 @@ GradientWidget::GradientWidget(QWidget *parent)
     connect(showSourceButton, SIGNAL(clicked()), m_renderer, SLOT(showSource()));
 #ifdef QT_OPENGL_SUPPORT
     connect(enableOpenGLButton, SIGNAL(clicked(bool)), m_renderer, SLOT(enableOpenGL(bool)));
-#endif
+#endif    
     connect(whatsThisButton, SIGNAL(clicked(bool)), m_renderer, SLOT(setDescriptionEnabled(bool)));
     connect(whatsThisButton, SIGNAL(clicked(bool)),
             m_renderer->hoverPoints(), SLOT(setDisabled(bool)));
@@ -493,10 +493,8 @@ void GradientRenderer::paint(QPainter *p)
         g = QLinearGradient(pts.at(0), pts.at(1));
 
     } else if (m_gradientType == Qt::RadialGradientPattern) {
-        QLineF line(pts.at(0), pts.at(1));
-        if (line.length() > 132)
-            line.setLength(132);
-        g = QRadialGradient(line.p1(), qMin(width(), height()) / 3.0, line.p2());
+        g = QRadialGradient(pts.at(0), qMin(width(), height()) / 3.0, pts.at(1));
+
     } else {
         QLineF l(pts.at(0), pts.at(1));
         qreal angle = l.angle(QLineF(0, 0, 1, 0));

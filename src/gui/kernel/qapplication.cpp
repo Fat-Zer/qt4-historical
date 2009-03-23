@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -850,6 +850,7 @@ QApplication::QApplication(Display *dpy, int &argc, char **argv,
 /*!
   Initializes the QApplication object, called from the constructors.
 */
+extern void qInitDrawhelperAsm();
 
 void QApplicationPrivate::initialize()
 {
@@ -890,7 +891,6 @@ void QApplicationPrivate::initialize()
 #endif //Q_OS_WINCE
 
     // Set up which span functions should be used in raster engine...
-    extern void qInitDrawhelperAsm();
     qInitDrawhelperAsm();
 
 #if !defined(Q_WS_X11) && !defined(Q_WS_QWS)
@@ -1521,9 +1521,9 @@ QStyle* QApplication::setStyle(const QString& style)
 /*!
    \since 4.5
 
-   Sets the default graphics backend to be used for on-screen widgets
-   and QPixmaps. Available options are \c{"native"}, \c{"raster"} and
-   \c{"opengl"}.
+   Sets the default graphics backend to \a system, which will be used
+   for on-screen widgets and QPixmaps. The available systems are
+   \c{"native"}, \c{"raster"} and \c{"opengl"}.
 
    Note that this function call overrides both the application
    commandline \c{-graphicssystem} switch and the configure
@@ -3114,7 +3114,7 @@ Qt::KeyboardModifiers QApplication::keyboardModifiers()
   Returns the current state of the buttons on the mouse. The current
   state is updated syncronously as the event queue is emptied of
   events that will spontaneously change the mouse state
-  (QEvent::MousePress and QEvent::MouseRelease events).
+  (QEvent::MouseButtonPress and QEvent::MouseButtonRelease events).
 
   It should be noted this may not reflect the actual buttons held on
   theinput device at the time of calling but rather the mouse buttons
@@ -4976,7 +4976,11 @@ QInputContext *QApplication::inputContext() const
         return 0;
     if (!d->inputContext) {
         QApplication *that = const_cast<QApplication *>(this);
-        that->d_func()->inputContext = QInputContextFactory::create(X11->default_im, that);
+        QInputContext *qic = QInputContextFactory::create(X11->default_im, that);
+        // fallback to default X Input Method.
+        if (!qic)
+            qic = QInputContextFactory::create(QLatin1String("xim"), that);
+        that->d_func()->inputContext = qic;
     }
 #endif
     return d->inputContext;

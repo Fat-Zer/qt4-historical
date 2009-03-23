@@ -6,11 +6,11 @@
 ** This file is part of the plugins of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -809,7 +809,7 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage,
 
         if (params.contains(QLatin1String("GetHeaderInformation"))) {
             if (!ensureValidImage(outImage, &cinfo, true))
-                return false;
+                longjmp(jerr.setjmp_buffer, 1);
         } else if (params.contains(QLatin1String("Scale"))) {
 #if defined(_MSC_VER) && _MSC_VER >= 1400 && !defined(Q_OS_WINCE)
             sscanf_s(params.toLatin1().data(), "Scale(%i, %i, %1023s)",
@@ -848,7 +848,7 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage,
                 // Unsupported format
             }
             if (outImage->isNull())
-                return false;
+                longjmp(jerr.setjmp_buffer, 1);
 
             if (!outImage->isNull()) {
                 QImage tmpImage(cinfo.output_width, 1, QImage::Format_RGB32);
@@ -894,7 +894,7 @@ static bool read_jpeg_image(QIODevice *device, QImage *outImage,
 #endif
         } else {
             if (!ensureValidImage(outImage, &cinfo))
-                return false;
+                longjmp(jerr.setjmp_buffer, 1);
 
             uchar* data = outImage->bits();
             int bpl = outImage->bytesPerLine();

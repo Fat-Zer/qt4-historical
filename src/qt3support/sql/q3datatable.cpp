@@ -6,11 +6,11 @@
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -67,19 +67,21 @@ class Q3DataTablePrivate
 {
 public:
     Q3DataTablePrivate()
-	: nullTxtChanged( false ),
-	  haveAllRows( false ),
-	  continuousEdit( false ),
-	  editorFactory( 0 ),
-	  propertyMap( 0 ),
-	  editRow( -1 ),
-	  editCol( -1 ),
-	  insertRowLast( -1 ),
-	  insertPreRows( -1 ),
-	  editBuffer( 0 ),
-	  cancelMode( false ),
-	  cancelInsert( false ),
-	  cancelUpdate( false )
+        : nullTxtChanged( false ),
+          haveAllRows( false ),
+          continuousEdit( false ),
+          editorFactory( 0 ),
+          propertyMap( 0 ),
+          datefmt( Qt::TextDate ),
+          editRow( -1 ),
+          editCol( -1 ),
+          insertRowLast( -1 ),
+          insertPreRows( -1 ),
+          editBuffer( 0 ),
+          cancelMode( false ),
+          cancelInsert( false ),
+          cancelUpdate( false ),
+          lastAt( -1 )
     {}
     ~Q3DataTablePrivate() { if ( propertyMap ) delete propertyMap; }
 
@@ -138,7 +140,7 @@ void qt_debug_buffer( const QString& msg, QSqlRecord* cursor )
 
 
 /*!
-    \class Q3DataTable qdatatable.h
+    \class Q3DataTable
     \brief The Q3DataTable class provides a flexible SQL table widget that supports browsing and editing.
 
     \compat

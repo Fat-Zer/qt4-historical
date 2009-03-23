@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -216,8 +216,9 @@ Q_GUI_EXPORT _qt_filedialog_save_filename_hook qt_filedialog_save_filename_hook 
     are resolved.
     \value DontConfirmOverwrite Don't ask for confirmation if an existing file is selected.
     By default confirmation is requested.
-    \value DontUseNativeDialog Don't use the native file dialog.  By default on Mac OS X and Windows,
-    the native file dialog is used.
+    \value DontUseNativeDialog Don't use the native file dialog. By default on Mac OS X and Windows,
+    the native file dialog is used unless you use a subclass of QFileDialog that contains the
+    Q_OBJECT macro.
     \value ReadOnly Indicates that the model is readonly.
     \value HideNameFilterDetails Indicates if the is hidden or not.
 
@@ -549,6 +550,21 @@ void QFileDialogPrivate::emitFilesSelected(const QStringList &files)
         emit q->fileSelected(files.first());
 }
 
+bool QFileDialogPrivate::canBeNativeDialog()
+{
+    Q_Q(QFileDialog);
+    if (nativeDialogInUse)
+        return true;
+    if (q->testAttribute(Qt::WA_DontShowOnScreen))
+        return false;
+    if (opts & QFileDialog::DontUseNativeDialog)
+        return false;
+
+    QLatin1String staticName(QFileDialog::staticMetaObject.className());
+    QLatin1String dynamicName(q->metaObject()->className());
+    return (staticName == dynamicName);
+}
+
 /*!
     Sets the given \a option to be enabled if \a on is true;
     otherwise, clears the given \a option.
@@ -653,8 +669,7 @@ void QFileDialog::setVisible(bool visible)
     } else if (testAttribute(Qt::WA_WState_ExplicitShowHide) && testAttribute(Qt::WA_WState_Hidden))
         return;
 
-    if (d->nativeDialogInUse
-            || !(testAttribute(Qt::WA_DontShowOnScreen) || (d->opts & DontUseNativeDialog))){
+    if (d->canBeNativeDialog()){
         if (d->setVisible_sys(visible)){
             d->nativeDialogInUse = true;
             // Set WA_DontShowOnScreen so that QDialog::setVisible(visible) below
@@ -765,6 +780,13 @@ void QFileDialog::selectFile(const QString &filename)
         if (QFileInfo(filename).isAbsolute()) {
             QString current = d->rootPath();
             text.remove(current);
+            if (text.at(0) == QDir::separator()
+#ifdef Q_OS_WIN
+                //On Windows both cases can happen
+                || text.at(0) == QLatin1Char('/')
+#endif
+                )
+                text = text.remove(0,1);
         }
         if (!isVisible() || !d->lineEdit()->hasFocus())
             d->lineEdit()->setText(text);
@@ -1381,6 +1403,12 @@ QStringList QFileDialog::history() const
     Doing so can cause incorrect or unintuitive editing behavior since each
     view connected to a given delegate may receive the \l{QAbstractItemDelegate::}{closeEditor()}
     signal, and attempt to access, modify or close an editor that has already been closed.
+
+    Note that the model used is QFileSystemModel. It has custom item data roles, which is
+    described by the \l{QFileSystemModel::}{Roles} enum. You can use a QFileIconProvider if
+    you only want custom icons.
+
+    \sa itemDelegate(), setIconProvider(), QFileSystemModel
 */
 void QFileDialog::setItemDelegate(QAbstractItemDelegate *delegate)
 {

@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -59,33 +59,33 @@ class Tree;
 
 class CodeParser
 {
-public:
+ public:
     CodeParser();
     virtual ~CodeParser();
 
-    virtual void initializeParser( const Config& config );
+    virtual void initializeParser(const Config& config);
     virtual void terminateParser();
     virtual QString language() = 0;
     virtual QString headerFileNameFilter();
     virtual QString sourceFileNameFilter() = 0;
-    virtual void parseHeaderFile( const Location& location,
-				  const QString& filePath, Tree *tree );
-    virtual void parseSourceFile( const Location& location,
-				  const QString& filePath, Tree *tree ) = 0;
-    virtual void doneParsingHeaderFiles( Tree *tree );
-    virtual void doneParsingSourceFiles( Tree *tree ) = 0;
+    virtual void parseHeaderFile(const Location& location,
+                                 const QString& filePath, Tree *tree);
+    virtual void parseSourceFile(const Location& location,
+                                 const QString& filePath, Tree *tree) = 0;
+    virtual void doneParsingHeaderFiles(Tree *tree);
+    virtual void doneParsingSourceFiles(Tree *tree) = 0;
 
-    static void initialize( const Config& config );
+    static void initialize(const Config& config);
     static void terminate();
-    static CodeParser *parserForLanguage( const QString& language );
+    static CodeParser *parserForLanguage(const QString& language);
 
-protected:
+ protected:
     QSet<QString> commonMetaCommands();
     void processCommonMetaCommand(const Location& location,
 				  const QString& command, const QString& arg,
 				  Node *node, Tree *tree);
 
-private:
+ private:
     static QList<CodeParser *> parsers;
 };
 

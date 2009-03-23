@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -173,7 +173,7 @@ QIODevicePrivate::~QIODevicePrivate()
     reading; for example, if new data has arrived on the network or if
     additional data is appended to a file that you are reading
     from. You can call bytesAvailable() to determine the number of
-    bytes that currently available for reading. It's common to use
+    bytes that are currently available for reading. It's common to use
     bytesAvailable() together with the readyRead() signal when
     programming with asynchronous devices such as QTcpSocket, where
     fragments of data can arrive at arbitrary points in
@@ -1183,7 +1183,7 @@ qint64 QIODevice::readLineData(char *data, qint64 maxSize)
     signal.
 
     Subclasses that reimplement this function must call the base
-    implementation in order to include the size of the QIODevice's buffer. Example:
+    implementation in order to include the contents of the QIODevice's buffer. Example:
 
     \snippet doc/src/snippets/code/src_corelib_io_qiodevice.cpp 3
 

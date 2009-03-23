@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -258,6 +258,8 @@ QPainterState *QPaintEngineEx::createState(QPainterState *orig) const
     return new QPainterState(orig);
 }
 
+extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
+
 void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &pen)
 {
 #ifdef QT_DEBUG_DRAW
@@ -326,7 +328,6 @@ void QPaintEngineEx::stroke(const QVectorPath &path, const QPen &pen)
         flags |= QVectorPath::CurvedShapeHint;
 
     // ### Perspective Xforms are currently not supported...
-    extern bool qt_scaleForTransform(const QTransform &transform, qreal *scale); // qtransform.cpp
     qreal txscale = 1;
     if (!(pen.isCosmetic() || (qt_scaleForTransform(state()->matrix, &txscale) && txscale != 1))) {
         // We include cosmetic pens in this case to avoid having to

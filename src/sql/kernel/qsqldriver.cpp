@@ -6,11 +6,11 @@
 ** This file is part of the QtSql module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -402,8 +402,7 @@ QString QSqlDriver::sqlStatement(StatementType type, const QString &tableName,
         if (s.isEmpty())
             return s;
         s.chop(2);
-        s.prepend(QLatin1String("SELECT ")).append(QLatin1String(" FROM ")).append(
-                escapeIdentifier(tableName, TableName));
+        s.prepend(QLatin1String("SELECT ")).append(QLatin1String(" FROM ")).append(escapeIdentifier(tableName, TableName));
         break;
     case WhereStatement:
         if (preparedStatement) {
@@ -448,8 +447,7 @@ QString QSqlDriver::sqlStatement(StatementType type, const QString &tableName,
         s.append(QLatin1String("DELETE FROM ")).append(escapeIdentifier(tableName, TableName));
         break;
     case InsertStatement: {
-        s.append(QLatin1String("INSERT INTO ")).append(escapeIdentifier(
-                    tableName, TableName)).append(QLatin1String(" ("));
+        s.append(QLatin1String("INSERT INTO ")).append(escapeIdentifier(tableName, TableName)).append(QLatin1String(" ("));
         QString vals;
         for (i = 0; i < rec.count(); ++i) {
             if (!rec.isGenerated(i) || !rec.value(i).isValid())

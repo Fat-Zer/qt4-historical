@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -2866,13 +2866,14 @@ void QDirect3DPaintEnginePrivate::updateClipPath(const QPainterPath &path, Qt::C
     m_draw_helper->setClipPath(m_clip_path, aaitem); */
 }
 
+extern QPainterPath qt_regionToPath(const QRegion &region);
+
 void QDirect3DPaintEnginePrivate::updateClipRegion(const QRegion &clipregion, Qt::ClipOperation op)
 {
     if (m_draw_helper->needsFlushing())
         flushBatch();
     if (m_has_complex_clipping) {
-        QPainterPath path;
-        path.addRegion(clipregion);
+        QPainterPath path = qt_regionToPath(clipregion);
         updateClipPath(path, op);
         return;
     }
@@ -2910,8 +2911,7 @@ void QDirect3DPaintEnginePrivate::updateClipRegion(const QRegion &clipregion, Qt
             crgn = m_sysclip_region;
     }
 
-    QPainterPath path;
-    path.addRegion(crgn);
+    QPainterPath path = qt_regionToPath(crgn);
     m_draw_helper->setClipPath(path, &item);
 }
 

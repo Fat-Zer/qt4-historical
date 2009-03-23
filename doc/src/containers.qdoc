@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -40,8 +40,8 @@
 ****************************************************************************/
 
 /*!
-    \title Generic Containers
     \group containers
+    \title Generic Containers
     \ingroup architecture
     \ingroup groups
     \keyword container class
@@ -719,7 +719,7 @@
     characters allocated, 15000 of which are occupied.
 
     The values above may seem a bit strange, but here are the guiding
-    priciples:
+    principles:
     \list
     \o QString allocates 4 characters at a time until it reaches size 20.
     \o From 20 to 4084, it advances by doubling the size each time.

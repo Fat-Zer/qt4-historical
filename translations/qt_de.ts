@@ -6066,147 +6066,147 @@ Bitte wählen Sie einen anderen Dateinamen.</translation>
     <message>
         <location filename="../src/3rdparty/webkit/WebKit/qt/Api/qwebpage.cpp" line="+1342"/>
         <source>JavaScript Alert - %1</source>
-        <translation type="unfinished"></translation>
+        <translation>JavaScript-Hinweis - %1</translation>
     </message>
     <message>
         <location line="+15"/>
         <source>JavaScript Confirm - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JavaScript-Bestätigung - %1</translation>
     </message>
     <message>
         <location line="+17"/>
         <source>JavaScript Prompt - %1</source>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">JavaScript-Eingabeaufforderung - %1</translation>
     </message>
     <message>
         <location line="+333"/>
         <source>Move the cursor to the next character</source>
-        <translation type="unfinished">Positionsmarke auf folgendes Zeichen setzen</translation>
+        <translation>Positionsmarke auf folgendes Zeichen setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the previous character</source>
-        <translation type="unfinished">Positionsmarke auf vorangehendes Zeichen setzen</translation>
+        <translation>Positionsmarke auf vorangehendes Zeichen setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the next word</source>
-        <translation type="unfinished">Positionsmarke auf folgendes Wort setzen</translation>
+        <translation>Positionsmarke auf folgendes Wort setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the previous word</source>
-        <translation type="unfinished">Positionsmarke auf vorangehendes Wort setzen</translation>
+        <translation>Positionsmarke auf vorangehendes Wort setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the next line</source>
-        <translation type="unfinished">Positionsmarke auf folgende Zeile setzen</translation>
+        <translation>Positionsmarke auf folgende Zeile setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the previous line</source>
-        <translation type="unfinished">Positionsmarke auf vorangehende Zeile setzen</translation>
+        <translation>Positionsmarke auf vorangehende Zeile setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the start of the line</source>
-        <translation type="unfinished">Positionsmarke auf Zeilenanfang setzen</translation>
+        <translation>Positionsmarke auf Zeilenanfang setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the end of the line</source>
-        <translation type="unfinished">Positionsmarke auf Zeilenende setzen</translation>
+        <translation>Positionsmarke auf Zeilenende setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the start of the block</source>
-        <translation type="unfinished">Positionsmarke auf Anfang des Blocks setzen</translation>
+        <translation>Positionsmarke auf Anfang des Blocks setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the end of the block</source>
-        <translation type="unfinished">Positionsmarke auf Ende des Blocks setzen</translation>
+        <translation>Positionsmarke auf Ende des Blocks setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the start of the document</source>
-        <translation type="unfinished">Positionsmarke auf Anfang des Dokumentes setzen</translation>
+        <translation>Positionsmarke auf Anfang des Dokumentes setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Move the cursor to the end of the document</source>
-        <translation type="unfinished">Positionsmarke auf Ende des Dokumentes setzen</translation>
+        <translation>Positionsmarke auf Ende des Dokumentes setzen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the next character</source>
-        <translation type="unfinished">Bis zum folgenden Zeichen markieren</translation>
+        <translation>Bis zum folgenden Zeichen markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the previous character</source>
-        <translation type="unfinished">Bis zum vorangehenden Zeichen markieren</translation>
+        <translation>Bis zum vorangehenden Zeichen markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the next word</source>
-        <translation type="unfinished">Bis zum folgenden Wort markieren</translation>
+        <translation>Bis zum folgenden Wort markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the previous word</source>
-        <translation type="unfinished">Bis zum vorangehenden Wort markieren</translation>
+        <translation>Bis zum vorangehenden Wort markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the next line</source>
-        <translation type="unfinished">Bis zur folgenden Zeile markieren</translation>
+        <translation>Bis zur folgenden Zeile markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the previous line</source>
-        <translation type="unfinished">Bis zur vorangehenden Zeile markieren</translation>
+        <translation>Bis zur vorangehenden Zeile markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the start of the line</source>
-        <translation type="unfinished">Bis zum Zeilenanfang markieren</translation>
+        <translation>Bis zum Zeilenanfang markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the end of the line</source>
-        <translation type="unfinished">Bis zum Zeilenende markieren</translation>
+        <translation>Bis zum Zeilenende markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the start of the block</source>
-        <translation type="unfinished">Bis zum Anfang des Blocks markieren</translation>
+        <translation>Bis zum Anfang des Blocks markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the end of the block</source>
-        <translation type="unfinished">Bis zum Ende des Blocks markieren</translation>
+        <translation>Bis zum Ende des Blocks markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the start of the document</source>
-        <translation type="unfinished">Bis zum Anfang des Dokuments markieren</translation>
+        <translation>Bis zum Anfang des Dokuments markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Select to the end of the document</source>
-        <translation type="unfinished">Bis zum Ende des Dokuments markieren</translation>
+        <translation>Bis zum Ende des Dokuments markieren</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete to the start of the word</source>
-        <translation type="unfinished">Bis zum Anfang des Wortes löschen</translation>
+        <translation>Bis zum Anfang des Wortes löschen</translation>
     </message>
     <message>
         <location line="+3"/>
         <source>Delete to the end of the word</source>
-        <translation type="unfinished">Bis zum Ende des Wortes löschen</translation>
+        <translation>Bis zum Ende des Wortes löschen</translation>
     </message>
 </context>
 <context>

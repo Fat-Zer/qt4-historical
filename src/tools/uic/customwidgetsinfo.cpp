@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -71,14 +71,20 @@ void CustomWidgetsInfo::acceptCustomWidget(DomCustomWidget *node)
     m_customWidgets.insert(node->elementClass(), node);
 }
 
-bool CustomWidgetsInfo::extends(const QString &className, const QLatin1String &baseClassName) const
+bool CustomWidgetsInfo::extends(const QString &classNameIn, const QLatin1String &baseClassName) const
 {
-    if (className == baseClassName)
+    if (classNameIn == baseClassName)
         return true;
 
-    if (DomCustomWidget *c = customWidget(className))
-        return c->elementExtends() == baseClassName;
-
+    QString className = classNameIn;
+    while (const DomCustomWidget *c = customWidget(className)) {
+        const QString extends = c->elementExtends();
+        if (className == extends) // Faulty legacy custom widget entries exist.
+            return false;
+        if (extends == baseClassName)
+            return true;
+        className = extends;
+    }
     return false;
 }
 

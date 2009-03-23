@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -433,7 +433,7 @@ extern "C" {
         QPaintEngine *engine = qwidget->paintEngine();
         if (engine)
             engine->setSystemClip(qrgn);
-        if (qwidgetprivate->extra && qwidgetprivate->extra->imageMask) {
+        if (qwidgetprivate->extra && qwidgetprivate->extra->hasMask) {
             CGRect widgetRect = CGRectMake(0, 0, qwidget->width(), qwidget->height());
             CGContextTranslateCTM (cg, 0, widgetRect.size.height);
             CGContextScaleCTM(cg, 1, -1);
@@ -812,6 +812,7 @@ extern "C" {
     qwidget->setGeometry(newGeo);
     qwidget->setAttribute(Qt::WA_Moved, moved);
     qwidget->setAttribute(Qt::WA_Resized, resized);
+    qwidgetprivate->syncCocoaMask();
 }
 
 - (BOOL)isEnabled
@@ -886,15 +887,18 @@ extern "C" {
     QWidget *widgetToGetKey = qwidget;
 
     QWidget *popup = qAppInstance()->activePopupWidget();
-    if (popup && popup != qwidget->window())
+    bool sendToPopup = false;
+    if (popup && popup != qwidget->window()) {
         widgetToGetKey = popup->focusWidget() ? popup->focusWidget() : popup;
+        sendToPopup = true;
+    }
 
     if (widgetToGetKey->testAttribute(Qt::WA_InputMethodEnabled)) {
         [qt_mac_nativeview_for(widgetToGetKey) interpretKeyEvents:[NSArray arrayWithObject: theEvent]];
     }
     if (sendKeyEvents && !composing) {
         bool keyOK = qt_dispatchKeyEvent(theEvent, widgetToGetKey);
-        if (!keyOK)
+        if (!keyOK && !sendToPopup)
             [super keyDown:theEvent];
     }
 }
@@ -1202,15 +1206,16 @@ Qt::DropAction QDragManager::drag(QDrag *o)
     // convert the image to NSImage.
     NSImage *image = (NSImage *)qt_mac_create_nsimage(pix);
     [image retain];
-    DnDParams *dndParams = [QT_MANGLE_NAMESPACE(QCocoaView) currentMouseEvent];                       
+    DnDParams *dndParams = [QT_MANGLE_NAMESPACE(QCocoaView) currentMouseEvent];
     // save supported actions 
     [dndParams->view setSupportedActions: qt_mac_mapDropActions(dragPrivate()->possible_actions)];
-    NSPoint imageLoc = {dndParams->localPoint.x - hotspot.x(), 
-			dndParams->localPoint.y + pix.height() - hotspot.y()};
+    NSPoint imageLoc = {dndParams->localPoint.x - hotspot.x(),
+                        dndParams->localPoint.y + pix.height() - hotspot.y()};
     NSSize mouseOffset = {0.0, 0.0};
     NSPasteboard *pboard = [NSPasteboard pasteboardWithName:NSDragPboard];
     NSPoint windowPoint = [dndParams->theEvent locationInWindow];
     // do the drag
+    [dndParams->view retain];
     [dndParams->view dragImage:image
                             at:imageLoc
                         offset:mouseOffset
@@ -1218,13 +1223,14 @@ Qt::DropAction QDragManager::drag(QDrag *o)
                     pasteboard:pboard
                         source:dndParams->view
                      slideBack:YES];
+    [dndParams->view release];
     [image release];
     object = 0;
     Qt::DropAction performedAction(qt_mac_mapNSDragOperation(dndParams->performedAction));
     // do post drag processing, if required.
     if(performedAction != Qt::IgnoreAction) {
         // check if the receiver points us to a file location. 
-	// if so, we need to do the file copy/move ourselves.
+        // if so, we need to do the file copy/move ourselves.
         QCFType<CFURLRef> pasteLocation = 0;
         PasteboardCopyPasteLocation(dragBoard.pasteBoard(), &pasteLocation);
         if (pasteLocation) {

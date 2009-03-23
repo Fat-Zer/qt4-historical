@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -223,7 +223,8 @@ QT_USE_NAMESPACE
         QFileInfo info(*mCurrentSelection);
         NSString *filename = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.fileName());
         NSString *filepath = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.filePath());
-        bool selectable = [self panel:nil shouldShowFilename:filepath];
+        bool selectable = (mAcceptMode == QFileDialog::AcceptSave)
+            || [self panel:nil shouldShowFilename:filepath];
         [mOpenPanel 
             beginForDirectory:mCurrentDir
             file:selectable ? filename : nil
@@ -239,7 +240,8 @@ QT_USE_NAMESPACE
     QFileInfo info(*mCurrentSelection);
     NSString *filename = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.fileName());
     NSString *filepath = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.filePath());
-    bool selectable = [self panel:nil shouldShowFilename:filepath];
+    bool selectable = (mAcceptMode == QFileDialog::AcceptSave)
+        || [self panel:nil shouldShowFilename:filepath];
     mReturnCode = [mSavePanel 
         runModalForDirectory:mCurrentDir
         file:selectable ? filename : @"untitled"];
@@ -257,7 +259,8 @@ QT_USE_NAMESPACE
     QFileInfo info(*mCurrentSelection);
     NSString *filename = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.fileName());
     NSString *filepath = QT_PREPEND_NAMESPACE(qt_mac_QStringToNSString)(info.filePath());
-    bool selectable = [self panel:nil shouldShowFilename:filepath];
+    bool selectable = (mAcceptMode == QFileDialog::AcceptSave)
+        || [self panel:nil shouldShowFilename:filepath];
     [mSavePanel 
         beginSheetForDirectory:mCurrentDir
         file:selectable ? filename : nil
@@ -761,8 +764,12 @@ void QFileDialogPrivate::qt_mac_filedialog_event_proc(const NavEventCallbackMess
         fileDialogPrivate->mDialogStarted = true;
         // Set selected file:
         QModelIndexList indexes = fileDialogPrivate->qFileDialogUi->listView->selectionModel()->selectedRows();
+        QString selected;
         if (!indexes.isEmpty())
-            fileDialogPrivate->selectFile_sys(indexes.at(0).data(QFileSystemModel::FilePathRole).toString());
+            selected = indexes.at(0).data(QFileSystemModel::FilePathRole).toString();
+        else
+            selected = fileDialogPrivate->typedFiles().value(0);
+        fileDialogPrivate->selectFile_sys(selected);
         fileDialogPrivate->selectNameFilter_sys(fileDialogPrivate->qFileDialogUi->fileTypeCombo->currentText());
         break; }
     case kNavCBSelectEntry:{

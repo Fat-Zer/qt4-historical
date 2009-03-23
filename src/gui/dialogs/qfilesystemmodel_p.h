@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -219,7 +219,7 @@ public:
     QFileSystemNode* addNode(QFileSystemNode *parentNode, const QString &fileName);
     void addVisibleFiles(QFileSystemNode *parentNode, const QStringList &newFiles);
     void removeVisibleFile(QFileSystemNode *parentNode, int visibleLocation);
-    void sortChildren(int column, Qt::SortOrder order, const QModelIndex &parent);
+    void sortChildren(int column, const QModelIndex &parent);
 
     inline int translateVisibleLocation(QFileSystemNode *parent, int row) const {
         return (sortOrder == Qt::AscendingOrder) ? row : parent->visibleChildren.count() - row - 1;

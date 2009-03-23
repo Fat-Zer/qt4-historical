@@ -6,11 +6,11 @@
 ** This file is part of the plugins of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -69,7 +69,7 @@ QString Q_GUI_EXPORT qt_accStripAmp(const QString &text);
 QString Q_GUI_EXPORT qt_accHotKey(const QString &text);
 
 /*!
-  \class QAccessibleButton qaccessible.h
+  \class QAccessibleButton
   \brief The QAccessibleButton class implements the QAccessibleInterface for button type widgets.
   \internal
 
@@ -211,7 +211,7 @@ QAccessible::State QAccessibleButton::state(int child) const
 
 #ifndef QT_NO_TOOLBUTTON
 /*!
-  \class QAccessibleToolButton qaccessible.h
+  \class QAccessibleToolButton
   \brief The QAccessibleToolButton class implements the QAccessibleInterface for tool buttons.
   \internal
 
@@ -414,7 +414,7 @@ bool QAccessibleToolButton::doAction(int action, int child, const QVariantList &
 #endif // QT_NO_TOOLBUTTON
 
 /*!
-  \class QAccessibleDisplay qaccessiblewidget.h
+  \class QAccessibleDisplay
   \brief The QAccessibleDisplay class implements the QAccessibleInterface for widgets that display information.
   \internal
 
@@ -548,7 +548,7 @@ int QAccessibleDisplay::navigate(RelationFlag rel, int entry, QAccessibleInterfa
 
 #ifndef QT_NO_LINEEDIT
 /*!
-  \class QAccessibleLineEdit qaccessiblewidget.h
+  \class QAccessibleLineEdit
   \brief The QAccessibleLineEdit class implements the QAccessibleInterface for widgets with editable text
   \internal
 

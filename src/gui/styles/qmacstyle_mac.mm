@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -529,6 +529,7 @@ public:
     QPointer<QFocusFrame> focusWidget;
     CFAbsoluteTime defaultButtonStart;
     QMacStyle *q;
+    bool mouseDown;
 };
 
 QT_BEGIN_INCLUDE_NAMESPACE
@@ -1477,7 +1478,7 @@ void QMacStylePrivate::getSliderInfo(QStyle::ComplexControl cc, const QStyleOpti
 #endif
 
 QMacStylePrivate::QMacStylePrivate(QMacStyle *style)
-    : timerID(-1), progressFrame(0), q(style)
+    : timerID(-1), progressFrame(0), q(style), mouseDown(false)
 {
     defaultButtonStart = CFAbsoluteTimeGetCurrent();
     memset(&buttonState, 0, sizeof(ButtonState));
@@ -1494,7 +1495,7 @@ bool QMacStylePrivate::animatable(QMacStylePrivate::Animates as, const QWidget *
 {
     if (as == AquaPushButton) {
         QPushButton *pb = const_cast<QPushButton *>(static_cast<const QPushButton *>(w));
-        if (w->window()->isActiveWindow() && pb) {
+        if (w->window()->isActiveWindow() && pb && !mouseDown) {
             if (static_cast<const QPushButton *>(w) != defaultButton) {
                 // Changed on its own, update the value.
                 const_cast<QMacStylePrivate *>(this)->stopAnimate(as, defaultButton);
@@ -1514,8 +1515,7 @@ void QMacStylePrivate::stopAnimate(QMacStylePrivate::Animates as, QWidget *w)
     if (as == AquaPushButton && defaultButton) {
         QPushButton *tmp = defaultButton;
         defaultButton = 0;
-        if (tmp->isVisible())
-            tmp->update();
+        tmp->update();
     } else if (as == AquaProgressBar) {
         progressBars.removeAll(w);
     }
@@ -1841,10 +1841,15 @@ bool QMacStylePrivate::eventFilter(QObject *o, QEvent *e)
             break;
         case QEvent::MouseButtonPress:
             // It is very confusing to keep the button pulsing, so just stop the animation.
+            if (static_cast<QMouseEvent *>(e)->button() == Qt::LeftButton)
+                mouseDown = true;
             stopAnimate(AquaPushButton, btn);
             break;
-        case QEvent::FocusOut:
         case QEvent::MouseButtonRelease:
+            if (static_cast<QMouseEvent *>(e)->button() == Qt::LeftButton)
+                mouseDown = false;
+            // fall through
+        case QEvent::FocusOut:
         case QEvent::Show:
         case QEvent::WindowActivate: {
             QList<QPushButton *> list = qFindChildren<QPushButton *>(btn->window());
@@ -2809,10 +2814,10 @@ int QMacStyle::styleHint(StyleHint sh, const QStyleOption *opt, const QWidget *w
                 srow = sptr+((y*sbpl)/4);
                 drow = dptr+((y*dbpl)/4);
                 for (int x = 0; x < w; ++x) {
-                    const int diff = (((qRed(*srow)-qRed(fillR))*(qRed(*srow)-qRed(fillR))) +
-                                      ((qGreen(*srow)-qGreen(fillG))*((qGreen(*srow)-qGreen(fillG)))) +
-                                      ((qBlue(*srow)-qBlue(fillB))*((qBlue(*srow)-qBlue(fillB)))));
-                    (*drow++) = (diff < 100) ? Qt::black : Qt::white;
+                    const int diff = (((qRed(*srow)-fillR)*(qRed(*srow)-fillR)) +
+                                      ((qGreen(*srow)-fillG)*((qGreen(*srow)-fillG))) +
+                                      ((qBlue(*srow)-fillB)*((qBlue(*srow)-fillB))));
+                    (*drow++) = (diff < 100) ? 0xffffffff : 0xff000000;
                     ++srow;
                 }
             }
@@ -4566,7 +4571,7 @@ QRect QMacStyle::subElementRect(SubElement sr, const QStyleOption *opt,
     case SE_HeaderLabel:
         if (qstyleoption_cast<const QStyleOptionHeader *>(opt)) {
             rect = QWindowsStyle::subElementRect(sr, opt, widget);
-            if (widget->height() <= qt_mac_aqua_get_metric(kThemeMetricListHeaderHeight)){
+            if (widget && widget->height() <= qt_mac_aqua_get_metric(kThemeMetricListHeaderHeight)){
                 // We need to allow the text a bit more space when the header is as
                 // small as kThemeMetricListHeaderHeight, otherwise it gets clipped:
                 rect.setY(0);

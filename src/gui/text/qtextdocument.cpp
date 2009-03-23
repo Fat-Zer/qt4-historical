@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -241,7 +241,7 @@ QTextCodec *Qt::codecForHtml(const QByteArray &ba)
 #endif
 
 /*!
-    \class QTextDocument qtextdocument.h
+    \class QTextDocument
     \reentrant
 
     \brief The QTextDocument class holds formatted text that can be
@@ -271,8 +271,10 @@ QTextCodec *Qt::codecForHtml(const QByteArray &ba)
     The layout of a document is determined by the documentLayout();
     you can create your own QAbstractTextDocumentLayout subclass and
     set it using setDocumentLayout() if you want to use your own
-    layout logic. The document's title can be obtained by calling the
-    documentTitle() function.
+    layout logic. The document's title and other meta-information can be
+    obtained by calling the metaInformation() function. For documents that
+    are exposed to users through the QTextEdit class, the document title
+    is also available via the QTextEdit::documentTitle() function.
 
     The toPlainText() and toHtml() convenience functions allow you to retrieve the
     contents of the document as plain text and HTML.

@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -307,6 +307,7 @@ static const PseudoElementInfo knownPseudoElements[NumPseudoElements] = {
 struct QStyleSheetBorderImageData : public QSharedData
 {
     QStyleSheetBorderImageData()
+        : horizStretch(QCss::TileMode_Unknown), vertStretch(QCss::TileMode_Unknown)
     {
         for (int i = 0; i < 4; i++)
             cuts[i] = -1;
@@ -2384,6 +2385,7 @@ QSize QStyleSheetStyle::defaultSize(const QWidget *w, QSize sz, const QRect& rec
             sz.setWidth(pm);
         if (sz.height() == -1)
             sz.setHeight(pm);
+        break;
                                         }
 
     case PseudoElement_DockWidgetCloseButton:
@@ -2663,7 +2665,7 @@ void QStyleSheetStyle::setProperties(QWidget *w)
         case QVariant::Color: v = decl.colorValue(); break;
         case QVariant::Brush: v = decl.brushValue(); break;
 #ifndef QT_NO_SHORTCUT
-        case QVariant::KeySequence: v = QKeySequence(decl.d->values.at(0).variant.toString());
+        case QVariant::KeySequence: v = QKeySequence(decl.d->values.at(0).variant.toString()); break;
 #endif
         default: v = decl.d->values.at(0).variant; break;
         }
@@ -3194,6 +3196,7 @@ void QStyleSheetStyle::drawComplexControl(ComplexControl cc, const QStyleOptionC
     case CC_ToolButton:
         if (const QStyleOptionToolButton *tool = qstyleoption_cast<const QStyleOptionToolButton *>(opt)) {
             QStyleOptionToolButton toolOpt(*tool);
+            rule.configurePalette(&toolOpt.palette, QPalette::ButtonText, QPalette::Button);
             toolOpt.rect = rule.borderRect(opt->rect);
             bool customArrow = (tool->features & (QStyleOptionToolButton::HasMenu | QStyleOptionToolButton::MenuButtonPopup));
             bool customDropDown = tool->features & QStyleOptionToolButton::MenuButtonPopup;
@@ -3210,7 +3213,6 @@ void QStyleSheetStyle::drawComplexControl(ComplexControl cc, const QStyleOptionC
                     if (!(bflags & (State_Sunken | State_On | State_Raised)))
                         rule.drawBackground(p, toolOpt.rect);
                 }
-                rule.configurePalette(&toolOpt.palette, QPalette::ButtonText, QPalette::Button);
                 customArrow = customArrow && hasStyleRule(w, PseudoElement_ToolButtonDownArrow);
                 if (customArrow)
                     toolOpt.features &= ~QStyleOptionToolButton::HasMenu;
@@ -3233,7 +3235,6 @@ void QStyleSheetStyle::drawComplexControl(ComplexControl cc, const QStyleOptionC
                     toolOpt.font = rule.font;
                 drawControl(CE_ToolButtonLabel, &toolOpt, p, w);
             }
-
 
             QRenderRule subRule = renderRule(w, opt, PseudoElement_ToolButtonMenu);
             QRect r = subControlRect(CC_ToolButton, opt, QStyle::SC_ToolButtonMenu, w);
@@ -4622,15 +4623,6 @@ int QStyleSheetStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const 
         break;
 
     case PM_DefaultFrameWidth:
-#ifndef QT_NO_COMBOBOX
-        // QComboBox uses this for resizing its popup
-        if (qobject_cast<const QComboBox *>(w)) {
-            QAbstractItemView *view = qFindChild<QAbstractItemView *>(w);
-            QRenderRule subRule = renderRule(view, PseudoElement_None);
-            if (!subRule.hasNativeBorder())
-                return subRule.border()->borders[TopEdge] + (subRule.hasBox() ? subRule.box()->paddings[TopEdge] : 0);
-        } else
-#endif
         if (!rule.hasNativeBorder())
             return rule.border()->borders[LeftEdge];
         break;
@@ -4722,7 +4714,7 @@ int QStyleSheetStyle::pixelMetric(PixelMetric m, const QStyleOption *opt, const 
     case PM_RadioButtonLabelSpacing:
         if (rule.hasBox() && rule.box()->spacing != -1)
             return rule.box()->spacing;
-
+        break;
     case PM_CheckBoxLabelSpacing:
         if (qobject_cast<const QCheckBox *>(w)) {
             if (rule.hasBox() && rule.box()->spacing != -1)
@@ -4928,7 +4920,7 @@ QSize QStyleSheetStyle::sizeFromContents(ContentsType ct, const QStyleOption *op
                                                   : QWindowsStyle::sizeFromContents(ct, opt, sz, w);
             }
         }
-
+        break;
     case CT_GroupBox:
     case CT_LineEdit:
 #ifndef QT_NO_SPINBOX

@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -48,6 +48,8 @@
 
 #include <qstring.h>
 
+#define QDOC_QML
+
 QT_BEGIN_NAMESPACE
 
 class Atom
@@ -69,6 +71,9 @@ class Atom
         CodeOld, 
         CodeQuoteArgument,
         CodeQuoteCommand,
+#ifdef QDOC_QML
+        EndQmlText,
+#endif
         FootnoteLeft,
         FootnoteRight,
         FormatElse, 
@@ -95,6 +100,10 @@ class Atom
         Nop, 
         ParaLeft,
         ParaRight, 
+#ifdef QDOC_QML
+        Qml,
+        QmlText,
+#endif
         QuotationLeft, 
         QuotationRight,
         RawString,
@@ -127,12 +136,12 @@ class Atom
     Atom(Atom *prev, Type type, const QString &string = "")
 	: nxt(prev->nxt), typ(type), str(string) { prev->nxt = this; }
 
-    void appendChar( QChar ch ) { str += ch; }
-    void appendString( const QString& string ) { str += string; }
+    void appendChar(QChar ch) { str += ch; }
+    void appendString(const QString& string) { str += string; }
     void chopString() { str.chop(1); }
     void setString(const QString &string) { str = string; }
     Atom *next() { return nxt; }
-    void setNext( Atom *newNext ) { nxt = newNext; }
+    void setNext(Atom *newNext) { nxt = newNext; }
 
     const Atom *next() const { return nxt; }
     const Atom *next(Type t) const;

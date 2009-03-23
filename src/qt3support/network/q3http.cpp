@@ -6,11 +6,11 @@
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -339,7 +339,7 @@ void Q3HttpCloseRequest::start( Q3Http *http )
  ****************************************************/
 
 /*!
-    \class Q3HttpHeader q3http.h
+    \class Q3HttpHeader
     \brief The Q3HttpHeader class contains header information for HTTP.
 
     \compat
@@ -672,7 +672,7 @@ void Q3HttpHeader::setContentType( const QString& type )
  ****************************************************/
 
 /*!
-    \class Q3HttpResponseHeader q3http.h
+    \class Q3HttpResponseHeader
     \brief The Q3HttpResponseHeader class contains response header information for HTTP.
 
     \compat
@@ -831,7 +831,7 @@ QString Q3HttpResponseHeader::toString() const
  ****************************************************/
 
 /*!
-    \class Q3HttpRequestHeader q3http.h
+    \class Q3HttpRequestHeader
     \brief The Q3HttpRequestHeader class contains request header information for
     HTTP.
 
@@ -996,7 +996,7 @@ QString Q3HttpRequestHeader::toString() const
  *
  ****************************************************/
 /*!
-    \class Q3Http q3http.h
+    \class Q3Http
     \brief The Q3Http class provides an implementation of the HTTP protocol.
 
     \compat
@@ -1496,7 +1496,7 @@ bool Q3Http::hasPendingRequests() const
 /*!
     Deletes all pending requests from the list of scheduled requests.
     This does not affect the request that is being executed. If
-    you want to stop this this as well, use abort().
+    you want to stop this as well, use abort().
 
     \sa hasPendingRequests() abort()
 */

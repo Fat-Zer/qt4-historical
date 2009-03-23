@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -128,6 +128,7 @@
         \header
             \i  Widget Filter Box
             \i  Widget Morphing
+            \i  Disambiguation Field
         \row
             \i  \inlineimage designer-widget-filter.png
             \i  \inlineimage designer-widget-morph.png
@@ -1855,7 +1856,7 @@ pixmap property in the property editor.
 
     \section2 The Direct Approach
 
-    To demonstrate thow to use user interface (\c{.ui}) files straight from
+    To demonstrate how to use user interface (\c{.ui}) files straight from
     \QD, we create a simple Calculator Form application. This is based on the
     original \l{Calculator Form Example}{Calculator Form} example.
 
@@ -2294,7 +2295,7 @@ pixmap property in the property editor.
 
     \image worldtimeclockplugin-example.png
 
-    The \l QtDesigner module provides you with the ability to create cusom
+    The \l QtDesigner module provides you with the ability to create custom
     widgets in \QD.
 
 

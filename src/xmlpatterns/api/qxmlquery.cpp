@@ -3,14 +3,14 @@
 ** Copyright (C) 2009 Nokia Corporation and/or its subsidiary(-ies).
 ** Contact: Qt Software Information (qt-info@nokia.com)
 **
-** This file is part of the QtXMLPatterns module of the Qt Toolkit.
+** This file is part of the QtXmlPatterns module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -943,16 +943,22 @@ void QXmlQuery::setFocus(const QXmlItem &item)
 
 /**
  * This function should be a private member function of QXmlQuery,
- * but we don't dare that due to our weird compilers. */
+ * but we don't dare that due to our weird compilers.
+ * @internal
+ * @relates QXmlQuery
+ */
 template<typename TInputType>
-static bool setFocusHelper(QXmlQuery *const queryInstance,
-                           const TInputType &focusValue)
+bool setFocusHelper(QXmlQuery *const queryInstance,
+                    const TInputType &focusValue)
 {
     /* We call resourceLoader(), so we have ensured that we have a resourceLoader
      * that we will share in our copy. */
     queryInstance->d->resourceLoader();
 
     QXmlQuery focusQuery(*queryInstance);
+
+    /* Now we use the same, so we own the loaded document. */
+    focusQuery.d->m_resourceLoader = queryInstance->d->m_resourceLoader;
 
     /* The copy constructor doesn't allow us to copy an existing QXmlQuery and
      * changing the language at the same time so we need to use private API. */
@@ -964,6 +970,8 @@ static bool setFocusHelper(QXmlQuery *const queryInstance,
     Q_ASSERT(focusQuery.isValid());
 
     QXmlResultItems focusResult;
+
+    queryInstance->d->m_resourceLoader = focusQuery.d->m_resourceLoader;
 
     focusQuery.evaluateTo(&focusResult);
     const QXmlItem focusItem(focusResult.next());

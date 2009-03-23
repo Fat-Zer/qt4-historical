@@ -6,11 +6,11 @@
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1252,12 +1252,23 @@ DomWidget *QDesignerResource::createDom(QWidget *widget, DomWidget *ui_parentWid
         return 0;
     }
 
+    const QDesignerWidgetDataBaseInterface *wdb = core()->widgetDataBase();
     QDesignerWidgetDataBaseItemInterface *widgetInfo =  0;
-    const int widgetInfoIndex = core()->widgetDataBase()->indexOfObject(widget, false);
+    const int widgetInfoIndex = wdb->indexOfObject(widget, false);
     if (widgetInfoIndex != -1) {
-        widgetInfo = core()->widgetDataBase()->item(widgetInfoIndex);
-        if (widgetInfo->isCustom())
-            m_usedCustomWidgets.insert(widgetInfo, true);
+        widgetInfo = wdb->item(widgetInfoIndex);
+        // Recursively add all dependent custom widgets
+        QDesignerWidgetDataBaseItemInterface *customInfo = widgetInfo;
+        while (customInfo && customInfo->isCustom()) {
+            m_usedCustomWidgets.insert(customInfo, true);
+            const QString extends = customInfo->extends();
+            if (extends == customInfo->name()) {
+                break; // There are faulty files around that have name==extends
+            } else {
+                const int extendsIndex = wdb->indexOfClassName(customInfo->extends());
+                customInfo = extendsIndex != -1 ?  wdb->item(extendsIndex) : static_cast<QDesignerWidgetDataBaseItemInterface *>(0);
+            }
+        }
     }
 
     DomWidget *w = 0;
@@ -1879,6 +1890,7 @@ DomWidget *QDesignerResource::saveWidget(QWizardPage *wizardPage, DomWidget *ui_
     if (pageIdIndex != -1 && sheet->isChanged(pageIdIndex)) {
         DomProperty *property = variantToDomProperty(this, wizardPage->metaObject(), pageIdPropertyName, sheet->property(pageIdIndex));
         Q_ASSERT(property);
+        property->elementString()->setAttributeNotr(QLatin1String("true"));
         DomPropertyList attributes = ui_widget->elementAttribute();
         attributes.push_back(property);
         ui_widget->setElementAttribute(attributes);

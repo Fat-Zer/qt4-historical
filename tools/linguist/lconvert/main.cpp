@@ -6,11 +6,11 @@
 ** This file is part of the Qt Linguist of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -46,13 +46,27 @@
 #include <QtCore/QString>
 #include <QtCore/QStringList>
 
-static int usage(const QStringList & /*args*/)
+static int usage(const QStringList &args)
 {
-    qDebug() <<
-        "\nUsage:\n"
+    Q_UNUSED(args);
+
+    QString loaders;
+    QString savers;
+    QString line = QString(QLatin1String("    %1 - %2\n"));
+    foreach (Translator::FileFormat format, Translator::registeredFileFormats()) {
+        loaders += line.arg(format.extension, -5).arg(format.description);
+        if (format.fileType != Translator::FileFormat::SourceCode)
+            savers += line.arg(format.extension, -5).arg(format.description);
+    }
+
+    qWarning("%s", qPrintable(QString(QLatin1String("\nUsage:\n"
         "    lconvert [options] <infile> [<infile>...]\n\n"
-        "If multiple input files are specified, translations from later files\n"
-        "take precedence.\n\n"
+        "lconvert is part of Qt's Linguist tool chain. It can be used as a\n"
+        "stand-alone tool to convert translation data files from one of the\n"
+        "following input formats\n\n%1\n"
+        "to one of the following output formats\n\n%2\n"
+        "If multiple input files are specified the translations are merged with\n"
+        "translations from later files taking precedence.\n\n"
         "Options:\n"
         "    -h\n"
         "    --help  Display this information and exit.\n\n"
@@ -67,7 +81,6 @@ static int usage(const QStringList & /*args*/)
         "    -if <informat>\n"
         "    --input-format <format>\n"
         "           Specify input format for subsequent <infile>s.\n"
-        "           Available formats are 'ts', 'po' and 'xlf'.\n"
         "           The format is auto-detected from the file name and defaults to 'ts'.\n\n"
         "    -of <outformat>\n"
         "    --output-format <outformat>\n"
@@ -96,7 +109,7 @@ static int usage(const QStringList & /*args*/)
         "    0 on success\n"
         "    1 on command line parse failures\n"
         "    2 on read failures\n"
-        "    3 on write failures\n";
+        "    3 on write failures\n")).arg(loaders).arg(savers)));
     return 1;
 }
 

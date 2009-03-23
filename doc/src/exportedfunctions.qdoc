@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -101,8 +101,10 @@
     press-and-hold operation on the application's dock icon or
     \key{Ctrl}-clicks on it while the application is running.
 
-    The menu will be turned into a Mac menu which will be merged
-    with Mac OS X built-in commands.
+    The menu will be turned into a Mac menu and the items added to the default
+    Dock menu. There is no merging of the Qt menu items with the items that are
+    in the Dock menu (i.e., it is not recommended to include actions that
+    duplicate functionality of items already in the Dock menu).
 
     \section1 void qt_mac_set_menubar_icons(bool \e{enable})
 

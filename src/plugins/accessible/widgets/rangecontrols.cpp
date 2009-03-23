@@ -6,11 +6,11 @@
 ** This file is part of the plugins of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -243,7 +243,7 @@ QVariant QAccessibleAbstractSpinBox::invokeMethodEx(Method method, int child, co
 
 
 /*!
-  \class QAccessibleSpinBox qaccessiblewidget.h
+  \class QAccessibleSpinBox
   \brief The QAccessibleSpinBox class implements the QAccessibleInterface for spinbox widgets.
   \internal
 
@@ -466,7 +466,7 @@ QAccessible::State QAccessibleDoubleSpinBox::state(int child) const
 
 #ifndef QT_NO_SCROLLBAR
 /*!
-  \class QAccessibleScrollBar qaccessiblewidget.h
+  \class QAccessibleScrollBar
   \brief The QAccessibleScrollBar class implements the QAccessibleInterface for scroll bars.
   \internal
 
@@ -626,7 +626,7 @@ QAccessible::State QAccessibleScrollBar::state(int child) const
 
 #ifndef QT_NO_SLIDER
 /*!
-  \class QAccessibleSlider qaccessiblewidget.h
+  \class QAccessibleSlider
   \brief The QAccessibleSlider class implements the QAccessibleInterface for sliders.
   \internal
 

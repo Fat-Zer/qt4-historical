@@ -6,11 +6,11 @@
 ** This file is part of the QtNetwork module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -432,7 +432,11 @@ static QByteArray digestMd5ResponseHelper(
     QByteArray ha1 = hash.result();
     if (alg.toLower() == "md5-sess") {
         hash.reset();
-        hash.addData(ha1);
+        // RFC 2617 contains an error, it was:
+        // hash.addData(ha1);
+        // but according to the errata page at http://www.rfc-editor.org/errata_list.php, ID 1649, it
+        // must be the following line:
+        hash.addData(ha1.toHex());
         hash.addData(":", 1);
         hash.addData(nonce);
         hash.addData(":", 1);

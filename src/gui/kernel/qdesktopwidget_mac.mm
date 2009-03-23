@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -119,7 +119,11 @@ QRect QDesktopWidgetImplementation::availableRect(int screenIndex) const
         screenIndex = appScreen;
 
     NSRect r = [[displays objectAtIndex:screenIndex] visibleFrame];
-    return QRectF(r.origin.x, flipYCoordinate(r.origin.y + r.size.height),
+    NSRect primaryRect = [[displays objectAtIndex:0] frame];
+
+    const int flippedY = - r.origin.y +                // account for position offset and
+              primaryRect.size.height - r.size.height; // height difference.
+    return QRectF(r.origin.x, flippedY,
             r.size.width, r.size.height).toRect();
 }
 
@@ -129,10 +133,11 @@ QRect QDesktopWidgetImplementation::screenRect(int screenIndex) const
         screenIndex = appScreen;
 
     NSRect r = [[displays objectAtIndex:screenIndex] frame];
-    // Do the equivalent of flipYCoordinate() "inline" since that function depends on screenGeometry()
-    // working and that's what we are doing right here.
     NSRect primaryRect = [[displays objectAtIndex:0] frame];
-    return QRectF(r.origin.x, (r.origin.y + r.size.height) - primaryRect.size.height,
+
+    const int flippedY = - r.origin.y +                // account for position offset and
+              primaryRect.size.height - r.size.height; // height difference.
+    return QRectF(r.origin.x, flippedY,
             r.size.width, r.size.height).toRect();
 }
 

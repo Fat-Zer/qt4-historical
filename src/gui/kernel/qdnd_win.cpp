@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -58,6 +58,12 @@
 
 #if defined(Q_OS_WINCE)
 #include "qguifunctions_wince.h"
+#endif
+
+// support for xbuttons
+#ifndef MK_XBUTTON1
+#define MK_XBUTTON1         0x0020
+#define MK_XBUTTON2         0x0040
 #endif
 
 QT_BEGIN_NAMESPACE
@@ -355,6 +361,7 @@ public:
     STDMETHOD(GiveFeedback)(DWORD dwEffect);
 
 private:
+    Qt::MouseButtons currentButtons;
     Qt::DropAction currentAction;
     QMap <Qt::DropAction, QCursor> cursors;
 
@@ -364,6 +371,7 @@ private:
 
 QOleDropSource::QOleDropSource()
 {
+    currentButtons = Qt::NoButton;
     m_refs = 1;
     currentAction = Qt::IgnoreAction;
 }
@@ -493,6 +501,22 @@ QOleDropSource::Release(void)
     return m_refs;
 }
 
+static inline Qt::MouseButtons keystate_to_mousebutton(DWORD grfKeyState)
+{
+    Qt::MouseButtons result;
+    if (grfKeyState & MK_LBUTTON)
+        result |= Qt::LeftButton;
+    if (grfKeyState & MK_MBUTTON)
+        result |= Qt::MidButton;
+    if (grfKeyState & MK_RBUTTON)
+        result |= Qt::RightButton;
+    if (grfKeyState & MK_XBUTTON1)
+        result |= Qt::XButton1;
+    if (grfKeyState & MK_XBUTTON2)
+        result |= Qt::XButton2;
+    return result;
+}
+
 //---------------------------------------------------------------------
 //                    IDropSource Methods
 //---------------------------------------------------------------------
@@ -515,6 +539,14 @@ QOleDropSource::QueryContinueDrag(BOOL fEscapePressed, DWORD grfKeyState)
             (GetAsyncKeyState(VK_MBUTTON) == 0) &&
             (GetAsyncKeyState(VK_RBUTTON) == 0)) {
             return ResultFromScode(DRAGDROP_S_DROP);
+        }
+#else
+        if (currentButtons == Qt::NoButton) {
+            currentButtons = keystate_to_mousebutton(grfKeyState);
+        } else {
+            Qt::MouseButtons buttons = keystate_to_mousebutton(grfKeyState);
+            if (!(currentButtons & buttons))
+                return ResultFromScode(DRAGDROP_S_DROP);
         }
 #endif
         qApp->processEvents();

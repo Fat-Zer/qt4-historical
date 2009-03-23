@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -45,6 +45,8 @@
 #include <QDebug>
 #include <QDir>
 #include <QFile>
+#include <QFileInfo>
+#include <QTextStream>
 
 QT_BEGIN_NAMESPACE
 
@@ -63,17 +65,69 @@ void showHelp(const QString &argv0, const QString &error)
         "  -no-compress         disable all compression\n"
         "  -binary              output a binary file for use as a dynamic resource\n"
         "  -namespace           turn off namespace macros\n"
+        "  -project             Output a resource file containing all\n"
+        "                       files from the current directory\n"
         "  -version             display version\n"
         "  -help                display this information\n",
         qPrintable(argv0));
 }
 
+void dumpRecursive(const QDir &dir, QTextStream &out)
+{
+    QFileInfoList entries = dir.entryInfoList(QDir::Files | QDir::Dirs | QDir::NoDotAndDotDot
+                                              | QDir::NoSymLinks);
+    foreach (QFileInfo entry, entries) {
+        if (entry.isDir()) {
+            dumpRecursive(entry.filePath(), out);
+        } else {
+            out << QLatin1String("<file>")
+                << entry.filePath()
+                << QLatin1String("</file>\n");
+        }
+    }
+}
+
+int createProject(const QString &outFileName)
+{
+    QDir currentDir = QDir::current();
+    QString currentDirName = currentDir.dirName();
+    if (currentDirName.isEmpty())
+        currentDirName = QLatin1String("root");
+
+    QFile file;
+    bool isOk = false;
+    if (outFileName.isEmpty()) {
+        isOk = file.open(stdout, QFile::WriteOnly | QFile::Text);
+    } else {
+        file.setFileName(outFileName);
+        isOk = file.open(QFile::WriteOnly | QFile::Text);
+    }
+    if (!isOk) {
+        fprintf(stderr, "Unable to open %s: %s\n",
+                outFileName.isEmpty() ? qPrintable(outFileName) : "standard output",
+                qPrintable(file.errorString()));
+        return 1;
+    }
+
+    QTextStream out(&file);
+    out << QLatin1String("<!DOCTYPE RCC><RCC version=\"1.0\">\n"
+                         "<qresource>\n");
+
+    // use "." as dir to get relative file pathes
+    dumpRecursive(QDir(QLatin1String(".")), out);
+
+    out << QLatin1String("</qresource>\n"
+                         "</RCC>\n");
+
+    return 0;
+}
 
 int runRcc(int argc, char *argv[])
 {
     QString outFilename;
     bool helpRequested = false;
     bool list = false;
+    bool projectRequested = false;
     QStringList filenamesIn;
 
     QStringList args = qCmdLineArgs(argc, argv);
@@ -135,6 +189,8 @@ int runRcc(int argc, char *argv[])
                 helpRequested = true;
             } else if (opt == QLatin1String("-no-compress")) {
                 library.setCompressLevel(-2);
+            } else if (opt == QLatin1String("-project")) {
+                projectRequested = true;
             } else {
                 errorMsg = QString::fromLatin1("Unknown option: '%1'").arg(args[i]);
             }
@@ -146,6 +202,10 @@ int runRcc(int argc, char *argv[])
             }
             filenamesIn.append(args[i]);
         }
+    }
+
+    if (projectRequested && !helpRequested) {
+        return createProject(outFilename);
     }
 
     if (!filenamesIn.size() || !errorMsg.isEmpty() || helpRequested) {

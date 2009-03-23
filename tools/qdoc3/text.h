@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -52,20 +52,20 @@ QT_BEGIN_NAMESPACE
 
 class Text
 {
-public:
+ public:
     Text();
     explicit Text(const QString &str);
-    Text( const Text& text );
+    Text(const Text& text);
     ~Text();
 
-    Text& operator=( const Text& text );
+    Text& operator=(const Text& text);
 
     Atom *firstAtom() { return first; }
     Atom *lastAtom() { return last; }
-    Text& operator<<( Atom::Type atomType );
-    Text& operator<<( const QString& string );
-    Text& operator<<( const Atom& atom );
-    Text& operator<<( const Text& text );
+    Text& operator<<(Atom::Type atomType);
+    Text& operator<<(const QString& string);
+    Text& operator<<(const Atom& atom);
+    Text& operator<<(const Text& text);
     void stripFirstAtom();
     void stripLastAtom();
 
@@ -73,15 +73,15 @@ public:
     QString toString() const;
     const Atom *firstAtom() const { return first; }
     const Atom *lastAtom() const { return last; }
-    Text subText( Atom::Type left, Atom::Type right, const Atom *from = 0) const;
+    Text subText(Atom::Type left, Atom::Type right, const Atom *from = 0) const;
     void dump() const;
 
-    static Text subText( const Atom *begin, const Atom *end = 0 );
+    static Text subText(const Atom *begin, const Atom *end = 0);
     static Text sectionHeading(const Atom *sectionBegin);
     static const Atom *sectionHeadingAtom(const Atom *sectionLeft);
     static int compare(const Text &text1, const Text &text2);
 
-private:
+ private:
     void clear();
 
     Atom *first;

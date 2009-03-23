@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -46,6 +46,7 @@
 #ifndef QT_NO_DRAGANDDROP
 
 #include "qwidget.h"
+#include "qpainter.h"
 #include "qpixmap.h"
 #include "qbitmap.h"
 #include "qdesktopwidget.h"
@@ -268,8 +269,9 @@ static const char* const default_pm[] = {
 "X X X X X X X"
 };
 
-class QShapedPixmapWidget : public QWidget {
-
+class QShapedPixmapWidget : public QWidget
+{
+    Q_OBJECT
 public:
     QShapedPixmapWidget(QWidget* w) :
         QWidget(w,
@@ -289,13 +291,21 @@ public:
             clearMask();
         }
         resize(pm.width(),pm.height());
-	QPalette p = palette();
-	p.setBrush(backgroundRole(), QBrush(pm));
-	setPalette(p);
+        pixmap = pm;
         update();
     }
     QPoint pm_hot;
+
+protected:
+    QPixmap pixmap;
+    void paintEvent(QPaintEvent*)
+    {
+        QPainter p(this);
+        p.drawPixmap(0, 0, pixmap);
+    }
 };
+
+#include "qdnd_x11.moc"
 
 struct XdndData {
     QShapedPixmapWidget *deco;
@@ -1337,10 +1347,12 @@ bool QDragManager::eventFilter(QObject * o, QEvent * e)
 void QDragManager::updateCursor()
 {
     if (!noDropCursor) {
+#ifndef QT_NO_CURSOR
         noDropCursor = new QCursor(Qt::ForbiddenCursor);
         moveCursor = new QCursor(dragCursor(Qt::MoveAction), 0,0);
         copyCursor = new QCursor(dragCursor(Qt::CopyAction), 0,0);
         linkCursor = new QCursor(dragCursor(Qt::LinkAction), 0,0);
+#endif
     }
 
     QCursor *c;
@@ -1450,6 +1462,10 @@ Window findRealWindow(const QPoint & pos, Window w, int md)
 
 void QDragManager::move(const QPoint & globalPos)
 {
+#ifdef QT_NO_CURSOR
+    Q_UNUSED(globalPos);
+    return;
+#else
     DEBUG() << "QDragManager::move enter";
     if (!object) {
         // perhaps the target crashed?
@@ -1644,6 +1660,7 @@ void QDragManager::move(const QPoint & globalPos)
         }
     }
     DEBUG() << "QDragManager::move leave";
+#endif
 }
 
 

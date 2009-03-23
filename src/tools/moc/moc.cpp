@@ -6,11 +6,11 @@
 ** This file is part of the tools applications of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -1186,8 +1186,8 @@ void Moc::checkSuperClasses(ClassDef *def)
         msg += def->superclassList.value(0);
         msg += " but that is not a known QObject subclass. You may get compilation errors.";
         warning(msg.constData());
-        return;
 #endif
+        return;
     }
     for (int i = 1; i < def->superclassList.count(); ++i) {
         const QByteArray superClass = def->superclassList.at(i).first;

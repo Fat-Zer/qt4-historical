@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -4216,12 +4216,24 @@ QImage QImage::createMaskFromColor(QRgb color, Qt::MaskMode mode) const
     QImage maskImage(size(), QImage::Format_MonoLSB);
     maskImage.fill(0);
     uchar *s = maskImage.bits();
-    for (int h = 0; h < d->height; h++) {
-        for (int w = 0; w < d->width; w++) {
-            if ((uint) pixel(w, h) == color)
-                *(s + (w >> 3)) |= (1 << (w & 7));
+
+    if (depth() == 32) {
+        for (int h = 0; h < d->height; h++) {
+            const uint *sl = (uint *) scanLine(h);
+            for (int w = 0; w < d->width; w++) {
+                if (sl[w] == color)
+                    *(s + (w >> 3)) |= (1 << (w & 7));
+            }
+            s += maskImage.bytesPerLine();
         }
-        s += maskImage.bytesPerLine();
+    } else {
+        for (int h = 0; h < d->height; h++) {
+            for (int w = 0; w < d->width; w++) {
+                if ((uint) pixel(w, h) == color)
+                    *(s + (w >> 3)) |= (1 << (w & 7));
+            }
+            s += maskImage.bytesPerLine();
+        }
     }
     if  (mode == Qt::MaskOutColor)
         maskImage.invertPixels();

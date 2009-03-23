@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -3428,7 +3428,7 @@ QStyleOptionQ3ListView::QStyleOptionQ3ListView(int version)
 /*!
     \class QStyleOptionQ3DockWindow
     \brief The QStyleOptionQ3DockWindow class is used to describe the
-    parameters for drawing various parts of a \l Q3DockWindow.
+    parameters for drawing various parts of a Q3DockWindow.
 
     This class is used for drawing the old Q3DockWindow and its
     parts. \bold {It is not recommended for new classes}.

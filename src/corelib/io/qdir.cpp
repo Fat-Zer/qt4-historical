@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -2231,6 +2231,9 @@ QStringList QDir::nameFiltersFromString(const QString &nameFilter)
     function:
 
     \snippet doc/src/snippets/code/src_corelib_io_qdir.cpp 13
+
+    If the file name contains characters that cannot be part of a valid C++ function name 
+    (such as '-'), they have to be replaced by the underscore character ('_').
 
     Note: This macro cannot be used in a namespace. It should be called from
     main(). If that is not possible, the following workaround can be used

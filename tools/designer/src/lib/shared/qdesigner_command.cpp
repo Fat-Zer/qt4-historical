@@ -6,11 +6,11 @@
 ** This file is part of the Qt Designer of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -131,7 +131,9 @@ static int removeFromWidgetListDynamicProperty(QWidget *parentWidget, QWidget *w
 // ---- InsertWidgetCommand ----
 InsertWidgetCommand::InsertWidgetCommand(QDesignerFormWindowInterface *formWindow)  :
     QDesignerFormWindowCommand(QString(), formWindow),
-    m_layoutHelper(0)
+    m_insertMode(QDesignerLayoutDecorationExtension::InsertWidgetMode),
+    m_layoutHelper(0),
+    m_widgetWasManaged(false)
 {
 }
 
@@ -975,8 +977,9 @@ void SimplifyLayoutCommand::undo()
 }
 
 // ---- ToolBoxCommand ----
-ToolBoxCommand::ToolBoxCommand(QDesignerFormWindowInterface *formWindow)
-    : QDesignerFormWindowCommand(QString(), formWindow)
+ToolBoxCommand::ToolBoxCommand(QDesignerFormWindowInterface *formWindow)  :
+    QDesignerFormWindowCommand(QString(), formWindow),
+    m_index(-1)
 {
 }
 
@@ -1022,8 +1025,10 @@ void ToolBoxCommand::addPage()
 }
 
 // ---- MoveToolBoxPageCommand ----
-MoveToolBoxPageCommand::MoveToolBoxPageCommand(QDesignerFormWindowInterface *formWindow)
-    : ToolBoxCommand(formWindow)
+MoveToolBoxPageCommand::MoveToolBoxPageCommand(QDesignerFormWindowInterface *formWindow) :
+    ToolBoxCommand(formWindow),
+    m_newIndex(-1),
+    m_oldIndex(-1)
 {
 }
 
@@ -1130,8 +1135,9 @@ void AddToolBoxPageCommand::undo()
 }
 
 // ---- TabWidgetCommand ----
-TabWidgetCommand::TabWidgetCommand(QDesignerFormWindowInterface *formWindow)
-    : QDesignerFormWindowCommand(QString(), formWindow)
+TabWidgetCommand::TabWidgetCommand(QDesignerFormWindowInterface *formWindow) :
+    QDesignerFormWindowCommand(QString(), formWindow),
+    m_index(-1)
 {
 }
 
@@ -1252,8 +1258,10 @@ void AddTabPageCommand::undo()
 }
 
 // ---- MoveTabPageCommand ----
-MoveTabPageCommand::MoveTabPageCommand(QDesignerFormWindowInterface *formWindow)
-    : TabWidgetCommand(formWindow)
+MoveTabPageCommand::MoveTabPageCommand(QDesignerFormWindowInterface *formWindow) :
+    TabWidgetCommand(formWindow),
+    m_newIndex(-1),
+    m_oldIndex(-1)
 {
 }
 
@@ -1290,8 +1298,9 @@ void MoveTabPageCommand::undo()
 }
 
 // ---- StackedWidgetCommand ----
-StackedWidgetCommand::StackedWidgetCommand(QDesignerFormWindowInterface *formWindow)
-    : QDesignerFormWindowCommand(QString(), formWindow)
+StackedWidgetCommand::StackedWidgetCommand(QDesignerFormWindowInterface *formWindow) :
+    QDesignerFormWindowCommand(QString(), formWindow),
+    m_index(-1)
 {
 }
 
@@ -1329,8 +1338,10 @@ void StackedWidgetCommand::addPage()
 }
 
 // ---- MoveStackedWidgetCommand ----
-MoveStackedWidgetCommand::MoveStackedWidgetCommand(QDesignerFormWindowInterface *formWindow)
-    : StackedWidgetCommand(formWindow)
+MoveStackedWidgetCommand::MoveStackedWidgetCommand(QDesignerFormWindowInterface *formWindow) :
+    StackedWidgetCommand(formWindow),
+    m_newIndex(-1),
+    m_oldIndex(-1)
 {
 }
 
@@ -1809,7 +1820,8 @@ void AdjustWidgetSizeCommand::updatePropertyEditor() const
 // ------------  ChangeFormLayoutItemRoleCommand
 
 ChangeFormLayoutItemRoleCommand::ChangeFormLayoutItemRoleCommand(QDesignerFormWindowInterface *formWindow) :
-    QDesignerFormWindowCommand(QApplication::translate("Command", "Change Form Layout Item Geometry"), formWindow)
+    QDesignerFormWindowCommand(QApplication::translate("Command", "Change Form Layout Item Geometry"), formWindow),
+    m_operation(SpanningToLabel)
 {
 }
 
@@ -1967,8 +1979,9 @@ void ChangeLayoutItemGeometry::undo()
 }
 
 // ---- ContainerWidgetCommand ----
-ContainerWidgetCommand::ContainerWidgetCommand(QDesignerFormWindowInterface *formWindow)
-    : QDesignerFormWindowCommand(QString(), formWindow)
+ContainerWidgetCommand::ContainerWidgetCommand(QDesignerFormWindowInterface *formWindow)  :
+    QDesignerFormWindowCommand(QString(), formWindow),
+    m_index(-1)
 {
 }
 

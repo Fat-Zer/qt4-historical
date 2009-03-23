@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -661,10 +661,19 @@ void QPainterPrivate::updateMatrix()
 void QPainterPrivate::updateInvMatrix()
 {
     Q_ASSERT(txinv == false);
-    txinv = true;
-    bool invertible;
-    Q_Q(QPainter);
-    invMatrix = q->combinedTransform().inverted(&invertible);                // invert matrix
+    txinv = true;                                // creating inverted matrix
+    QTransform m;
+
+    if (state->VxF)
+        m = viewTransform();
+
+    if (state->WxF) {
+        if (state->VxF)
+            m = state->worldMatrix * m;
+        else
+            m = state->worldMatrix;
+    }
+    invMatrix = m.inverted();                // invert matrix
 }
 
 void QPainterPrivate::updateEmulationSpecifier(QPainterState *s)
@@ -2471,6 +2480,8 @@ QRegion QPainter::clipRegion() const
     return region;
 }
 
+extern QPainterPath qt_regionToPath(const QRegion &region);
+
 /*!
     Returns the currently clip as a path. Note that the clip path is
     given in logical coordinates.
@@ -2511,9 +2522,7 @@ QPainterPath QPainter::clipPath() const
             return path * matrix;
         } else {
             // Fallback to clipRegion() for now, since we don't have isect/unite for paths
-            QPainterPath path;
-            path.addRegion(clipRegion());
-            return path;
+            return qt_regionToPath(clipRegion());
         }
     }
 }
@@ -3076,30 +3085,13 @@ void QPainter::strokePath(const QPainterPath &path, const QPen &pen)
         return;
     }
 
+    if (path.isEmpty())
+        return;
+
     if (d->extended) {
         const QGradient *g = qpen_brush(pen).gradient();
-        if (g && g->coordinateMode() == QGradient::LogicalMode) {
-            QVarLengthArray<QPainterPath::ElementType> types(path.elementCount());
-            QVarLengthArray<qreal> pts(path.elementCount() * 2);
-
-            uint flags = 0;
-
-            int ptsPos = 0;
-            for (int i=0; i<path.elementCount(); ++i) {
-                const QPainterPath::Element &e = path.elementAt(i);
-                types[i] = e.type;
-                pts[ptsPos++] = e.x;
-                pts[ptsPos++] = e.y;
-                if (e.type == QPainterPath::CurveToElement)
-                    flags |= QVectorPath::CurvedShapeHint;
-            }
-            if (path.fillRule() == Qt::WindingFill)
-                flags |= QVectorPath::WindingFill;
-            else
-                flags |= QVectorPath::OddEvenFill;
-
-            QVectorPath vp(pts.data(), path.elementCount(), types.data(), flags);
-            d->extended->stroke(vp, pen);
+        if (!g || g->coordinateMode() == QGradient::LogicalMode) {
+            d->extended->stroke(qtVectorPathForPath(path), pen);
             return;
         }
     }
@@ -3136,30 +3128,13 @@ void QPainter::fillPath(const QPainterPath &path, const QBrush &brush)
         return;
     }
 
+    if (path.isEmpty())
+        return;
+
     if (d->extended) {
         const QGradient *g = brush.gradient();
-        if (g && g->coordinateMode() == QGradient::LogicalMode) {
-            QVarLengthArray<QPainterPath::ElementType> types(path.elementCount());
-            QVarLengthArray<qreal> pts(path.elementCount() * 2);
-
-            uint flags = 0;
-
-            int ptsPos = 0;
-            for (int i=0; i<path.elementCount(); ++i) {
-                const QPainterPath::Element &e = path.elementAt(i);
-                types[i] = e.type;
-                pts[ptsPos++] = e.x;
-                pts[ptsPos++] = e.y;
-                if (e.type == QPainterPath::CurveToElement)
-                    flags |= QVectorPath::CurvedShapeHint;
-            }
-            if (path.fillRule() == Qt::WindingFill)
-                flags |= QVectorPath::WindingFill;
-            else
-                flags |= QVectorPath::OddEvenFill;
-
-            QVectorPath vp(pts.data(), path.elementCount(), types.data(), flags);
-            d->extended->fill(vp, brush);
+        if (!g || g->coordinateMode() == QGradient::LogicalMode) {
+            d->extended->fill(qtVectorPathForPath(path), brush);
             return;
         }
     }

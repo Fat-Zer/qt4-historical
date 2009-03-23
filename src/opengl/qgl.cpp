@@ -6,11 +6,11 @@
 ** This file is part of the QtOpenGL module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -46,6 +46,7 @@
 
 #if defined(Q_WS_X11)
 #include "private/qt_x11_p.h"
+#include "private/qpixmap_x11_p.h"
 #define INT32 dummy_INT32
 #define INT8 dummy_INT8
 #if !defined(QT_OPENGL_ES)
@@ -3313,7 +3314,10 @@ QPixmap QGLWidget::renderPixmap(int w, int h, bool useContext)
     extern int qt_x11_preferred_pixmap_depth;
     int old_depth = qt_x11_preferred_pixmap_depth;
     qt_x11_preferred_pixmap_depth = x11Info().depth();
-    QPixmap pm(sz);
+
+    QPixmapData *data = new QX11PixmapData(QPixmapData::PixmapType);
+    data->resize(sz.width(), sz.height());
+    QPixmap pm(data);
     qt_x11_preferred_pixmap_depth = old_depth;
     QX11Info xinfo = x11Info();
 
@@ -4144,6 +4148,10 @@ void QGLExtensions::init_extensions()
         glExtensions |= NVFloatBuffer;
     if (extensions.contains(QLatin1String("ARB_pixel_buffer_object")))
         glExtensions |= PixelBufferObject;
+#if defined(QT_OPENGL_ES_2)
+    glExtensions |= FramebufferObject;
+    glExtensions |= GenerateMipmap;
+#endif
 
     QGLContext cx(QGLFormat::defaultFormat());
     if (glExtensions & TextureCompression) {

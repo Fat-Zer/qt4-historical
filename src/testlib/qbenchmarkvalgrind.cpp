@@ -7,11 +7,11 @@
 ** This file is part of the QtTest module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -105,6 +105,7 @@ qint64 QBenchmarkValgrindUtils::extractResult(const QString &fileName)
     QFile file(fileName);
     const bool openOk = file.open(QIODevice::ReadOnly | QIODevice::Text);
     Q_ASSERT(openOk);
+    Q_UNUSED(openOk);
 
     qint64 val = -1;
     bool valSeen = false;
@@ -141,6 +142,7 @@ QString QBenchmarkValgrindUtils::getNewestFileName()
     foreach (QFileInfo fileInfo, fiList) {
         const int index = rx.indexIn(fileInfo.fileName());
         Q_ASSERT(index == 0);
+        Q_UNUSED(index);
         bool ok;
         const int suffix = rx.cap(1).toInt(&ok);
         Q_ASSERT(ok);
@@ -171,6 +173,7 @@ void QBenchmarkValgrindUtils::cleanup()
     foreach (QFileInfo fileInfo, fiList) {
         const bool removeOk = QFile::remove(fileInfo.fileName());
         Q_ASSERT(removeOk);
+        Q_UNUSED(removeOk);
     }
 }
 

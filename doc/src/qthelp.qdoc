@@ -6,11 +6,11 @@
 ** This file is part of the documentation of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -114,33 +114,33 @@
         \row
             \o \l {Qt Help Project}
             \o .qhp
-            \o This is the input file for the help generator. It
-            contains the table of contents, indices and references
-            to the actual documentation files (*.html). In addition
-            it defines a unique namespace for the documentation.
+            \o The input file for the help generator consisting of the table
+               of contents, indices and references to the actual documentation
+               files (*.html); it also defines a unique namespace for the
+               documentation.
 
         \row
             \o Qt Compressed Help
             \o .qch
-            \o The output file of the help generator. This binary file
-            contains all the information specified in the help project
-            file along with all compressed documentation files.
+            \o The output file of the help generator. This binary file contains
+               all information specified in the help project file along with all
+               compressed documentation files.
 
         \row
             \o \l {Qt Help Collection Project}
             \o .qhcp
-            \o Is the input file for the help collection generator.
-            It contains references to compressed help files which
-            should be included in the collection. It may contain
-            various other information for customizing Qt Assistant.
+            \o The input file for the help collection generator. It contains
+               references to compressed help files which should be included in
+               the collection; it also may contain other information for
+               customizing Qt Assistant.
 
         \row
             \o Qt Help Collection
             \o .qhc
-            \o The output of the help collection generator. This
-            is the file, the QHelpEngine operates on. It contains
-            references to any number of compressed help files as well
-            as additional information like custom filters.
+            \o The output of the help collection generator. This is the file
+               QHelpEngine operates on. It contains references to any number of
+               compressed help files as well as additional information, such as
+               custom filters.
     \endtable
 
     \section1 Generating Qt Help

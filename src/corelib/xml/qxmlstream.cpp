@@ -6,11 +6,11 @@
 ** This file is part of the QtCore module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -2792,9 +2792,9 @@ QStringRef QXmlStreamReader::documentEncoding() const
   \inmodule QtXml
   \ingroup xml-tools
 
-  QXmlStreamWriter is the pendent to QXmlStreamReader for writing
+  QXmlStreamWriter is the counterpart to QXmlStreamReader for writing
   XML. Like its related class, it operates on a QIODevice specified
-  with setDevice(). The API is simple and straight forward: For every
+  with setDevice(). The API is simple and straightforward: for every
   XML token or event you want to write, the writer provides a
   specialized function.
 
@@ -2813,6 +2813,15 @@ QStringRef QXmlStreamReader::documentEncoding() const
   sequences, writeEntityReference(), or subsequent calls to
   writeStartElement(). A convenience method writeTextElement() can be
   used for writing terminal elements that contain nothing but text.
+
+  The following abridged code snippet shows the basic use of the class
+  to write formatted XML with indentation:
+
+  \snippet doc/src/snippets/qxmlstreamwriter/main.cpp start stream
+  \dots
+  \snippet doc/src/snippets/qxmlstreamwriter/main.cpp write element
+  \dots
+  \snippet doc/src/snippets/qxmlstreamwriter/main.cpp finish stream
 
   QXmlStreamWriter takes care of prefixing namespaces, all you have to
   do is specify the \c namespaceUri when writing elements or

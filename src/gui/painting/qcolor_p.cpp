@@ -6,11 +6,11 @@
 ** This file is part of the QtGui module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -329,11 +329,12 @@ bool qt_get_named_rgb(const char *name, QRgb* rgb)
     if(len > 255)
         return false;
     char name_no_space[256];
-    for(int o = 0, i = 0; i < len; i++) {
+    int pos = 0;
+    for(int i = 0; i < len; i++) {
         if(name[i] != '\t' && name[i] != ' ')
-            name_no_space[o++] = name[i];
+            name_no_space[pos++] = name[i];
     }
-    name_no_space[len] = 0;
+    name_no_space[pos] = 0;
 
     return get_named_rgb(name_no_space, rgb);
 }
@@ -343,12 +344,12 @@ bool qt_get_named_rgb(const QChar *name, int len, QRgb *rgb)
     if(len > 255)
         return false;
     char name_no_space[256];
-    for(int o = 0, i = 0; i < len; i++) {
+    int pos = 0;
+    for(int i = 0; i < len; i++) {
         if(name[i] != QLatin1Char('\t') && name[i] != QLatin1Char(' '))
-            name_no_space[o++] = name[i].toLatin1();
+            name_no_space[pos++] = name[i].toLatin1();
     }
-    name_no_space[len] = 0;
-
+    name_no_space[pos] = 0;
     return get_named_rgb(name_no_space, rgb);
 }
 

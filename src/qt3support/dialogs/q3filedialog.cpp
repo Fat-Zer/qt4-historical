@@ -6,11 +6,11 @@
 ** This file is part of the Qt3Support module of the Qt Toolkit.
 **
 ** $QT_BEGIN_LICENSE:LGPL$
-** Commercial Usage
-** Licensees holding valid Qt Commercial licenses may use this file in
-** accordance with the Qt Commercial License Agreement provided with the
-** Software or, alternatively, in accordance with the terms contained in
-** a written agreement between you and Nokia.
+** No Commercial Usage
+** This file contains pre-release code and may not be distributed.
+** You may use this file in accordance with the terms and conditions
+** contained in the either Technology Preview License Agreement or the
+** Beta Release License Agreement.
 **
 ** GNU Lesser General Public License Usage
 ** Alternatively, this file may be used under the terms of the GNU Lesser
@@ -2116,7 +2116,7 @@ static QStringList makeFiltersList(const QString &filter)
 }
 
 /*!
-  \class Q3FileDialog qfiledialog.h
+  \class Q3FileDialog
   \brief The Q3FileDialog class provides dialogs that allow users to select files or directories.
 
   \compat
@@ -4779,7 +4779,7 @@ void Q3FileDialog::keyPressEvent(QKeyEvent * ke)
 }
 
 
-/*! \class Q3FileIconProvider qfiledialog.h
+/*! \class Q3FileIconProvider
 
   \brief The Q3FileIconProvider class provides icons for Q3FileDialog to
   use.
@@ -6154,7 +6154,7 @@ void Q3FileDialog::goBack()
 // preview widget from QWidget and from this class' indeed.
 
 /*!
-  \class Q3FilePreview qfiledialog.h
+  \class Q3FilePreview
   \brief The Q3FilePreview class provides file previewing in Q3FileDialog.
 
   \compat
