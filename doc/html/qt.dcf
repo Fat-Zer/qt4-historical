@@ -16871,8 +16871,8 @@
     <section ref="opensourceedition.html" title="Qt Open Source Edition">
         <keyword ref="opensourceedition.html">Qt Open Source Edition</keyword>
     </section>
-    <section ref="index.html" title="Qt Reference Documentation (Open Source Edition)">
-        <keyword ref="index.html">Qt Reference Documentation (Open Source Edition)</keyword>
+    <section ref="index.html" title="Qt Reference Documentation">
+        <keyword ref="index.html">Qt Reference Documentation</keyword>
     </section>
     <section ref="tutorial.html" title="Qt Tutorial">
         <keyword ref="tutorial.html">Qt Tutorial</keyword>

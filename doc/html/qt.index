@@ -37883,7 +37883,7 @@
   <contents name="note-about-locales-on-x11" title="Note about Locales on X11" />
   <contents name="relevant-qt-classes" title="Relevant Qt Classes" />
  </page>
- <page access="public" name="index.html" subtype="page" title="Qt Reference Documentation (Open Source Edition)" fulltitle="Qt Reference Documentation (Open Source Edition)" subtitle="" location="index.qdoc">
+ <page access="public" name="index.html" subtype="page" title="Qt Reference Documentation" fulltitle="Qt Reference Documentation" subtitle="" location="index.qdoc">
   <keyword name="qt-reference-documentation" />
  </page>
  <page access="public" name="installation.html" subtype="page" title="Installation" fulltitle="Installation" subtitle="" location="installation.qdoc" />
